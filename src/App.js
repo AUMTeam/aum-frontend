@@ -7,6 +7,7 @@ class App extends Component {
       <div className="App">
         <h1>Benvenuto su GesbankManager</h1>
         <h2>Questo software servirà ad IBT per gestire la pipeline di sviluppo di GesbankManager</h2>
+        <img src="https://wiki.ibttn.it/gesbankref/chrome/site/gesbanke.png"></img>
       </div>
     );
   }
