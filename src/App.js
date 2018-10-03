@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { Component } from "react";
+import { Button, Navbar } from "react-materialize";
+import "./App.css";
+import { Navigation } from "./components/Navigation";
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <h1>Benvenuto su GesbankManager</h1>
-        <h2>Questo software servirà ad IBT per gestire la pipeline di sviluppo di GesbankManager</h2>
-        <img src="https://wiki.ibttn.it/gesbankref/chrome/site/gesbanke.png"></img>
+      <div>
+      <Navigation />
       </div>
     );
   }
