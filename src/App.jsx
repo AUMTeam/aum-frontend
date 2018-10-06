@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
-import './App.css';
-import { Navigation } from './components/Navigation';
 import { Button } from 'react-materialize';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { requestLogin } from './actions/login';
+import './App.css';
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.onButtonClicked = this.onButtonClicked.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log('RECEIVED ACCESS TOKEN');
   }
 
   render() {
@@ -21,8 +27,26 @@ class App extends Component {
   }
 
   onButtonClicked() {
-    console.log('Button clicked');
+    this.props.requestLogin();
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    accessToken: state.login.accessToken
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      requestLogin
+    },
+    dispatch
+  );
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

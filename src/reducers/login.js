@@ -16,8 +16,8 @@ export const initialState = {
 /**
  * Reducer function of the login.
  *
- * @param {*} state
- * @param {*} action
+ * @param {*} state main state of the app.
+ * @param {*} action dispatched action.
  */
 export function login(state = initialState, action) {
   switch (action.type) {
@@ -27,9 +27,15 @@ export function login(state = initialState, action) {
         accessToken: action.accessToken
       };
     case LOGIN_ACTION_TYPE_KEYS.LOGIN_SUCCESSFULL:
-      break;
+      return {
+        ...state,
+        accessToken: action.accessToken
+      };
     case LOGIN_ACTION_TYPE_KEYS.LOGIN_FAILED:
-      break;
+      return {
+        ...state,
+        accessToken: action.accessToken
+      };
     default:
       return state;
   }

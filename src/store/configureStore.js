@@ -14,5 +14,5 @@ import reducers from '../reducers';
  * @return the store instance.
  */
 export function configureStore() {
-    return createStore(reducers)
+    return createStore(reducers, window.STATE_FROM_SERVER)
 }

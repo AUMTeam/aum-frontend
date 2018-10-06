@@ -17,7 +17,8 @@ export const LOGIN_ACTION_TYPE_KEYS = {
 /**
  * Returns the login actions.
  */
-export function login() {
+export function requestLogin() {
+  console.log("Request login")
   return {
     type: LOGIN_ACTION_TYPE_KEYS.LOGIN_SUCCESSFULL,
     accessToken: 'DFJSHT5E6JNDG'
