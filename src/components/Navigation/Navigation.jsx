@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import { Button, Navbar } from "react-materialize";
-import "./Navigation.css";
+import React, { Component } from 'react';
+import { Button, Navbar } from 'react-materialize';
+import './Navigation.css';
 
 class Navigation extends Component {
   constructor(props) {
