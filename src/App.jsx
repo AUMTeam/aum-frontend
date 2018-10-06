@@ -8,19 +8,22 @@ import './App.css';
 class App extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      accessToken: 'NULL'
+    };
 
     this.onButtonClicked = this.onButtonClicked.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('RECEIVED ACCESS TOKEN');
+    this.setState({ accessToken: nextProps.accessToken });
   }
 
   render() {
     return (
       <div>
         <Button className="red" onClick={this.onButtonClicked}>
-          Hello
+          {this.state.accessToken}
         </Button>
       </div>
     );
