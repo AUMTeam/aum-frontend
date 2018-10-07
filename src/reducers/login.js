@@ -10,7 +10,8 @@ import { LOGIN_ACTION_TYPE_KEYS } from '../actions/login';
  * Initial state of the login.
  */
 export const initialState = {
-  accessToken: undefined
+  posts: undefined,
+  isLoadingPosts: undefined
 };
 
 /**
@@ -24,17 +25,18 @@ export function login(state = initialState, action) {
     case LOGIN_ACTION_TYPE_KEYS.LOGIN_REQUEST:
       return {
         ...state,
-        accessToken: action.accessToken
+        isLoadingPosts: true
       };
     case LOGIN_ACTION_TYPE_KEYS.LOGIN_SUCCESSFULL:
       return {
         ...state,
-        accessToken: action.accessToken
+        posts: action.payload,
+        isLoadingPosts: false
       };
     case LOGIN_ACTION_TYPE_KEYS.LOGIN_FAILED:
       return {
         ...state,
-        accessToken: action.accessToken
+        isLoadingPosts: false
       };
     default:
       return state;
