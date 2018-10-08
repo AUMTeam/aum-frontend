@@ -4,6 +4,7 @@
  *
  * @author Riccardo Busetti
  */
+import { RSAA } from 'redux-api-middleware';
 
 /**
  * Object containing all the action types.
@@ -16,11 +17,21 @@ export const LOGIN_ACTION_TYPE_KEYS = {
 
 /**
  * Returns the login actions.
+ * 
+ * @todo Questo metodo è solo un placeholder per mostrare
+ * il funzionamento di api middleware. Non centra con la login.
  */
 export function requestLogin() {
-  console.log("Request login")
+  console.log('Request login');
   return {
-    type: LOGIN_ACTION_TYPE_KEYS.LOGIN_SUCCESSFULL,
-    accessToken: 'DFJSHT5E6JNDG'
+    [RSAA]: {
+      endpoint: 'https://jsonplaceholder.typicode.com/posts',
+      method: 'GET',
+      types: [
+        LOGIN_ACTION_TYPE_KEYS.LOGIN_REQUEST,
+        LOGIN_ACTION_TYPE_KEYS.LOGIN_SUCCESSFULL,
+        LOGIN_ACTION_TYPE_KEYS.LOGIN_FAILED
+      ]
+    }
   };
 }

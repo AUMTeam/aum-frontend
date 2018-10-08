@@ -5,8 +5,9 @@
  * @author Riccardo Busetti
  */
 
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
 import reducers from '../reducers';
+import { apiMiddleware } from 'redux-api-middleware';
 
 /**
  * Creates the store.
@@ -14,5 +15,5 @@ import reducers from '../reducers';
  * @return the store instance.
  */
 export function configureStore() {
-    return createStore(reducers, window.STATE_FROM_SERVER)
+    return createStore(reducers, window.STATE_FROM_SERVER, applyMiddleware(apiMiddleware))
 }
