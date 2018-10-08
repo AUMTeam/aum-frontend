@@ -9,9 +9,9 @@ import { RSAA } from 'redux-api-middleware';
 /**
  * Object containing all the action types.
  */
-export const LOGIN_ACTION_TYPE_KEYS = {
+export const AUTH_ACTION_TYPE_KEYS = {
   LOGIN_REQUEST: 'LOGIN_REQUEST',
-  LOGIN_SUCCESSFULL: 'LOGIN_SUCCESSFULL',
+  LOGIN_SUCCESSFUL: 'LOGIN_SUCCESSFUL',
   LOGIN_FAILED: 'LOGIN_FAILED'
 };
 
@@ -28,9 +28,9 @@ export function requestLogin() {
       endpoint: 'https://jsonplaceholder.typicode.com/posts',
       method: 'GET',
       types: [
-        LOGIN_ACTION_TYPE_KEYS.LOGIN_REQUEST,
-        LOGIN_ACTION_TYPE_KEYS.LOGIN_SUCCESSFULL,
-        LOGIN_ACTION_TYPE_KEYS.LOGIN_FAILED
+        AUTH_ACTION_TYPE_KEYS.LOGIN_REQUEST,
+        AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL,
+        AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED
       ]
     }
   };
