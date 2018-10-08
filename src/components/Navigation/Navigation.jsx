@@ -10,7 +10,7 @@ class Navigation extends Component {
   render() {
     return (
       <div>
-        <Navbar className="black" brand="Gesbank manager" right />
+        <Navbar className="black" brand="AUM" right />
       </div>
     );
   }
