@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Navbar } from 'react-materialize';
+import { Navbar } from 'react-materialize';
 import './Navigation.css';
 
 class Navigation extends Component {
@@ -8,7 +8,11 @@ class Navigation extends Component {
   }
 
   render() {
-    return <Navbar className="black" brand="Gesbank manager" right />;
+    return (
+      <div>
+        <Navbar className="black" brand="AUM" right />
+      </div>
+    );
   }
 }
 
