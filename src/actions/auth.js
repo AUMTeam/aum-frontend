@@ -12,7 +12,9 @@ import { RSAA } from 'redux-api-middleware';
 export const AUTH_ACTION_TYPE_KEYS = {
   LOGIN_REQUEST: 'LOGIN_REQUEST',
   LOGIN_SUCCESSFUL: 'LOGIN_SUCCESSFUL',
-  LOGIN_FAILED: 'LOGIN_FAILED'
+  LOGIN_FAILED: 'LOGIN_FAILED',
+  FAKE_LOGIN: 'FAKE_LOGIN',
+  FAKE_LOGOUT: 'FAKE_LOGOUT'
 };
 
 /**
@@ -50,24 +52,20 @@ export function attemptLogin(username, password) {
   };
 }
 
-/**
- * Returns the login actions.
- * Just a placeholder used for testing UI.
- */
-export function requestLoginPlaceholder() {
-  console.log('Request login');
+export function fakeLogin() {
   return {
-    [RSAA]: {
-      endpoint: 'https://jsonplaceholder.typicode.com/posts',
-      method: 'GET',
-      types: [
-        AUTH_ACTION_TYPE_KEYS.LOGIN_REQUEST,
-        AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL,
-        AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED
-      ]
-    }
-  };
+    type: AUTH_ACTION_TYPE_KEYS.FAKE_LOGIN,
+    accessToken: "AQ4JHHJSEFB435"
+  }
 }
+
+export function fakeLogout() {
+  return {
+    type: AUTH_ACTION_TYPE_KEYS.FAKE_LOGOUT,
+    accessToken: null
+  }
+}
+
 /**
  * An hash function
  * @param {*} obj The object which the hash must be calculated from

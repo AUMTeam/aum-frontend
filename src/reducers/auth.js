@@ -10,7 +10,7 @@ import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
  * Initial state of the authentication.
  */
 export const initialState = {
-  accessToken: null,      // TODO: it will be loaded form cache if already present
+  accessToken: localStorage.getItem('token'),      // TODO: it will be loaded form cache if already present
   loggedInUsername: null,
   loggedInUserRole: null,
   isAttemptingLogin: false,
@@ -30,7 +30,6 @@ export function auth(state = initialState, action) {
         ...state,
         isAttemptingLogin: true
       };
-
     // In this case, action.payload is the server response 
     case AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL:
       return {
@@ -40,7 +39,6 @@ export function auth(state = initialState, action) {
         accessToken: action.payload.response_data.token,
         isAttemptingLogin: false
       };
-
     // In this case, action.payload is an ApiError object
     case AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED:
       console.error("API error: " + action.payload.response.dev_message);
@@ -49,7 +47,18 @@ export function auth(state = initialState, action) {
         isAttemptingLogin: false,
         errorMessage: action.payload.message,
       };
-
+    case AUTH_ACTION_TYPE_KEYS.FAKE_LOGIN:
+      localStorage.setItem('token', action.accessToken)
+      return {
+        ...state,
+        accessToken: action.accessToken
+      }  
+    case AUTH_ACTION_TYPE_KEYS.FAKE_LOGOUT:
+      localStorage.removeItem('token')
+      return {
+        ...state,
+        accessToken: action.accessToken
+      }  
     default:
       console.warn("Default condition reached in auth reducer: " + action.type);
       return state;
