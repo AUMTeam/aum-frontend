@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from '../../../../../Library/Caches/typescript/3.0/node_modules/redux';
-import { ROUTES } from '..';
 import { Button } from 'react-materialize';
+import { connect } from 'react-redux';
+import { ROUTES } from '..';
+import { bindActionCreators } from '../../../../../Library/Caches/typescript/3.0/node_modules/redux';
 import { fakeLogout } from '../../actions/auth';
 
 class Home extends Component {
@@ -11,7 +11,7 @@ class Home extends Component {
 
     this.state = {
       accessToken: props.accessToken
-    }
+    };
 
     this.onLogoutButtonClicked = this.onLogoutButtonClicked.bind(this);
   }
@@ -19,7 +19,7 @@ class Home extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.accessToken == null) {
       this.props.history.push(ROUTES.LOGIN);
-      this.setState({accessToken: nextProps.accessToken});
+      this.setState({ accessToken: nextProps.accessToken });
     }
   }
 
@@ -27,7 +27,9 @@ class Home extends Component {
     return (
       <div>
         <h1>Home</h1>
-        {this.state.accessToken ? <h5>Logged in with access token: {this.state.accessToken}</h5> : null}
+        {this.state.accessToken ? (
+          <h5>Logged in with access token: {this.state.accessToken}</h5>
+        ) : null}
         <Button onClick={this.onLogoutButtonClicked}>LOGOUT</Button>
       </div>
     );
@@ -36,7 +38,6 @@ class Home extends Component {
   onLogoutButtonClicked() {
     this.props.fakeLogout();
   }
-
 }
 
 const mapStateToProps = state => {

@@ -20,8 +20,8 @@ export const AUTH_ACTION_TYPE_KEYS = {
 /**
  * It returns the action that makes a login request
  * Uses API Middleware to make the API request and dispatch actions according to its result.
- * 
- * @param username The username 
+ *
+ * @param username The username
  * @param password The password
  * @author Francesco Saltori, Riccardo Busetti
  */
@@ -40,13 +40,13 @@ export function attemptLogin(username, password) {
         action: 'access',
         request_data: {
           username: username,
-          password: hashFunction(password)    // TODO: da implementare funzione di hashing
+          password: hashFunction(password) // TODO: da implementare funzione di hashing
         }
       }),
       types: [
-        AUTH_ACTION_TYPE_KEYS.LOGIN_REQUEST,    // action dispatched before the request is done
+        AUTH_ACTION_TYPE_KEYS.LOGIN_REQUEST, // action dispatched before the request is done
         AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL, // action dispatched when login is successful
-        AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED      // action dispatched when login fails
+        AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED // action dispatched when login fails
       ]
     }
   };
@@ -55,15 +55,15 @@ export function attemptLogin(username, password) {
 export function fakeLogin() {
   return {
     type: AUTH_ACTION_TYPE_KEYS.FAKE_LOGIN,
-    accessToken: "AQ4JHHJSEFB435"
-  }
+    accessToken: 'AQ4JHHJSEFB435'
+  };
 }
 
 export function fakeLogout() {
   return {
     type: AUTH_ACTION_TYPE_KEYS.FAKE_LOGOUT,
     accessToken: null
-  }
+  };
 }
 
 /**
@@ -71,8 +71,7 @@ export function fakeLogout() {
  * @param {*} obj The object which the hash must be calculated from
  * @author Francesco Saltori
  */
-function hashFunction(obj)
-{
+function hashFunction(obj) {
   // TODO
-  throw new Error("Unimplemented function");
+  throw new Error('Unimplemented function');
 }
