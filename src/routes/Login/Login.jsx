@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button } from 'react-materialize';
 import { connect } from 'react-redux';
 import { ROUTES } from '..';
-import { bindActionCreators } from '../../../../../Library/Caches/typescript/3.0/node_modules/redux';
+import { bindActionCreators } from 'redux';
 import { fakeLogin } from '../../actions/auth';
 
 class Login extends Component {
