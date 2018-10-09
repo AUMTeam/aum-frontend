@@ -44,7 +44,7 @@ const AuthRoute = ({
 );
 
 /**
- * Routes component, responsible about defining the dynamic flow
+ * Routes component, responsible for defining the dynamic flow
  * of in-app routing.
  *
  * @author Riccardo Busetti
@@ -99,7 +99,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {};
+const mapDispatchToProps = dispatch => { return {} };
 
 export default connect(
   mapStateToProps,
