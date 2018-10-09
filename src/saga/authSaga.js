@@ -15,7 +15,12 @@ import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
  */
 function* saveAccessToken(action) {
   console.log('SAVING ACCESS TOKEN');
-  localStorage.setItem('token', action.accessToken);
+  try {
+    yield localStorage.setItem('token', action.accessToken);
+  }
+  catch (err) {
+    console.error("Unable to save access token in local storage.");
+  }
 }
 
 /**
@@ -26,11 +31,18 @@ function* saveAccessToken(action) {
  */
 function* removeAccessToken(action) {
   console.log('REMOVING ACCESS TOKEN');
-  localStorage.removeItem('token');
+  try {
+    yield localStorage.removeItem('token');
+  }
+  catch (err) {
+    console.error("Unable to remove access token from local storage.");
+  }
 }
 
 /**
  * List of sagas that will take the latest actions from redux.
+ * 
+ * TODO: replace with real login actions
  */
 export const authSaga = [
   takeLatest(AUTH_ACTION_TYPE_KEYS.FAKE_LOGIN, saveAccessToken),
