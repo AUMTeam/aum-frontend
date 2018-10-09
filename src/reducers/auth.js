@@ -10,7 +10,7 @@ import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
  * Initial state of the authentication.
  */
 export const initialState = {
-  accessToken: localStorage.getItem('token'), // TODO: it will be loaded form cache if already present
+  accessToken: localStorage.getItem('token'), // TODO: da verificare autenticità con il server
   loggedInUsername: null,
   loggedInUserRole: null,
   isAttemptingLogin: false,

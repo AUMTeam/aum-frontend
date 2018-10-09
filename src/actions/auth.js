@@ -6,6 +6,8 @@
  */
 import { RSAA } from 'redux-api-middleware';
 
+const API_URL = 'https://aum.altervista.org/main.php';
+
 /**
  * Object containing all the action types.
  */
@@ -26,11 +28,10 @@ export const AUTH_ACTION_TYPE_KEYS = {
  * @author Francesco Saltori, Riccardo Busetti
  */
 export function attemptLogin(username, password) {
-  // TODO: if already present, accessToken must be sent to the server somewhere
   console.log('Login attempt started');
   return {
     [RSAA]: {
-      endpoint: 'https://aum.altervista.org/main.php',
+      endpoint: API_URL,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
