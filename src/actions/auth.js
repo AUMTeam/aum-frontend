@@ -5,6 +5,7 @@
  * @author Riccardo Busetti
  */
 import { RSAA } from 'redux-api-middleware';
+import { sha256 } from 'js-sha256';
 
 const API_URL = 'https://aum.altervista.org/main.php';
 
@@ -41,7 +42,7 @@ export function attemptLogin(username, password) {
         action: 'access',
         request_data: {
           username: username,
-          password: hashFunction(password) // TODO: da implementare funzione di hashing
+          password: computeSHA256(password)
         }
       }),
       types: [
@@ -68,11 +69,10 @@ export function fakeLogout() {
 }
 
 /**
- * An hash function
- * @param {*} obj The object which the hash must be calculated from
+ * Computes the SHA256 hash for the given object
+ * @param {*} obj The object which the hash is calculated from
  * @author Francesco Saltori
  */
-function hashFunction(obj) {
-  // TODO
-  throw new Error('Unimplemented function');
+function computeSHA256(obj) {
+  sha256(obj.toString());
 }
