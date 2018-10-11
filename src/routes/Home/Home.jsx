@@ -3,7 +3,6 @@ import { Button } from 'react-materialize';
 import { connect } from 'react-redux';
 import { ROUTES } from '..';
 import { bindActionCreators } from 'redux';
-import { fakeLogout } from '../../actions/auth';
 
 class Home extends Component {
   constructor(props) {
@@ -12,8 +11,6 @@ class Home extends Component {
     this.state = {
       accessToken: props.accessToken
     };
-
-    this.onLogoutButtonClicked = this.onLogoutButtonClicked.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -30,13 +27,8 @@ class Home extends Component {
         {this.state.accessToken ? (
           <h5>Logged in with access token: {this.state.accessToken}</h5>
         ) : null}
-        <Button onClick={this.onLogoutButtonClicked}>LOGOUT</Button>
       </div>
     );
-  }
-
-  onLogoutButtonClicked() {
-    this.props.fakeLogout();
   }
 }
 
@@ -48,9 +40,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
-    {
-      fakeLogout
-    },
+    {},
     dispatch
   );
 };

@@ -32,6 +32,7 @@ export function auth(state = initialState, action) {
       };
     // In this case, action.payload is the server response
     case AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL:
+      console.log("Login successful")
       return {
         ...state,
         loggedInUsername: action.payload.response_data.username,

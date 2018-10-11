@@ -3,7 +3,7 @@ import { Button } from 'react-materialize';
 import { connect } from 'react-redux';
 import { ROUTES } from '..';
 import { bindActionCreators } from 'redux';
-import { fakeLogin } from '../../actions/auth';
+import { attemptLogin } from '../../actions/auth';
 
 class Login extends Component {
   constructor(props) {
@@ -28,7 +28,7 @@ class Login extends Component {
   }
 
   onLoginButtonClicked() {
-    this.props.fakeLogin();
+    this.props.attemptLogin("Riccardo", "12345678");
   }
 }
 
@@ -41,7 +41,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      fakeLogin
+      attemptLogin
     },
     dispatch
   );

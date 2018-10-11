@@ -7,7 +7,7 @@
 import { RSAA } from 'redux-api-middleware';
 import { sha256 } from 'js-sha256';
 
-const API_URL = 'https://aum.altervista.org/main.php';
+const API_URL = 'http://aum.altervista.org/main.php';
 
 /**
  * Object containing all the action types.
@@ -15,9 +15,7 @@ const API_URL = 'https://aum.altervista.org/main.php';
 export const AUTH_ACTION_TYPE_KEYS = {
   LOGIN_REQUEST: 'LOGIN_REQUEST',
   LOGIN_SUCCESSFUL: 'LOGIN_SUCCESSFUL',
-  LOGIN_FAILED: 'LOGIN_FAILED',
-  FAKE_LOGIN: 'FAKE_LOGIN',
-  FAKE_LOGOUT: 'FAKE_LOGOUT'
+  LOGIN_FAILED: 'LOGIN_FAILED'
 };
 
 /**
@@ -54,25 +52,11 @@ export function attemptLogin(username, password) {
   };
 }
 
-export function fakeLogin() {
-  return {
-    type: AUTH_ACTION_TYPE_KEYS.FAKE_LOGIN,
-    accessToken: 'AQ4JHHJSEFB435'
-  };
-}
-
-export function fakeLogout() {
-  return {
-    type: AUTH_ACTION_TYPE_KEYS.FAKE_LOGOUT,
-    accessToken: null
-  };
-}
-
 /**
  * Computes the SHA256 hash for the given object
  * @param {*} obj The object which the hash is calculated from
  * @author Francesco Saltori
  */
 function computeSHA256(obj) {
-  sha256(obj.toString());
+  return sha256(obj.toString());
 }

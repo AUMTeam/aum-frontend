@@ -45,6 +45,6 @@ function* removeAccessToken(action) {
  * TODO: replace with real login actions
  */
 export const authSaga = [
-  takeLatest(AUTH_ACTION_TYPE_KEYS.FAKE_LOGIN, saveAccessToken),
-  takeLatest(AUTH_ACTION_TYPE_KEYS.FAKE_LOGOUT, removeAccessToken)
+  takeLatest(AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL, saveAccessToken),
+  //takeLatest(AUTH_ACTION_TYPE_KEYS.FAKE_LOGOUT, removeAccessToken)
 ];
