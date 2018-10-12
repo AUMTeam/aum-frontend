@@ -16,7 +16,7 @@ import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
 function* saveAccessToken(action) {
   console.log('SAVING ACCESS TOKEN');
   try {
-    yield localStorage.setItem('token', action.accessToken);
+    yield localStorage.setItem('token', action.payload.response_data.token);
   }
   catch (err) {
     console.error("Unable to save access token in local storage.");
@@ -45,6 +45,5 @@ function* removeAccessToken(action) {
  * TODO: replace with real login actions
  */
 export const authSaga = [
-  takeLatest(AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL, saveAccessToken),
-  //takeLatest(AUTH_ACTION_TYPE_KEYS.FAKE_LOGOUT, removeAccessToken)
+  takeLatest(AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL, saveAccessToken)
 ];

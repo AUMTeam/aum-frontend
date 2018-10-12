@@ -7,7 +7,7 @@
 import { RSAA } from 'redux-api-middleware';
 import { sha256 } from 'js-sha256';
 
-const API_URL = 'http://aum.altervista.org/main.php';
+const API_URL = 'http://aum.altervista.org/main';
 
 /**
  * Object containing all the action types.
