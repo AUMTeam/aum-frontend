@@ -15,11 +15,14 @@ const API_URL = 'http://aum.altervista.org/main';
 export const AUTH_ACTION_TYPE_KEYS = {
   LOGIN_REQUEST: 'LOGIN_REQUEST',
   LOGIN_SUCCESSFUL: 'LOGIN_SUCCESSFUL',
-  LOGIN_FAILED: 'LOGIN_FAILED'
+  LOGIN_FAILED: 'LOGIN_FAILED',
+  LOGOUT_REQUEST: 'LOGOUT_REQUEST',
+  LOGOUT_SUCCESSFUL: 'LOGOUT_SUCCESSFUL',
+  LOGOUT_FAILED: 'LOGOUT_FAILED'
 };
 
 /**
- * It returns the action that makes a login request
+ * It returns the action that makes a login request to the server
  * Uses API Middleware to make the API request and dispatch actions according to its result.
  *
  * @param username The username
@@ -27,7 +30,6 @@ export const AUTH_ACTION_TYPE_KEYS = {
  * @author Francesco Saltori, Riccardo Busetti
  */
 export function attemptLogin(username, password) {
-  console.log('Login attempt started');
   return {
     [RSAA]: {
       endpoint: API_URL,
@@ -44,9 +46,39 @@ export function attemptLogin(username, password) {
         }
       }),
       types: [
-        AUTH_ACTION_TYPE_KEYS.LOGIN_REQUEST, // action dispatched before the request is done
+        AUTH_ACTION_TYPE_KEYS.LOGIN_REQUEST,    // action dispatched before the request is done
         AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL, // action dispatched when login is successful
-        AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED // action dispatched when login fails
+        AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED      // action dispatched when login fails
+      ]
+    }
+  };
+}
+
+/**
+ * It returns the action that notices the server that the user has logged out
+ * Uses API Middleware (like above)
+ * 
+ * @param {*} accessToken The current access token
+ * @author Francesco Saltori
+ */
+export function performLogout(accessToken) {
+  return {
+    [RSAA]: {
+      endpoint: API_URL,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-Header': accessToken       // non definitivo
+      },
+      body: JSON.stringify({
+        module: 'login',
+        action: 'signout',
+        request_data: {}
+      }),
+      types: [
+        AUTH_ACTION_TYPE_KEYS.LOGOUT_REQUEST,
+        AUTH_ACTION_TYPE_KEYS.LOGOUT_SUCCESSFUL,
+        AUTH_ACTION_TYPE_KEYS.LOGOUT_FAILED
       ]
     }
   };

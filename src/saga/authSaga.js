@@ -14,7 +14,7 @@ import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
  * @param {*} action redux dispatched action.
  */
 function* saveAccessToken(action) {
-  console.log('SAVING ACCESS TOKEN');
+  console.log('Saving access token');
   try {
     yield localStorage.setItem('token', action.payload.response_data.token);
   }
@@ -30,7 +30,7 @@ function* saveAccessToken(action) {
  * @param {*} action redux dispatched action.
  */
 function* removeAccessToken(action) {
-  console.log('REMOVING ACCESS TOKEN');
+  console.log('Removing access token');
   try {
     yield localStorage.removeItem('token');
   }
@@ -42,8 +42,10 @@ function* removeAccessToken(action) {
 /**
  * List of sagas that will take the latest actions from redux.
  * 
- * TODO: replace with real login actions
  */
 export const authSaga = [
-  takeLatest(AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL, saveAccessToken)
+  takeLatest(AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL, saveAccessToken),
+  takeLatest(AUTH_ACTION_TYPE_KEYS.LOGOUT_SUCCESSFUL, removeAccessToken),
+  // For now, if logout notice to the server fails, we still log out the user and delete the token locally (should have no side-effects)
+  takeLatest(AUTH_ACTION_TYPE_KEYS.LOGOUT_FAILED, removeAccessToken)
 ];

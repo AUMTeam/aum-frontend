@@ -11,6 +11,7 @@ import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
  */
 export const initialState = {
   accessToken: localStorage.getItem('token'), // TODO: da verificare autenticità con il server
+  loggedInUserId: null,
   loggedInUsername: null,
   loggedInUserRole: null,
   isAttemptingLogin: false,
@@ -26,6 +27,7 @@ export const initialState = {
 export function auth(state = initialState, action) {
   switch (action.type) {
     case AUTH_ACTION_TYPE_KEYS.LOGIN_REQUEST:
+      console.log('Login attempt started');
       return {
         ...state,
         isAttemptingLogin: true
@@ -35,8 +37,7 @@ export function auth(state = initialState, action) {
       console.log("Login successful")
       return {
         ...state,
-        loggedInUsername: action.payload.response_data.username,
-        loggedInUserRole: action.payload.response_data.userRole,
+        loggedInUserId: action.payload.response_data.user_id,
         accessToken: action.payload.response_data.token,
         isAttemptingLogin: false
       };
@@ -47,6 +48,18 @@ export function auth(state = initialState, action) {
         ...state,
         isAttemptingLogin: false,
         errorMessage: action.payload.message
+      };
+
+    case AUTH_ACTION_TYPE_KEYS.LOGOUT_REQUEST:
+      console.log("Sending logout request");
+      return state;
+    // For now, if logout notice to the server fails, we still log out the user and delete the token locally (should have no side-effects)
+    case AUTH_ACTION_TYPE_KEYS.LOGOUT_FAILED:
+      console.error("Unable to send logout request to server");
+    case AUTH_ACTION_TYPE_KEYS.LOGOUT_SUCCESSFUL:
+      return {
+        ...initialState,
+        accessToken: null
       };
     default:
       console.warn('Default condition reached in auth reducer: ' + action.type);

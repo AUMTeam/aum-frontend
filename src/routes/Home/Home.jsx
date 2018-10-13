@@ -3,10 +3,13 @@ import { Button } from 'react-materialize';
 import { connect } from 'react-redux';
 import { ROUTES } from '..';
 import { bindActionCreators } from 'redux';
+import { performLogout } from '../../actions/auth';
 
 class Home extends Component {
   constructor(props) {
     super(props);
+
+    this.onLogout = this.onLogout.bind(this);
 
     this.state = {
       accessToken: props.accessToken
@@ -27,8 +30,13 @@ class Home extends Component {
         {this.state.accessToken ? (
           <h5>Logged in with access token: {this.state.accessToken}</h5>
         ) : null}
+        <Button onClick={this.onLogout}>LOGOUT</Button>
       </div>
     );
+  }
+
+  onLogout() {
+    this.props.performLogout(this.state.accessToken);
   }
 }
 
@@ -40,7 +48,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
-    {},
+    {
+      performLogout
+    },
     dispatch
   );
 };
