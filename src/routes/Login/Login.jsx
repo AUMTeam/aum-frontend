@@ -28,7 +28,7 @@ class Login extends Component {
   }
 
   onLoginButtonClicked() {
-    this.props.attemptLogin("Riccardo", "12345678");
+    this.props.attemptLogin("admin", "admin");
   }
 }
 

@@ -42,21 +42,11 @@ export function auth(state = initialState, action) {
       };
     // In this case, action.payload is an ApiError object
     case AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED:
-      console.error('API error: ' + action.payload.response.dev_message);
+      console.error('API error ' + action.payload.status + ': ' + action.payload.response.message);
       return {
         ...state,
         isAttemptingLogin: false,
         errorMessage: action.payload.message
-      };
-    case AUTH_ACTION_TYPE_KEYS.FAKE_LOGIN:
-      return {
-        ...state,
-        accessToken: action.accessToken
-      };
-    case AUTH_ACTION_TYPE_KEYS.FAKE_LOGOUT:
-      return {
-        ...state,
-        accessToken: action.accessToken
       };
     default:
       console.warn('Default condition reached in auth reducer: ' + action.type);

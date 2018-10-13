@@ -40,7 +40,7 @@ export function attemptLogin(username, password) {
         action: 'access',
         request_data: {
           username: username,
-          password: computeSHA256(password)
+          hash_pass: computeSHA256(password)
         }
       }),
       types: [
@@ -58,5 +58,5 @@ export function attemptLogin(username, password) {
  * @author Francesco Saltori
  */
 function computeSHA256(obj) {
-  return sha256(obj.toString());
+  return sha256(obj.toString()).toUpperCase();
 }
