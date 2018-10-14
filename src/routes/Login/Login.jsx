@@ -5,6 +5,12 @@ import { ROUTES } from '..';
 import { bindActionCreators } from 'redux';
 import { attemptLogin } from '../../actions/auth';
 
+/**
+ * @class
+ * This class represents the login page of the webapp.
+ * In the login page the login form will be loaded, in order to let
+ * the user log into the system.
+ */
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -28,7 +34,7 @@ class Login extends Component {
   }
 
   onLoginButtonClicked() {
-    this.props.attemptLogin("admin", "admin");
+    this.props.attemptLogin('admin', 'admin');
   }
 }
 

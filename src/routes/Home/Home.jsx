@@ -5,6 +5,12 @@ import { ROUTES } from '..';
 import { bindActionCreators } from 'redux';
 import { performLogout } from '../../actions/auth';
 
+/**
+ * @class
+ * This class represents the home page of the webapp.
+ * In the home page the main UI will be loaded, so we will load
+ * components responsible for loading new data and inserting new data.
+ */
 class Home extends Component {
   constructor(props) {
     super(props);

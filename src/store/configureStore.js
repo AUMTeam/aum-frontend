@@ -1,9 +1,3 @@
-/**
- * @file
- * Redux store configuration.
- * 
- * @author Riccardo Busetti
- */
 import { createStore, applyMiddleware } from 'redux'
 import reducers from '../reducers';
 import { apiMiddleware } from 'redux-api-middleware';
@@ -11,10 +5,11 @@ import createSagaMiddleware from 'redux-saga'
 import sagas from '../saga';
 
 /**
- * Creates the store.
- * 
- * @return the store instance.
+ * @file 
+ * This file contains helper methods to create the redux store.
+ * We bind together reducers, state and all the needed middlewares.
  */
+
 export function configureStore() {
     const saga = createSagaMiddleware();
     const store = createStore(reducers, window.STATE_FROM_SERVER, applyMiddleware(apiMiddleware, saga));
