@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Button } from 'react-materialize';
 import { connect } from 'react-redux';
-import { ROUTES } from '..';
 import { bindActionCreators } from 'redux';
+import { ROUTES } from '..';
 import { attemptLogin } from '../../actions/auth';
 
 /**

@@ -1,9 +1,3 @@
-/**
- * @file
- * All the routing in the app is described here.
- *
- * @author Riccardo Busetti
- */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
@@ -11,8 +5,11 @@ import { Home } from './Home';
 import { Login } from './Login';
 
 /**
- * Different routes in the app.
+ * @file
+ * This file contains all the classes and functions to provide routing
+ * through the webapp.
  */
+
 export const ROUTES = {
   AUTH: '/',
   LOGIN: '/login',
@@ -22,8 +19,6 @@ export const ROUTES = {
 /**
  * Custom made route component that based on a condition,
  * redirects the user to a specific page or loads a specific page.
- *
- * @param {*} param0 parameters of the component
  */
 const AuthRoute = ({
   condition,
@@ -44,10 +39,9 @@ const AuthRoute = ({
 );
 
 /**
- * Routes component, responsible for defining the dynamic flow
- * of in-app routing.
- *
- * @author Riccardo Busetti
+ * @class
+ * This class is responsible for rendering correctly the different
+ * components based on the route we are currently in.
  */
 class Routes extends Component {
   constructor(props) {
@@ -99,7 +93,9 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => { return {} };
+const mapDispatchToProps = dispatch => {
+  return {};
+};
 
 export default connect(
   mapStateToProps,

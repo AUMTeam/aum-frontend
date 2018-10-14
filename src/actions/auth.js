@@ -1,5 +1,5 @@
-import { RSAA } from 'redux-api-middleware';
 import { sha256 } from 'js-sha256';
+import { RSAA } from 'redux-api-middleware';
 
 /**
  * @file

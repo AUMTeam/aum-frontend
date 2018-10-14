@@ -9,7 +9,7 @@ import { configureStore } from './store/configureStore';
 /**
  * @file
  * This file is the root of the application.
- * Here we are going to configure the store and 
+ * Here we are going to configure the store and
  * render the whole application from a root html element.
  */
 

@@ -1,3 +1,6 @@
+import { takeLatest } from 'redux-saga/effects';
+import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
+
 /**
  * @file
  * This file contains all the defined saga actions related to authentication,
@@ -5,8 +8,6 @@
  * Thanks to these functions we are going to handle all the side-effect of the
  * application.
  */
-import { takeLatest } from 'redux-saga/effects';
-import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
 
 function* saveAccessTokenToLocalStorage(action) {
   console.log('Saving access token to local storage');
