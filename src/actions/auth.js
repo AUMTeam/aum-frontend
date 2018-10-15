@@ -16,7 +16,10 @@ export const AUTH_ACTION_TYPE_KEYS = {
   LOGIN_FAILED: 'LOGIN_FAILED',
   LOGOUT_REQUEST: 'LOGOUT_REQUEST',
   LOGOUT_SUCCESSFUL: 'LOGOUT_SUCCESSFUL',
-  LOGOUT_FAILED: 'LOGOUT_FAILED'
+  LOGOUT_FAILED: 'LOGOUT_FAILED',
+  TOKEN_VALIDATION_REQUEST: 'TOKEN_VALIDATION_REQUEST',
+  TOKEN_VALIDATION_SUCCESSFUL: 'TOKEN_VALIDATION_SUCCESSFUL',
+  TOKEN_VALIDATION_FAILED: 'TOKEN_VALIDATION_FAILED'
 };
 
 export function attemptLogin(username, password) {
@@ -62,6 +65,36 @@ export function attemptLogout(accessToken) {
         AUTH_ACTION_TYPE_KEYS.LOGOUT_REQUEST,
         AUTH_ACTION_TYPE_KEYS.LOGOUT_SUCCESSFUL,
         AUTH_ACTION_TYPE_KEYS.LOGOUT_FAILED
+      ]
+    }
+  };
+}
+
+export function validateLocalAccessToken(accessToken) {
+  return {
+    [RSAA]: {
+      endpoint: API_ENDPOINT_URL,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-Header': accessToken // TODO: not definitive
+      },
+      body: JSON.stringify({
+        module: 'login',
+        action: 'auth',
+        request_data: {}
+      }),
+      types: [
+        AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_REQUEST,
+        {
+          type: AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_SUCCESSFUL,
+          meta: {
+            accessToken
+          },
+          payload: (action, state) => ({ endpoint: action.endpoint })
+        },
+        AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_SUCCESSFUL,
+        AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_FAILED
       ]
     }
   };

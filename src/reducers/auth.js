@@ -8,11 +8,13 @@ import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
  */
 
 export const initialState = {
-  accessToken: localStorage.getItem('token'), // TODO: we need to check if the token is valid through an api request.
+  accessToken: null, // TODO: we need to check if the token is valid through an api request.
   loggedInUserId: null,
   loggedInUsername: null,
   loggedInUserRole: null,
   isAttemptingLogin: false,
+  isTokenValid: false,
+  isValidatingToken: false,
   errorMessage: null
 };
 
@@ -25,7 +27,10 @@ export function auth(state = initialState, action) {
         isAttemptingLogin: true
       };
     case AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL:
-      console.log('Login successful with access token ' + action.payload.response_data.token);
+      console.log(
+        'Login successful with access token ' +
+          action.payload.response_data.token
+      );
       return {
         ...state,
         loggedInUserId: action.payload.response_data.user_id,
@@ -53,6 +58,29 @@ export function auth(state = initialState, action) {
       return {
         ...initialState,
         accessToken: null
+      };
+    case AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_REQUEST:
+      return {
+        ...state,
+        isTokenValid: false,
+        isValidatingToken: true
+      };
+    case AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_SUCCESSFUL:
+      console.log("Token is valid")
+      console.log(action.payload)
+      return {
+        ...state,
+        accessToken: action.meta.accessToken,
+        isTokenValid: true,
+        isValidatingToken: false
+      };
+    case AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_FAILED:
+      console.warn("Token is no more valid")
+      return {
+        ...state,
+        accessToken: null,
+        isTokenValid: false,
+        isValidatingToken: false
       };
     default:
       console.warn('Default condition reached in auth reducer: ' + action.type);

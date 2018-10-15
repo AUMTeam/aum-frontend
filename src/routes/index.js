@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { Home } from './Home';
 import { Login } from './Login';
+import { bindActionCreators } from 'redux';
+import { validateLocalAccessToken } from '../actions/auth';
 
 /**
  * @file
@@ -48,53 +50,72 @@ class Routes extends Component {
     super(props);
 
     this.state = {
-      accessToken: props.accessToken
+      accessToken: null,
+      isTokenValid: false,
+      isValidatingToken: false
     };
+
+    const localAccessToken = localStorage.getItem('token');
+    if (localAccessToken != null)
+      this.props.validateLocalAccessToken(localAccessToken);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ accessToken: nextProps.accessToken });
+    this.setState({
+      accessToken: nextProps.accessToken,
+      isTokenValid: nextProps.isTokenValid,
+      isValidatingToken: nextProps.isValidatingToken
+    });
   }
 
   render() {
     return (
-      <BrowserRouter>
-        <Switch>
-          <AuthRoute
-            exact
-            condition={() => this.state.accessToken != null}
-            path={ROUTES.AUTH}
-            component={Home}
-            redirectPath={ROUTES.LOGIN}
-          />
-          <AuthRoute
-            exact
-            condition={() => this.state.accessToken == null}
-            path={ROUTES.LOGIN}
-            component={Login}
-            redirectPath={ROUTES.HOME}
-          />
-          <AuthRoute
-            exact
-            condition={() => this.state.accessToken != null}
-            path={ROUTES.HOME}
-            component={Home}
-            redirectPath={ROUTES.LOGIN}
-          />
-        </Switch>
-      </BrowserRouter>
+      <div>
+        <BrowserRouter>
+          <Switch>
+            <AuthRoute
+              exact
+              condition={() => this.state.accessToken != null}
+              path={ROUTES.AUTH}
+              component={Home}
+              redirectPath={ROUTES.LOGIN}
+            />
+            <AuthRoute
+              exact
+              condition={() => this.state.accessToken == null}
+              path={ROUTES.LOGIN}
+              component={Login}
+              redirectPath={ROUTES.HOME}
+            />
+            <AuthRoute
+              exact
+              condition={() => this.state.accessToken != null}
+              path={ROUTES.HOME}
+              component={Home}
+              redirectPath={ROUTES.LOGIN}
+            />
+          </Switch>
+        </BrowserRouter>
+      </div>
     );
   }
 }
 
 const mapStateToProps = state => {
   return {
-    accessToken: state.auth.accessToken
+    accessToken: state.auth.accessToken,
+    isTokenValid: state.auth.isTokenValid,
+    isValidatingToken: state.auth.isValidatingToken
   };
 };
 
 const mapDispatchToProps = dispatch => {
-  return {};
+  return bindActionCreators(
+    {
+      validateLocalAccessToken
+    },
+    dispatch
+  );
 };
 
 export default connect(

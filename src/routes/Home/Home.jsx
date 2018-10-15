@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Button } from 'react-materialize';
 import { connect } from 'react-redux';
-import { ROUTES } from '..';
 import { bindActionCreators } from 'redux';
-import { performLogout } from '../../actions/auth';
+import { ROUTES } from '..';
+import { attemptLogout } from '../../actions/auth';
 
 /**
  * @class
@@ -42,7 +42,7 @@ class Home extends Component {
   }
 
   onLogout() {
-    this.props.performLogout(this.state.accessToken);
+    this.props.attemptLogout(this.state.accessToken);
   }
 }
 
@@ -55,7 +55,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      performLogout
+      attemptLogout
     },
     dispatch
   );
