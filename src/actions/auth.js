@@ -3,9 +3,12 @@ import { RSAA } from 'redux-api-middleware';
 
 /**
  * @file
- * This file contains all the actions related to the authorization of the user.
+ * This file contains all the actions related to the authentication of the user.
  * The user when authorized has an unique access token, used to identify all the
  * requests from that specific user.
+ * These actions notify success and failure for login, logout and validation of the token
+ * used in the last session (when the user closes the app without logging out).
+ * API Middleware is used to make API requests. Docs: https://www.npmjs.com/package/redux-api-middleware#usage
  */
 
 const API_ENDPOINT_URL = 'http://aum.altervista.org/main';
@@ -17,6 +20,7 @@ export const AUTH_ACTION_TYPE_KEYS = {
   LOGOUT_REQUEST: 'LOGOUT_REQUEST',
   LOGOUT_SUCCESSFUL: 'LOGOUT_SUCCESSFUL',
   LOGOUT_FAILED: 'LOGOUT_FAILED',
+  LOCAL_TOKEN_NOT_FOUND: 'LOCAL_TOKEN_NOT_FOUND',
   TOKEN_VALIDATION_REQUEST: 'TOKEN_VALIDATION_REQUEST',
   TOKEN_VALIDATION_SUCCESSFUL: 'TOKEN_VALIDATION_SUCCESSFUL',
   TOKEN_VALIDATION_FAILED: 'TOKEN_VALIDATION_FAILED'
@@ -54,7 +58,7 @@ export function attemptLogout(accessToken) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Auth-Header': accessToken // TODO: not definitive
+        'X-Auth-Header': accessToken
       },
       body: JSON.stringify({
         module: 'login',
@@ -71,33 +75,37 @@ export function attemptLogout(accessToken) {
 }
 
 export function validateLocalAccessToken(accessToken) {
-  return {
-    [RSAA]: {
-      endpoint: API_ENDPOINT_URL,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Auth-Header': accessToken // TODO: not definitive
-      },
-      body: JSON.stringify({
-        module: 'login',
-        action: 'auth',
-        request_data: {}
-      }),
-      types: [
-        AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_REQUEST,
-        {
-          type: AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_SUCCESSFUL,
-          meta: {
-            accessToken
-          },
-          payload: (action, state) => ({ endpoint: action.endpoint })
+  if (accessToken == null)
+    return { type: AUTH_ACTION_TYPE_KEYS.LOCAL_TOKEN_NOT_FOUND };
+  else
+    return {
+      [RSAA]: {
+        endpoint: API_ENDPOINT_URL,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Header': accessToken
         },
-        AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_SUCCESSFUL,
-        AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_FAILED
-      ]
-    }
-  };
+        body: JSON.stringify({
+          module: 'login',
+          action: 'auth',
+          request_data: {}
+        }),
+        types: [
+          AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_REQUEST,
+          // custom action type definition
+          {
+            type: AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_SUCCESSFUL,
+            // Here we are including the validated token into the VALIDATION_SUCCESSFUL action object
+            meta: {
+              accessToken
+            },
+            payload: (action, state) => ({ endpoint: action.endpoint })
+          },
+          AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_FAILED
+        ]
+      }
+    };
 }
 
 function computeSHA256(obj) {

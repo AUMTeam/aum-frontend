@@ -51,19 +51,15 @@ class Routes extends Component {
 
     this.state = {
       accessToken: null,
-      isTokenValid: false,
       isValidatingToken: false
     };
 
-    const localAccessToken = localStorage.getItem('token');
-    if (localAccessToken != null)
-      this.props.validateLocalAccessToken(localAccessToken);
+    this.props.validateLocalAccessToken(localStorage.getItem('token'));
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
       accessToken: nextProps.accessToken,
-      isTokenValid: nextProps.isTokenValid,
       isValidatingToken: nextProps.isValidatingToken
     });
   }
@@ -71,31 +67,35 @@ class Routes extends Component {
   render() {
     return (
       <div>
-        <BrowserRouter>
-          <Switch>
-            <AuthRoute
-              exact
-              condition={() => this.state.accessToken != null}
-              path={ROUTES.AUTH}
-              component={Home}
-              redirectPath={ROUTES.LOGIN}
-            />
-            <AuthRoute
-              exact
-              condition={() => this.state.accessToken == null}
-              path={ROUTES.LOGIN}
-              component={Login}
-              redirectPath={ROUTES.HOME}
-            />
-            <AuthRoute
-              exact
-              condition={() => this.state.accessToken != null}
-              path={ROUTES.HOME}
-              component={Home}
-              redirectPath={ROUTES.LOGIN}
-            />
-          </Switch>
-        </BrowserRouter>
+        {this.state.isValidatingToken ? (
+          <div>Validating local token...</div>  // TODO: will be replaced with a spinner or similar
+        ) : (
+          <BrowserRouter>
+            <Switch>
+              <AuthRoute
+                exact
+                condition={() => this.state.accessToken != null}
+                path={ROUTES.AUTH}
+                component={Home}
+                redirectPath={ROUTES.LOGIN}
+              />
+              <AuthRoute
+                exact
+                condition={() => this.state.accessToken == null}
+                path={ROUTES.LOGIN}
+                component={Login}
+                redirectPath={ROUTES.HOME}
+              />
+              <AuthRoute
+                exact
+                condition={() => this.state.accessToken != null}
+                path={ROUTES.HOME}
+                component={Home}
+                redirectPath={ROUTES.LOGIN}
+              />
+            </Switch>
+          </BrowserRouter>
+        )}
       </div>
     );
   }
@@ -104,7 +104,6 @@ class Routes extends Component {
 const mapStateToProps = state => {
   return {
     accessToken: state.auth.accessToken,
-    isTokenValid: state.auth.isTokenValid,
     isValidatingToken: state.auth.isValidatingToken
   };
 };

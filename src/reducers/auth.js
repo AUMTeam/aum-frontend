@@ -2,18 +2,17 @@ import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
 
 /**
  * @file
- * This file contains the reducer for all the authorization dispatched actions.
- * When redux dispatches an authorization related action is going to be sent to this
+ * This file contains the reducer for all the authentication dispatched actions.
+ * When Redux dispatches an authentication-related action, it's going to be sent to this
  * reducer which changes the state in relation to the action type and content.
  */
 
 export const initialState = {
-  accessToken: null, // TODO: we need to check if the token is valid through an api request.
+  accessToken: null,
   loggedInUserId: null,
   loggedInUsername: null,
   loggedInUserRole: null,
   isAttemptingLogin: false,
-  isTokenValid: false,
   isValidatingToken: false,
   errorMessage: null
 };
@@ -28,8 +27,9 @@ export function auth(state = initialState, action) {
       };
     case AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL:
       console.log(
-        'Login successful with access token ' +
+        `Login successful with access token ${
           action.payload.response_data.token
+        }`
       );
       return {
         ...state,
@@ -39,16 +39,14 @@ export function auth(state = initialState, action) {
       };
     case AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED:
       console.error(
-        'API error ' +
-          action.payload.status +
-          ': ' +
-          action.payload.response.message
+        `Login API error ${action.payload.status}: ${action.payload.response.message}`
       );
       return {
         ...state,
         isAttemptingLogin: false,
-        errorMessage: action.payload.message
+        errorMessage: action.payload.message  // will probably be changed
       };
+
     case AUTH_ACTION_TYPE_KEYS.LOGOUT_REQUEST:
       console.log('Sending logout request');
       return state;
@@ -56,32 +54,30 @@ export function auth(state = initialState, action) {
       console.error('Unable to send logout request to server');
     case AUTH_ACTION_TYPE_KEYS.LOGOUT_SUCCESSFUL:
       return {
-        ...initialState,
-        accessToken: null
+        ...initialState
       };
+
     case AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_REQUEST:
       return {
         ...state,
-        isTokenValid: false,
         isValidatingToken: true
       };
     case AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_SUCCESSFUL:
-      console.log("Token is valid")
-      console.log(action.payload)
+      console.log('Local access token is valid');
       return {
         ...state,
         accessToken: action.meta.accessToken,
-        isTokenValid: true,
         isValidatingToken: false
       };
+    case AUTH_ACTION_TYPE_KEYS.LOCAL_TOKEN_NOT_FOUND:
     case AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_FAILED:
-      console.warn("Token is no more valid")
+      console.log("Token is no more valid or hasn't been found locally");
       return {
         ...state,
         accessToken: null,
-        isTokenValid: false,
         isValidatingToken: false
       };
+
     default:
       console.warn('Default condition reached in auth reducer: ' + action.type);
       return state;
