@@ -40,5 +40,9 @@ export const authSaga = [
   takeLatest(
     AUTH_ACTION_TYPE_KEYS.LOGOUT_FAILED,
     removeAccessTokenFromLocalStorage
+  ),
+  takeLatest(
+    AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_FAILED,
+    removeAccessTokenFromLocalStorage
   )
 ];
