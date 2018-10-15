@@ -35,8 +35,8 @@ export function attemptLogin(username, password) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        module: 'login',
-        action: 'access',
+        module: 'auth',
+        action: 'login',
         request_data: {
           username,
           hash_pass: computeSHA256(password)
@@ -61,8 +61,8 @@ export function attemptLogout(accessToken) {
         'X-Auth-Header': accessToken
       },
       body: JSON.stringify({
-        module: 'login',
-        action: 'signout',
+        module: 'auth',
+        action: 'logout',
         request_data: {}
       }),
       types: [
@@ -87,8 +87,8 @@ export function validateLocalAccessToken(accessToken) {
           'X-Auth-Header': accessToken
         },
         body: JSON.stringify({
-          module: 'login',
-          action: 'auth',
+          module: 'auth',
+          action: 'validateToken',
           request_data: {}
         }),
         types: [
