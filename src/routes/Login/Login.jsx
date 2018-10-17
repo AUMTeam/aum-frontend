@@ -3,6 +3,7 @@ import { Button } from 'react-materialize';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { attemptLogin } from '../../actions/auth';
+import { LoginCard } from '../../components/LoginCard'
 
 /**
  * @class
@@ -11,23 +12,14 @@ import { attemptLogin } from '../../actions/auth';
  * the user log into the system.
  */
 class Login extends Component {
-  constructor(props) {
-    super(props);
-
-    this.onLoginButtonClicked = this.onLoginButtonClicked.bind(this);
-  }
-  
   render() {
     return (
       <div>
-        <h1>Login</h1>
-        <Button onClick={this.onLoginButtonClicked}>LOGIN</Button>
+        <LoginCard onLoginBtnClicked={this.props.attemptLogin} />
+        {/*<h1>Login</h1>
+        <Button onClick={this.onLoginButtonClicked}>LOGIN</Button>*/}
       </div>
     );
-  }
-
-  onLoginButtonClicked() {
-    this.props.attemptLogin('admin', 'admin');
   }
 }
 
