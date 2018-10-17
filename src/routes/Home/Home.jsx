@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Button } from 'react-materialize';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { ROUTES } from '..';
 import { attemptLogout } from '../../actions/auth';
 
 /**
@@ -14,19 +13,15 @@ import { attemptLogout } from '../../actions/auth';
 class Home extends Component {
   constructor(props) {
     super(props);
+    this.state = {};
 
     this.onLogout = this.onLogout.bind(this);
-
-    this.state = {
-      accessToken: props.accessToken
-    };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.accessToken == null) {
-      this.props.history.push(ROUTES.LOGIN);
-      this.setState({ accessToken: nextProps.accessToken });
-    }
+  static getDerivedStateFromProps(newProps, state) {
+    return {
+      accessToken: newProps.accessToken
+    };
   }
 
   render() {

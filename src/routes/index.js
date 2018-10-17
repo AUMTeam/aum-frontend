@@ -48,20 +48,18 @@ const AuthRoute = ({
 class Routes extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      accessToken: null,
-      isValidatingToken: false
-    };
+    this.state = {};
 
     this.props.validateLocalAccessToken(localStorage.getItem('token'));
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      accessToken: nextProps.accessToken,
-      isValidatingToken: nextProps.isValidatingToken
-    });
+  // Lifecycle method called before every rendering of the component
+  // We use it to initialize the state and to update it on every update
+  static getDerivedStateFromProps(newProps, state) {
+      return {
+        accessToken: newProps.accessToken,
+        isValidatingToken: newProps.isValidatingToken
+      };
   }
 
   render() {
