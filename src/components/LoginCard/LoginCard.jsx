@@ -54,14 +54,13 @@ class LoginCard extends Component {
                 label="Nome utente"
                 value={this.state.username}
                 onChange={evt => this.setState({username: evt.target.value})}   // FIXME
-                validate
               />
               <Input
                 s={8}
                 type="password"
                 label="Password"
                 value={this.state.password}
-                validate
+                onChange={evt => this.setState({password: evt.target.value})}
               />
               <Row>
                 <Col s={8}>
