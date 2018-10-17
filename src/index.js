@@ -1,9 +1,3 @@
-/**
- * @file
- * Main file of the app.
- * 
- * @author Riccardo Busetti
- */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -13,23 +7,21 @@ import * as serviceWorker from './serviceWorker';
 import { configureStore } from './store/configureStore';
 
 /**
- * Configuring redux store.
+ * @file
+ * This file is the root of the application.
+ * Here we are going to configure the store and
+ * render the whole application from a root html element.
  */
+
 const store = configureStore();
 
-/**
- * Base app component, where everything will
- * be rendered in.
- */
+// App component that acts as the root of the webapp.
 const App = () => (
   <Provider store={store}>
     <Routes />
   </Provider>
 );
 
-/**
- * Renders the whole app inside of the root element of the dom.
- */
 ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

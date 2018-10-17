@@ -1,18 +1,17 @@
-/**
- * @file
- * All the routing in the app is described here.
- *
- * @author Riccardo Busetti
- */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { Home } from './Home';
 import { Login } from './Login';
+import { bindActionCreators } from 'redux';
+import { validateLocalAccessToken } from '../actions/auth';
 
 /**
- * Different routes in the app.
+ * @file
+ * This file contains all the classes and functions to provide routing
+ * through the webapp.
  */
+
 export const ROUTES = {
   AUTH: '/',
   LOGIN: '/login',
@@ -22,8 +21,6 @@ export const ROUTES = {
 /**
  * Custom made route component that based on a condition,
  * redirects the user to a specific page or loads a specific page.
- *
- * @param {*} param0 parameters of the component
  */
 const AuthRoute = ({
   condition,
@@ -44,62 +41,79 @@ const AuthRoute = ({
 );
 
 /**
- * Routes component, responsible for defining the dynamic flow
- * of in-app routing.
- *
- * @author Riccardo Busetti
+ * @class
+ * This class is responsible for rendering correctly the different
+ * components based on the route we are currently in.
  */
 class Routes extends Component {
   constructor(props) {
     super(props);
+    this.state = {};
 
-    this.state = {
-      accessToken: props.accessToken
-    };
+    this.props.validateLocalAccessToken(localStorage.getItem('token'));
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({ accessToken: nextProps.accessToken });
+  // Lifecycle method called before every rendering of the component
+  // We use it to initialize the state and to update it on every update
+  static getDerivedStateFromProps(newProps, state) {
+      return {
+        accessToken: newProps.accessToken,
+        isValidatingToken: newProps.isValidatingToken
+      };
   }
 
   render() {
     return (
-      <BrowserRouter>
-        <Switch>
-          <AuthRoute
-            exact
-            condition={() => this.state.accessToken != null}
-            path={ROUTES.AUTH}
-            component={Home}
-            redirectPath={ROUTES.LOGIN}
-          />
-          <AuthRoute
-            exact
-            condition={() => this.state.accessToken == null}
-            path={ROUTES.LOGIN}
-            component={Login}
-            redirectPath={ROUTES.HOME}
-          />
-          <AuthRoute
-            exact
-            condition={() => this.state.accessToken != null}
-            path={ROUTES.HOME}
-            component={Home}
-            redirectPath={ROUTES.LOGIN}
-          />
-        </Switch>
-      </BrowserRouter>
+      <div>
+        {this.state.isValidatingToken ? (
+          <div>Validating local token...</div>  // TODO: will be replaced with a spinner or similar
+        ) : (
+          <BrowserRouter>
+            <Switch>
+              <AuthRoute
+                exact
+                condition={() => this.state.accessToken != null}
+                path={ROUTES.AUTH}
+                component={Home}
+                redirectPath={ROUTES.LOGIN}
+              />
+              <AuthRoute
+                exact
+                condition={() => this.state.accessToken == null}
+                path={ROUTES.LOGIN}
+                component={Login}
+                redirectPath={ROUTES.HOME}
+              />
+              <AuthRoute
+                exact
+                condition={() => this.state.accessToken != null}
+                path={ROUTES.HOME}
+                component={Home}
+                redirectPath={ROUTES.LOGIN}
+              />
+            </Switch>
+          </BrowserRouter>
+        )}
+      </div>
     );
   }
 }
 
 const mapStateToProps = state => {
   return {
-    accessToken: state.auth.accessToken
+    accessToken: state.auth.accessToken,
+    isValidatingToken: state.auth.isValidatingToken
   };
 };
 
-const mapDispatchToProps = dispatch => { return {} };
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      validateLocalAccessToken
+    },
+    dispatch
+  );
+};
 
 export default connect(
   mapStateToProps,

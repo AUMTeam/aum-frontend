@@ -1,23 +1,22 @@
 import React, { Component } from 'react';
 import { Button } from 'react-materialize';
 import { connect } from 'react-redux';
-import { ROUTES } from '..';
 import { bindActionCreators } from 'redux';
 import { attemptLogin } from '../../actions/auth';
 
+/**
+ * @class
+ * This class represents the login page of the webapp.
+ * In the login page the login form will be loaded, in order to let
+ * the user log into the system.
+ */
 class Login extends Component {
   constructor(props) {
     super(props);
 
     this.onLoginButtonClicked = this.onLoginButtonClicked.bind(this);
   }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.accessToken != null) {
-      this.props.history.push(ROUTES.HOME);
-    }
-  }
-
+  
   render() {
     return (
       <div>
@@ -28,7 +27,7 @@ class Login extends Component {
   }
 
   onLoginButtonClicked() {
-    this.props.attemptLogin("Riccardo", "12345678");
+    this.props.attemptLogin('admin', 'admin');
   }
 }
 

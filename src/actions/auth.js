@@ -1,62 +1,113 @@
+import { sha256 } from 'js-sha256';
+import { RSAA } from 'redux-api-middleware';
+
 /**
  * @file
- * Redux actions for the login.
- *
- * @author Riccardo Busetti
+ * This file contains all the actions related to the authentication of the user.
+ * The user when authorized has an unique access token, used to identify all the
+ * requests from that specific user.
+ * These actions notify success and failure for login, logout and validation of the token
+ * used in the last session (when the user closes the app without logging out).
+ * API Middleware is used to make API requests. Docs: https://www.npmjs.com/package/redux-api-middleware#usage
  */
-import { RSAA } from 'redux-api-middleware';
-import { sha256 } from 'js-sha256';
 
-const API_URL = 'http://aum.altervista.org/main';
+const API_ENDPOINT_URL = 'http://aum.altervista.org/main';
 
-/**
- * Object containing all the action types.
- */
 export const AUTH_ACTION_TYPE_KEYS = {
   LOGIN_REQUEST: 'LOGIN_REQUEST',
   LOGIN_SUCCESSFUL: 'LOGIN_SUCCESSFUL',
-  LOGIN_FAILED: 'LOGIN_FAILED'
+  LOGIN_FAILED: 'LOGIN_FAILED',
+  LOGOUT_REQUEST: 'LOGOUT_REQUEST',
+  LOGOUT_SUCCESSFUL: 'LOGOUT_SUCCESSFUL',
+  LOGOUT_FAILED: 'LOGOUT_FAILED',
+  LOCAL_TOKEN_NOT_FOUND: 'LOCAL_TOKEN_NOT_FOUND',
+  TOKEN_VALIDATION_REQUEST: 'TOKEN_VALIDATION_REQUEST',
+  TOKEN_VALIDATION_SUCCESSFUL: 'TOKEN_VALIDATION_SUCCESSFUL',
+  TOKEN_VALIDATION_FAILED: 'TOKEN_VALIDATION_FAILED'
 };
 
-/**
- * It returns the action that makes a login request
- * Uses API Middleware to make the API request and dispatch actions according to its result.
- *
- * @param username The username
- * @param password The password
- * @author Francesco Saltori, Riccardo Busetti
- */
 export function attemptLogin(username, password) {
-  console.log('Login attempt started');
   return {
     [RSAA]: {
-      endpoint: API_URL,
+      endpoint: API_ENDPOINT_URL,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        module: 'login',
-        action: 'access',
+        module: 'auth',
+        action: 'login',
         request_data: {
-          username: username,
-          password: computeSHA256(password)
+          username,
+          hash_pass: computeSHA256(password)
         }
       }),
       types: [
-        AUTH_ACTION_TYPE_KEYS.LOGIN_REQUEST, // action dispatched before the request is done
-        AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL, // action dispatched when login is successful
-        AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED // action dispatched when login fails
+        AUTH_ACTION_TYPE_KEYS.LOGIN_REQUEST,
+        AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL,
+        AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED
       ]
     }
   };
 }
 
-/**
- * Computes the SHA256 hash for the given object
- * @param {*} obj The object which the hash is calculated from
- * @author Francesco Saltori
- */
+export function attemptLogout(accessToken) {
+  return {
+    [RSAA]: {
+      endpoint: API_ENDPOINT_URL,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-Header': accessToken
+      },
+      body: JSON.stringify({
+        module: 'auth',
+        action: 'logout',
+        request_data: {}
+      }),
+      types: [
+        AUTH_ACTION_TYPE_KEYS.LOGOUT_REQUEST,
+        AUTH_ACTION_TYPE_KEYS.LOGOUT_SUCCESSFUL,
+        AUTH_ACTION_TYPE_KEYS.LOGOUT_FAILED
+      ]
+    }
+  };
+}
+
+export function validateLocalAccessToken(accessToken) {
+  if (accessToken == null)
+    return { type: AUTH_ACTION_TYPE_KEYS.LOCAL_TOKEN_NOT_FOUND };
+  else
+    return {
+      [RSAA]: {
+        endpoint: API_ENDPOINT_URL,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Header': accessToken
+        },
+        body: JSON.stringify({
+          module: 'auth',
+          action: 'validateToken',
+          request_data: {}
+        }),
+        types: [
+          AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_REQUEST,
+          // custom action type definition
+          {
+            type: AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_SUCCESSFUL,
+            // Here we are including the validated token into the VALIDATION_SUCCESSFUL action object
+            meta: {
+              accessToken
+            },
+            payload: (action, state) => ({ endpoint: action.endpoint })
+          },
+          AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_FAILED
+        ]
+      }
+    };
+}
+
 function computeSHA256(obj) {
-  return sha256(obj.toString());
+  return sha256(obj.toString()).toUpperCase();
 }
