@@ -5,6 +5,7 @@ import { Home } from './Home';
 import { Login } from './Login';
 import { bindActionCreators } from 'redux';
 import { validateLocalAccessToken } from '../actions/auth';
+import { ProgressBar } from 'react-materialize';
 
 /**
  * @file
@@ -66,7 +67,7 @@ class Routes extends Component {
     return (
       <div>
         {this.state.isValidatingToken ? (
-          <div>Validating local token...</div>  // TODO: will be replaced with a spinner or similar
+          <ProgressBar style={{margin: 0}}/>
         ) : (
           <BrowserRouter>
             <Switch>

@@ -58,6 +58,7 @@ export function auth(state = initialState, action) {
       };
 
     case AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_REQUEST:
+      console.log('Validating local token');
       return {
         ...state,
         isValidatingToken: true
