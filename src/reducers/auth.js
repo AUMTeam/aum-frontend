@@ -14,7 +14,7 @@ export const initialState = {
   loggedInUserRole: null,
   isAttemptingLogin: false,
   isValidatingToken: false,
-  errorMessage: null
+  loginErrorMessage: null
 };
 
 export function auth(state = initialState, action) {
@@ -44,7 +44,7 @@ export function auth(state = initialState, action) {
       return {
         ...state,
         isAttemptingLogin: false,
-        errorMessage: action.payload.message  // will probably be changed
+        loginErrorMessage: action.payload.response.message
       };
 
     case AUTH_ACTION_TYPE_KEYS.LOGOUT_REQUEST:

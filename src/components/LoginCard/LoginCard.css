@@ -1,6 +1,7 @@
-a{
-    font-variant: normal;
+.progress {
+    margin: 0;
 }
-#black{
-    color: black;
+
+.card {
+    margin-top: 0;
 }

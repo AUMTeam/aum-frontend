@@ -1,8 +1,4 @@
 import React, { Component } from 'react';
-import { Button } from 'react-materialize';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { attemptLogin } from '../../actions/auth';
 import { LoginCard } from '../../components/LoginCard'
 
 /**
@@ -15,30 +11,10 @@ class Login extends Component {
   render() {
     return (
       <div>
-        <LoginCard onLoginBtnClicked={this.props.attemptLogin} />
-        {/*<h1>Login</h1>
-        <Button onClick={this.onLoginButtonClicked}>LOGIN</Button>*/}
+        <LoginCard />
       </div>
     );
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    accessToken: state.auth.accessToken
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      attemptLogin
-    },
-    dispatch
-  );
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Login);
+export default Login;
