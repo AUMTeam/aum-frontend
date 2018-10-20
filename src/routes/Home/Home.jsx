@@ -1,8 +1,4 @@
 import React, { Component } from 'react';
-import { Button } from 'react-materialize';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { attemptLogout } from '../../actions/auth';
 import { HomeAppBar } from '../../components/HomeAppBar';
 
 /**

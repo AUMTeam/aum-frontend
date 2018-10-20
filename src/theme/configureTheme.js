@@ -27,6 +27,9 @@ export function configureTheme() {
         dark: '#fd558f',
         contrastText: '#ffffff'
       }
+    },
+    typography: {
+      useNextVariants: true
     }
   };
 }
