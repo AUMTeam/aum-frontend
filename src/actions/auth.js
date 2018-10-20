@@ -11,7 +11,7 @@ import { RSAA } from 'redux-api-middleware';
  * API Middleware is used to make API requests. Docs: https://www.npmjs.com/package/redux-api-middleware#usage
  */
 
-const API_ENDPOINT_URL = 'http://aum.altervista.org/main';
+const API_ENDPOINT_URL = 'http://aum.altervista.org/main.php';
 
 export const AUTH_ACTION_TYPE_KEYS = {
   LOGIN_REQUEST: 'LOGIN_REQUEST',

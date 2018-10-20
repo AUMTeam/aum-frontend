@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import './index.css';
 import Routes from './routes';
 import * as serviceWorker from './serviceWorker';
 import { configureStore } from './store/configureStore';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { configureTheme } from './theme/configureTheme';
 
 /**
  * @file
@@ -15,10 +16,14 @@ import { configureStore } from './store/configureStore';
 
 const store = configureStore();
 
+const theme = createMuiTheme(configureTheme());
+
 // App component that acts as the root of the webapp.
 const App = () => (
   <Provider store={store}>
-    <Routes />
+    <MuiThemeProvider theme={theme}>
+      <Routes />
+    </MuiThemeProvider>
   </Provider>
 );
 
