@@ -5,12 +5,19 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { attemptLogout } from '../../actions/auth';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Avatar from '@material-ui/core/Avatar';
+import { getRandomColor } from '../../utils/colorUtils';
 
 const TABS_VALUES = {
   DEVELOPER_VALUE: 0,
@@ -48,6 +55,10 @@ const styles = {
   },
   grow: {
     flexGrow: 1
+  },
+  avatar: {
+    margin: -8,
+    backgroundColor: getRandomColor()
   }
 };
 
@@ -61,16 +72,19 @@ class HomeAppBar extends Component {
     super(props);
 
     this.state = {
-      selectedValue: 0
+      selectedValue: 0,
+      anchorEl: null
     };
 
     this.onTabSelectionChanged = this.onTabSelectionChanged.bind(this);
+    this.onMenuButtonClicked = this.onMenuButtonClicked.bind(this);
+    this.onMenuClose = this.onMenuClose.bind(this);
     this.onLogoutButtonClicked = this.onLogoutButtonClicked.bind(this);
   }
 
   render() {
     const { classes } = this.props;
-    const { selectedValue } = this.state;
+    const { selectedValue, anchorEl } = this.state;
     return (
       <div className={classes.root}>
         <AppBar position="static">
@@ -81,11 +95,40 @@ class HomeAppBar extends Component {
             <IconButton
               className={classes.button}
               color="inherit"
-              aria-label="Logout"
-              onClick={this.onLogoutButtonClicked}
+              aria-label="Toolbar menu"
+              aria-owns={anchorEl ? 'toolbar-menu' : null}
+              aria-haspopup="true"
+              onClick={this.onMenuButtonClicked}
             >
-              <ExitToAppIcon />
+              <MoreVertIcon />
             </IconButton>
+            <Menu
+              id="toolbar-menu"
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={this.onMenuClose}
+            >
+              <MenuItem onClick={() => console.log('Profile clicked')}>
+                <ListItemIcon>
+                  <Avatar className={classes.avatar}>A</Avatar>
+                </ListItemIcon>
+                <ListItemText
+                  classes={{ primary: classes.primary }}
+                  inset
+                  primary="Admin"
+                />
+              </MenuItem>
+              <MenuItem onClick={this.onLogoutButtonClicked}>
+                <ListItemIcon>
+                  <ExitToAppIcon />
+                </ListItemIcon>
+                <ListItemText
+                  classes={{ primary: classes.primary }}
+                  inset
+                  primary="Logout"
+                />
+              </MenuItem>
+            </Menu>
           </Toolbar>
           <Tabs
             value={selectedValue}
@@ -129,7 +172,18 @@ class HomeAppBar extends Component {
     });
   }
 
+  onMenuButtonClicked(event) {
+    this.setState({
+      anchorEl: event.currentTarget
+    });
+  }
+
+  onMenuClose() {
+    this.setState({ anchorEl: null });
+  }
+
   onLogoutButtonClicked() {
+    this.setState({ anchorEl: null });
     this.props.attemptLogout(this.props.accessToken);
   }
 }
