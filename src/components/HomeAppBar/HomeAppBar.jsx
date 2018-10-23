@@ -19,9 +19,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { attemptLogout } from '../../actions/auth';
 import { getRandomColor } from '../../utils/colorUtils';
 import CodeIcon from '@material-ui/icons/Code';
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
@@ -29,35 +26,35 @@ import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import FaceIcon from '@material-ui/icons/Face';
 
 const TABS_VALUES = {
-  DEVELOPER_VALUE: 0,
-  REFERENT_VALUE: 1,
-  MANAGER_VALUE: 2,
-  CUSTOMER_VALUE: 3
+  PROGRAMMER: 0,
+  TECHNICAL_AREA_MANAGER: 1,
+  REVISION_OFFICE_MANAGER: 2,
+  CLIENT: 3
 };
 
 const tabs = [
   {
     label: 'Programmatore',
     disabled: false,
-    value: TABS_VALUES.DEVELOPER_VALUE,
+    value: TABS_VALUES.PROGRAMMER,
     icon: <CodeIcon />
   },
   {
     label: 'Referente area tecnica',
     disabled: false,
-    value: TABS_VALUES.REFERENT_VALUE,
+    value: TABS_VALUES.TECHNICAL_AREA_MANAGER,
     icon: <RecordVoiceOverIcon />
   },
   {
     label: 'Responsabile ufficio revisioni',
     disabled: false,
-    value: TABS_VALUES.MANAGER_VALUE,
+    value: TABS_VALUES.REVISION_OFFICE_MANAGER,
     icon: <AttachMoneyIcon />
   },
   {
     label: 'Cliente',
     disabled: false,
-    value: TABS_VALUES.CUSTOMER_VALUE,
+    value: TABS_VALUES.CLIENT,
     icon: <FaceIcon />
   }
 ];
@@ -91,7 +88,7 @@ class HomeAppBar extends Component {
     super(props);
 
     this.state = {
-      selectedValue: 0,
+      selectedTabValue: 0,
       anchorEl: null,
       isDrawerOpen: false
     };
@@ -111,7 +108,7 @@ class HomeAppBar extends Component {
 
   render() {
     const { classes } = this.props;
-    const { selectedValue, anchorEl } = this.state;
+    const { selectedTabValue, anchorEl } = this.state;
     return (
       <div className={classes.root}>
         <AppBar position="static">
@@ -143,7 +140,7 @@ class HomeAppBar extends Component {
           </Toolbar>
           <Hidden smDown>{this.renderTabs()}</Hidden>
         </AppBar>
-        {this.renderTabsViews(selectedValue)}
+        {this.renderTabsViews(selectedTabValue)}
         {this.renderDrawer()}
       </div>
     );
@@ -166,7 +163,7 @@ class HomeAppBar extends Component {
           <ListItemText
             classes={{ primary: classes.primary }}
             inset
-            primary="Admin"
+            primary={this.props.user.name}
           />
         </MenuItem>
         <MenuItem onClick={this.onLogoutButtonClicked}>
@@ -184,38 +181,57 @@ class HomeAppBar extends Component {
   }
 
   renderTabs() {
-    const { selectedValue } = this.state;
+    const { selectedTabValue } = this.state;
     return (
       <Tabs
-        value={selectedValue}
+        // FIXME: find a way to set for the 1st time the id corresponding to the first tab of the user
+        value={selectedTabValue}    
         onChange={this.onTabSelectionChanged}
         scrollable
         scrollButtons="auto"
       >
-        {tabs.map((tab, index) => (
+        {this.props.user.role.isClient && (
+          <Tab value={TABS_VALUES.CLIENT} label="Cliente" />
+        )}
+        {this.props.user.role.isProgrammer && (
+          <Tab value={TABS_VALUES.PROGRAMMER} label="Programmatore" />
+        )}
+        {this.props.user.role.isRevisionOfficeManager && (
+          <Tab
+            value={TABS_VALUES.REVISION_OFFICE_MANAGER}
+            label="Responsabile ufficio revisioni"
+          />
+        )}
+        {this.props.user.role.isTechnicalAreaManager && (
+          <Tab
+            value={TABS_VALUES.TECHNICAL_AREA_MANAGER}
+            label="Referente area tecnica"
+          />
+        )}
+        {/*tabs.map((tab, index) => (
           <Tab
             key={index}
             value={tab.value}
             label={tab.label}
             disabled={tab.disabled}
           />
-        ))}
+        ))*/}
       </Tabs>
     );
   }
 
-  renderTabsViews(selectedValue) {
-    switch (selectedValue) {
-      case TABS_VALUES.DEVELOPER_VALUE:
+  renderTabsViews(selectedTabValue) {
+    switch (selectedTabValue) {
+      case TABS_VALUES.PROGRAMMER:
         return <h1>Programmatore</h1>;
-      case TABS_VALUES.REFERENT_VALUE:
+      case TABS_VALUES.TECHNICAL_AREA_MANAGER:
         return <h1>Referente</h1>;
-      case TABS_VALUES.MANAGER_VALUE:
-        return <h1>Responsabile</h1>;
-      case TABS_VALUES.CUSTOMER_VALUE:
+      case TABS_VALUES.REVISION_OFFICE_MANAGER:
+        return <h1>Responsabile uff. revisioni</h1>;
+      case TABS_VALUES.CLIENT:
         return <h1>Cliente</h1>;
       default:
-        return <h1>Programmatore</h1>;
+        return "Unknown";
     }
   }
 
@@ -233,9 +249,7 @@ class HomeAppBar extends Component {
           <List className={classes.drawerItems} component="nav">
             {tabs.map((tab, index) => (
               <ListItem key={index} button>
-                <ListItemIcon>
-                  {tab.icon}
-                </ListItemIcon>
+                <ListItemIcon>{tab.icon}</ListItemIcon>
                 <ListItemText primary={tab.label} />
               </ListItem>
             ))}
@@ -255,7 +269,7 @@ class HomeAppBar extends Component {
 
   onTabSelectionChanged(event, value) {
     this.setState({
-      selectedValue: value
+      selectedTabValue: value
     });
   }
 
@@ -271,7 +285,7 @@ class HomeAppBar extends Component {
 
   onLogoutButtonClicked() {
     this.setState({ anchorEl: null });
-    this.props.attemptLogout(this.props.accessToken);
+    this.props.onLogout();
   }
 }
 
@@ -279,19 +293,4 @@ HomeAppBar.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-const mapStateToProps = state => {
-  return {
-    accessToken: state.auth.accessToken
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ attemptLogout }, dispatch);
-};
-
-export default withStyles(styles)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(HomeAppBar)
-);
+export default withStyles(styles)(HomeAppBar);

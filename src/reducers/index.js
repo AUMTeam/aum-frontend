@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import { auth } from './auth';
+import { user } from './user';
 
 /**
  * @file
@@ -9,7 +10,8 @@ import { auth } from './auth';
  */
 
 const reducers = combineReducers({
-  auth
+  auth,
+  user
 });
 
 export default reducers;

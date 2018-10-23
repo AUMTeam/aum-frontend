@@ -9,9 +9,6 @@ import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
 
 export const initialState = {
   accessToken: null,
-  loggedInUserId: null,
-  loggedInUsername: null,
-  loggedInUserRole: null,
   isAttemptingLogin: false,
   isValidatingToken: false,
   loginErrorMessage: null
@@ -33,7 +30,6 @@ export function auth(state = initialState, action) {
       );
       return {
         ...state,
-        loggedInUserId: action.payload.response_data.user_id,
         accessToken: action.payload.response_data.token,
         isAttemptingLogin: false
       };
@@ -80,7 +76,6 @@ export function auth(state = initialState, action) {
       };
 
     default:
-      console.warn('Default condition reached in auth reducer: ' + action.type);
       return state;
   }
 }

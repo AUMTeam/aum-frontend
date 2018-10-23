@@ -1,5 +1,6 @@
 import { sha256 } from 'js-sha256';
 import { RSAA } from 'redux-api-middleware';
+import { API_ENDPOINT_URL } from '.';
 
 /**
  * @file
@@ -8,10 +9,7 @@ import { RSAA } from 'redux-api-middleware';
  * requests from that specific user.
  * These actions notify success and failure for login, logout and validation of the token
  * used in the last session (when the user closes the app without logging out).
- * API Middleware is used to make API requests. Docs: https://www.npmjs.com/package/redux-api-middleware#usage
  */
-
-const API_ENDPOINT_URL = 'http://aum.altervista.org/main.php';
 
 export const AUTH_ACTION_TYPE_KEYS = {
   LOGIN_REQUEST: 'LOGIN_REQUEST',
