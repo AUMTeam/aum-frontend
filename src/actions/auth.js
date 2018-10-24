@@ -27,14 +27,12 @@ export const AUTH_ACTION_TYPE_KEYS = {
 export function attemptLogin(username, password) {
   return {
     [RSAA]: {
-      endpoint: API_ENDPOINT_URL,
+      endpoint: `${API_ENDPOINT_URL}/auth/login`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        module: 'auth',
-        action: 'login',
         request_data: {
           username,
           hash_pass: computeSHA256(password)
@@ -52,15 +50,13 @@ export function attemptLogin(username, password) {
 export function attemptLogout(accessToken) {
   return {
     [RSAA]: {
-      endpoint: API_ENDPOINT_URL,
+      endpoint: `${API_ENDPOINT_URL}/auth/logout`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-Auth-Header': accessToken
       },
       body: JSON.stringify({
-        module: 'auth',
-        action: 'logout',
         request_data: {}
       }),
       types: [
@@ -78,15 +74,13 @@ export function validateLocalAccessToken(accessToken) {
   else
     return {
       [RSAA]: {
-        endpoint: API_ENDPOINT_URL,
+        endpoint: `${API_ENDPOINT_URL}/auth/validateToken`,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-Header': accessToken
         },
         body: JSON.stringify({
-          module: 'auth',
-          action: 'validateToken',
           request_data: {}
         }),
         types: [
@@ -97,8 +91,7 @@ export function validateLocalAccessToken(accessToken) {
             // Here we are including the validated token into the VALIDATION_SUCCESSFUL action object
             meta: {
               accessToken
-            },
-            payload: (action, state) => ({ endpoint: action.endpoint })
+            }
           },
           AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_FAILED
         ]

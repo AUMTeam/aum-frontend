@@ -59,19 +59,19 @@ function mapRoleStringsToIds(serverRoleArray) {
 
 export function user(state = initialState, action) {
   switch (action.type) {
-    case USER_ACTION_TYPE_KEYS.USER_INFO_REQUESTED:
+    case USER_ACTION_TYPE_KEYS.GET_USER_INFO_REQUEST:
       console.log("Requesting user info...");
       return {
         infoObtained: false,
         ...state
       };
-    case USER_ACTION_TYPE_KEYS.UNABLE_TO_GET_USER_INFO:
+    case USER_ACTION_TYPE_KEYS.GET_USER_INFO_FAILED:
       console.error(`Unable to get user info: ${action.payload.response.message}`);
       return {
         infoObtained: false,
         ...state
       };
-    case USER_ACTION_TYPE_KEYS.USER_INFO_OBTAINED:
+    case USER_ACTION_TYPE_KEYS.GET_USER_INFO_SUCCESSFUL:
       console.log("User info received");
       return {
         infoObtained: true,
@@ -89,6 +89,7 @@ export function user(state = initialState, action) {
       return {
         ...initialState
       };
+      
     default:
       return state;
   }
