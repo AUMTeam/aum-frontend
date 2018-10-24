@@ -5,7 +5,7 @@ import { Home } from './Home';
 import { Login } from './Login';
 import { bindActionCreators } from 'redux';
 import { validateLocalAccessToken } from '../actions/auth';
-import { ProgressBar } from 'react-materialize';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 /**
  * @file
@@ -49,45 +49,35 @@ const AuthRoute = ({
 class Routes extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
 
     this.props.validateLocalAccessToken(localStorage.getItem('token'));
-  }
-
-  // Lifecycle method called before every rendering of the component
-  // We use it to initialize the state and to update it on every update
-  static getDerivedStateFromProps(newProps, state) {
-      return {
-        accessToken: newProps.accessToken,
-        isValidatingToken: newProps.isValidatingToken
-      };
   }
 
   render() {
     return (
       <div>
-        {this.state.isValidatingToken ? (
-          <ProgressBar style={{margin: 0}}/>
+        {this.props.isValidatingToken ? (
+          <LinearProgress variant="indeterminate" style={{margin: 0}}/>
         ) : (
           <BrowserRouter>
             <Switch>
               <AuthRoute
                 exact
-                condition={() => this.state.accessToken != null}
+                condition={() => this.props.accessToken != null}
                 path={ROUTES.AUTH}
                 component={Home}
                 redirectPath={ROUTES.LOGIN}
               />
               <AuthRoute
                 exact
-                condition={() => this.state.accessToken == null}
+                condition={() => this.props.accessToken == null}
                 path={ROUTES.LOGIN}
                 component={Login}
                 redirectPath={ROUTES.HOME}
               />
               <AuthRoute
                 exact
-                condition={() => this.state.accessToken != null}
+                condition={() => this.props.accessToken != null}
                 path={ROUTES.HOME}
                 component={Home}
                 redirectPath={ROUTES.LOGIN}

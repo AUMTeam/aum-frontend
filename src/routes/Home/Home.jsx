@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { Button } from 'react-materialize';
+import { HomeAppBar } from '../../components/HomeAppBar';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { attemptLogout } from '../../actions/auth';
+import { getUserInfo } from '../../actions/user';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 /**
  * @class
@@ -13,47 +15,34 @@ import { attemptLogout } from '../../actions/auth';
 class Home extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
-
-    this.onLogout = this.onLogout.bind(this);
-  }
-
-  static getDerivedStateFromProps(newProps, state) {
-    return {
-      accessToken: newProps.accessToken
-    };
+    props.getUserInfo(props.accessToken);
   }
 
   render() {
     return (
       <div>
-        <h1>Home</h1>
-        {this.state.accessToken ? (
-          <h5>Logged in with access token: {this.state.accessToken}</h5>
-        ) : null}
-        <Button onClick={this.onLogout}>LOGOUT</Button>
+        {this.props.user.obtainingInfo ? (
+          <LinearProgress variant="indeterminate" style={{ margin: 0 }} />
+        ) : (
+          <HomeAppBar
+            user={this.props.user}
+            onLogout={() => this.props.attemptLogout(this.props.accessToken)}
+          />
+        )}
       </div>
     );
-  }
-
-  onLogout() {
-    this.props.attemptLogout(this.state.accessToken);
   }
 }
 
 const mapStateToProps = state => {
   return {
-    accessToken: state.auth.accessToken
+    accessToken: state.auth.accessToken,
+    user: state.user
   };
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      attemptLogout
-    },
-    dispatch
-  );
+  return bindActionCreators({ attemptLogout, getUserInfo }, dispatch);
 };
 
 export default connect(
