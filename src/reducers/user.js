@@ -14,6 +14,13 @@ const USER_TYPE_KEYS = {
   REVISION_OFFICE_MANAGER: 'repre_revision'
 };
 
+export const USER_TYPE_IDS = {
+  PROGRAMMER: 0,
+  TECHNICAL_AREA_MANAGER: 1,
+  REVISION_OFFICE_MANAGER: 2,
+  CLIENT: 3
+}
+
 export const initialState = {
   id: null,
   name: null,

@@ -24,38 +24,32 @@ import CodeIcon from '@material-ui/icons/Code';
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import FaceIcon from '@material-ui/icons/Face';
-
-const TABS_VALUES = {
-  PROGRAMMER: 0,
-  TECHNICAL_AREA_MANAGER: 1,
-  REVISION_OFFICE_MANAGER: 2,
-  CLIENT: 3
-};
+import { USER_TYPE_IDS } from '../../reducers/user';
 
 const tabs = [
   {
     label: 'Programmatore',
     disabled: false,
-    value: TABS_VALUES.PROGRAMMER,
-    icon: <CodeIcon />
+    value: USER_TYPE_IDS.PROGRAMMER,
+    drawerIcon: <CodeIcon />
   },
   {
     label: 'Referente area tecnica',
     disabled: false,
-    value: TABS_VALUES.TECHNICAL_AREA_MANAGER,
-    icon: <RecordVoiceOverIcon />
+    value: USER_TYPE_IDS.TECHNICAL_AREA_MANAGER,
+    drawerIcon: <RecordVoiceOverIcon />
   },
   {
     label: 'Responsabile ufficio revisioni',
     disabled: false,
-    value: TABS_VALUES.REVISION_OFFICE_MANAGER,
-    icon: <AttachMoneyIcon />
+    value: USER_TYPE_IDS.REVISION_OFFICE_MANAGER,
+    drawerIcon: <AttachMoneyIcon />
   },
   {
     label: 'Cliente',
     disabled: false,
-    value: TABS_VALUES.CLIENT,
-    icon: <FaceIcon />
+    value: USER_TYPE_IDS.CLIENT,
+    drawerIcon: <FaceIcon />
   }
 ];
 
@@ -191,20 +185,20 @@ class HomeAppBar extends Component {
         scrollButtons="auto"
       >
         {this.props.user.role.isClient && (
-          <Tab value={TABS_VALUES.CLIENT} label="Cliente" />
+          <Tab value={USER_TYPE_IDS.CLIENT} label="Cliente" />
         )}
         {this.props.user.role.isProgrammer && (
-          <Tab value={TABS_VALUES.PROGRAMMER} label="Programmatore" />
+          <Tab value={USER_TYPE_IDS.PROGRAMMER} label="Programmatore" />
         )}
         {this.props.user.role.isRevisionOfficeManager && (
           <Tab
-            value={TABS_VALUES.REVISION_OFFICE_MANAGER}
+            value={USER_TYPE_IDS.REVISION_OFFICE_MANAGER}
             label="Responsabile ufficio revisioni"
           />
         )}
         {this.props.user.role.isTechnicalAreaManager && (
           <Tab
-            value={TABS_VALUES.TECHNICAL_AREA_MANAGER}
+            value={USER_TYPE_IDS.TECHNICAL_AREA_MANAGER}
             label="Referente area tecnica"
           />
         )}
@@ -222,13 +216,13 @@ class HomeAppBar extends Component {
 
   renderTabsViews(selectedTabValue) {
     switch (selectedTabValue) {
-      case TABS_VALUES.PROGRAMMER:
+      case USER_TYPE_IDS.PROGRAMMER:
         return <h1>Programmatore</h1>;
-      case TABS_VALUES.TECHNICAL_AREA_MANAGER:
+      case USER_TYPE_IDS.TECHNICAL_AREA_MANAGER:
         return <h1>Referente</h1>;
-      case TABS_VALUES.REVISION_OFFICE_MANAGER:
+      case USER_TYPE_IDS.REVISION_OFFICE_MANAGER:
         return <h1>Responsabile uff. revisioni</h1>;
-      case TABS_VALUES.CLIENT:
+      case USER_TYPE_IDS.CLIENT:
         return <h1>Cliente</h1>;
       default:
         return "Unknown";
@@ -249,7 +243,7 @@ class HomeAppBar extends Component {
           <List className={classes.drawerItems} component="nav">
             {tabs.map((tab, index) => (
               <ListItem key={index} button>
-                <ListItemIcon>{tab.icon}</ListItemIcon>
+                <ListItemIcon>{tab.drawerIcon}</ListItemIcon>
                 <ListItemText primary={tab.label} />
               </ListItem>
             ))}
