@@ -21,7 +21,8 @@ class Home extends Component {
   render() {
     return (
       <div>
-        {this.props.user.obtainingInfo ? (
+        {/* We don't want the appBar to be rendered before we get user data*/}
+        {!this.props.user.infoObtained ? (
           <LinearProgress variant="indeterminate" style={{ margin: 0 }} />
         ) : (
           <HomeAppBar

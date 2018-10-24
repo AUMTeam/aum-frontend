@@ -29,25 +29,21 @@ import { USER_TYPE_IDS } from '../../reducers/user';
 const tabs = [
   {
     label: 'Programmatore',
-    disabled: false,
     value: USER_TYPE_IDS.PROGRAMMER,
     drawerIcon: <CodeIcon />
   },
   {
     label: 'Referente area tecnica',
-    disabled: false,
     value: USER_TYPE_IDS.TECHNICAL_AREA_MANAGER,
     drawerIcon: <RecordVoiceOverIcon />
   },
   {
     label: 'Responsabile ufficio revisioni',
-    disabled: false,
     value: USER_TYPE_IDS.REVISION_OFFICE_MANAGER,
     drawerIcon: <AttachMoneyIcon />
   },
   {
     label: 'Cliente',
-    disabled: false,
     value: USER_TYPE_IDS.CLIENT,
     drawerIcon: <FaceIcon />
   }
@@ -82,7 +78,7 @@ class HomeAppBar extends Component {
     super(props);
 
     this.state = {
-      selectedTabValue: 0,
+      selectedTabValue: props.user.roles[0],  // we automatically select the tab corresponding to the first role of the user
       anchorEl: null,
       isDrawerOpen: false
     };
@@ -174,42 +170,21 @@ class HomeAppBar extends Component {
     );
   }
 
+  /**
+   * Renders only the tabs which belong to the roles of the user
+   */
   renderTabs() {
-    const { selectedTabValue } = this.state;
     return (
       <Tabs
-        // FIXME: find a way to set for the 1st time the id corresponding to the first tab of the user
-        value={selectedTabValue}    
+        value={this.state.selectedTabValue}
         onChange={this.onTabSelectionChanged}
         scrollable
         scrollButtons="auto"
       >
-        {this.props.user.role.isClient && (
-          <Tab value={USER_TYPE_IDS.CLIENT} label="Cliente" />
-        )}
-        {this.props.user.role.isProgrammer && (
-          <Tab value={USER_TYPE_IDS.PROGRAMMER} label="Programmatore" />
-        )}
-        {this.props.user.role.isRevisionOfficeManager && (
-          <Tab
-            value={USER_TYPE_IDS.REVISION_OFFICE_MANAGER}
-            label="Responsabile ufficio revisioni"
-          />
-        )}
-        {this.props.user.role.isTechnicalAreaManager && (
-          <Tab
-            value={USER_TYPE_IDS.TECHNICAL_AREA_MANAGER}
-            label="Referente area tecnica"
-          />
-        )}
-        {/*tabs.map((tab, index) => (
-          <Tab
-            key={index}
-            value={tab.value}
-            label={tab.label}
-            disabled={tab.disabled}
-          />
-        ))*/}
+        {tabs.map((tab, index) => {
+          if (this.props.user.roles.includes(tab.value))
+            return <Tab key={index} value={tab.value} label={tab.label} />;
+        })}
       </Tabs>
     );
   }
@@ -225,7 +200,7 @@ class HomeAppBar extends Component {
       case USER_TYPE_IDS.CLIENT:
         return <h1>Cliente</h1>;
       default:
-        return "Unknown";
+        return 'Unknown';
     }
   }
 
