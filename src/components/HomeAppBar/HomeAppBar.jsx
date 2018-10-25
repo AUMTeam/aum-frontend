@@ -25,6 +25,7 @@ import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import FaceIcon from '@material-ui/icons/Face';
 import { USER_TYPE_IDS } from '../../reducers/user';
+import { Divider } from '@material-ui/core';
 
 const tabs = [
   {
@@ -116,16 +117,18 @@ class HomeAppBar extends Component {
             <Typography variant="h6" color="inherit" className={classes.grow}>
               Authorization manager
             </Typography>
-            <IconButton
-              className={classes.button}
-              color="inherit"
-              aria-label="Toolbar menu"
-              aria-owns={anchorEl ? 'toolbar-menu' : null}
-              aria-haspopup="true"
-              onClick={this.onMenuButtonClicked}
-            >
-              <MoreVertIcon />
-            </IconButton>
+            <Hidden smDown>
+              <IconButton
+                className={classes.button}
+                color="inherit"
+                aria-label="Toolbar menu"
+                aria-owns={anchorEl ? 'toolbar-menu' : null}
+                aria-haspopup="true"
+                onClick={this.onMenuButtonClicked}
+              >
+                <MoreVertIcon />
+              </IconButton>
+            </Hidden>
             {this.renderMenu()}
           </Toolbar>
           <Hidden smDown>{this.renderTabs()}</Hidden>
@@ -170,9 +173,6 @@ class HomeAppBar extends Component {
     );
   }
 
-  /**
-   * Renders only the tabs which belong to the roles of the user
-   */
   renderTabs() {
     return (
       <Tabs
@@ -215,6 +215,14 @@ class HomeAppBar extends Component {
           onClick={this.closeDrawer}
           onKeyDown={this.closeDrawer}
         >
+          <ListItem>
+            <ListItemIcon>
+              <Avatar className={classes.avatar}>
+                {this.props.user.name.charAt(0)}
+              </Avatar>
+            </ListItemIcon>
+            <ListItemText primary={this.props.user.name} />
+          </ListItem>
           <List className={classes.drawerItems}>
             {tabs.map((tab, index) => {
               if (this.props.user.roles.includes(tab.value))
@@ -225,6 +233,13 @@ class HomeAppBar extends Component {
                   </ListItem>
                 );
             })}
+            <Divider />
+            <ListItem onClick={this.onLogoutButtonClicked} button>
+              <ListItemIcon>
+                <ExitToAppIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItem>
           </List>
         </div>
       </Drawer>

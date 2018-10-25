@@ -43,7 +43,7 @@ class LogoLoader extends Component {
           <img className={classes.logo} src={gesbank_logo} />
         </Grid>
         <Grid item>
-          <CircularProgress className={classes.progress} color="primary" />
+          <CircularProgress className={classes.progress} color="secondary" />
         </Grid>
       </Grid>
     );
