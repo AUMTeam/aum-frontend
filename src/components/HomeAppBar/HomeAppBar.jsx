@@ -143,20 +143,26 @@ class HomeAppBar extends Component {
     const { isDrawerOpen } = this.state;
     return (
       <Drawer open={isDrawerOpen} onClose={this.closeDrawer}>
+
+        {/*The avatar item is outside the div to avoid drawer closing when clicking on it*/}
+        <ListItem>
+          <ListItemIcon>
+            <Avatar className={classes.avatar}>
+              {this.props.user.name.charAt(0)}
+            </Avatar>
+          </ListItemIcon>
+          <ListItemText
+            primary={this.props.user.name}
+            secondary={this.props.user.email}
+          />
+        </ListItem>
+
         <div
           tabIndex={0}
           role="button"
           onClick={this.closeDrawer}
           onKeyDown={this.closeDrawer}
         >
-          <ListItem>
-            <ListItemIcon>
-              <Avatar className={classes.avatar}>
-                {this.props.user.name.charAt(0)}
-              </Avatar>
-            </ListItemIcon>
-            <ListItemText primary={this.props.user.name} />
-          </ListItem>
           <List className={classes.drawerItems}>
             {tabs.map((tab, index) => {
               if (this.props.user.roles.includes(tab.value))
@@ -171,7 +177,9 @@ class HomeAppBar extends Component {
                   </ListItem>
                 );
             })}
+
             <Divider />
+
             <ListItem onClick={this.onLogoutButtonClicked} button>
               <ListItemIcon>
                 <ExitToAppIcon />
@@ -211,7 +219,7 @@ class HomeAppBar extends Component {
         open={Boolean(anchorEl)}
         onClose={this.onMenuClose}
       >
-        <MenuItem onClick={() => console.log('Profile clicked')}>
+        <ListItem>
           <ListItemIcon>
             <Avatar className={classes.avatar}>
               {this.props.user.name.charAt(0)}
@@ -221,8 +229,9 @@ class HomeAppBar extends Component {
             classes={{ primary: classes.primary }}
             inset
             primary={this.props.user.name}
+            secondary={this.props.user.email}
           />
-        </MenuItem>
+        </ListItem>
         <MenuItem onClick={this.onLogoutButtonClicked}>
           <ListItemIcon>
             <ExitToAppIcon />

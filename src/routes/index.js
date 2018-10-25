@@ -5,7 +5,6 @@ import { Home } from './Home';
 import { Login } from './Login';
 import { bindActionCreators } from 'redux';
 import { validateLocalAccessToken } from '../actions/auth';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import { LogoLoader } from '../components/LogoLoader';
 
 /**

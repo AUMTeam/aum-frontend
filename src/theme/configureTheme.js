@@ -33,6 +33,9 @@ export function configureTheme() {
         disabled: '#00000061',
         hint: '#00000061'
       }
+    },
+    typography: {
+      useNextVariants: true
     }
   };
 }

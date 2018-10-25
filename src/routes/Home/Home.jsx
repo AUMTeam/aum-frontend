@@ -70,9 +70,7 @@ class Home extends Component {
 
   onSectionChanged(sectionValue) {
     console.log('Changed section with id ' + sectionValue);
-    this.setState({
-      sectionValue
-    });
+    this.setState({ sectionValue });
   }
 }
 
