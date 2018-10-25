@@ -24,39 +24,6 @@ export const initialState = {
   infoObtained: false
 };
 
-// Will be removed when server matches DB
-const USER_TYPE_KEYS = {
-  PROGRAMMER: 'developer',
-  CLIENT: 'client',
-  TECHNICAL_AREA_MANAGER: 'repre_technical',
-  REVISION_OFFICE_MANAGER: 'repre_revision'
-};
-
-// Will be removed when server matches DB
-function mapRoleStringsToIds(serverRoleArray) {
-  let localRoleArray = [];
-  serverRoleArray.forEach(element => {
-    switch (element) {
-      case USER_TYPE_KEYS.PROGRAMMER:
-        localRoleArray.push(USER_TYPE_IDS.PROGRAMMER);
-        break;
-      case USER_TYPE_KEYS.CLIENT:
-        localRoleArray.push(USER_TYPE_IDS.CLIENT);
-        break;
-      case USER_TYPE_KEYS.TECHNICAL_AREA_MANAGER:
-        localRoleArray.push(USER_TYPE_IDS.TECHNICAL_AREA_MANAGER);
-        break;
-      case USER_TYPE_KEYS.REVISION_OFFICE_MANAGER:
-        localRoleArray.push(USER_TYPE_IDS.REVISION_OFFICE_MANAGER);
-        break;
-      default:
-        console.warn(`User has an unrecognized role: ${element}`);
-        break;
-    }
-  });
-  return localRoleArray;
-}
-
 export function user(state = initialState, action) {
   switch (action.type) {
     case USER_ACTION_TYPE_KEYS.GET_USER_INFO_REQUEST:
@@ -79,7 +46,7 @@ export function user(state = initialState, action) {
         name: action.payload.response_data.name,
         area: action.payload.response_data.area,
         email: action.payload.response_data.email,
-        roles: mapRoleStringsToIds(action.payload.response_data.role)
+        roles: action.payload.response_data.role
       };
 
     // We need to wipe all user-related data when user logs out
