@@ -1,5 +1,6 @@
 import { takeLatest } from 'redux-saga/effects';
 import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
+import { REQUEST_ACTIONS_PATHS, makeUnauthenticatedApiRequest, makeAuthenticatedApiRequest } from '../utils/apiUtils';
 
 /**
  * @file
@@ -8,6 +9,19 @@ import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
  * Thanks to these functions we are going to handle all the side-effect of the
  * application.
  */
+
+/**
+ * Called when the user logs out
+ * Notifies the server that the user has logged out, so that it can invalidate the token
+ * @param {*} action 
+ */
+function* notifyLogoutToServer(action) {
+  const response = yield makeAuthenticatedApiRequest(REQUEST_ACTIONS_PATHS.LOGOUT, action.accessToken);
+  if (response.ok)
+    console.log("Logout notification successful");
+  else
+    console.error(`Logout notification failed to server: ${response.statusText}`);
+}
 
 function* saveAccessTokenToLocalStorage(action) {
   console.log('Saving access token to local storage');
@@ -18,7 +32,7 @@ function* saveAccessTokenToLocalStorage(action) {
   }
 }
 
-function* removeAccessTokenFromLocalStorage(action) {
+function* removeAccessTokenFromLocalStorage() {
   console.log('Removing access token from local storage');
   try {
     yield localStorage.removeItem('token');
@@ -32,15 +46,9 @@ export const authSaga = [
     AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL,
     saveAccessTokenToLocalStorage
   ),
-  takeLatest(
-    AUTH_ACTION_TYPE_KEYS.LOGOUT_SUCCESSFUL,
-    removeAccessTokenFromLocalStorage
-  ),
-  // For now, if logout notice to the server fails, we still log out the user and delete the token locally (should have no side-effects).
-  takeLatest(
-    AUTH_ACTION_TYPE_KEYS.LOGOUT_FAILED,
-    removeAccessTokenFromLocalStorage
-  ),
+  // If logout notice to the server fails, we still log out the user and delete the token locally (should have no side-effects).
+  takeLatest(AUTH_ACTION_TYPE_KEYS.LOGOUT, notifyLogoutToServer),
+  takeLatest(AUTH_ACTION_TYPE_KEYS.LOGOUT, removeAccessTokenFromLocalStorage),
   takeLatest(
     AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_FAILED,
     removeAccessTokenFromLocalStorage

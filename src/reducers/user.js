@@ -84,8 +84,7 @@ export function user(state = initialState, action) {
 
     // We need to wipe all user-related data when user logs out
     // We don't want to have old values when another user logs in
-    case AUTH_ACTION_TYPE_KEYS.LOGOUT_SUCCESSFUL:
-    case AUTH_ACTION_TYPE_KEYS.LOGOUT_FAILED:
+    case AUTH_ACTION_TYPE_KEYS.LOGOUT:
       return {
         ...initialState
       };
