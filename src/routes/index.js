@@ -5,7 +5,7 @@ import { Home } from './Home';
 import { Login } from './Login';
 import { bindActionCreators } from 'redux';
 import { validateLocalAccessToken } from '../actions/auth';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import { LogoLoader } from '../components/LogoLoader';
 
 /**
  * @file
@@ -57,7 +57,7 @@ class Routes extends Component {
     return (
       <div>
         {this.props.isValidatingToken ? (
-          <LinearProgress variant="indeterminate" style={{margin: 0}}/>
+          <LogoLoader />
         ) : (
           <BrowserRouter>
             <Switch>

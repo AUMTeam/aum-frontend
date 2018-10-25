@@ -46,7 +46,7 @@ export function auth(state = initialState, action) {
     case AUTH_ACTION_TYPE_KEYS.LOGOUT_REQUEST:
       console.log('Sending logout request');
       return state;
-    case AUTH_ACTION_TYPE_KEYS.LOGOUT_FAILED: // For now, if logout notice to the server fails, we still log out the user and delete the token locally (should have no side-effects).
+    case AUTH_ACTION_TYPE_KEYS.LOGOUT_FAILED: // If logout notice to the server fails, we still log out the user and delete the token locally (should have no side-effects).
       console.error('Unable to send logout request to server');
     case AUTH_ACTION_TYPE_KEYS.LOGOUT_SUCCESSFUL:
       return {

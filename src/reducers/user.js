@@ -1,4 +1,5 @@
 import { USER_ACTION_TYPE_KEYS } from '../actions/user';
+import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
 
 /**
  * @file
@@ -7,18 +8,11 @@ import { USER_ACTION_TYPE_KEYS } from '../actions/user';
  * state in relation to the action type and content.
  */
 
-const USER_TYPE_KEYS = {
-  PROGRAMMER: 'developer',
-  CLIENT: 'client',
-  TECHNICAL_AREA_MANAGER: 'repre_technical',
-  REVISION_OFFICE_MANAGER: 'repre_revision'
-};
-
 export const USER_TYPE_IDS = {
-  PROGRAMMER: 0,
-  TECHNICAL_AREA_MANAGER: 1,
-  REVISION_OFFICE_MANAGER: 2,
-  CLIENT: 3
+  CLIENT: 1,
+  TECHNICAL_AREA_MANAGER: 2,
+  REVISION_OFFICE_MANAGER: 3,
+  PROGRAMMER: 4
 }
 
 export const initialState = {
@@ -26,74 +20,76 @@ export const initialState = {
   name: null,
   area: null,
   email: null,
-  role: mapRoleArrayToRoleObject([]),
-  obtainingInfo: true
+  roles: [],
+  infoObtained: false
 };
 
-/**
- * The server API gives us an array containing the strings corresponding to user's roles
- * This functions maps the role array into an object used in the state for faster accessing
- * @param roleArray The array containing roles keys
- */
-function mapRoleArrayToRoleObject(roleArray) {
-  let roleObject = {
-    isProgrammer: false,
-    isClient: false,
-    isTechnicalAreaManager: false,
-    isRevisionOfficeManager: false
-  };
+// Will be removed when server matches DB
+const USER_TYPE_KEYS = {
+  PROGRAMMER: 'developer',
+  CLIENT: 'client',
+  TECHNICAL_AREA_MANAGER: 'repre_technical',
+  REVISION_OFFICE_MANAGER: 'repre_revision'
+};
 
-  roleArray.forEach(element => {
+// Will be removed when server matches DB
+function mapRoleStringsToIds(serverRoleArray) {
+  let localRoleArray = [];
+  serverRoleArray.forEach(element => {
     switch (element) {
       case USER_TYPE_KEYS.PROGRAMMER:
-        roleObject.isProgrammer = true;
+        localRoleArray.push(USER_TYPE_IDS.PROGRAMMER);
         break;
       case USER_TYPE_KEYS.CLIENT:
-        roleObject.isClient = true;
+        localRoleArray.push(USER_TYPE_IDS.CLIENT);
         break;
       case USER_TYPE_KEYS.TECHNICAL_AREA_MANAGER:
-        roleObject.isTechnicalAreaManager = true;
+        localRoleArray.push(USER_TYPE_IDS.TECHNICAL_AREA_MANAGER);
         break;
       case USER_TYPE_KEYS.REVISION_OFFICE_MANAGER:
-        roleObject.isRevisionOfficeManager = true;
+        localRoleArray.push(USER_TYPE_IDS.REVISION_OFFICE_MANAGER);
         break;
       default:
         console.warn(`User has an unrecognized role: ${element}`);
         break;
     }
   });
-
-  return roleObject;
+  return localRoleArray;
 }
 
 export function user(state = initialState, action) {
   switch (action.type) {
-    case USER_ACTION_TYPE_KEYS.USER_INFO_REQUESTED:
+    case USER_ACTION_TYPE_KEYS.GET_USER_INFO_REQUEST:
       console.log("Requesting user info...");
       return {
-        obtainingInfo: true,
+        infoObtained: false,
         ...state
       };
-    case USER_ACTION_TYPE_KEYS.UNABLE_TO_GET_USER_INFO:
-      console.log("User info received");
+    case USER_ACTION_TYPE_KEYS.GET_USER_INFO_FAILED:
+      console.error(`Unable to get user info: ${action.payload.response.message}`);
       return {
-        obtainingInfo: false,
-        id: 'ERROR',
-        name: 'ERROR',
-        area: 'ERROR',
-        email: 'ERROR',
+        infoObtained: false,
         ...state
       };
-    case USER_ACTION_TYPE_KEYS.USER_INFO_OBTAINED:
+    case USER_ACTION_TYPE_KEYS.GET_USER_INFO_SUCCESSFUL:
       console.log("User info received");
       return {
-        obtainingInfo: false,
+        infoObtained: true,
         id: action.payload.response_data.user_id,
         name: action.payload.response_data.name,
         area: action.payload.response_data.area,
         email: action.payload.response_data.email,
-        role: mapRoleArrayToRoleObject(action.payload.response_data.role)
+        roles: mapRoleStringsToIds(action.payload.response_data.role)
       };
+
+    // We need to wipe all user-related data when user logs out
+    // We don't want to have old values when another user logs in
+    case AUTH_ACTION_TYPE_KEYS.LOGOUT_SUCCESSFUL:
+    case AUTH_ACTION_TYPE_KEYS.LOGOUT_FAILED:
+      return {
+        ...initialState
+      };
+      
     default:
       return state;
   }
