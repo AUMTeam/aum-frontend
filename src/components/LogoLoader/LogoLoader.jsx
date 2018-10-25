@@ -12,9 +12,9 @@ const styles = {
     height: '100%'
   },
   logo: {
-      maxWidth: '100%',
-      width: 'auto',
-      height: 256
+    maxWidth: '100%',
+    width: 'auto',
+    height: 256
   }
 };
 
