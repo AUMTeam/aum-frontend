@@ -78,7 +78,7 @@ class HomeAppBar extends Component {
     super(props);
 
     this.state = {
-      selectedTabValue: props.user.roles[0],  // we automatically select the tab corresponding to the first role of the user
+      selectedTabValue: props.user.roles[0], // we automatically select the tab corresponding to the first role of the user
       anchorEl: null,
       isDrawerOpen: false
     };
@@ -215,13 +215,16 @@ class HomeAppBar extends Component {
           onClick={this.closeDrawer}
           onKeyDown={this.closeDrawer}
         >
-          <List className={classes.drawerItems} component="nav">
-            {tabs.map((tab, index) => (
-              <ListItem key={index} button>
-                <ListItemIcon>{tab.drawerIcon}</ListItemIcon>
-                <ListItemText primary={tab.label} />
-              </ListItem>
-            ))}
+          <List className={classes.drawerItems}>
+            {tabs.map((tab, index) => {
+              if (this.props.user.roles.includes(tab.value))
+                return (
+                  <ListItem key={index} button>
+                    <ListItemIcon>{tab.drawerIcon}</ListItemIcon>
+                    <ListItemText primary={tab.label} />
+                  </ListItem>
+                );
+            })}
           </List>
         </div>
       </Drawer>

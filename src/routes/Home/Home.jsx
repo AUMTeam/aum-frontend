@@ -1,10 +1,11 @@
+import Grid from '@material-ui/core/Grid';
 import React, { Component } from 'react';
-import { HomeAppBar } from '../../components/HomeAppBar';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { attemptLogout } from '../../actions/auth';
 import { getUserInfo } from '../../actions/user';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import { LogoLoader } from '../../components/LogoLoader';
+import { HomeAppBar } from '../../components/HomeAppBar';
 
 /**
  * @class
@@ -15,6 +16,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 class Home extends Component {
   constructor(props) {
     super(props);
+
     props.getUserInfo(props.accessToken);
   }
 
@@ -23,7 +25,7 @@ class Home extends Component {
       <div>
         {/* We don't want the appBar to be rendered before we get user data*/}
         {!this.props.user.infoObtained ? (
-          <LinearProgress variant="indeterminate" style={{ margin: 0 }} />
+          <LogoLoader />
         ) : (
           <HomeAppBar
             user={this.props.user}
