@@ -25,30 +25,33 @@ function* notifyLogoutToServer(action) {
 }
 
 function* attemptLogin(action) {
-  if (action.username == '' || action.password == '')
+  if (action.username === '' || action.password === '') {
     yield put({
       type: AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED,
       errorMessage: 'Username e/o password mancante'
     });
+  }
+  
   else {
     const response = yield call(makeUnauthenticatedApiRequest, REQUEST_ACTIONS_PATHS.LOGIN, {
       username: action.username,
       hash_pass: computeSHA256(action.password)
     });
 
+    const responseJson = yield call([response, response.json]);
     if (response.ok) {
       yield put({
         type: AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL,
-        accessToken: response.body.response_data.token
+        accessToken: responseJson.response_data.token
       });
-      console.log(`Login successful with access token ${response.body.response_data.token}`);
+      console.log(`Login successful with access token ${responseJson.response_data.token}`);
     }
     else {
       yield put({
         type: AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED,
-        errorMessage: response.body.message
+        errorMessage: responseJson.message
       });
-      console.error(`Login API error ${response.body.status}: ${response.body.message}`);
+      console.error(`Login API error ${responseJson.status}: ${responseJson.message}`);
     }
   }
 }
