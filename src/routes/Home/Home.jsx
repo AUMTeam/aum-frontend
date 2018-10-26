@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { performLogout } from '../../actions/auth';
-import { getUserInfo } from '../../actions/user';
+import { requestCurrentUserInfo } from '../../actions/user';
 import { HomeAppBar } from '../../components/HomeAppBar';
 import { LogoLoader } from '../../components/LogoLoader';
 import { USER_TYPE_IDS } from '../../reducers/user';
@@ -21,7 +21,7 @@ class Home extends Component {
       sectionValue: null
     };
 
-    props.getUserInfo(props.accessToken);
+    props.requestCurrentUserInfo(props.accessToken);
 
     this.onSectionChanged = this.onSectionChanged.bind(this);
   }
@@ -82,7 +82,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ performLogout, getUserInfo }, dispatch);
+  return bindActionCreators({ performLogout, requestCurrentUserInfo }, dispatch);
 };
 
 export default connect(

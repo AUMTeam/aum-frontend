@@ -39,22 +39,19 @@ export function auth(state = initialState, action) {
         ...initialState
       };
 
-    case AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_REQUEST:
-      console.log('Validating local token');
+    case AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_REQUESTED:
       return {
         ...state,
         isValidatingToken: true
       };
     case AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_SUCCESSFUL:
-      console.log('Local access token is valid');
       return {
         ...state,
-        accessToken: action.meta.accessToken,
+        accessToken: action.accessToken,
         isValidatingToken: false
       };
     case AUTH_ACTION_TYPE_KEYS.LOCAL_TOKEN_NOT_FOUND:
     case AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_FAILED:
-      console.log("Token is no more valid or hasn't been found locally");
       return {
         ...state,
         accessToken: null,
