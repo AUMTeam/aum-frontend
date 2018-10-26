@@ -1,6 +1,7 @@
-import { takeLatest } from 'redux-saga/effects';
+import { takeLatest, put, call } from 'redux-saga/effects';
 import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
 import { REQUEST_ACTIONS_PATHS, makeUnauthenticatedApiRequest, makeAuthenticatedApiRequest } from '../utils/apiUtils';
+import { computeSHA256 } from '../utils/apiUtils';
 
 /**
  * @file
@@ -23,6 +24,35 @@ function* notifyLogoutToServer(action) {
     console.error(`Logout notification failed to server: ${response.statusText}`);
 }
 
+function* attemptLogin(action) {
+  if (action.username == '' || action.password == '')
+    yield put({
+      type: AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED,
+      errorMessage: 'Username e/o password mancante'
+    });
+  else {
+    const response = yield call(makeUnauthenticatedApiRequest, REQUEST_ACTIONS_PATHS.LOGIN, {
+      username: action.username,
+      hash_pass: computeSHA256(action.password)
+    });
+
+    if (response.ok) {
+      yield put({
+        type: AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL,
+        accessToken: response.body.response_data.token
+      });
+      console.log(`Login successful with access token ${response.body.response_data.token}`);
+    }
+    else {
+      yield put({
+        type: AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED,
+        errorMessage: response.body.message
+      });
+      console.error(`Login API error ${response.body.status}: ${response.body.message}`);
+    }
+  }
+}
+
 function* saveAccessTokenToLocalStorage(action) {
   console.log('Saving access token to local storage');
   try {
@@ -42,6 +72,7 @@ function* removeAccessTokenFromLocalStorage() {
 }
 
 export const authSaga = [
+  takeLatest(AUTH_ACTION_TYPE_KEYS.LOGIN_REQUESTED, attemptLogin),
   takeLatest(
     AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL,
     saveAccessTokenToLocalStorage

@@ -1,4 +1,3 @@
-import { sha256 } from 'js-sha256';
 import { RSAA } from 'redux-api-middleware';
 import { API_ENDPOINT_URL } from '.';
 
@@ -12,7 +11,7 @@ import { API_ENDPOINT_URL } from '.';
  */
 
 export const AUTH_ACTION_TYPE_KEYS = {
-  LOGIN_REQUEST: 'LOGIN_REQUEST',
+  LOGIN_REQUESTED: 'LOGIN_REQUESTED',
   LOGIN_SUCCESSFUL: 'LOGIN_SUCCESSFUL',
   LOGIN_FAILED: 'LOGIN_FAILED',
   LOGOUT: 'LOGOUT',
@@ -22,7 +21,7 @@ export const AUTH_ACTION_TYPE_KEYS = {
   TOKEN_VALIDATION_FAILED: 'TOKEN_VALIDATION_FAILED'
 };
 
-export function attemptLogin(username, password) {
+/*export function attemptLogin(username, password) {
   return {
     [RSAA]: {
       endpoint: `${API_ENDPOINT_URL}/auth/login`,
@@ -42,6 +41,14 @@ export function attemptLogin(username, password) {
         AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED
       ]
     }
+  };
+}*/
+
+export function attemptLogin(username, password) {
+  return {
+    type: AUTH_ACTION_TYPE_KEYS.LOGIN_REQUESTED,
+    username,
+    password
   };
 }
 
@@ -81,8 +88,4 @@ export function validateLocalAccessToken(accessToken) {
         ]
       }
     };
-}
-
-function computeSHA256(obj) {
-  return sha256(obj.toString()).toUpperCase();
 }

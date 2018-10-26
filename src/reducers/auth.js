@@ -16,31 +16,22 @@ export const initialState = {
 
 export function auth(state = initialState, action) {
   switch (action.type) {
-    case AUTH_ACTION_TYPE_KEYS.LOGIN_REQUEST:
-      console.log('Login attempt request sent');
+    case AUTH_ACTION_TYPE_KEYS.LOGIN_REQUESTED:
       return {
         ...state,
         isAttemptingLogin: true
       };
     case AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL:
-      console.log(
-        `Login successful with access token ${
-          action.payload.response_data.token
-        }`
-      );
       return {
         ...state,
-        accessToken: action.payload.response_data.token,
+        accessToken: action.accessToken,
         isAttemptingLogin: false
       };
     case AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED:
-      console.error(
-        `Login API error ${action.payload.status}: ${action.payload.response.message}`
-      );
       return {
         ...state,
         isAttemptingLogin: false,
-        loginErrorMessage: action.payload.response.message
+        loginErrorMessage: action.errorMessage
       };
 
     case AUTH_ACTION_TYPE_KEYS.LOGOUT:
