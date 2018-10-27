@@ -26,17 +26,17 @@ export const initialState = {
 
 export function user(state = initialState, action) {
   switch (action.type) {
-    case USER_ACTION_TYPE_KEYS.GET_USER_INFO_REQUEST:
+    case USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_REQUEST:
       return {
         infoObtained: false,
         ...state
       };
-    case USER_ACTION_TYPE_KEYS.GET_USER_INFO_FAILED:
+    case USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_FAILED:
       return {
         infoObtained: false,
         ...state
       };
-    case USER_ACTION_TYPE_KEYS.GET_USER_INFO_SUCCESSFUL:
+    case USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_SUCCESSFUL:
       return {
         infoObtained: true,
         id: action.user_id,

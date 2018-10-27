@@ -1,4 +1,4 @@
-import { takeLatest, put, call } from 'redux-saga/effects';
+import { takeLatest, put, fork, take } from 'redux-saga/effects';
 import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
 import {
   REQUEST_ACTIONS_PATHS,
@@ -17,19 +17,23 @@ import { computeSHA256 } from '../utils/apiUtils';
 
 /**
  * Called when the user logs out
- * Notifies the server that the user has logged out, so that it can invalidate the token
+ * Notifies asynchronously the server that the user has logged out, so that it can invalidate the token
  * @param {*} action
  */
 function* notifyLogoutToServer(action) {
-  const response = yield makeAuthenticatedApiRequest(
+  const logoutNotificationTask = yield fork(makeAuthenticatedApiRequest,
     REQUEST_ACTIONS_PATHS.LOGOUT,
     action.accessToken
   );
-  if (response.ok) console.log('Logout notification successful');
-  else
-    console.error(
-      `Logout notification failed to server: ${response.statusText}`
-    );
+
+  logoutNotificationTask.done.then((response) => {
+    if (response.ok)
+      console.log('Logout notification successful');
+    else
+      console.error(`Logout notification failed to server: ${response.statusText}`);
+  }).catch((error) => {
+    console.error(`Error during logout notification to server: ${error}`);
+  });
 }
 
 /**
@@ -44,16 +48,12 @@ function* attemptLogin(action) {
       errorMessage: 'Username e/o password mancante'
     });
   } else {
-    const response = yield call(
-      makeUnauthenticatedApiRequest,
-      REQUEST_ACTIONS_PATHS.LOGIN,
-      {
-        username: action.username,
-        hash_pass: computeSHA256(action.password)
-      }
-    );
+    const response = yield makeUnauthenticatedApiRequest(REQUEST_ACTIONS_PATHS.LOGIN, {
+      username: action.username,
+      hash_pass: computeSHA256(action.password)
+    });
 
-    const responseJson = yield call([response, response.json]);
+    const responseJson = yield response.json();
     if (response.ok) {
       yield put({
         type: AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL,
@@ -79,9 +79,7 @@ function* attemptLogin(action) {
  * Asks the server if the found token is still valid
  */
 function* requestLocalAccessTokenValidation(action) {
-  const response = yield call(
-    makeAuthenticatedApiRequest,
-    REQUEST_ACTIONS_PATHS.VALIDATE_TOKEN,
+  const response = yield makeAuthenticatedApiRequest(REQUEST_ACTIONS_PATHS.VALIDATE_TOKEN,
     action.accessToken
   );
 

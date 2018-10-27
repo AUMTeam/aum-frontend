@@ -1,4 +1,4 @@
-import { takeLatest, put, call } from 'redux-saga/effects';
+import { takeLatest, put } from 'redux-saga/effects';
 import { USER_ACTION_TYPE_KEYS } from '../actions/user';
 import {
   REQUEST_ACTIONS_PATHS,
@@ -26,9 +26,7 @@ function* requestCurrentUserInfo(action) {
     console.log(`Retrieving user info: attempt ${attemptNumber}...`);
     // Try/catch block handles network errors
     try {
-      response = yield call(
-        makeAuthenticatedApiRequest,
-        REQUEST_ACTIONS_PATHS.GET_USER_INFO,
+      response = yield makeAuthenticatedApiRequest(REQUEST_ACTIONS_PATHS.GET_USER_INFO,
         action.accessToken
       );
       responseReceived = true;
@@ -38,23 +36,23 @@ function* requestCurrentUserInfo(action) {
     }
   }
 
-  const responseJson = yield call([response, response.json]);
+  const responseJson = yield response.json();
   if (response.ok) {
     yield put({
-      type: USER_ACTION_TYPE_KEYS.GET_USER_INFO_SUCCESSFUL,
+      type: USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_SUCCESSFUL,
       ...responseJson.response_data
     });
     console.log('User info retrieved successfully');
   }
   else {
-    yield put({ type: USER_ACTION_TYPE_KEYS.GET_USER_INFO_FAILED });
+    yield put({ type: USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_FAILED });
     console.error(`FATAL: Unable to get user info: ${responseJson.message}`);
   }
 }
 
 export const userSaga = [
   takeLatest(
-    USER_ACTION_TYPE_KEYS.GET_USER_INFO_REQUEST,
+    USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_REQUEST,
     requestCurrentUserInfo
   )
 ];
