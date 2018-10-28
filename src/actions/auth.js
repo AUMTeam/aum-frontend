@@ -34,11 +34,8 @@ export function performLogout(accessToken) {
 }
 
 export function requestLocalTokenValidationIfPresent(accessToken) {
-  if (accessToken == null)
-    return { type: AUTH_ACTION_TYPE_KEYS.LOCAL_TOKEN_NOT_FOUND };
-  else
-    return {
-      type: AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_REQUESTED,
-      accessToken
-    };
+  return {
+    type: AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_REQUESTED,
+    accessToken
+  };
 }

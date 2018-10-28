@@ -1,5 +1,3 @@
-import { takeLatest, put } from 'redux-saga/effects';
-import { USER_ACTION_TYPE_KEYS } from '../actions/user';
 import {
   REQUEST_ACTIONS_PATHS,
   makeAuthenticatedApiRequest
@@ -16,7 +14,7 @@ import {
  * Requests the info about the logged in user. If the request fails for network errors, the app 
  * keeps retrying.
  */
-function* requestCurrentUserInfo(action) {
+export function* requestCurrentUserInfo(action) {
   let responseReceived = false;
   let attemptNumber = 0;
   let response;
@@ -37,22 +35,16 @@ function* requestCurrentUserInfo(action) {
   }
 
   const responseJson = yield response.json();
-  if (response.ok) {
-    yield put({
-      type: USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_SUCCESSFUL,
-      ...responseJson.response_data
-    });
-    console.log('User info retrieved successfully');
-  }
-  else {
-    yield put({ type: USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_FAILED });
-    console.error(`FATAL: Unable to get user info: ${responseJson.message}`);
-  }
+  if (response.ok)
+    return {
+      userData: responseJson.response_data,
+      errorMessage: null
+    };
+  else
+    return {
+      userData: null,
+      errorMessage: responseJson.message
+    };
 }
 
-export const userSaga = [
-  takeLatest(
-    USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_REQUEST,
-    requestCurrentUserInfo
-  )
-];
+export const userSaga = [];
