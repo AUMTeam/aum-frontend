@@ -4,8 +4,10 @@ import { authFlowSaga } from './authSaga';
 
 /**
  * @file
- * This file is the root of the saga implementation in the app.
- * We need to combine all the sagas related to a specific app part,
+ * This file is the root of the Saga implementation in the app.
+ * Saga allows us to perform side-effects in a separate thread in response to
+ * the dispatch of a Redux action.
+ * Here we combine all the sagas related to a specific app part,
  * following the same hierarchy as the actions and reducers.
  */
 

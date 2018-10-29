@@ -5,18 +5,26 @@ import { requestCurrentUserInfo } from './userSaga';
 import {
   REQUEST_ACTIONS_PATHS,
   makeUnauthenticatedApiRequest,
-  makeAuthenticatedApiRequest
+  makeAuthenticatedApiRequest,
+  saveAccessTokenToLocalStorage,
+  removeAccessTokenFromLocalStorage,
+  computeSHA256
 } from '../utils/apiUtils';
-import { computeSHA256 } from '../utils/apiUtils';
 
 /**
- * @file
- * This file contains all the defined saga actions related to authentication,
- * that will be triggered asynchronously when redux dispatches a new action.
- * Thanks to these functions we are going to handle all the side-effect of the
- * application.
+ * This function describes the order in which Saga must listen the dispatch of authentication-related
+ * Redux actions and how it must behave according to them.
+ * This function can be seen as a continuous background thread, which manages login/logout behavior
+ * and makes API requests to the server.
+ * The instruction flow may be summed up as follows:
+ *   - watch for previous token validation request (only the first time)
+ *   - if the token wasn't valid (the user hasn't been logged in), watch for login request
+ *   - if login fails, continue watching for login requests
+ *   - if login is successful, watch for current user info request
+ *   - watch for logout request (whatever the result of the step above is)
+ *   - when the user logs out, watch for subsequent login requests
+ *   - and the loop continues...
  */
-
 export function* authFlowSaga() {
   // Application startup: request local token validation to the server if it's found
   const tokenValidationRequestAction = yield take(AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_REQUESTED);
@@ -27,8 +35,8 @@ export function* authFlowSaga() {
     yield call(requestLocalAccessTokenValidation, tokenValidationRequestAction);
   }
 
+  let userLoggedIn = (yield select(state => state.auth.accessToken)) != null;
   while (true) {
-    let userLoggedIn = (yield select(state => state.auth.accessToken)) != null;
     // If the user hasn't been logged in with the local token found in localStorage,
     // watch for login request action
     if (!userLoggedIn) {
@@ -79,8 +87,9 @@ export function* authFlowSaga() {
       // We watch for logout even if the server doesn't give us user info,
       // since we may want to display a fallback UI with a logout button
       const logoutAction = yield take(AUTH_ACTION_TYPE_KEYS.LOGOUT);
-      yield call(notifyLogoutToServer, logoutAction);
+      yield call(notifyLogoutToServerAsync, logoutAction);
       yield call(removeAccessTokenFromLocalStorage);
+      userLoggedIn = false;
     }
   }
 }
@@ -90,7 +99,7 @@ export function* authFlowSaga() {
  * Notifies asynchronously the server that the user has logged out, so that it can invalidate the token
  * @param {*} action
  */
-function* notifyLogoutToServer(action) {
+function* notifyLogoutToServerAsync(action) {
   const logoutNotificationTask = yield fork(
     makeAuthenticatedApiRequest,
     REQUEST_ACTIONS_PATHS.LOGOUT,
@@ -140,7 +149,7 @@ function* attemptLogin(action) {
 }
 
 /**
- * Executed at app startup if a token is found in localStorage
+ * Executed if a token is found in localStorage
  * Asks the server if the found token is still valid
  */
 function* requestLocalAccessTokenValidation(action) {
@@ -163,23 +172,5 @@ function* requestLocalAccessTokenValidation(action) {
       console.log('Local token is no more valid');
     else     // Shouldn't happen, could be a server bug
       console.error(`Unexpected error code for token validation request: ${response.status}`);
-  }
-}
-
-function saveAccessTokenToLocalStorage(accessToken) {
-  console.log('Saving access token to local storage');
-  try {
-    localStorage.setItem('token', accessToken);
-  } catch (err) {
-    console.error(`Unable to save access token in local storage: ${err}`);
-  }
-}
-
-function* removeAccessTokenFromLocalStorage() {
-  console.log('Removing access token from local storage');
-  try {
-    yield localStorage.removeItem('token');
-  } catch (err) {
-    console.error(`Unable to remove access token from local storage: ${err}`);
   }
 }
