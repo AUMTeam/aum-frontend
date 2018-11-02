@@ -16,59 +16,42 @@ export const initialState = {
 
 export function auth(state = initialState, action) {
   switch (action.type) {
-    case AUTH_ACTION_TYPE_KEYS.LOGIN_REQUEST:
-      console.log('Login attempt request sent');
+    case AUTH_ACTION_TYPE_KEYS.LOGIN_REQUESTED:
       return {
         ...state,
         isAttemptingLogin: true
       };
     case AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL:
-      console.log(
-        `Login successful with access token ${
-          action.payload.response_data.token
-        }`
-      );
       return {
         ...state,
-        accessToken: action.payload.response_data.token,
+        accessToken: action.accessToken,
         isAttemptingLogin: false
       };
     case AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED:
-      console.error(
-        `Login API error ${action.payload.status}: ${action.payload.response.message}`
-      );
       return {
         ...state,
         isAttemptingLogin: false,
-        loginErrorMessage: action.payload.response.message
+        loginErrorMessage: action.errorMessage
       };
 
-    case AUTH_ACTION_TYPE_KEYS.LOGOUT_REQUEST:
-      console.log('Sending logout request');
-      return state;
-    case AUTH_ACTION_TYPE_KEYS.LOGOUT_FAILED: // If logout notice to the server fails, we still log out the user and delete the token locally (should have no side-effects).
-      console.error('Unable to send logout request to server');
-    case AUTH_ACTION_TYPE_KEYS.LOGOUT_SUCCESSFUL:
+    case AUTH_ACTION_TYPE_KEYS.LOGOUT:
       return {
         ...initialState
       };
 
-    case AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_REQUEST:
-      console.log('Validating local token');
+    case AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_REQUESTED:
       return {
         ...state,
         isValidatingToken: true
       };
     case AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_SUCCESSFUL:
-      console.log('Local access token is valid');
       return {
         ...state,
-        accessToken: action.meta.accessToken,
+        accessToken: action.accessToken,
         isValidatingToken: false
       };
     case AUTH_ACTION_TYPE_KEYS.LOCAL_TOKEN_NOT_FOUND:
     case AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_FAILED:
-      console.log("Token is no more valid or hasn't been found locally");
       return {
         ...state,
         accessToken: null,

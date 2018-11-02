@@ -26,33 +26,29 @@ export const initialState = {
 
 export function user(state = initialState, action) {
   switch (action.type) {
-    case USER_ACTION_TYPE_KEYS.GET_USER_INFO_REQUEST:
-      console.log("Requesting user info...");
+    case USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_REQUEST:
       return {
         infoObtained: false,
         ...state
       };
-    case USER_ACTION_TYPE_KEYS.GET_USER_INFO_FAILED:
-      console.error(`Unable to get user info: ${action.payload.response.message}`);
+    case USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_FAILED:
       return {
         infoObtained: false,
         ...state
       };
-    case USER_ACTION_TYPE_KEYS.GET_USER_INFO_SUCCESSFUL:
-      console.log("User info received");
+    case USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_SUCCESSFUL:
       return {
         infoObtained: true,
-        id: action.payload.response_data.user_id,
-        name: action.payload.response_data.name,
-        area: action.payload.response_data.area,
-        email: action.payload.response_data.email,
-        roles: action.payload.response_data.role
+        id: action.user_id,
+        name: action.name,
+        area: action.area,
+        email: action.email,
+        roles: action.role
       };
 
     // We need to wipe all user-related data when user logs out
     // We don't want to have old values when another user logs in
-    case AUTH_ACTION_TYPE_KEYS.LOGOUT_SUCCESSFUL:
-    case AUTH_ACTION_TYPE_KEYS.LOGOUT_FAILED:
+    case AUTH_ACTION_TYPE_KEYS.LOGOUT:
       return {
         ...initialState
       };

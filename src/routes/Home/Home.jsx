@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { attemptLogout } from '../../actions/auth';
-import { getUserInfo } from '../../actions/user';
+import { performLogout } from '../../actions/auth';
+import { requestCurrentUserInfo } from '../../actions/user';
 import { HomeAppBar } from '../../components/HomeAppBar';
 import { LogoLoader } from '../../components/LogoLoader';
 import { USER_TYPE_IDS } from '../../reducers/user';
@@ -21,7 +21,7 @@ class Home extends Component {
       sectionValue: null
     };
 
-    props.getUserInfo(props.accessToken);
+    props.requestCurrentUserInfo(props.accessToken);
 
     this.onSectionChanged = this.onSectionChanged.bind(this);
   }
@@ -43,7 +43,7 @@ class Home extends Component {
           <div>
             <HomeAppBar
               user={this.props.user}
-              onLogout={() => this.props.attemptLogout(this.props.accessToken)}
+              onLogout={() => this.props.performLogout(this.props.accessToken)}
               onSectionChanged={this.onSectionChanged}
             />
             {this.renderTabsViews(sectionValue)}
@@ -82,7 +82,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ attemptLogout, getUserInfo }, dispatch);
+  return bindActionCreators({ performLogout, requestCurrentUserInfo }, dispatch);
 };
 
 export default connect(
