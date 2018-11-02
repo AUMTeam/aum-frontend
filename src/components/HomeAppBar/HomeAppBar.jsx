@@ -61,7 +61,7 @@ const styles = {
     marginRight: 16
   },
   avatar: {
-    margin: -8,
+    margin: -12,
     backgroundColor: getRandomColor()
   },
   drawerItems: {
@@ -143,7 +143,6 @@ class HomeAppBar extends Component {
     const { isDrawerOpen } = this.state;
     return (
       <Drawer open={isDrawerOpen} onClose={this.closeDrawer}>
-
         {/*The avatar item is outside the div to avoid drawer closing when clicking on it*/}
         <ListItem>
           <ListItemIcon>
@@ -226,7 +225,6 @@ class HomeAppBar extends Component {
             </Avatar>
           </ListItemIcon>
           <ListItemText
-            classes={{ primary: classes.primary }}
             inset
             primary={this.props.user.name}
             secondary={this.props.user.email}
