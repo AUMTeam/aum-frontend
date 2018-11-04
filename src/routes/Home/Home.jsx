@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { performLogout } from '../../actions/auth';
 import { requestCurrentUserInfo } from '../../actions/user';
+import { CommitsTable } from '../../components/CommitsTable';
 import { HomeAppBar } from '../../components/HomeAppBar';
 import { LogoLoader } from '../../components/LogoLoader';
 import { USER_TYPE_IDS } from '../../reducers/user';
-import { CommitsTable } from '../../components/CommitsTable';
 
 /**
  * @class
