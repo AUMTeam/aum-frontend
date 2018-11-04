@@ -7,6 +7,10 @@ import { CommitsTable } from '../../components/CommitsTable';
 import { HomeAppBar } from '../../components/HomeAppBar';
 import { LogoLoader } from '../../components/LogoLoader';
 import { USER_TYPE_IDS } from '../../reducers/user';
+import { ProgrammerView } from '../../views/ProgrammerView';
+import { TechnicalAreaManagerView } from '../../views/TechnicalAreaManagerView';
+import { RevisionOfficeManagerView } from '../../views/RevisionOfficeManagerView';
+import { ClientView } from '../../views/ClientView';
 
 /**
  * @class
@@ -58,13 +62,13 @@ class Home extends Component {
     switch (selectedTabValue) {
       case USER_TYPE_IDS.PROGRAMMER:
         // This is only a placeholder, we will create specific views for each role.
-        return <CommitsTable tableHeaderLabels={["ID commit", "Descrizione", "Data"]} tableData={[["43gferdg", "Aggiunto elemento", "2018/06/06"], ["345tgrfestdg", "Rimossa immagine", "2018/04/26"]]} />;
+        return <ProgrammerView />;
       case USER_TYPE_IDS.TECHNICAL_AREA_MANAGER:
-        return <h1>Referente</h1>;
+        return <TechnicalAreaManagerView />;
       case USER_TYPE_IDS.REVISION_OFFICE_MANAGER:
-        return <h1>Responsabile uff. revisioni</h1>;
+        return <RevisionOfficeManagerView />;
       case USER_TYPE_IDS.CLIENT:
-        return <h1>Cliente</h1>;
+        return <ClientView />;
       default:
         return 'Unknown';
     }
