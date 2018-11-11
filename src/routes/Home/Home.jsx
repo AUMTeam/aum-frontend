@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { performLogout } from '../../actions/auth';
 import { requestCurrentUserInfo } from '../../actions/user';
-import { CommitsTable } from '../../components/CommitsTable';
 import { HomeAppBar } from '../../components/HomeAppBar';
 import { LogoLoader } from '../../components/LogoLoader';
 import { USER_TYPE_IDS } from '../../reducers/user';
@@ -31,10 +30,14 @@ class Home extends Component {
     this.onSectionChanged = this.onSectionChanged.bind(this);
   }
 
-  static getDerivedStateFromProps(props) {
-    return {
-      sectionValue: props.user.roles[0]
-    };
+  // This is needed to select the first existing tab when user data are retrieved
+  static getDerivedStateFromProps(props, state) {
+    if (state.sectionValue == null)
+      return {
+        sectionValue: props.user.roles[0]
+      };
+    else
+      return null;    // don't change state
   }
 
   render() {
