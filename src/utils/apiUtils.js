@@ -1,5 +1,3 @@
-import { sha256 } from 'js-sha256';
-
 /**
  * @file
  * This file contains helper functions and constants used to make API calls.
@@ -44,10 +42,6 @@ export function makeAuthenticatedApiRequest(actionPath, accessToken, requestData
     },
     body: JSON.stringify({ request_data: requestData })
   });
-}
-
-export function computeSHA256(obj) {
-  return sha256(obj.toString()).toUpperCase();
 }
 
 export function saveAccessTokenToLocalStorage(accessToken) {
