@@ -15,13 +15,17 @@ import { Grid } from '@material-ui/core';
 
 const styles = {
   card: {
-    minWidth: 275,
+    minWidth: 450,
     marginTop: 200,
     
+
+  },
+  textField: {
+    width: 390,
   },
 
   button:{
-    marginTop:4,
+    marginTop: 16,
   },
 
   bullet: {
@@ -75,6 +79,7 @@ class LoginCard extends Component {
                   multiline
                   className={classes.textField}
                   margin="normal"
+                  
                 />
                 <br/>
                 <TextField
@@ -91,7 +96,7 @@ class LoginCard extends Component {
                   justify="flex-end"
                   alignItems="flex-start"
                 >
-                  <Button variant="contained" color="primary" className={classes.button}>
+                  <Button variant="contained" color="primary" size = "large" className={classes.button}>
                     Login 
                   </Button>
                 </Grid>
