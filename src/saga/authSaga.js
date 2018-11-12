@@ -8,7 +8,6 @@ import {
   makeAuthenticatedApiRequest,
   saveAccessTokenToLocalStorage,
   removeAccessTokenFromLocalStorage,
-  computeSHA256
 } from '../utils/apiUtils';
 
 /**
@@ -54,7 +53,7 @@ export function* authFlowSaga() {
           type: AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL,
           accessToken
         });
-        console.log(`Login successful with access token ${accessToken}`);
+        console.log(`Login successful`);
         yield call(saveAccessTokenToLocalStorage, accessToken);
         userLoggedIn = true;
       }
@@ -132,7 +131,7 @@ function* attemptLogin(action) {
 
   const response = yield makeUnauthenticatedApiRequest(REQUEST_ACTIONS_PATHS.LOGIN, {
     username: action.username,
-    hash_pass: computeSHA256(action.password)
+    password: action.password
   });
 
   const responseJson = yield response.json();
