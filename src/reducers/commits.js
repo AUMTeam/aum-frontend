@@ -1,11 +1,18 @@
 import { COMMITS_ACTION_TYPE_KEYS } from '../actions/commits';
 
 export const initialState = {
-  list: null,
-  currentRev: null,
-  currentlyEditingCommit: null,
+  listPages: [
+    {
+      data: [],
+      updateTimestamp: 0
+    }
+  ],
+  latestUpdateTimestamp: 0,
+  totalCommitsCount: 0,
+  currentlyShowingPage: 0,
   currentlyShowingCommit: null,
-  actionPending: false
+  actionPending: false,
+  isLoadingList: false
 };
 
 export function commits(state = initialState, action) {
@@ -14,6 +21,11 @@ export function commits(state = initialState, action) {
       return {
         ...state,
         actionPending: true
+      }
+    case COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_REQUEST:
+      return {
+        ...state,
+        isLoadingList: true
       }
     default:
       return state;

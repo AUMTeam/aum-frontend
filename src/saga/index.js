@@ -1,6 +1,7 @@
 import { all } from 'redux-saga/effects';
 import { userSaga } from './userSaga';
 import { authFlowSaga } from './authSaga';
+import { commitsSaga } from './commitsSaga';
 
 /**
  * @file
@@ -12,5 +13,5 @@ import { authFlowSaga } from './authSaga';
  */
 
 export default function* rootSaga() {
-  yield all([authFlowSaga(), ...userSaga]);
+  yield all([authFlowSaga(), ...userSaga, ...commitsSaga]);
 }
