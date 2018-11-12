@@ -8,24 +8,30 @@ export function configureTheme() {
   return {
     palette: {
       common: { black: '#000000', white: '#ffffff' },
-      background: { paper: '#ffffff', default: '#ffffff' },
+      background: { paper: '#ffffff', default: '#fafafa' },
       primary: {
-        light: '#9e47ff',
-        main: '#6200ee',
-        dark: '#0400ba',
+        light: '#58a5f0',
+        main: '#0277bd',
+        dark: '#004c8c',
         contrastText: '#ffffff'
       },
       secondary: {
-        light: '#66fff9',
-        main: '#03dac6',
-        dark: '#00a896',
+        light: '#ffff6b',
+        main: '#fdd835',
+        dark: '#c6a700',
         contrastText: '#000000'
       },
       error: {
-        light: '#fd558f',
-        main: '#c51162',
-        dark: '#fd558f',
+        light: '#e57373',
+        main: '#f44336',
+        dark: '#d32f2f',
         contrastText: '#ffffff'
+      },
+      text: {
+        primary: '#000000de',
+        secondary: '#0000008a',
+        disabled: '#00000061',
+        hint: '#00000061'
       }
     },
     typography: {

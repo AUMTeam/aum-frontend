@@ -1,8 +1,7 @@
 import { applyMiddleware, createStore } from 'redux';
-import { apiMiddleware } from 'redux-api-middleware';
 import createSagaMiddleware from 'redux-saga';
 import reducers from '../reducers';
-import sagas from '../saga';
+import rootSaga from '../saga';
 
 /**
  * @file
@@ -15,9 +14,9 @@ export function configureStore() {
   const store = createStore(
     reducers,
     window.STATE_FROM_SERVER,
-    applyMiddleware(apiMiddleware, saga)
+    applyMiddleware(saga)
   );
-  saga.run(sagas);
+  saga.run(rootSaga);
 
   return store;
 }

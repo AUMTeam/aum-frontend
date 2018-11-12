@@ -1,3 +1,4 @@
+import { Divider } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
 import Drawer from '@material-ui/core/Drawer';
@@ -14,40 +15,36 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
+import CodeIcon from '@material-ui/icons/Code';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import FaceIcon from '@material-ui/icons/Face';
 import MenuIcon from '@material-ui/icons/Menu';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { getRandomColor } from '../../utils/colorUtils';
-import CodeIcon from '@material-ui/icons/Code';
-import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
-import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
-import FaceIcon from '@material-ui/icons/Face';
 import { USER_TYPE_IDS } from '../../reducers/user';
+import { getRandomColor } from '../../utils/colorUtils';
 
 const tabs = [
   {
     label: 'Programmatore',
-    disabled: false,
     value: USER_TYPE_IDS.PROGRAMMER,
     drawerIcon: <CodeIcon />
   },
   {
     label: 'Referente area tecnica',
-    disabled: false,
     value: USER_TYPE_IDS.TECHNICAL_AREA_MANAGER,
     drawerIcon: <RecordVoiceOverIcon />
   },
   {
     label: 'Responsabile ufficio revisioni',
-    disabled: false,
     value: USER_TYPE_IDS.REVISION_OFFICE_MANAGER,
     drawerIcon: <AttachMoneyIcon />
   },
   {
     label: 'Cliente',
-    disabled: false,
     value: USER_TYPE_IDS.CLIENT,
     drawerIcon: <FaceIcon />
   }
@@ -82,18 +79,18 @@ class HomeAppBar extends Component {
     super(props);
 
     this.state = {
-      selectedTabValue: 0,
+      selectedTabValue: props.user.roles[0], // we automatically select the tab corresponding to the first role of the user
       anchorEl: null,
       isDrawerOpen: false
     };
 
-    this.renderMenu = this.renderMenu.bind(this);
-    this.renderTabs = this.renderTabs.bind(this);
-    this.renderTabsViews = this.renderTabsViews.bind(this);
     this.renderDrawer = this.renderDrawer.bind(this);
+    this.renderTabs = this.renderTabs.bind(this);
+    this.renderMenu = this.renderMenu.bind(this);
 
     this.openDrawer = this.openDrawer.bind(this);
     this.closeDrawer = this.closeDrawer.bind(this);
+    this.onDrawerItemClicked = this.onDrawerItemClicked.bind(this);
     this.onTabSelectionChanged = this.onTabSelectionChanged.bind(this);
     this.onMenuButtonClicked = this.onMenuButtonClicked.bind(this);
     this.onMenuClose = this.onMenuClose.bind(this);
@@ -102,9 +99,10 @@ class HomeAppBar extends Component {
 
   render() {
     const { classes } = this.props;
-    const { selectedTabValue, anchorEl } = this.state;
+    const { anchorEl } = this.state;
     return (
       <div className={classes.root}>
+        {this.renderDrawer()}
         <AppBar position="static">
           <Toolbar>
             <Hidden mdUp>
@@ -120,23 +118,94 @@ class HomeAppBar extends Component {
             <Typography variant="h6" color="inherit" className={classes.grow}>
               Authorization manager
             </Typography>
-            <IconButton
-              className={classes.button}
-              color="inherit"
-              aria-label="Toolbar menu"
-              aria-owns={anchorEl ? 'toolbar-menu' : null}
-              aria-haspopup="true"
-              onClick={this.onMenuButtonClicked}
-            >
-              <MoreVertIcon />
-            </IconButton>
+            <Hidden smDown>
+              <IconButton
+                className={classes.button}
+                color="inherit"
+                aria-label="Toolbar menu"
+                aria-owns={anchorEl ? 'toolbar-menu' : null}
+                aria-haspopup="true"
+                onClick={this.onMenuButtonClicked}
+              >
+                <MoreVertIcon />
+              </IconButton>
+            </Hidden>
             {this.renderMenu()}
           </Toolbar>
           <Hidden smDown>{this.renderTabs()}</Hidden>
         </AppBar>
-        {this.renderTabsViews(selectedTabValue)}
-        {this.renderDrawer()}
       </div>
+    );
+  }
+
+  renderDrawer() {
+    const { classes } = this.props;
+    const { isDrawerOpen } = this.state;
+    return (
+      <Drawer open={isDrawerOpen} onClose={this.closeDrawer}>
+
+        {/*The avatar item is outside the div to avoid drawer closing when clicking on it*/}
+        <ListItem>
+          <ListItemIcon>
+            <Avatar className={classes.avatar}>
+              {this.props.user.name.charAt(0)}
+            </Avatar>
+          </ListItemIcon>
+          <ListItemText
+            primary={this.props.user.name}
+            secondary={this.props.user.email}
+          />
+        </ListItem>
+
+        <div
+          tabIndex={0}
+          role="button"
+          onClick={this.closeDrawer}
+          onKeyDown={this.closeDrawer}
+        >
+          <List className={classes.drawerItems}>
+            {tabs.map((tab, index) => {
+              if (this.props.user.roles.includes(tab.value))
+                return (
+                  <ListItem
+                    key={index}
+                    onClick={() => this.onDrawerItemClicked(tab.value)}
+                    button
+                  >
+                    <ListItemIcon>{tab.drawerIcon}</ListItemIcon>
+                    <ListItemText primary={tab.label} />
+                  </ListItem>
+                );
+            })}
+
+            <Divider />
+
+            <ListItem onClick={this.onLogoutButtonClicked} button>
+              <ListItemIcon>
+                <ExitToAppIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItem>
+          </List>
+        </div>
+      </Drawer>
+    );
+  }
+
+  renderTabs() {
+    const { selectedTabValue } = this.state;
+    return (
+      <Tabs
+        value={selectedTabValue}
+        onChange={this.onTabSelectionChanged}
+        scrollable
+        scrollButtons="auto"
+      >
+        {tabs.map((tab, index) => {
+          if (this.props.user.roles.includes(tab.value))
+            return <Tab key={index} value={tab.value} label={tab.label} />;
+        })}
+      </Tabs>
     );
   }
 
@@ -150,16 +219,19 @@ class HomeAppBar extends Component {
         open={Boolean(anchorEl)}
         onClose={this.onMenuClose}
       >
-        <MenuItem onClick={() => console.log('Profile clicked')}>
+        <ListItem>
           <ListItemIcon>
-            <Avatar className={classes.avatar}>A</Avatar>
+            <Avatar className={classes.avatar}>
+              {this.props.user.name.charAt(0)}
+            </Avatar>
           </ListItemIcon>
           <ListItemText
             classes={{ primary: classes.primary }}
             inset
             primary={this.props.user.name}
+            secondary={this.props.user.email}
           />
-        </MenuItem>
+        </ListItem>
         <MenuItem onClick={this.onLogoutButtonClicked}>
           <ListItemIcon>
             <ExitToAppIcon />
@@ -174,85 +246,6 @@ class HomeAppBar extends Component {
     );
   }
 
-  renderTabs() {
-    const { selectedTabValue } = this.state;
-    return (
-      <Tabs
-        // FIXME: find a way to set for the 1st time the id corresponding to the first tab of the user
-        value={selectedTabValue}    
-        onChange={this.onTabSelectionChanged}
-        scrollable
-        scrollButtons="auto"
-      >
-        {this.props.user.role.isClient && (
-          <Tab value={USER_TYPE_IDS.CLIENT} label="Cliente" />
-        )}
-        {this.props.user.role.isProgrammer && (
-          <Tab value={USER_TYPE_IDS.PROGRAMMER} label="Programmatore" />
-        )}
-        {this.props.user.role.isRevisionOfficeManager && (
-          <Tab
-            value={USER_TYPE_IDS.REVISION_OFFICE_MANAGER}
-            label="Responsabile ufficio revisioni"
-          />
-        )}
-        {this.props.user.role.isTechnicalAreaManager && (
-          <Tab
-            value={USER_TYPE_IDS.TECHNICAL_AREA_MANAGER}
-            label="Referente area tecnica"
-          />
-        )}
-        {/*tabs.map((tab, index) => (
-          <Tab
-            key={index}
-            value={tab.value}
-            label={tab.label}
-            disabled={tab.disabled}
-          />
-        ))*/}
-      </Tabs>
-    );
-  }
-
-  renderTabsViews(selectedTabValue) {
-    switch (selectedTabValue) {
-      case USER_TYPE_IDS.PROGRAMMER:
-        return <h1>Programmatore</h1>;
-      case USER_TYPE_IDS.TECHNICAL_AREA_MANAGER:
-        return <h1>Referente</h1>;
-      case USER_TYPE_IDS.REVISION_OFFICE_MANAGER:
-        return <h1>Responsabile uff. revisioni</h1>;
-      case USER_TYPE_IDS.CLIENT:
-        return <h1>Cliente</h1>;
-      default:
-        return "Unknown";
-    }
-  }
-
-  renderDrawer() {
-    const { classes } = this.props;
-    const { isDrawerOpen } = this.state;
-    return (
-      <Drawer open={isDrawerOpen} onClose={this.closeDrawer}>
-        <div
-          tabIndex={0}
-          role="button"
-          onClick={this.closeDrawer}
-          onKeyDown={this.closeDrawer}
-        >
-          <List className={classes.drawerItems} component="nav">
-            {tabs.map((tab, index) => (
-              <ListItem key={index} button>
-                <ListItemIcon>{tab.drawerIcon}</ListItemIcon>
-                <ListItemText primary={tab.label} />
-              </ListItem>
-            ))}
-          </List>
-        </div>
-      </Drawer>
-    );
-  }
-
   openDrawer() {
     this.setState({ isDrawerOpen: true });
   }
@@ -261,10 +254,15 @@ class HomeAppBar extends Component {
     this.setState({ isDrawerOpen: false });
   }
 
-  onTabSelectionChanged(event, value) {
+  onDrawerItemClicked(sectionValue) {
+    this.props.onSectionChanged(sectionValue);
+  }
+
+  onTabSelectionChanged(event, sectionValue) {
     this.setState({
-      selectedTabValue: value
+      selectedTabValue: sectionValue
     });
+    this.props.onSectionChanged(sectionValue);
   }
 
   onMenuButtonClicked(event) {
@@ -284,7 +282,8 @@ class HomeAppBar extends Component {
 }
 
 HomeAppBar.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  onSectionChanged: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(HomeAppBar);
