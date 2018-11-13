@@ -10,6 +10,7 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import Snackbar from '@material-ui/core/Snackbar';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { attemptLogin } from '../../actions/auth';
@@ -64,12 +65,10 @@ class LoginCard extends Component {
           <Grid item xs={12}>
             <FormControl error={usernameError} fullWidth={true}>
               <TextField
-                id="username-field"
                 label="Username"
                 type="text"
                 error={usernameError}
                 autoFocus={true}
-                multiline={true}
                 value={username}
                 onChange={event => this.onInputChanged('username', event)}
               />
@@ -81,11 +80,9 @@ class LoginCard extends Component {
           <Grid item xs={12}>
             <FormControl error={passwordError} fullWidth={true}>
               <TextField
-                id="password-field"
                 label="Password"
                 type="password"
                 error={passwordError}
-                multiline={true}
                 value={password}
                 onChange={event => this.onInputChanged('password', event)}
               />
@@ -108,6 +105,10 @@ class LoginCard extends Component {
             </Grid>
           </Grid>
         </Grid>
+        <Snackbar
+          open={this.props.loginErrorMessage != null}
+          message={<span>{this.props.loginErrorMessage}</span>}
+        />
       </Card>
     );
   }
