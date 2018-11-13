@@ -1,9 +1,34 @@
 import React, { Component } from 'react';
-import { Col, Card, Row, Button, Input, ProgressBar } from 'react-materialize';
+import { withStyles } from '@material-ui/core/styles';
+import Card from '@material-ui/core/Card';
+import Typography from '@material-ui/core/Typography';
+import CardContent from '@material-ui/core/CardContent';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { attemptLogin } from '../../actions/auth';
 import './LoginCard.css';
+import { Grid } from '@material-ui/core';
+
+const styles = {
+  card: {
+    minWidth: 450,
+    marginTop: 200
+  },
+  textField: {
+    width: 390
+  },
+  button: {
+    marginTop: 16
+  },
+  title: {
+    fontSize: 14
+  },
+  pos: {
+    marginBottom: 12
+  }
+};
 
 class LoginCard extends Component {
   constructor(props) {
@@ -16,60 +41,56 @@ class LoginCard extends Component {
   }
 
   render() {
+    const { classes } = this.props;
     return (
       <div>
-        {/*Mimics a vertical alignment of the card (creates 8 rows)*/}
-        {React.Children.map(Array(8), () => {
-          return (
-            <Row>
-              <Col m={12} />
-            </Row>
-          )
-        })}
-
-        <Row>
-          <Col offset="m4" s={12} m={4}>
-            <ProgressBar className={(this.props.isAttemptingLogin ? '' : 'hide')} />
-            <Card
-              className="white"
-              title="Benvenuto in Authorization Manager"
-            >
-              <span className="black-text"> Effettua il login con il tuo account</span>
+        <Grid
+          spacing={16}
+          xs={12} // FIXME it shouldn't be used here, but it is bugged without it!
+          container
+          justify="center"
+          alignItems="center"
+        >
+          <Card className={classes.card}>
+            <CardContent>
+              <Typography gutterBottom variant="h4" component="h2">
+                Gesbank Evolution
+              </Typography>
+              <Typography gutterBottom variant="subtitle1" color="textSecondary">
+                Benvenuto in Authorization Manager
+              </Typography>
+              <TextField
+                id="username-field"
+                label="Username"
+                placeholder=""
+                multiline // FIXME bugged without it!
+                className={classes.textField}
+                margin="normal"
+              />
               <br />
-
-              <Input
-                s={8}
-                label="Nome utente"
-                onChange={event => this.setState({username: event.target.value})}
-              />
-              <Input
-                s={8}
-                type="password"
+              <TextField
+                id="password-field"
                 label="Password"
-                onChange={event => this.setState({password: event.target.value})}
+                placeholder=""
+                multiline // FIXME bugged without it!
+                className={classes.textField}
+                type="password"
+                margin="normal"
               />
-              <Row>
-                <Col s={8}>
-                  <span className="red-text">{this.props.loginErrorMessage}</span>
-                </Col>
-                <Col s={4}>
-                  <Button
-                    onClick={() =>
-                      this.props.attemptLogin(
-                        this.state.username,
-                        this.state.password
-                      )
-                    }
-                    waves="light"
-                    style={{ backgroundColor: 'blue' }}
-                  >
-                    Accedi
-                  </Button>
-                </Col>
-              </Row>
-            </Card>
-          </Col>
-        </Row>
+              <Grid container justify="flex-end" alignItems="flex-start">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  className={classes.button}
+                  onClick={() => this.props.attemptLogin(this.state.username, this.state.password)}
+                >
+                  Login
+                </Button>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
       </div>
     );
   }
@@ -79,8 +100,8 @@ const mapStateToProps = state => {
   return {
     isAttemptingLogin: state.auth.isAttemptingLogin,
     loginErrorMessage: state.auth.loginErrorMessage
-  }
-}
+  };
+};
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
@@ -89,9 +110,11 @@ const mapDispatchToProps = dispatch => {
     },
     dispatch
   );
-}
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LoginCard);
+export default withStyles(styles)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(LoginCard)
+);
