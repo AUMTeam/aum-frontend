@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
-import { LoginCard } from '../../components/LoginCard'
+import { LoginCard } from '../../components/LoginCard';
+import PropTypes from 'prop-types';
+import { Grid, withStyles } from '@material-ui/core';
+
+const styles = {
+  root: {
+    flexGrow: 1,
+    position: 'absolute',
+    height: '100%'
+  }
+};
 
 /**
  * @class
@@ -9,12 +19,23 @@ import { LoginCard } from '../../components/LoginCard'
  */
 class Login extends Component {
   render() {
+    const { classes } = this.props;
     return (
-      <div>
+      <Grid
+        className={classes.root}
+        container
+        direction="column"
+        justify="center"
+        alignItems="center"
+      >
         <LoginCard />
-      </div>
+      </Grid>
     );
   }
 }
 
-export default Login;
+Login.propTypes = {
+  classes: PropTypes.object.isRequired
+};
+
+export default withStyles(styles)(Login);
