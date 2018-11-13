@@ -9,11 +9,17 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { COMMITS_PER_PAGE } from '../../actions/commits';
+import { TableFooter, TablePagination, CircularProgress } from '@material-ui/core';
 
 const styles = {
   root: {
     flexGrow: 1,
     width: '100%'
+  },
+  spinner: {
+    // TODO FIND A WAY TO CENTER THE SPINNER
+    marginTop: '30px'
   }
 };
 
@@ -25,6 +31,10 @@ const styles = {
 class CommitsTable extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      currentPage: 0
+    };
 
     this.renderTableToolbar = this.renderTableToolbar.bind(this);
     this.renderTableHeader = this.renderTableHeader.bind(this);
@@ -39,6 +49,7 @@ class CommitsTable extends Component {
         <Table>
           {this.renderTableHeader()}
           {this.renderTableBody()}
+          {this.renderTableFooter()}
         </Table>
       </Paper>
     );
@@ -48,9 +59,7 @@ class CommitsTable extends Component {
     const { tableToolbarTitle } = this.props;
     return (
       <Toolbar>
-        <Typography variant="h5">
-          {tableToolbarTitle}
-        </Typography>
+        <Typography variant="h5">{tableToolbarTitle}</Typography>
       </Toolbar>
     );
   }
@@ -60,8 +69,8 @@ class CommitsTable extends Component {
     return (
       <TableHead>
         <TableRow>
-          {tableHeaderLabels.map(headerValue => (
-            <TableCell>{headerValue}</TableCell>
+          {tableHeaderLabels.map((headerValue, index) => (
+            <TableCell key={index}>{headerValue}</TableCell>
           ))}
         </TableRow>
       </TableHead>
@@ -72,16 +81,38 @@ class CommitsTable extends Component {
     const { tableData } = this.props;
     return (
       <TableBody>
-        {tableData.map(rowValue => {
-          return (
-            <TableRow>
-              {rowValue.map(columnValue => (
-                <TableCell>{columnValue}</TableCell>
-              ))}
-            </TableRow>
-          );
-        })}
+        {this.props.isLoading ? (
+          <CircularProgress style={styles.spinner} size={120} />
+        ) : (
+          tableData[this.state.currentPage].data.map((rowValue, index) => {
+            return (
+              <TableRow key={index}>
+                <TableCell>{rowValue.id}</TableCell>
+                <TableCell>{rowValue.description}</TableCell>
+                <TableCell>{new Date(rowValue.timestamp*1000).toLocaleString('it-it')}</TableCell>
+                <TableCell>{rowValue.author.username}</TableCell>
+                <TableCell>{rowValue.approval_status}</TableCell>
+              </TableRow>
+            );
+          })
+        )}
       </TableBody>
+    );
+  }
+
+  renderTableFooter() {
+    return (
+      <TableFooter>
+        <TableRow>
+          <TablePagination
+            count={this.props.itemsCount}
+            rowsPerPage={COMMITS_PER_PAGE}
+            page={this.state.currentPage}
+            rowsPerPageOptions={[COMMITS_PER_PAGE]}
+            onChangePage={() => this.props.onPageChange(this.state.currentPage)}
+          />
+        </TableRow>
+      </TableFooter>
     );
   }
 }
@@ -90,7 +121,10 @@ CommitsTable.propTypes = {
   classes: PropTypes.object.isRequired,
   tableToolbarTitle: PropTypes.string.isRequired,
   tableHeaderLabels: PropTypes.array.isRequired,
-  tableData: PropTypes.array.isRequired
+  tableData: PropTypes.array.isRequired,
+  itemsCount: PropTypes.number.isRequired,
+  onChangePage: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired
 };
 
 export default withStyles(styles)(CommitsTable);
