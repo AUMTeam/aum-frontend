@@ -27,6 +27,12 @@ export function configureTheme() {
         dark: '#d32f2f',
         contrastText: '#ffffff'
       },
+      text: {
+        primary: '#000000de',
+        secondary: '#0000008a',
+        disabled: '#00000061',
+        hint: '#00000061'
+      }
     },
     typography: {
       useNextVariants: true
