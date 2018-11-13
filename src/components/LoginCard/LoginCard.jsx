@@ -23,6 +23,9 @@ const styles = {
   },
   root: {
     padding: 16
+  },
+  loginButton: {
+    width: 56
   }
 };
 
@@ -95,6 +98,8 @@ class LoginCard extends Component {
             <Grid container justify="flex-end" alignContent="center">
               <Grid item>
                 <Button
+                  className={classes.loginButton}
+                  size="large"
                   variant="contained"
                   color="secondary"
                   onClick={this.onLoginButtonClicked}
