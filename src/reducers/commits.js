@@ -1,6 +1,7 @@
 import { COMMITS_ACTION_TYPE_KEYS } from '../actions/commits';
+import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
 
-export const initialState = {
+const initialState = {
   /*
     listPages will contain objects with the following shape:
     {
@@ -32,8 +33,7 @@ export function commits(state = initialState, action) {
       const newState = {
         ...state,
         isLoadingList: false,
-        totalCommitsCount: action.serverResponse.count,
-        currentlyShowingPage: action.pageNumber,
+        totalCommitsCount: action.serverResponse.count_total
       };
       newState.listPages = [...state.listPages];  // objects are not deeply copied, that would just be too painful
       if (!(action.pageNumber in newState.listPages))
@@ -52,6 +52,10 @@ export function commits(state = initialState, action) {
       return {
         ...state,
         isLoadingList: false
+      };
+    case AUTH_ACTION_TYPE_KEYS.LOGOUT:
+      return {
+        ...initialState
       };
     default:
       return state;

@@ -14,15 +14,32 @@ export const COMMITS_ACTION_TYPE_KEYS = {
   // and therefore doesn't need to be retrieved from server
   COMMITS_LIST_NO_RETRIEVAL_NEEDED: 'COMMITS_LIST_NO_RETRIEVAL_NEEDED',
 
-  COMMITS_LIST_UPDATED: 'COMMITS_LIST_UPDATED',
+  COMMITS_LIST_UPDATE_FOUND: 'COMMITS_LIST_UPDATE_FOUND',
+  COMMITS_LIST_START_AUTO_CHECKING: 'COMMITS_LIST_START_AUTO_CHECKING',
+  COMMITS_LIST_STOP_AUTO_CHECKING: 'COMMITS_LIST_STOP_AUTO_CHECKING',
   SHOW_COMMIT_DETAILS: 'SHOW_COMMIT_DETAILS',
   PERFORMING_REQUEST: 'PERFORMING_REQUEST'
 };
 
-export function retrieveCommitsListPage(pageNumber) {
+export function retrieveCommitsListPage(pageNumber, userRoleString) {
   return {
     type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_REQUEST,
     pageNumber,
-    limit: COMMITS_PER_PAGE
+    limit: COMMITS_PER_PAGE,
+    userRoleString
   };
+}
+
+export function startCommitsListUpdatesAutoChecking(userRoleString) {
+  return {
+    type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_START_AUTO_CHECKING,
+    userRoleString
+  }
+}
+
+export function stopCommitsListUpdatesAutoChecking(userRoleString) {
+  return {
+    type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_STOP_AUTO_CHECKING,
+    userRoleString
+  }
 }

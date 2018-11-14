@@ -73,12 +73,11 @@ class Home extends Component {
       case USER_TYPE_IDS.CLIENT:
         return <ClientView />;
       default:
-        return 'Unknown';
+        return 'Seleziona una scheda';
     }
   }
 
   onSectionChanged(sectionValue) {
-    console.log('Changed section with id ' + sectionValue);
     this.setState({ sectionValue });
   }
 }

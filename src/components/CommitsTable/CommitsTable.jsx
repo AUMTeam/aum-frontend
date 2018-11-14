@@ -26,7 +26,7 @@ const styles = {
 /**
  * @class
  * This class is responsible of displaying a table
- * with specific data.
+ * with specific commits data.
  */
 class CommitsTable extends Component {
   constructor(props) {
@@ -109,7 +109,10 @@ class CommitsTable extends Component {
             rowsPerPage={COMMITS_PER_PAGE}
             page={this.state.currentPage}
             rowsPerPageOptions={[COMMITS_PER_PAGE]}
-            onChangePage={() => this.props.onPageChange(this.state.currentPage)}
+            onChangePage={(evt, page) => {
+              this.props.onPageChange(page, this.props.userRoleString);
+              this.setState({currentPage: page});
+            }}
           />
         </TableRow>
       </TableFooter>
@@ -123,8 +126,9 @@ CommitsTable.propTypes = {
   tableHeaderLabels: PropTypes.array.isRequired,
   tableData: PropTypes.array.isRequired,
   itemsCount: PropTypes.number.isRequired,
-  onChangePage: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool.isRequired
+  onPageChange: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  userRoleString: PropTypes.string.isRequired
 };
 
 export default withStyles(styles)(CommitsTable);

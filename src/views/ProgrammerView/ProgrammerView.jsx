@@ -4,7 +4,11 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { retrieveCommitsListPage } from '../../actions/commits';
+import {
+  retrieveCommitsListPage,
+  startCommitsListUpdatesAutoChecking,
+  stopCommitsListUpdatesAutoChecking
+} from '../../actions/commits';
 import CommitsTable from '../../components/CommitsTable/CommitsTable';
 
 const COMMITS_TABLE_HEADER = ['ID', 'Descrizione', 'Data', 'Autore', 'Approvato'];
@@ -25,7 +29,12 @@ class ProgrammerView extends Component {
   constructor(props) {
     super(props);
 
-    this.props.retrieveCommitsListPage(0);
+    this.props.retrieveCommitsListPage(0, 'programmer');
+    this.props.startCommitsListUpdatesAutoChecking('programmer');
+  }
+
+  componentWillUnmount() {
+    this.props.stopCommitsListUpdatesAutoChecking('programmer');
   }
 
   render() {
@@ -39,8 +48,9 @@ class ProgrammerView extends Component {
               tableHeaderLabels={COMMITS_TABLE_HEADER}
               tableData={this.props.commitsData.listPages}
               itemsCount={this.props.commitsData.totalCommitsCount}
-              onPageChange={retrieveCommitsListPage}
+              onPageChange={this.props.retrieveCommitsListPage}
               isLoading={this.props.commitsData.isLoadingList}
+              userRoleString="programmer"
             />
           </Grid>
         </Grid>
@@ -55,14 +65,24 @@ ProgrammerView.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    commitsData: state.commits
+    commitsData: state.programmer.commits
   };
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ retrieveCommitsListPage }, dispatch);
+  return bindActionCreators(
+    {
+      retrieveCommitsListPage,
+      startCommitsListUpdatesAutoChecking,
+      stopCommitsListUpdatesAutoChecking
+    },
+    dispatch
+  );
 };
 
 export default withStyles(styles)(
-  connect(mapStateToProps, mapDispatchToProps)(ProgrammerView)
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(ProgrammerView)
 );
