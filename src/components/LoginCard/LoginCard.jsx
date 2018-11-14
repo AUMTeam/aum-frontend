@@ -126,35 +126,41 @@ class LoginCard extends Component {
     });
   }
 
-  async onLoginButtonClicked() {
-    await this.checkTextFields();
+  onLoginButtonClicked() {
+    const { username, password } = this.state;
 
-    const { username, password, usernameError, passwordError } = this.state;
-
-    if (!usernameError && !passwordError) {
+    if (this.checkTextFields()) {
       this.props.attemptLogin(username, password);
     }
   }
 
-  async checkTextFields() {
+  checkTextFields() {
     const { username, password } = this.state;
 
     if (this.validateField(username) && this.validateField(password)) {
-      await this.setState({
+      this.setState({
         usernameError: true,
         passwordError: true
       });
+
+      return false;
     } else if (this.validateField(username)) {
-      await this.setState({
+      this.setState({
         usernameError: true,
         passwordError: false
       });
+
+      return false;
     } else if (this.validateField(password)) {
-      await this.setState({
+      this.setState({
         usernameError: false,
         passwordError: true
       });
+
+      return false;
     }
+
+    return true;
   }
 
   validateField(value) {
