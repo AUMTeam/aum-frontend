@@ -40,11 +40,8 @@ export function commits(state = initialState, action) {
         newState.listPages[action.pageNumber] = {};
       newState.listPages[action.pageNumber].data = action.serverResponse.commit_list;
       
-      // If this is the first time a page is retrieved, the latest commit timestamp is equal to the
-      // timestamp of the first commit (which will obviously belong to page 0)
-      // (it won't be needed anymore when update check will be implemented)
-      if (state.latestCommitTimestamp === 0)
-        newState.latestCommitTimestamp = action.serverResponse.commit_list[0].timestamp;
+      // Here we assume that the latestCommitTimestamp value is always correctly initialized,
+      // because update checking always happens before retrieving a page
       newState.listPages[action.pageNumber].updateTimestamp = newState.latestCommitTimestamp;
       return newState;
     case COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_NO_RETRIEVAL_NEEDED:
@@ -53,6 +50,11 @@ export function commits(state = initialState, action) {
         ...state,
         isLoadingList: false
       };
+    case COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_UPDATE_FOUND:
+      return {
+        ...state,
+        latestCommitTimestamp: action.latestCommitTimestamp
+      }
     case AUTH_ACTION_TYPE_KEYS.LOGOUT:
       return {
         ...initialState

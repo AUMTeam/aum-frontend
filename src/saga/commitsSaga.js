@@ -108,6 +108,8 @@ function* checkForListUpdates(latestCommitTimestamp, userRoleString) {
         latestCommitTimestamp: responseJson.response_data.latest_commit_timestamp,
         userRoleString
       });
+    else 
+      console.log('No commits lits updates found');
   } else {
     // TODO dispatch some error action?
     console.error(`Error when checking for commits list updates: ${responseJson.message}`);
@@ -125,6 +127,7 @@ function* runAutoListUpdateChecker(action) {
       yield delay(COMMITS_LIST_AUTO_UPDATE_INTERVAL);
       // Avoid checking for updates when retrieveCommitsListPage() is running
       if (yield select(state => !state[action.userRoleString].commits.isLoadingList)) {
+        console.log('Checking for commits list updates...');
         yield call(
           checkForListUpdates,
           yield select(state => state[action.userRoleString].commits.latestCommitTimestamp),
