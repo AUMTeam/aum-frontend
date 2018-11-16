@@ -10,7 +10,9 @@ export const REQUEST_ACTIONS_PATHS = {
   LOGIN: 'auth/login',
   LOGOUT: 'auth/logout',
   VALIDATE_TOKEN: 'auth/validateToken',
-  GET_USER_INFO: 'user/info'
+  GET_USER_INFO: 'user/info',
+  GET_COMMITS_LIST: 'commit/list',
+  CHECK_COMMITS_UPDATES: 'commit/update'
 };
 
 /**

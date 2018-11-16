@@ -15,7 +15,7 @@ export const USER_TYPE_IDS = {
   PROGRAMMER: 4
 }
 
-export const initialState = {
+const initialState = {
   id: null,
   name: null,
   area: null,

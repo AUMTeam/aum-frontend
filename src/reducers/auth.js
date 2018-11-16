@@ -7,7 +7,7 @@ import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
  * reducer which changes the state in relation to the action type and content.
  */
 
-export const initialState = {
+const initialState = {
   accessToken: null,
   isAttemptingLogin: false,
   isValidatingToken: false,

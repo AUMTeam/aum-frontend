@@ -6,6 +6,10 @@ import { requestCurrentUserInfo } from '../../actions/user';
 import { HomeAppBar } from '../../components/HomeAppBar';
 import { LogoLoader } from '../../components/LogoLoader';
 import { USER_TYPE_IDS } from '../../reducers/user';
+import { ProgrammerView } from '../../views/ProgrammerView';
+import { TechnicalAreaManagerView } from '../../views/TechnicalAreaManagerView';
+import { RevisionOfficeManagerView } from '../../views/RevisionOfficeManagerView';
+import { ClientView } from '../../views/ClientView';
 
 /**
  * @class
@@ -26,10 +30,14 @@ class Home extends Component {
     this.onSectionChanged = this.onSectionChanged.bind(this);
   }
 
-  static getDerivedStateFromProps(props) {
-    return {
-      sectionValue: props.user.roles[0]
-    };
+  // This is needed to select the first existing tab when user data are retrieved
+  static getDerivedStateFromProps(props, state) {
+    if (state.sectionValue == null)
+      return {
+        sectionValue: props.user.roles[0]
+      };
+    else
+      return null;    // don't change state
   }
 
   render() {
@@ -56,20 +64,20 @@ class Home extends Component {
   renderTabsViews(selectedTabValue) {
     switch (selectedTabValue) {
       case USER_TYPE_IDS.PROGRAMMER:
-        return <h1>Programmatore</h1>;
+        // This is only a placeholder, we will create specific views for each role.
+        return <ProgrammerView />;
       case USER_TYPE_IDS.TECHNICAL_AREA_MANAGER:
-        return <h1>Referente</h1>;
+        return <TechnicalAreaManagerView />;
       case USER_TYPE_IDS.REVISION_OFFICE_MANAGER:
-        return <h1>Responsabile uff. revisioni</h1>;
+        return <RevisionOfficeManagerView />;
       case USER_TYPE_IDS.CLIENT:
-        return <h1>Cliente</h1>;
+        return <ClientView />;
       default:
-        return 'Unknown';
+        return 'Seleziona una scheda';
     }
   }
 
   onSectionChanged(sectionValue) {
-    console.log('Changed section with id ' + sectionValue);
     this.setState({ sectionValue });
   }
 }
