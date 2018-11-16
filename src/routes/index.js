@@ -4,7 +4,7 @@ import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { Home } from './Home';
 import { Login } from './Login';
 import { bindActionCreators } from 'redux';
-import { requestLocalTokenValidationIfPresent } from '../actions/auth';
+import { requestLocalTokenValidationIfPresent } from '../redux/actions/auth';
 import { LogoLoader } from '../components/LogoLoader';
 
 /**

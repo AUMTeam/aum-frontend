@@ -1,7 +1,7 @@
 import { all } from 'redux-saga/effects';
-import { userSaga } from './userSaga';
-import { authFlowSaga } from './authSaga';
-import { commitsSaga } from './commitsSaga';
+import { userSaga } from './user';
+import { authFlowSaga } from './auth';
+import { commitsSaga } from './commits';
 
 /**
  * @file

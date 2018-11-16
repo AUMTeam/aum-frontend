@@ -24,7 +24,6 @@ const styles = {
  * progress bar when the webapp is loading some content.
  */
 class LogoLoader extends Component {
-
   render() {
     const { classes } = this.props;
     return (

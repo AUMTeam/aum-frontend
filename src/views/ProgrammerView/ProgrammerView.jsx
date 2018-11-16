@@ -8,7 +8,7 @@ import {
   retrieveCommitsListPage,
   startCommitsListUpdatesAutoChecking,
   stopCommitsListUpdatesAutoChecking
-} from '../../actions/commits';
+} from '../../redux/actions/commits';
 import CommitsTable from '../../components/CommitsTable/CommitsTable';
 
 const COMMITS_TABLE_HEADER = ['ID', 'Descrizione', 'Data', 'Autore', 'Approvato'];

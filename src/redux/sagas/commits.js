@@ -1,7 +1,7 @@
 import { delay } from 'redux-saga';
 import { select, call, put, take, fork, cancel, cancelled, takeLatest } from 'redux-saga/effects';
 import { COMMITS_ACTION_TYPE_KEYS, COMMITS_PER_PAGE } from '../actions/commits';
-import { REQUEST_ACTIONS_PATHS, makeAuthenticatedApiRequest } from '../utils/apiUtils';
+import { REQUEST_ACTIONS_PATHS, makeAuthenticatedApiRequest } from '../../utils/apiUtils';
 
 const COMMITS_LIST_AUTO_UPDATE_INTERVAL = 10000;
 

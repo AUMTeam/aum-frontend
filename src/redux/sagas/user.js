@@ -1,7 +1,7 @@
 import {
   REQUEST_ACTIONS_PATHS,
   makeAuthenticatedApiRequest
-} from '../utils/apiUtils';
+} from '../../utils/apiUtils';
 
 /**
  * @file

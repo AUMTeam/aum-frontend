@@ -24,7 +24,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { USER_TYPE_IDS } from '../../reducers/user';
+import { USER_TYPE_IDS } from '../../redux/reducers/user';
 import { getRandomColor } from '../../utils/colorUtils';
 
 const tabs = [

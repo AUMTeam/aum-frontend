@@ -9,7 +9,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { COMMITS_PER_PAGE } from '../../actions/commits';
+import { COMMITS_PER_PAGE } from '../../redux/actions/commits';
 import { TableFooter, TablePagination, CircularProgress } from '@material-ui/core';
 
 const styles = {
