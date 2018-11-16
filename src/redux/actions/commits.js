@@ -21,7 +21,7 @@ export const COMMITS_ACTION_TYPE_KEYS = {
   PERFORMING_REQUEST: 'PERFORMING_REQUEST'
 };
 
-export function retrieveCommitsListPage(pageNumber, userRoleString) {
+export function retrieveCommitsListPageAction(pageNumber, userRoleString) {
   return {
     type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_REQUEST,
     pageNumber,
@@ -30,14 +30,14 @@ export function retrieveCommitsListPage(pageNumber, userRoleString) {
   };
 }
 
-export function startCommitsListUpdatesAutoChecking(userRoleString) {
+export function startCommitsListUpdatesAutoCheckingAction(userRoleString) {
   return {
     type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_START_AUTO_CHECKING,
     userRoleString
   }
 }
 
-export function stopCommitsListUpdatesAutoChecking(userRoleString) {
+export function stopCommitsListUpdatesAutoCheckingAction(userRoleString) {
   return {
     type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_STOP_AUTO_CHECKING,
     userRoleString

@@ -11,7 +11,7 @@ import React, { Component } from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { attemptLogin } from '../../redux/actions/auth';
+import { attemptLoginAction } from '../../redux/actions/auth';
 
 const styles = {
   card: {
@@ -127,7 +127,7 @@ class LoginCard extends Component {
     const { username, password } = this.state;
 
     if (this.checkTextFields()) {
-      this.props.attemptLogin(username, password);
+      this.props.attemptLoginAction(username, password);
     }
   }
 
@@ -179,7 +179,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      attemptLogin
+      attemptLoginAction
     },
     dispatch
   );

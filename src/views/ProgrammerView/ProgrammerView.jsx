@@ -5,9 +5,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {
-  retrieveCommitsListPage,
-  startCommitsListUpdatesAutoChecking,
-  stopCommitsListUpdatesAutoChecking
+  retrieveCommitsListPageAction,
+  startCommitsListUpdatesAutoCheckingAction,
+  stopCommitsListUpdatesAutoCheckingAction
 } from '../../redux/actions/commits';
 import { CommitsTable } from '../../components/CommitsTable';
 import { USER_TYPE_IDS, USER_ROLE_STRINGS } from '../../constants/user';
@@ -30,12 +30,12 @@ class ProgrammerView extends Component {
   constructor(props) {
     super(props);
 
-    this.props.retrieveCommitsListPage(0, USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
-    this.props.startCommitsListUpdatesAutoChecking(USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
+    this.props.retrieveCommitsListPageAction(0, USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
+    this.props.startCommitsListUpdatesAutoCheckingAction(USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
   }
 
   componentWillUnmount() {
-    this.props.stopCommitsListUpdatesAutoChecking(USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
+    this.props.stopCommitsListUpdatesAutoCheckingAction(USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
   }
 
   render() {
@@ -49,7 +49,7 @@ class ProgrammerView extends Component {
               tableHeaderLabels={COMMITS_TABLE_HEADER}
               tableData={this.props.commitsData.listPages}
               itemsCount={this.props.commitsData.totalCommitsCount}
-              onPageChange={this.props.retrieveCommitsListPage}
+              onPageChange={this.props.retrieveCommitsListPageAction}
               isLoading={this.props.commitsData.isLoadingList}
               userRoleString={USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]}
             />
@@ -73,9 +73,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      retrieveCommitsListPage,
-      startCommitsListUpdatesAutoChecking,
-      stopCommitsListUpdatesAutoChecking
+      retrieveCommitsListPageAction,
+      startCommitsListUpdatesAutoCheckingAction,
+      stopCommitsListUpdatesAutoCheckingAction
     },
     dispatch
   );

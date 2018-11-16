@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { performLogout } from '../../redux/actions/auth';
-import { requestCurrentUserInfo } from '../../redux/actions/user';
+import { performLogoutAction } from '../../redux/actions/auth';
+import { requestCurrentUserInfoAction } from '../../redux/actions/user';
 import { HomeAppBar } from '../../components/HomeAppBar';
 import { LogoLoader } from '../../components/LogoLoader';
 import { USER_TYPE_IDS } from '../../constants/user';
@@ -25,7 +25,7 @@ class Home extends Component {
       sectionValue: null
     };
 
-    props.requestCurrentUserInfo(props.accessToken);
+    props.requestCurrentUserInfoAction(props.accessToken);
 
     this.onSectionChanged = this.onSectionChanged.bind(this);
   }
@@ -51,7 +51,7 @@ class Home extends Component {
           <div>
             <HomeAppBar
               user={this.props.user}
-              onLogout={() => this.props.performLogout(this.props.accessToken)}
+              onLogout={() => this.props.performLogoutAction(this.props.accessToken)}
               onSectionChanged={this.onSectionChanged}
             />
             {this.renderTabsViews(sectionValue)}
@@ -90,7 +90,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ performLogout, requestCurrentUserInfo }, dispatch);
+  return bindActionCreators({ performLogoutAction, requestCurrentUserInfoAction }, dispatch);
 };
 
 export default connect(

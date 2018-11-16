@@ -108,16 +108,16 @@ function* checkForListUpdates(latestCommitTimestamp, userRoleString) {
         userRoleString
       });
     else 
-      console.log('No commits lits updates found');
+      console.log('No commits list updates found');
   } else {
-    // TODO dispatch some error action?
+    // TODO dispatch some error action
     console.error(`Error when checking for commits list updates: ${responseJson.message}`);
   }
 }
 
 /**
  * Performs automatic update checking for the commits list
- * every COMMITS_LIST_AUTO_UPDATE_INTERVAL milliseconds
+ * every LIST_AUTO_UPDATE_INTERVAL milliseconds
  * @param {*} action Action of type COMMITS_LIST_START_AUTO_CHECKING
  */
 function* runAutoListUpdateChecker(action) {
@@ -135,7 +135,7 @@ function* runAutoListUpdateChecker(action) {
       }
     }
   }
-  catch (error) {
+  catch (error) {   // TODO Understand why this block is never entered
     if (yield cancelled())
       console.log('Commits list: auto update checking stopped');
     else

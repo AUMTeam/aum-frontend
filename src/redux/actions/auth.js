@@ -18,7 +18,7 @@ export const AUTH_ACTION_TYPE_KEYS = {
   TOKEN_VALIDATION_FAILED: 'TOKEN_VALIDATION_FAILED'
 };
 
-export function attemptLogin(username, password) {
+export function attemptLoginAction(username, password) {
   return {
     type: AUTH_ACTION_TYPE_KEYS.LOGIN_REQUESTED,
     username,
@@ -26,14 +26,14 @@ export function attemptLogin(username, password) {
   };
 }
 
-export function performLogout(accessToken) {
+export function performLogoutAction(accessToken) {
   return {
     type: AUTH_ACTION_TYPE_KEYS.LOGOUT,
     accessToken
   };
 }
 
-export function requestLocalTokenValidationIfPresent(accessToken) {
+export function requestLocalTokenValidationIfPresentAction(accessToken) {
   return {
     type: AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_REQUESTED,
     accessToken

@@ -4,7 +4,7 @@ import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { Home } from './Home';
 import { Login } from './Login';
 import { bindActionCreators } from 'redux';
-import { requestLocalTokenValidationIfPresent } from '../redux/actions/auth';
+import { requestLocalTokenValidationIfPresentAction } from '../redux/actions/auth';
 import { LogoLoader } from '../components/LogoLoader';
 
 /**
@@ -51,7 +51,7 @@ class Routes extends Component {
     super(props);
 
     // This is called only at application startup
-    this.props.requestLocalTokenValidationIfPresent(localStorage.getItem('token'));
+    this.props.requestLocalTokenValidationIfPresentAction(localStorage.getItem('token'));
   }
 
   render() {
@@ -101,7 +101,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      requestLocalTokenValidationIfPresent
+      requestLocalTokenValidationIfPresentAction
     },
     dispatch
   );
