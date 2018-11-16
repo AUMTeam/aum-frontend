@@ -1,7 +1,5 @@
-import {
-  REQUEST_ACTIONS_PATHS,
-  makeAuthenticatedApiRequest
-} from '../../utils/apiUtils';
+import { makeAuthenticatedApiRequest } from '../../utils/apiUtils';
+import { REQUEST_ACTIONS_PATHS } from '../../constants/api';
 
 /**
  * @file

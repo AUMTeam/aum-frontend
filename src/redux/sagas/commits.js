@@ -1,9 +1,8 @@
 import { delay } from 'redux-saga';
 import { select, call, put, take, fork, cancel, cancelled, takeLatest } from 'redux-saga/effects';
 import { COMMITS_ACTION_TYPE_KEYS, COMMITS_PER_PAGE } from '../actions/commits';
-import { REQUEST_ACTIONS_PATHS, makeAuthenticatedApiRequest } from '../../utils/apiUtils';
-
-const COMMITS_LIST_AUTO_UPDATE_INTERVAL = 10000;
+import { REQUEST_ACTIONS_PATHS, LIST_AUTO_UPDATE_INTERVAL } from '../../constants/api';
+import { makeAuthenticatedApiRequest } from '../../utils/apiUtils';
 
 /**
  * Called every time the user changes the page of the commits table or the latter is recreated
@@ -124,7 +123,7 @@ function* checkForListUpdates(latestCommitTimestamp, userRoleString) {
 function* runAutoListUpdateChecker(action) {
   try {
     while (true) {
-      yield delay(COMMITS_LIST_AUTO_UPDATE_INTERVAL);
+      yield delay(LIST_AUTO_UPDATE_INTERVAL);
       // Avoid checking for updates when retrieveCommitsListPage() is running
       if (yield select(state => !state[action.userRoleString].commits.isLoadingList)) {
         console.log('Checking for commits list updates...');

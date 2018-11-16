@@ -13,7 +13,7 @@ import { LogoLoader } from '../components/LogoLoader';
  * through the webapp.
  */
 
-export const ROUTES = {
+const ROUTES = {
   AUTH: '/',
   LOGIN: '/login',
   HOME: '/home'

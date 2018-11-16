@@ -2,18 +2,7 @@
  * @file
  * This file contains helper functions and constants used to make API calls.
  */
-
-const API_ENDPOINT_URL = 'http://aum.altervista.org/main.php';
-const TOKEN_LOCALSTORAGE_KEY = 'token';
-
-export const REQUEST_ACTIONS_PATHS = {
-  LOGIN: 'auth/login',
-  LOGOUT: 'auth/logout',
-  VALIDATE_TOKEN: 'auth/validateToken',
-  GET_USER_INFO: 'user/info',
-  GET_COMMITS_LIST: 'commit/list',
-  CHECK_COMMITS_UPDATES: 'commit/update'
-};
+import { API_ENDPOINT_URL, TOKEN_LOCALSTORAGE_KEY } from '../constants/api';
 
 /**
  * Makes a request to the server without passing the access token in the headers

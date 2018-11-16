@@ -5,7 +5,7 @@ import { performLogout } from '../../redux/actions/auth';
 import { requestCurrentUserInfo } from '../../redux/actions/user';
 import { HomeAppBar } from '../../components/HomeAppBar';
 import { LogoLoader } from '../../components/LogoLoader';
-import { USER_TYPE_IDS } from '../../redux/reducers/user';
+import { USER_TYPE_IDS } from '../../constants/user';
 import { ProgrammerView } from '../../views/ProgrammerView';
 import { TechnicalAreaManagerView } from '../../views/TechnicalAreaManagerView';
 import { RevisionOfficeManagerView } from '../../views/RevisionOfficeManagerView';

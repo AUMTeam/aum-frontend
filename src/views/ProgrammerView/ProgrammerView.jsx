@@ -9,7 +9,8 @@ import {
   startCommitsListUpdatesAutoChecking,
   stopCommitsListUpdatesAutoChecking
 } from '../../redux/actions/commits';
-import CommitsTable from '../../components/CommitsTable/CommitsTable';
+import { CommitsTable } from '../../components/CommitsTable';
+import { USER_TYPE_IDS, USER_ROLE_STRINGS } from '../../constants/user';
 
 const COMMITS_TABLE_HEADER = ['ID', 'Descrizione', 'Data', 'Autore', 'Approvato'];
 
@@ -29,12 +30,12 @@ class ProgrammerView extends Component {
   constructor(props) {
     super(props);
 
-    this.props.retrieveCommitsListPage(0, 'programmer');
-    this.props.startCommitsListUpdatesAutoChecking('programmer');
+    this.props.retrieveCommitsListPage(0, USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
+    this.props.startCommitsListUpdatesAutoChecking(USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
   }
 
   componentWillUnmount() {
-    this.props.stopCommitsListUpdatesAutoChecking('programmer');
+    this.props.stopCommitsListUpdatesAutoChecking(USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
   }
 
   render() {
@@ -50,7 +51,7 @@ class ProgrammerView extends Component {
               itemsCount={this.props.commitsData.totalCommitsCount}
               onPageChange={this.props.retrieveCommitsListPage}
               isLoading={this.props.commitsData.isLoadingList}
-              userRoleString="programmer"
+              userRoleString={USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]}
             />
           </Grid>
         </Grid>

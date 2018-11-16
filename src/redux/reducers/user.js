@@ -8,13 +8,6 @@ import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
  * state in relation to the action type and content.
  */
 
-export const USER_TYPE_IDS = {
-  CLIENT: 1,
-  TECHNICAL_AREA_MANAGER: 2,
-  REVISION_OFFICE_MANAGER: 3,
-  PROGRAMMER: 4
-}
-
 const initialState = {
   id: null,
   name: null,
