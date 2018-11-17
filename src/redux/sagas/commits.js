@@ -135,11 +135,11 @@ function* runAutoListUpdateChecker(action) {
       }
     }
   }
-  catch (error) {   // TODO Understand why this block is never entered
+  finally {
     if (yield cancelled())
       console.log('Commits list: auto update checking stopped');
     else
-      console.error(`Unexpected error during commits list auto updating: ${error}`);
+      console.error(`Unexpected error during commits list auto updating`);
   }
 }
 
