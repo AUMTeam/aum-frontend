@@ -50,15 +50,23 @@ const tabs = [
   }
 ];
 
-const styles = {
+export const drawerWidth = 240;
+
+const styles = theme => ({
   root: {
-    flexGrow: 1
+    display: 'flex'
   },
-  grow: {
-    flexGrow: 1
+  appBar: {
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: drawerWidth,
+      width: `calc(100% - ${drawerWidth}px)`
+    }
   },
-  hamburgerMenu: {
-    marginRight: 16
+  menuButton: {
+    marginRight: 20,
+    [theme.breakpoints.up('sm')]: {
+      display: 'none'
+    }
   },
   avatar: {
     margin: -12,
@@ -67,7 +75,7 @@ const styles = {
   drawerItems: {
     width: 'auto'
   }
-};
+});
 
 /**
  * @class
@@ -80,70 +88,77 @@ class HomeAppBar extends Component {
 
     this.state = {
       selectedTabValue: props.user.roles[0], // we automatically select the tab corresponding to the first role of the user
-      anchorEl: null,
       isDrawerOpen: false
     };
 
-    this.renderDrawer = this.renderDrawer.bind(this);
-    this.renderTabs = this.renderTabs.bind(this);
-    this.renderMenu = this.renderMenu.bind(this);
+    this.renderMobileDrawer = this.renderMobileDrawer.bind(this);
+    this.renderDesktopDrawer = this.renderDesktopDrawer.bind(this);
+    this.renderDrawerLayout = this.renderDrawerLayout.bind(this);
 
     this.openDrawer = this.openDrawer.bind(this);
     this.closeDrawer = this.closeDrawer.bind(this);
     this.onDrawerItemClicked = this.onDrawerItemClicked.bind(this);
-    this.onTabSelectionChanged = this.onTabSelectionChanged.bind(this);
-    this.onMenuButtonClicked = this.onMenuButtonClicked.bind(this);
-    this.onMenuClose = this.onMenuClose.bind(this);
     this.onLogoutButtonClicked = this.onLogoutButtonClicked.bind(this);
   }
 
   render() {
     const { classes } = this.props;
-    const { anchorEl } = this.state;
     return (
       <div className={classes.root}>
-        {this.renderDrawer()}
-        <AppBar position="static">
+        <AppBar position="fixed" className={classes.appBar}>
           <Toolbar>
-            <Hidden mdUp>
-              <IconButton
-                className={classes.hamburgerMenu}
-                color="inherit"
-                aria-label="Open drawer"
-                onClick={this.openDrawer}
-              >
-                <MenuIcon />
-              </IconButton>
-            </Hidden>
-            <Typography variant="h6" color="inherit" className={classes.grow}>
-              Authorization manager
+            <IconButton
+              color="inherit"
+              aria-label="Open drawer"
+              onClick={this.openDrawer}
+              className={classes.menuButton}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" color="inherit" noWrap>
+              Authorization Manager
             </Typography>
-            <Hidden smDown>
-              <IconButton
-                className={classes.button}
-                color="inherit"
-                aria-label="Toolbar menu"
-                aria-owns={anchorEl ? 'toolbar-menu' : null}
-                aria-haspopup="true"
-                onClick={this.onMenuButtonClicked}
-              >
-                <MoreVertIcon />
-              </IconButton>
-            </Hidden>
-            {this.renderMenu()}
           </Toolbar>
-          <Hidden smDown>{this.renderTabs()}</Hidden>
         </AppBar>
+        <nav className={classes.drawer}>
+          <Hidden smUp implementation="css">
+            {this.renderMobileDrawer()}
+          </Hidden>
+          <Hidden xsDown implementation="css">
+            {this.renderDesktopDrawer()}
+          </Hidden>
+        </nav>
       </div>
     );
   }
 
-  renderDrawer() {
-    const { classes } = this.props;
+  renderMobileDrawer() {
     const { isDrawerOpen } = this.state;
     return (
-      <Drawer open={isDrawerOpen} onClose={this.closeDrawer}>
+      <Drawer
+        open={isDrawerOpen}
+        variant="temporary"
+        onClose={this.closeDrawer}
+      >
         {/*The avatar item is outside the div to avoid drawer closing when clicking on it*/}
+        {this.renderDrawerLayout()}
+      </Drawer>
+    );
+  }
+
+  renderDesktopDrawer() {
+    return (
+      <Drawer open variant="permanent" anchor="left">
+        {/*The avatar item is outside the div to avoid drawer closing when clicking on it*/}
+        {this.renderDrawerLayout()}
+      </Drawer>
+    );
+  }
+
+  renderDrawerLayout() {
+    const { classes } = this.props;
+    return (
+      <div>
         <ListItem>
           <ListItemIcon>
             <Avatar className={classes.avatar}>
@@ -176,9 +191,7 @@ class HomeAppBar extends Component {
                   </ListItem>
                 );
             })}
-
             <Divider />
-
             <ListItem onClick={this.onLogoutButtonClicked} button>
               <ListItemIcon>
                 <ExitToAppIcon />
@@ -187,60 +200,7 @@ class HomeAppBar extends Component {
             </ListItem>
           </List>
         </div>
-      </Drawer>
-    );
-  }
-
-  renderTabs() {
-    const { selectedTabValue } = this.state;
-    return (
-      <Tabs
-        value={selectedTabValue}
-        onChange={this.onTabSelectionChanged}
-        scrollable
-        scrollButtons="auto"
-      >
-        {tabs.map((tab, index) => {
-          if (this.props.user.roles.includes(tab.value))
-            return <Tab key={index} value={tab.value} label={tab.label} />;
-        })}
-      </Tabs>
-    );
-  }
-
-  renderMenu() {
-    const { classes } = this.props;
-    const { anchorEl } = this.state;
-    return (
-      <Menu
-        id="toolbar-menu"
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={this.onMenuClose}
-      >
-        <ListItem>
-          <ListItemIcon>
-            <Avatar className={classes.avatar}>
-              {this.props.user.name.charAt(0)}
-            </Avatar>
-          </ListItemIcon>
-          <ListItemText
-            inset
-            primary={this.props.user.name}
-            secondary={this.props.user.email}
-          />
-        </ListItem>
-        <MenuItem onClick={this.onLogoutButtonClicked}>
-          <ListItemIcon>
-            <ExitToAppIcon />
-          </ListItemIcon>
-          <ListItemText
-            classes={{ primary: classes.primary }}
-            inset
-            primary="Logout"
-          />
-        </MenuItem>
-      </Menu>
+      </div>
     );
   }
 
@@ -254,23 +214,6 @@ class HomeAppBar extends Component {
 
   onDrawerItemClicked(sectionValue) {
     this.props.onSectionChanged(sectionValue);
-  }
-
-  onTabSelectionChanged(event, sectionValue) {
-    this.setState({
-      selectedTabValue: sectionValue
-    });
-    this.props.onSectionChanged(sectionValue);
-  }
-
-  onMenuButtonClicked(event) {
-    this.setState({
-      anchorEl: event.currentTarget
-    });
-  }
-
-  onMenuClose() {
-    this.setState({ anchorEl: null });
   }
 
   onLogoutButtonClicked() {

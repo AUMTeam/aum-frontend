@@ -10,6 +10,20 @@ import { ProgrammerView } from '../../views/ProgrammerView';
 import { TechnicalAreaManagerView } from '../../views/TechnicalAreaManagerView';
 import { RevisionOfficeManagerView } from '../../views/RevisionOfficeManagerView';
 import { ClientView } from '../../views/ClientView';
+import { withStyles } from '@material-ui/core';
+import { drawerWidth } from '../../components/HomeAppBar/HomeAppBar';
+
+const style = theme => ({
+  root: {
+    display: 'flex'
+  },
+  content: {
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: drawerWidth,
+      width: `calc(100% - ${drawerWidth}px)`
+    }
+  }
+});
 
 /**
  * @class
@@ -36,11 +50,11 @@ class Home extends Component {
       return {
         sectionValue: props.user.roles[0]
       };
-    else
-      return null;    // don't change state
+    else return null; // don't change state
   }
 
   render() {
+    const { classes } = this.props;
     const { sectionValue } = this.state;
     return (
       <div>
@@ -51,10 +65,14 @@ class Home extends Component {
           <div>
             <HomeAppBar
               user={this.props.user}
-              onLogout={() => this.props.performLogoutAction(this.props.accessToken)}
+              onLogout={() =>
+                this.props.performLogoutAction(this.props.accessToken)
+              }
               onSectionChanged={this.onSectionChanged}
             />
-            {this.renderTabsViews(sectionValue)}
+            <main className={classes.content}>
+              {this.renderTabsViews(sectionValue)}
+            </main>
           </div>
         )}
       </div>
@@ -78,6 +96,7 @@ class Home extends Component {
   }
 
   onSectionChanged(sectionValue) {
+    console.log("Section changed with value " + sectionValue)
     this.setState({ sectionValue });
   }
 }
@@ -90,10 +109,15 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ performLogoutAction, requestCurrentUserInfoAction }, dispatch);
+  return bindActionCreators(
+    { performLogoutAction, requestCurrentUserInfoAction },
+    dispatch
+  );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Home);
+export default withStyles(style)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Home)
+);
