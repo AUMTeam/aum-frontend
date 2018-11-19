@@ -170,7 +170,6 @@ class HomeAppBar extends Component {
             secondary={this.props.user.email}
           />
         </ListItem>
-
         <div
           tabIndex={0}
           role="button"
