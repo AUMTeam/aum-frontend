@@ -117,13 +117,22 @@ function* checkForListUpdates(latestCommitTimestamp, userRoleString) {
         });
       else 
         console.log('No commits list updates found');
-    } else {
-      // TODO dispatch some error action
+    }
+    else {
+      yield put({
+        type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_UPDATE_CHECKING_ERROR,
+        userRoleString
+      });
       console.error(`Server responded with an error when checking for commits list updates: ${responseJson.message}`);
     }
   }
-  else
+  else {
+    yield put({
+      type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_UPDATE_CHECKING_ERROR,
+      userRoleString
+    });
     console.error('An error occurred during commits list update check request to server');
+  }
 }
 
 /**

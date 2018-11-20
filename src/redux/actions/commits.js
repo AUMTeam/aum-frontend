@@ -14,11 +14,18 @@ export const COMMITS_ACTION_TYPE_KEYS = {
   // and therefore doesn't need to be retrieved from server
   COMMITS_LIST_NO_RETRIEVAL_NEEDED: 'COMMITS_LIST_NO_RETRIEVAL_NEEDED',
 
+  // Dispatched when a list update has been found server-side so that the user gets notified
   COMMITS_LIST_UPDATE_FOUND: 'COMMITS_LIST_UPDATE_FOUND',
+
+  // Dispatched when a list update check fails
+  COMMITS_LIST_UPDATE_CHECKING_ERROR: 'COMMITS_LIST_UPDATE_CHECKING_ERROR',
+
+  // Dispatched when the view containing the list is loaded, so that the auto updater task can start
   COMMITS_LIST_START_AUTO_CHECKING: 'COMMITS_LIST_START_AUTO_CHECKING',
+
+  // Dispatched when the view containing the list is unmounted: stops the auto updater task
   COMMITS_LIST_STOP_AUTO_CHECKING: 'COMMITS_LIST_STOP_AUTO_CHECKING',
   SHOW_COMMIT_DETAILS: 'SHOW_COMMIT_DETAILS',
-  PERFORMING_REQUEST: 'PERFORMING_REQUEST'
 };
 
 export function retrieveCommitsListPageAction(pageNumber, userRoleString) {
