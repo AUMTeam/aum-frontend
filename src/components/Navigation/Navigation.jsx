@@ -210,7 +210,9 @@ class Navigation extends Component {
 
 Navigation.propTypes = {
   classes: PropTypes.object.isRequired,
-  match: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired,
+  onLogout: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(Navigation);

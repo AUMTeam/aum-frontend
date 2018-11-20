@@ -48,7 +48,7 @@ class Home extends Component {
           <LogoLoader />
         ) : (
           <div>
-            <Navigation user={user} match={match} />
+            <Navigation user={user} match={match} onLogout={() => this.props.performLogoutAction(this.props.accessToken)} />
             <main className={classes.content}>{this.renderSubRoutes()}</main>
           </div>
         )}
