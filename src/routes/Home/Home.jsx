@@ -61,7 +61,7 @@ class Home extends Component {
     return (
       <Switch>
         <Route
-          path={`${match.url}${ROUTES.PROGRAMMER}`}
+          path={`${match.url}${ROUTES.PROGRAMMER}/:value`}
           component={ProgrammerView}
         />
         <Route

@@ -15,9 +15,12 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MenuIcon from '@material-ui/icons/Menu';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Route } from 'react-router-dom';
 import { NAVIGATION_HIERARCHY } from '../../constants/navigation';
+import { ROUTES } from '../../constants/routes';
+import { USER_TYPE_IDS } from '../../constants/user';
 import { getRandomColor } from '../../utils/colorUtils';
+import { InnerTabs } from '../InnerTabs';
 
 export const drawerWidth = 240;
 
@@ -48,15 +51,14 @@ const styles = theme => ({
 
 /**
  * @class
- * This class is responsible of creating the app bar of the webapp
- * with the tabs navigation system.
+ * This class is responsible of providing navigation components
+ * in order to enable the user to navigate through the webapp.
  */
 class Navigation extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      selectedTabValue: props.user.roles[0], // we automatically select the tab corresponding to the first role of the user
       isDrawerOpen: false
     };
 
@@ -71,10 +73,10 @@ class Navigation extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, match } = this.props;
     return (
       <div className={classes.root}>
-        <AppBar position="fixed" className={classes.appBar}>
+        <AppBar position="static" className={classes.appBar}>
           <Toolbar>
             <IconButton
               color="inherit"
@@ -88,6 +90,24 @@ class Navigation extends Component {
               Authorization Manager
             </Typography>
           </Toolbar>
+          {NAVIGATION_HIERARCHY.map(section => {
+            return (
+              <Route
+                path={`${match.url}${section.routePath}/:value`}
+                render={routeProps => (
+                  <InnerTabs
+                    {...routeProps}
+                    prevUrl={`${match.url}${section.routePath}`}
+                    tabs={
+                      NAVIGATION_HIERARCHY.find(
+                        innerSection => innerSection.value === section.value
+                      ).tabs
+                    }
+                  />
+                )}
+              />
+            );
+          })}
         </AppBar>
         <nav className={classes.drawer}>
           <Hidden smUp implementation="css">
@@ -149,7 +169,7 @@ class Navigation extends Component {
             {NAVIGATION_HIERARCHY.map((section, index) => {
               if (this.props.user.roles.includes(section.value))
                 return (
-                  <Link to={`${match.url}${section.routePath}`}>
+                  <Link to={`${match.url}${section.routePath}/0`}>
                     <ListItem key={index} button>
                       <ListItemIcon>{section.drawerIcon}</ListItemIcon>
                       <ListItemText primary={section.label} />

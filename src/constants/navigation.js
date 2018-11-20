@@ -14,9 +14,11 @@ export const NAVIGATION_HIERARCHY = [
     drawerIcon: <CodeIcon />,
     tabs: [
       {
+        value: 0,
         label: 'Tab 1'
       },
       {
+        value: 1,
         label: 'Tab 2'
       }
     ]
