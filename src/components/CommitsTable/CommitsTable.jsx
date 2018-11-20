@@ -81,6 +81,7 @@ class CommitsTable extends Component {
     const { tableData } = this.props;
     return (
       <TableBody>
+        {/* TODO add error condition */}
         {this.props.isLoading ? (
           <CircularProgress style={styles.spinner} size={120} />
         ) : (

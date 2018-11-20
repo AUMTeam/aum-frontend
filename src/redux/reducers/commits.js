@@ -14,7 +14,10 @@ const initialState = {
   totalCommitsCount: 0,
   currentlyShowingCommit: null,
   actionPending: false,
-  isLoadingList: true
+  isLoadingList: true,
+  // TO BE IMPLEMENTED
+  errorWhileFetching: false,
+  errorWhileCheckingUpdates: false
 };
 
 export function commits(state = initialState, action) {

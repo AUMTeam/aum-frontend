@@ -32,7 +32,8 @@ export function* authFlowSaga() {
   if (tokenValidationRequestAction.accessToken == null) {
     yield put({ type: AUTH_ACTION_TYPE_KEYS.LOCAL_TOKEN_NOT_FOUND });
     console.log('Previous token not found in localStorage');
-  } else {
+  }
+  else {
     yield call(requestLocalAccessTokenValidation, tokenValidationRequestAction);
   }
 
@@ -41,9 +42,7 @@ export function* authFlowSaga() {
     // If the user hasn't been logged in with the local token found in localStorage,
     // watch for login request action
     if (!userLoggedIn) {
-      const loginRequestAction = yield take(
-        AUTH_ACTION_TYPE_KEYS.LOGIN_REQUESTED
-      );
+      const loginRequestAction = yield take(AUTH_ACTION_TYPE_KEYS.LOGIN_REQUESTED);
       const { accessToken, errorMessage } = yield call(
         attemptLogin,
         loginRequestAction
@@ -54,12 +53,13 @@ export function* authFlowSaga() {
           errorMessage
         });
         console.error(`Login API error: ${errorMessage}`);
-      } else {
+      }
+      else {
         yield put({
           type: AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL,
           accessToken
         });
-        console.log(`Login successful`);
+        console.log('Login successful');
         yield call(saveAccessTokenToLocalStorage, accessToken);
         userLoggedIn = true;
       }
@@ -80,7 +80,8 @@ export function* authFlowSaga() {
           errorMessage
         });
         console.error(`FATAL: Unable to get user info: ${errorMessage}`);
-      } else {
+      }
+      else {
         yield put({
           type: USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_SUCCESSFUL,
           ...userData
@@ -112,14 +113,12 @@ function* notifyLogoutToServerAsync(action) {
 
   logoutNotificationTask.done
     .then(response => {
-      if (response.ok) console.log('Logout notification successful');
+      if (response == null)
+        console.error('Error during logout notification request to server');
+      else if (response.ok)
+        console.log('Logout notification successful');
       else
-        console.error(
-          `Logout notification failed to server: ${response.statusText}`
-        );
-    })
-    .catch(error => {
-      console.error(`Error during logout notification to server: ${error}`);
+        console.error(`Server responded with an error after logout notification: ${response.statusText}`);
     });
 }
 
@@ -136,6 +135,12 @@ function* attemptLogin(action) {
       password: action.password
     }
   );
+
+  if (response == null)
+    return {
+      accessToken: null,
+      errorMessage: 'Richiesta al server fallita, possibile problema di connessione'
+    };
 
   const responseJson = yield response.json();
   if (response.ok)
@@ -160,22 +165,22 @@ function* requestLocalAccessTokenValidation(action) {
     action.accessToken
   );
 
-  if (response.ok) {
+  if (response && response.ok) {
     yield put({
       type: AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_SUCCESSFUL,
       accessToken: action.accessToken
     });
     console.log('Local access token is valid');
-  } else {
+  }
+  else {
     yield put({ type: AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_FAILED });
     removeAccessTokenFromLocalStorage();
-    if (response.status === 401)
+    if (response == null)
+      console.error('An error occurred during token validation request to server');
+    else if (response.status === 401)
       // Unauthorized, means that the token isn't valid anymore
       console.log('Local token is no more valid');
-    // Shouldn't happen, could be a server bug
     else
-      console.error(
-        `Unexpected error code for token validation request: ${response.status}`
-      );
+      console.error(`Unexpected error code for token validation request: ${response.status}`);
   }
 }

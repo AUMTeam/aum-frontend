@@ -7,6 +7,7 @@ import { API_ENDPOINT_URL, TOKEN_LOCALSTORAGE_KEY } from '../constants/api';
 /**
  * Makes a request to the server without passing the access token in the headers
  * Intended for those actions that don't require authentication
+ * Promise returns null if the request fails for whatever reason
  * @param {*} actionPath One of the paths defined in REQUEST_ACTIONS_PATHS
  * @param {*} requestData The object containing the request data (optional for an empty object)
  */
@@ -15,12 +16,16 @@ export function makeUnauthenticatedApiRequest(actionPath, requestData = {}) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ request_data: requestData })
+  }).catch(error => {
+    console.error(error, `occurred during unauthenticated API request to ${actionPath}`);
+    return null;
   });
 }
 
 /**
  * Makes a request to the server passing the access token in the headers
  * Used for those actions that need user authentication
+ * Promise returns null if the request fails for whatever reason
  * @param {*} actionPath One of the paths defined in REQUEST_ACTIONS_PATHS
  * @param {*} requestData The object containing the request data (optional for an empty object)
  */
@@ -32,7 +37,10 @@ export function makeAuthenticatedApiRequest(actionPath, accessToken, requestData
       'X-Auth-Header': accessToken
     },
     body: JSON.stringify({ request_data: requestData })
-  });
+  }).catch(error => {
+    console.error(error, `occurred during authenticated API request to ${actionPath}`);
+    return null;
+  })
 }
 
 export function saveAccessTokenToLocalStorage(accessToken) {

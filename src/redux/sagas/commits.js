@@ -41,7 +41,8 @@ function* retrieveCommitsListPage(action) {
         errorMessage,
         userRoleString: action.userRoleString
       });
-    } else {
+    }
+    else {
       yield put({
         type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_RETRIEVED_FROM_SERVER,
         serverResponse,
@@ -71,6 +72,12 @@ function* fetchCommitsListPageFromServer(pageNumber) {
     }
   );
 
+  if (response == null)
+    return {
+      serverResponse: null,
+      errorMessage: 'Richiesta al server fallita, possibile problema di connessione'
+    };
+
   const responseJson = yield response.json();
   if (response.ok)
     return {
@@ -99,20 +106,24 @@ function* checkForListUpdates(latestCommitTimestamp, userRoleString) {
     { latest_commit_timestamp: latestCommitTimestamp }
   );
 
-  const responseJson = yield response.json();
-  if (response.ok) {
-    if (responseJson.response_data.updates_found)
-      yield put({
-        type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_UPDATE_FOUND,
-        latestCommitTimestamp: responseJson.response_data.latest_commit_timestamp,
-        userRoleString
-      });
-    else 
-      console.log('No commits list updates found');
-  } else {
-    // TODO dispatch some error action
-    console.error(`Error when checking for commits list updates: ${responseJson.message}`);
+  if (response != null) {
+    const responseJson = yield response.json();
+    if (response.ok) {
+      if (responseJson.response_data.updates_found)
+        yield put({
+          type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_UPDATE_FOUND,
+          latestCommitTimestamp: responseJson.response_data.latest_commit_timestamp,
+          userRoleString
+        });
+      else 
+        console.log('No commits list updates found');
+    } else {
+      // TODO dispatch some error action
+      console.error(`Server responded with an error when checking for commits list updates: ${responseJson.message}`);
+    }
   }
+  else
+    console.error('An error occurred during commits list update check request to server');
 }
 
 /**

@@ -20,16 +20,12 @@ export function* requestCurrentUserInfo(action) {
   while (!responseReceived) {
     attemptNumber++;
     console.log(`Retrieving user info: attempt ${attemptNumber}...`);
-    // Try/catch block handles network errors
-    try {
-      response = yield makeAuthenticatedApiRequest(REQUEST_ACTIONS_PATHS.GET_USER_INFO,
-        action.accessToken
-      );
+    response = yield makeAuthenticatedApiRequest(REQUEST_ACTIONS_PATHS.GET_USER_INFO,
+      action.accessToken
+    );
+    
+    if (response != null)
       responseReceived = true;
-    }
-    catch (error) {
-      console.error(error);
-    }
   }
 
   const responseJson = yield response.json();
