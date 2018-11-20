@@ -34,12 +34,12 @@ export function startCommitsListUpdatesAutoCheckingAction(userRoleString) {
   return {
     type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_START_AUTO_CHECKING,
     userRoleString
-  }
+  };
 }
 
 export function stopCommitsListUpdatesAutoCheckingAction(userRoleString) {
   return {
     type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_STOP_AUTO_CHECKING,
     userRoleString
-  }
+  };
 }

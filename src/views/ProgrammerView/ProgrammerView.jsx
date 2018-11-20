@@ -4,15 +4,17 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {
-  retrieveCommitsListPageAction,
-  startCommitsListUpdatesAutoCheckingAction,
-  stopCommitsListUpdatesAutoCheckingAction
-} from '../../redux/actions/commits';
 import { CommitsTable } from '../../components/CommitsTable';
-import { USER_TYPE_IDS, USER_ROLE_STRINGS } from '../../constants/user';
+import { USER_ROLE_STRINGS, USER_TYPE_IDS } from '../../constants/user';
+import { retrieveCommitsListPageAction, startCommitsListUpdatesAutoCheckingAction, stopCommitsListUpdatesAutoCheckingAction } from '../../redux/actions/commits';
 
-const COMMITS_TABLE_HEADER = ['ID', 'Descrizione', 'Data', 'Autore', 'Approvato'];
+const COMMITS_TABLE_HEADER = [
+  'ID',
+  'Descrizione',
+  'Data',
+  'Autore',
+  'Approvato'
+];
 
 const styles = {
   root: {
@@ -30,12 +32,19 @@ class ProgrammerView extends Component {
   constructor(props) {
     super(props);
 
-    this.props.retrieveCommitsListPageAction(0, USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
-    this.props.startCommitsListUpdatesAutoCheckingAction(USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
+    this.props.retrieveCommitsListPageAction(
+      0,
+      USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]
+    );
+    this.props.startCommitsListUpdatesAutoCheckingAction(
+      USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]
+    );
   }
 
   componentWillUnmount() {
-    this.props.stopCommitsListUpdatesAutoCheckingAction(USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
+    this.props.stopCommitsListUpdatesAutoCheckingAction(
+      USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]
+    );
   }
 
   render() {

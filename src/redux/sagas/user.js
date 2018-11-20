@@ -1,5 +1,5 @@
-import { makeAuthenticatedApiRequest } from '../../utils/apiUtils';
 import { REQUEST_ACTIONS_PATHS } from '../../constants/api';
+import { makeAuthenticatedApiRequest } from '../../utils/apiUtils';
 
 /**
  * @file
@@ -9,7 +9,7 @@ import { REQUEST_ACTIONS_PATHS } from '../../constants/api';
 
 /**
  * Called once login turned out to be successful
- * Requests the info about the logged in user. If the request fails for network errors, the app 
+ * Requests the info about the logged in user. If the request fails for network errors, the app
  * keeps retrying.
  */
 export function* requestCurrentUserInfo(action) {
@@ -22,12 +22,12 @@ export function* requestCurrentUserInfo(action) {
     console.log(`Retrieving user info: attempt ${attemptNumber}...`);
     // Try/catch block handles network errors
     try {
-      response = yield makeAuthenticatedApiRequest(REQUEST_ACTIONS_PATHS.GET_USER_INFO,
+      response = yield makeAuthenticatedApiRequest(
+        REQUEST_ACTIONS_PATHS.GET_USER_INFO,
         action.accessToken
       );
       responseReceived = true;
-    }
-    catch (error) {
+    } catch (error) {
       console.error(error);
     }
   }

@@ -1,17 +1,18 @@
+import { withStyles } from '@material-ui/core';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Route, Switch } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
+import { LogoLoader } from '../../components/LogoLoader';
+import { Navigation } from '../../components/Navigation';
 import { performLogoutAction } from '../../redux/actions/auth';
 import { requestCurrentUserInfoAction } from '../../redux/actions/user';
-import { HomeAppBar } from '../../components/HomeAppBar';
-import { LogoLoader } from '../../components/LogoLoader';
-import { USER_TYPE_IDS } from '../../constants/user';
-import { ProgrammerView } from '../../views/ProgrammerView';
-import { TechnicalAreaManagerView } from '../../views/TechnicalAreaManagerView';
-import { RevisionOfficeManagerView } from '../../views/RevisionOfficeManagerView';
 import { ClientView } from '../../views/ClientView';
-import { withStyles } from '@material-ui/core';
-import { drawerWidth } from '../../components/HomeAppBar/HomeAppBar';
+import { ProgrammerView } from '../../views/ProgrammerView';
+import { RevisionOfficeManagerView } from '../../views/RevisionOfficeManagerView';
+import { TechnicalAreaManagerView } from '../../views/TechnicalAreaManagerView';
+import { ROUTES } from '../../constants/routes';
+import { drawerWidth } from '../../components/Navigation/Navigation';
 
 const style = theme => ({
   root: {
@@ -19,8 +20,8 @@ const style = theme => ({
   },
   content: {
     [theme.breakpoints.up('sm')]: {
-      marginLeft: drawerWidth,
-      width: `calc(100% - ${drawerWidth}px)`
+      marginLeft: drawerWidth + 16,
+      width: `calc(100% - ${drawerWidth + 16}px)`
     }
   }
 });
@@ -35,27 +36,11 @@ class Home extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      sectionValue: null
-    };
-
     props.requestCurrentUserInfoAction(props.accessToken);
-
-    this.onSectionChanged = this.onSectionChanged.bind(this);
-  }
-
-  // This is needed to select the first existing tab when user data are retrieved
-  static getDerivedStateFromProps(props, state) {
-    if (state.sectionValue == null)
-      return {
-        sectionValue: props.user.roles[0]
-      };
-    else return null; // don't change state
   }
 
   render() {
-    const { classes } = this.props;
-    const { sectionValue } = this.state;
+    const { classes, user, match } = this.props;
     return (
       <div>
         {/* We don't want the appBar to be rendered before we get user data*/}
@@ -63,41 +48,33 @@ class Home extends Component {
           <LogoLoader />
         ) : (
           <div>
-            <HomeAppBar
-              user={this.props.user}
-              onLogout={() =>
-                this.props.performLogoutAction(this.props.accessToken)
-              }
-              onSectionChanged={this.onSectionChanged}
-            />
-            <main className={classes.content}>
-              {this.renderTabsViews(sectionValue)}
-            </main>
+            <Navigation user={user} match={match} />
+            <main className={classes.content}>{this.renderSubRoutes()}</main>
           </div>
         )}
       </div>
     );
   }
 
-  renderTabsViews(selectedTabValue) {
-    switch (selectedTabValue) {
-      case USER_TYPE_IDS.PROGRAMMER:
-        // This is only a placeholder, we will create specific views for each role.
-        return <ProgrammerView />;
-      case USER_TYPE_IDS.TECHNICAL_AREA_MANAGER:
-        return <TechnicalAreaManagerView />;
-      case USER_TYPE_IDS.REVISION_OFFICE_MANAGER:
-        return <RevisionOfficeManagerView />;
-      case USER_TYPE_IDS.CLIENT:
-        return <ClientView />;
-      default:
-        return 'Seleziona una scheda';
-    }
-  }
-
-  onSectionChanged(sectionValue) {
-    console.log("Section changed with value " + sectionValue)
-    this.setState({ sectionValue });
+  renderSubRoutes() {
+    const { match } = this.props;
+    return (
+      <Switch>
+        <Route
+          path={`${match.url}${ROUTES.PROGRAMMER}`}
+          component={ProgrammerView}
+        />
+        <Route
+          path={`${match.url}${ROUTES.TECHNICAL_AREA_MANAGER}`}
+          component={TechnicalAreaManagerView}
+        />
+        <Route
+          path={`${match.url}${ROUTES.REVISION_OFFICE_MANAGER}`}
+          component={RevisionOfficeManagerView}
+        />
+        <Route path={`${match.url}${ROUTES.CLIENT}`} component={ClientView} />
+      </Switch>
+    );
   }
 }
 

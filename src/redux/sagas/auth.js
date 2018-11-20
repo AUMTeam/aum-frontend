@@ -1,14 +1,14 @@
-import { put, fork, take, call, select } from 'redux-saga/effects';
+import { call, fork, put, select, take } from 'redux-saga/effects';
+import { REQUEST_ACTIONS_PATHS } from '../../constants/api';
+import {
+  makeAuthenticatedApiRequest,
+  makeUnauthenticatedApiRequest,
+  removeAccessTokenFromLocalStorage,
+  saveAccessTokenToLocalStorage
+} from '../../utils/apiUtils';
 import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
 import { USER_ACTION_TYPE_KEYS } from '../actions/user';
 import { requestCurrentUserInfo } from './user';
-import { REQUEST_ACTIONS_PATHS } from '../../constants/api';
-import {
-  makeUnauthenticatedApiRequest,
-  makeAuthenticatedApiRequest,
-  saveAccessTokenToLocalStorage,
-  removeAccessTokenFromLocalStorage
-} from '../../utils/apiUtils';
 
 /**
  * This function describes the order in which Saga must listen the dispatch of authentication-related

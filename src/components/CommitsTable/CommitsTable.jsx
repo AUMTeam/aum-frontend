@@ -1,3 +1,4 @@
+import { TableFooter, TablePagination } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -10,13 +11,6 @@ import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { COMMITS_PER_PAGE } from '../../redux/actions/commits';
-import {
-  TableFooter,
-  TablePagination,
-  CircularProgress,
-  LinearProgress
-} from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
 
 const styles = {
   root: {
@@ -92,18 +86,18 @@ class CommitsTable extends Component {
     return (
       <TableBody>
         {tableData[this.state.currentPage].data.map((rowValue, index) => {
-            return (
-              <TableRow key={index}>
-                <TableCell>{rowValue.id}</TableCell>
-                <TableCell>{rowValue.description}</TableCell>
-                <TableCell>
-                  {new Date(rowValue.timestamp * 1000).toLocaleString('it-it')}
-                </TableCell>
-                <TableCell>{rowValue.author.username}</TableCell>
-                <TableCell>{rowValue.approval_status}</TableCell>
-              </TableRow>
-            );
-          })}
+          return (
+            <TableRow key={index}>
+              <TableCell>{rowValue.id}</TableCell>
+              <TableCell>{rowValue.description}</TableCell>
+              <TableCell>
+                {new Date(rowValue.timestamp * 1000).toLocaleString('it-it')}
+              </TableCell>
+              <TableCell>{rowValue.author.username}</TableCell>
+              <TableCell>{rowValue.approval_status}</TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     );
   }

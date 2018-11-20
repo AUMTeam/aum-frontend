@@ -8,47 +8,16 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import { withStyles } from '@material-ui/core/styles';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
-import CodeIcon from '@material-ui/icons/Code';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import FaceIcon from '@material-ui/icons/Face';
 import MenuIcon from '@material-ui/icons/Menu';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { USER_TYPE_IDS } from '../../constants/user';
+import { Link } from 'react-router-dom';
+import { NAVIGATION_HIERARCHY } from '../../constants/navigation';
 import { getRandomColor } from '../../utils/colorUtils';
-
-const tabs = [
-  {
-    label: 'Programmatore',
-    value: USER_TYPE_IDS.PROGRAMMER,
-    drawerIcon: <CodeIcon />
-  },
-  {
-    label: 'Referente area tecnica',
-    value: USER_TYPE_IDS.TECHNICAL_AREA_MANAGER,
-    drawerIcon: <RecordVoiceOverIcon />
-  },
-  {
-    label: 'Responsabile ufficio revisioni',
-    value: USER_TYPE_IDS.REVISION_OFFICE_MANAGER,
-    drawerIcon: <AttachMoneyIcon />
-  },
-  {
-    label: 'Cliente',
-    value: USER_TYPE_IDS.CLIENT,
-    drawerIcon: <FaceIcon />
-  }
-];
 
 export const drawerWidth = 240;
 
@@ -82,7 +51,7 @@ const styles = theme => ({
  * This class is responsible of creating the app bar of the webapp
  * with the tabs navigation system.
  */
-class HomeAppBar extends Component {
+class Navigation extends Component {
   constructor(props) {
     super(props);
 
@@ -97,7 +66,7 @@ class HomeAppBar extends Component {
 
     this.openDrawer = this.openDrawer.bind(this);
     this.closeDrawer = this.closeDrawer.bind(this);
-    this.onDrawerItemClicked = this.onDrawerItemClicked.bind(this);
+    this.onSectionChanged = this.onSectionChanged.bind(this);
     this.onLogoutButtonClicked = this.onLogoutButtonClicked.bind(this);
   }
 
@@ -156,7 +125,7 @@ class HomeAppBar extends Component {
   }
 
   renderDrawerLayout() {
-    const { classes } = this.props;
+    const { classes, match } = this.props;
     return (
       <div>
         <ListItem>
@@ -177,17 +146,15 @@ class HomeAppBar extends Component {
           onKeyDown={this.closeDrawer}
         >
           <List className={classes.drawerItems}>
-            {tabs.map((tab, index) => {
-              if (this.props.user.roles.includes(tab.value))
+            {NAVIGATION_HIERARCHY.map((section, index) => {
+              if (this.props.user.roles.includes(section.value))
                 return (
-                  <ListItem
-                    key={index}
-                    onClick={() => this.onDrawerItemClicked(tab.value)}
-                    button
-                  >
-                    <ListItemIcon>{tab.drawerIcon}</ListItemIcon>
-                    <ListItemText primary={tab.label} />
-                  </ListItem>
+                  <Link to={`${match.url}${section.routePath}`}>
+                    <ListItem key={index} button>
+                      <ListItemIcon>{section.drawerIcon}</ListItemIcon>
+                      <ListItemText primary={section.label} />
+                    </ListItem>
+                  </Link>
                 );
             })}
             <Divider />
@@ -211,8 +178,8 @@ class HomeAppBar extends Component {
     this.setState({ isDrawerOpen: false });
   }
 
-  onDrawerItemClicked(sectionValue) {
-    this.props.onSectionChanged(sectionValue);
+  onSectionChanged(routePath) {
+    this.props.onSectionChanged(routePath);
   }
 
   onLogoutButtonClicked() {
@@ -221,9 +188,9 @@ class HomeAppBar extends Component {
   }
 }
 
-HomeAppBar.propTypes = {
+Navigation.propTypes = {
   classes: PropTypes.object.isRequired,
-  onSectionChanged: PropTypes.func.isRequired
+  match: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(HomeAppBar);
+export default withStyles(styles)(Navigation);

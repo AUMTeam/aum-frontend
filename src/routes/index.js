@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import { LogoLoader } from '../components/LogoLoader';
+import { ROUTES } from '../constants/routes';
+import { requestLocalTokenValidationIfPresentAction } from '../redux/actions/auth';
 import { Home } from './Home';
 import { Login } from './Login';
-import { bindActionCreators } from 'redux';
-import { requestLocalTokenValidationIfPresentAction } from '../redux/actions/auth';
-import { LogoLoader } from '../components/LogoLoader';
 
 /**
  * @file
@@ -13,17 +14,11 @@ import { LogoLoader } from '../components/LogoLoader';
  * through the webapp.
  */
 
-const ROUTES = {
-  AUTH: '/',
-  LOGIN: '/login',
-  HOME: '/home'
-};
-
 /**
  * Custom made route component that based on a condition,
  * redirects the user to a specific page or loads a specific page.
  */
-const AuthRoute = ({
+export const AuthRoute = ({
   condition,
   component: Component,
   redirectPath,
@@ -52,6 +47,7 @@ class Routes extends Component {
 
     // This is called only at application startup
     this.props.requestLocalTokenValidationIfPresentAction(localStorage.getItem('token'));
+    console.log("Rendering routes")
   }
 
   render() {
@@ -63,21 +59,19 @@ class Routes extends Component {
           <BrowserRouter>
             <Switch>
               <AuthRoute
-                exact
                 condition={() => this.props.accessToken != null}
+                exact
                 path={ROUTES.AUTH}
                 component={Home}
                 redirectPath={ROUTES.LOGIN}
               />
               <AuthRoute
-                exact
                 condition={() => this.props.accessToken == null}
                 path={ROUTES.LOGIN}
                 component={Login}
                 redirectPath={ROUTES.HOME}
               />
               <AuthRoute
-                exact
                 condition={() => this.props.accessToken != null}
                 path={ROUTES.HOME}
                 component={Home}
