@@ -21,8 +21,8 @@ const style = theme => ({
   },
   content: {
     [theme.breakpoints.up('sm')]: {
-      marginLeft: drawerWidth,
-      width: `calc(100% - ${drawerWidth}px)`
+      marginLeft: drawerWidth + 16,
+      width: `calc(100% - ${drawerWidth + 16}px)`
     }
   }
 });
