@@ -13,6 +13,7 @@ import { RevisionOfficeManagerView } from '../../views/RevisionOfficeManagerView
 import { TechnicalAreaManagerView } from '../../views/TechnicalAreaManagerView';
 import { ROUTES } from '../../constants/routes';
 import { drawerWidth } from '../../components/Navigation/Navigation';
+import { NAVIGATION_HIERARCHY } from '../../constants/navigation';
 
 const style = theme => ({
   root: {
@@ -37,7 +38,6 @@ class Home extends Component {
     super(props);
 
     props.requestCurrentUserInfoAction(props.accessToken);
-    props.history.push(`${props.match.url}${ROUTES.PROGRAMMER}/0`)
   }
 
   render() {
@@ -49,7 +49,14 @@ class Home extends Component {
           <LogoLoader />
         ) : (
           <div>
-            <Navigation {...this.props} user={user} match={match} onLogout={() => this.props.performLogoutAction(this.props.accessToken)} />
+            <Navigation
+              {...this.props}
+              user={user}
+              match={match}
+              onLogout={() =>
+                this.props.performLogoutAction(this.props.accessToken)
+              }
+            />
             <main className={classes.content}>{this.renderSubRoutes()}</main>
           </div>
         )}
@@ -58,22 +65,22 @@ class Home extends Component {
   }
 
   renderSubRoutes() {
-    const { match } = this.props;
+    const { user, match } = this.props;
     return (
       <Switch>
-        <Route
-          path={`${match.url}${ROUTES.PROGRAMMER}/:value`}
-          component={ProgrammerView}
-        />
-        <Route
-          path={`${match.url}${ROUTES.TECHNICAL_AREA_MANAGER}`}
-          component={TechnicalAreaManagerView}
-        />
-        <Route
-          path={`${match.url}${ROUTES.REVISION_OFFICE_MANAGER}`}
-          component={RevisionOfficeManagerView}
-        />
-        <Route path={`${match.url}${ROUTES.CLIENT}`} component={ClientView} />
+        {NAVIGATION_HIERARCHY.map((section, index) => {
+          if (user.roles.includes(section.value)) {
+            return (
+              <Route
+                key={index}
+                path={`${match.url}${section.routePath}${
+                  section.tabs.length > 0 ? '/:value' : ''
+                }`}
+                component={section.component}
+              />
+            );
+          }
+        })}
       </Switch>
     );
   }

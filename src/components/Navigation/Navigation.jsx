@@ -16,9 +16,12 @@ import MenuIcon from '@material-ui/icons/Menu';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { NAVIGATION_HIERARCHY } from '../../constants/navigation';
 import { getRandomColor } from '../../utils/colorUtils';
 import { InnerTabs } from '../InnerTabs';
+import {
+  NAVIGATION_HIERARCHY,
+  getRouteForUser
+} from '../../constants/navigation';
 
 export const drawerWidth = 240;
 
@@ -65,6 +68,10 @@ class Navigation extends Component {
       isDrawerOpen: false
     };
 
+    props.history.push(
+      `${props.match.url}${getRouteForUser(props.user.roles[0])}`
+    );
+
     this.renderMobileDrawer = this.renderMobileDrawer.bind(this);
     this.renderDesktopDrawer = this.renderDesktopDrawer.bind(this);
     this.renderDrawerLayout = this.renderDrawerLayout.bind(this);
@@ -76,7 +83,7 @@ class Navigation extends Component {
   }
 
   render() {
-    const { classes, match } = this.props;
+    const { classes, user, match } = this.props;
     return (
       <div className={classes.root}>
         <AppBar className={classes.appBar} position="static">
@@ -98,10 +105,11 @@ class Navigation extends Component {
               Authorization Manager
             </Typography>
           </Toolbar>
-          {NAVIGATION_HIERARCHY.filter(section => section.tabs.length > 0).map(
-            section => {
+          {NAVIGATION_HIERARCHY.map((section, index) => {
+            if (user.roles.includes(section.value) && section.tabs.length > 0) {
               return (
                 <Route
+                  key={index}
                   path={`${match.url}${section.routePath}/:value`}
                   render={routeProps => (
                     <InnerTabs
@@ -117,7 +125,8 @@ class Navigation extends Component {
                 />
               );
             }
-          )}
+          })}
+          {}
         </AppBar>
         <nav className={classes.drawer}>
           <Hidden smUp implementation="css">
@@ -184,7 +193,9 @@ class Navigation extends Component {
                     button
                     onClick={() =>
                       this.onSectionClicked(
-                        `${match.url}${section.routePath}/0`
+                        section.tabs.length > 0
+                          ? `${match.url}${section.routePath}/0`
+                          : `${match.url}${section.routePath}`
                       )
                     }
                   >

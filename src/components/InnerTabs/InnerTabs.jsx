@@ -12,24 +12,13 @@ export default class InnerTabs extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      selectedTabValue: props.match.params.value
-    };
-
-    this.onTabChanged = this.onTabChanged.bind(this);
     this.onTabClicked = this.onTabClicked.bind(this);
   }
 
   render() {
-    const { tabs } = this.props;
-    const { selectedTabValue } = this.state;
+    const { tabs, match } = this.props;
     return (
-      <Tabs
-        value={selectedTabValue}
-        scrollable
-        scrollButtons="auto"
-        onChange={this.onTabChanged}
-      >
+      <Tabs value={match.params.value} scrollable scrollButtons="auto">
         {tabs.map((tab, index) => {
           return (
             <Tab
@@ -44,10 +33,6 @@ export default class InnerTabs extends Component {
     );
   }
 
-  onTabChanged(event, value) {
-    this.setState({ selectedTabValue: value });
-  }
-
   onTabClicked(value) {
     const { history, prevUrl } = this.props;
 
@@ -55,7 +40,7 @@ export default class InnerTabs extends Component {
   }
 }
 
-InnerTabs.PropTypes = {
+InnerTabs.propTypes = {
   prevUrl: PropTypes.string.isRequired,
   tabs: PropTypes.array.isRequired
 };
