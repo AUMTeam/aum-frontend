@@ -15,10 +15,8 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MenuIcon from '@material-ui/icons/Menu';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Link, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { NAVIGATION_HIERARCHY } from '../../constants/navigation';
-import { ROUTES } from '../../constants/routes';
-import { USER_TYPE_IDS } from '../../constants/user';
 import { getRandomColor } from '../../utils/colorUtils';
 import { InnerTabs } from '../InnerTabs';
 
@@ -38,6 +36,11 @@ const styles = theme => ({
     marginRight: 20,
     [theme.breakpoints.up('sm')]: {
       display: 'none'
+    }
+  },
+  toolbarTitle: {
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: 16
     }
   },
   avatar: {
@@ -68,7 +71,7 @@ class Navigation extends Component {
 
     this.openDrawer = this.openDrawer.bind(this);
     this.closeDrawer = this.closeDrawer.bind(this);
-    this.onSectionChanged = this.onSectionChanged.bind(this);
+    this.onSectionClicked = this.onSectionClicked.bind(this);
     this.onLogoutButtonClicked = this.onLogoutButtonClicked.bind(this);
   }
 
@@ -76,38 +79,45 @@ class Navigation extends Component {
     const { classes, match } = this.props;
     return (
       <div className={classes.root}>
-        <AppBar position="static" className={classes.appBar}>
+        <AppBar className={classes.appBar} position="static">
           <Toolbar>
             <IconButton
+              className={classes.menuButton}
               color="inherit"
               aria-label="Open drawer"
               onClick={this.openDrawer}
-              className={classes.menuButton}
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" color="inherit" noWrap>
+            <Typography
+              className={classes.toolbarTitle}
+              variant="h6"
+              color="inherit"
+              noWrap
+            >
               Authorization Manager
             </Typography>
           </Toolbar>
-          {NAVIGATION_HIERARCHY.map(section => {
-            return (
-              <Route
-                path={`${match.url}${section.routePath}/:value`}
-                render={routeProps => (
-                  <InnerTabs
-                    {...routeProps}
-                    prevUrl={`${match.url}${section.routePath}`}
-                    tabs={
-                      NAVIGATION_HIERARCHY.find(
-                        innerSection => innerSection.value === section.value
-                      ).tabs
-                    }
-                  />
-                )}
-              />
-            );
-          })}
+          {NAVIGATION_HIERARCHY.filter(section => section.tabs.length > 0).map(
+            section => {
+              return (
+                <Route
+                  path={`${match.url}${section.routePath}/:value`}
+                  render={routeProps => (
+                    <InnerTabs
+                      {...routeProps}
+                      prevUrl={`${match.url}${section.routePath}`}
+                      tabs={
+                        NAVIGATION_HIERARCHY.find(
+                          innerSection => innerSection.value === section.value
+                        ).tabs
+                      }
+                    />
+                  )}
+                />
+              );
+            }
+          )}
         </AppBar>
         <nav className={classes.drawer}>
           <Hidden smUp implementation="css">
@@ -169,12 +179,18 @@ class Navigation extends Component {
             {NAVIGATION_HIERARCHY.map((section, index) => {
               if (this.props.user.roles.includes(section.value))
                 return (
-                  <Link to={`${match.url}${section.routePath}/0`}>
-                    <ListItem key={index} button>
-                      <ListItemIcon>{section.drawerIcon}</ListItemIcon>
-                      <ListItemText primary={section.label} />
-                    </ListItem>
-                  </Link>
+                  <ListItem
+                    key={index}
+                    button
+                    onClick={() =>
+                      this.onSectionClicked(
+                        `${match.url}${section.routePath}/0`
+                      )
+                    }
+                  >
+                    <ListItemIcon>{section.drawerIcon}</ListItemIcon>
+                    <ListItemText primary={section.label} />
+                  </ListItem>
                 );
             })}
             <Divider />
@@ -198,8 +214,8 @@ class Navigation extends Component {
     this.setState({ isDrawerOpen: false });
   }
 
-  onSectionChanged(routePath) {
-    this.props.onSectionChanged(routePath);
+  onSectionClicked(url) {
+    this.props.history.push(url);
   }
 
   onLogoutButtonClicked() {

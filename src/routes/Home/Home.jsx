@@ -20,8 +20,8 @@ const style = theme => ({
   },
   content: {
     [theme.breakpoints.up('sm')]: {
-      marginLeft: drawerWidth + 16,
-      width: `calc(100% - ${drawerWidth + 16}px)`
+      marginLeft: drawerWidth,
+      width: `calc(100% - ${drawerWidth}px)`
     }
   }
 });
@@ -37,6 +37,7 @@ class Home extends Component {
     super(props);
 
     props.requestCurrentUserInfoAction(props.accessToken);
+    props.history.push(`${props.match.url}${ROUTES.PROGRAMMER}/0`)
   }
 
   render() {
@@ -48,7 +49,7 @@ class Home extends Component {
           <LogoLoader />
         ) : (
           <div>
-            <Navigation user={user} match={match} onLogout={() => this.props.performLogoutAction(this.props.accessToken)} />
+            <Navigation {...this.props} user={user} match={match} onLogout={() => this.props.performLogoutAction(this.props.accessToken)} />
             <main className={classes.content}>{this.renderSubRoutes()}</main>
           </div>
         )}

@@ -13,10 +13,8 @@ export default class InnerTabs extends Component {
     super(props);
 
     this.state = {
-      selectedTabValue: 0
+      selectedTabValue: props.match.params.value
     };
-
-    console.log(props);
 
     this.onTabChanged = this.onTabChanged.bind(this);
     this.onTabClicked = this.onTabClicked.bind(this);
