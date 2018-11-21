@@ -22,6 +22,7 @@ import {
   NAVIGATION_HIERARCHY,
   getRouteForUser
 } from '../../constants/navigation';
+import { ROUTES_PARAMS } from '../../constants/routes';
 
 export const drawerWidth = 240;
 
@@ -110,7 +111,7 @@ class Navigation extends Component {
               return (
                 <Route
                   key={index}
-                  path={`${match.url}${section.routePath}/:value`}
+                  path={`${match.url}${section.routePath}${ROUTES_PARAMS.TAB_INDEX}`}
                   render={routeProps => (
                     <InnerTabs
                       {...routeProps}

@@ -11,7 +11,7 @@ import { ClientView } from '../../views/ClientView';
 import { ProgrammerView } from '../../views/ProgrammerView';
 import { RevisionOfficeManagerView } from '../../views/RevisionOfficeManagerView';
 import { TechnicalAreaManagerView } from '../../views/TechnicalAreaManagerView';
-import { ROUTES } from '../../constants/routes';
+import { ROUTES, ROUTES_PARAMS } from '../../constants/routes';
 import { drawerWidth } from '../../components/Navigation/Navigation';
 import { NAVIGATION_HIERARCHY } from '../../constants/navigation';
 
@@ -74,7 +74,7 @@ class Home extends Component {
               <Route
                 key={index}
                 path={`${match.url}${section.routePath}${
-                  section.tabs.length > 0 ? '/:value' : ''
+                  section.tabs.length > 0 ? ROUTES_PARAMS.TAB_INDEX : ''
                 }`}
                 component={section.component}
               />

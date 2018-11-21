@@ -7,3 +7,7 @@ export const ROUTES = {
   TECHNICAL_AREA_MANAGER: '/tam',
   CLIENT: '/client'
 };
+
+export const ROUTES_PARAMS = {
+  TAB_INDEX: '/:value'
+}
