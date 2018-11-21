@@ -32,7 +32,7 @@ const styles = theme => ({
   },
   appBar: {
     [theme.breakpoints.up('sm')]: {
-      marginLeft: drawerWidth,
+      marginLeft: drawerWidth,    // TODO FIND ANOTHER WAY, THIS IS NOT RELIABLE
       width: `calc(100% - ${drawerWidth}px)`
     }
   },
@@ -58,8 +58,8 @@ const styles = theme => ({
 
 /**
  * @class
- * This class is responsible of providing navigation components
- * in order to enable the user to navigate through the webapp.
+ * This class represents the base structure of the app interface (drawer, appbar and tabs)
+ * and renders routes and UI elements corresponding to user roles
  */
 class Navigation extends Component {
   constructor(props) {
@@ -69,6 +69,7 @@ class Navigation extends Component {
       isDrawerOpen: false
     };
 
+    // Redirect the user to the view of its first role
     props.history.push(
       `${props.match.url}${getRouteForUser(props.user.roles[0])}`
     );
@@ -106,12 +107,15 @@ class Navigation extends Component {
               Authorization Manager
             </Typography>
           </Toolbar>
+          {/* Render tabs and their corresponding routes */}
           {NAVIGATION_HIERARCHY.map((section, index) => {
             if (user.roles.includes(section.value) && section.tabs.length > 0) {
               return (
                 <Route
                   key={index}
-                  path={`${match.url}${section.routePath}${ROUTES_PARAMS.TAB_INDEX}`}
+                  path={`${match.url}${section.routePath}${
+                    ROUTES_PARAMS.TAB_INDEX
+                  }`}
                   render={routeProps => (
                     <InnerTabs
                       {...routeProps}
@@ -127,8 +131,8 @@ class Navigation extends Component {
               );
             }
           })}
-          {}
         </AppBar>
+
         <nav className={classes.drawer}>
           <Hidden smUp implementation="css">
             {this.renderMobileDrawer()}
@@ -149,7 +153,6 @@ class Navigation extends Component {
         variant="temporary"
         onClose={this.closeDrawer}
       >
-        {/*The avatar item is outside the div to avoid drawer closing when clicking on it*/}
         {this.renderDrawerLayout()}
       </Drawer>
     );
@@ -158,7 +161,6 @@ class Navigation extends Component {
   renderDesktopDrawer() {
     return (
       <Drawer open variant="permanent" anchor="left">
-        {/*The avatar item is outside the div to avoid drawer closing when clicking on it*/}
         {this.renderDrawerLayout()}
       </Drawer>
     );
@@ -168,6 +170,7 @@ class Navigation extends Component {
     const { classes, match } = this.props;
     return (
       <div>
+        {/*Avatar item is outside the div to avoid drawer closing when clicking on it*/}
         <ListItem>
           <ListItemIcon>
             <Avatar className={classes.avatar}>
@@ -179,6 +182,7 @@ class Navigation extends Component {
             secondary={this.props.user.email}
           />
         </ListItem>
+
         <div
           tabIndex={0}
           role="button"
@@ -206,6 +210,7 @@ class Navigation extends Component {
                 );
             })}
             <Divider />
+
             <ListItem onClick={this.onLogoutButtonClicked} button>
               <ListItemIcon>
                 <ExitToAppIcon />

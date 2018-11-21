@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { LogoLoader } from '../components/LogoLoader';
 import { ROUTES } from '../constants/routes';
@@ -47,7 +47,6 @@ class Routes extends Component {
 
     // This is called only at application startup
     this.props.requestLocalTokenValidationIfPresentAction(localStorage.getItem('token'));
-    console.log("Rendering routes")
   }
 
   render() {
@@ -56,7 +55,7 @@ class Routes extends Component {
         {this.props.isValidatingToken ? (
           <LogoLoader />
         ) : (
-          <BrowserRouter>
+          <HashRouter>
             <Switch>
               <AuthRoute
                 condition={() => this.props.accessToken != null}
@@ -78,7 +77,7 @@ class Routes extends Component {
                 redirectPath={ROUTES.LOGIN}
               />
             </Switch>
-          </BrowserRouter>
+          </HashRouter>
         )}
       </div>
     );

@@ -20,11 +20,11 @@ export const NAVIGATION_HIERARCHY = [
     tabs: [
       {
         value: 0,
-        label: 'Tab 1'
+        label: 'Commit'
       },
       {
         value: 1,
-        label: 'Tab 2'
+        label: 'Richieste di invio'
       }
     ]
   },
@@ -54,14 +54,17 @@ export const NAVIGATION_HIERARCHY = [
   }
 ];
 
-export function getRouteForUser(userId, index = 0) {
+/**
+ * Gets the default route path for the specified user role
+ */
+export function getRouteForUser(userRoleId, index = 0) {
   const section = NAVIGATION_HIERARCHY.find(
-    section => section.value === userId
+    section => section.value === userRoleId
   );
 
-  return `${section.routePath}${
-    section !== null && section.tabs.length > 0
-      ? `/${index}`
-      : ''
-  }`;
+  if (section != null) {
+    return `${section.routePath}${section.tabs.length > 0 ? `/${index}` : ''}`;
+  }
+  else
+    return '';
 }

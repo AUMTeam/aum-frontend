@@ -3,8 +3,8 @@ export const ROUTES = {
   LOGIN: '/login',
   HOME: '/home',
   PROGRAMMER: '/programmer',
-  REVISION_OFFICE_MANAGER: '/rom',
-  TECHNICAL_AREA_MANAGER: '/tam',
+  REVISION_OFFICE_MANAGER: '/revoffice',
+  TECHNICAL_AREA_MANAGER: '/techarea',
   CLIENT: '/client'
 };
 

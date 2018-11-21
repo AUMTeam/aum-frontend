@@ -44,7 +44,7 @@ class Home extends Component {
     const { classes, user, match } = this.props;
     return (
       <div>
-        {/* We don't want the appBar to be rendered before we get user data*/}
+        {/* We don't want the Navigation component to be rendered before we get user data*/}
         {!this.props.user.infoObtained ? (
           <LogoLoader />
         ) : (
