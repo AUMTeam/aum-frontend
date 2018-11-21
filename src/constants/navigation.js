@@ -59,22 +59,9 @@ export function getRouteForUser(userId, index = 0) {
     section => section.value === userId
   );
 
-  return `${decodeUserIdInRoute(userId)}${
+  return `${section.routePath}${
     section !== null && section.tabs.length > 0
       ? `/${index}`
       : ''
   }`;
-}
-
-function decodeUserIdInRoute(userId) {
-  switch (userId) {
-    case USER_TYPE_IDS.PROGRAMMER:
-      return `${ROUTES.PROGRAMMER}`;
-    case USER_TYPE_IDS.TECHNICAL_AREA_MANAGER:
-      return `${ROUTES.TECHNICAL_AREA_MANAGER}`;
-    case USER_TYPE_IDS.REVISION_OFFICE_MANAGER:
-      return `${ROUTES.REVISION_OFFICE_MANAGER}`;
-    case USER_TYPE_IDS.CLIENT:
-      return `${ROUTES.CLIENT}`;
-  }
 }
