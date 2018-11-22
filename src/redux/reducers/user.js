@@ -1,10 +1,10 @@
-import { USER_ACTION_TYPE_KEYS } from '../actions/user';
 import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
+import { USER_ACTION_TYPE_KEYS } from '../actions/user';
 
 /**
  * @file
  * This file contains the reducer for dispatched actions related to user data.
- * When Redux dispatches an user-related action, this reducer will change the 
+ * When Redux dispatches an user-related action, this reducer will change the
  * state in relation to the action type and content.
  */
 
@@ -45,7 +45,7 @@ export function user(state = initialState, action) {
       return {
         ...initialState
       };
-      
+
     default:
       return state;
   }

@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { auth } from './auth';
-import { user } from './user';
 import { programmer } from './programmer';
+import { user } from './user';
 
 /**
  * @file

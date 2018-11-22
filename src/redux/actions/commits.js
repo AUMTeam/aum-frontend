@@ -1,4 +1,4 @@
-export const COMMITS_PER_PAGE = 20;
+import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
 
 export const COMMITS_ACTION_TYPE_KEYS = {
   // Dispatched when a page of the commits list needs to be loaded
@@ -32,7 +32,7 @@ export function retrieveCommitsListPageAction(pageNumber, userRoleString) {
   return {
     type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_REQUEST,
     pageNumber,
-    limit: COMMITS_PER_PAGE,
+    limit: LIST_ELEMENTS_PER_PAGE,
     userRoleString
   };
 }
@@ -41,12 +41,12 @@ export function startCommitsListUpdatesAutoCheckingAction(userRoleString) {
   return {
     type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_START_AUTO_CHECKING,
     userRoleString
-  }
+  };
 }
 
 export function stopCommitsListUpdatesAutoCheckingAction(userRoleString) {
   return {
     type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_STOP_AUTO_CHECKING,
     userRoleString
-  }
+  };
 }

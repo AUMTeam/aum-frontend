@@ -1,5 +1,5 @@
-import { makeAuthenticatedApiRequest } from '../../utils/apiUtils';
 import { REQUEST_ACTIONS_PATHS } from '../../constants/api';
+import { makeAuthenticatedApiRequest } from '../../utils/apiUtils';
 
 /**
  * @file
@@ -9,7 +9,7 @@ import { REQUEST_ACTIONS_PATHS } from '../../constants/api';
 
 /**
  * Called once login turned out to be successful
- * Requests the info about the logged in user. If the request fails for network errors, the app 
+ * Requests the info about the logged in user. If the request fails for network errors, the app
  * keeps retrying.
  */
 export function* requestCurrentUserInfo(action) {

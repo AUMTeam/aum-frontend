@@ -1,3 +1,4 @@
+import { TableFooter, TablePagination } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -9,17 +10,16 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { COMMITS_PER_PAGE } from '../../redux/actions/commits';
-import { TableFooter, TablePagination, CircularProgress } from '@material-ui/core';
+import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
 
 const styles = {
   root: {
     flexGrow: 1,
     width: '100%'
   },
-  spinner: {
-    // TODO FIND A WAY TO CENTER THE SPINNER
-    marginTop: '30px'
+  progressContainer: {
+    width: 'inherit',
+    height: 'inherit'
   }
 };
 
@@ -42,13 +42,13 @@ class CommitsTable extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, isLoading } = this.props;
     return (
       <Paper className={classes.root}>
         {this.renderTableToolbar()}
         <Table>
           {this.renderTableHeader()}
-          {this.renderTableBody()}
+          {!isLoading && this.renderTableBody()}
           {this.renderTableFooter()}
         </Table>
       </Paper>
@@ -81,21 +81,19 @@ class CommitsTable extends Component {
     const { tableData } = this.props;
     return (
       <TableBody>
-        {this.props.isLoading ? (
-          <CircularProgress style={styles.spinner} size={120} />
-        ) : (
-          tableData[this.state.currentPage].data.map((rowValue, index) => {
-            return (
-              <TableRow key={index}>
-                <TableCell>{rowValue.id}</TableCell>
-                <TableCell>{rowValue.description}</TableCell>
-                <TableCell>{new Date(rowValue.timestamp*1000).toLocaleString('it-it')}</TableCell>
-                <TableCell>{rowValue.author.username}</TableCell>
-                <TableCell>{rowValue.approval_status}</TableCell>
-              </TableRow>
-            );
-          })
-        )}
+        {tableData[this.state.currentPage].data.map((rowValue, index) => {
+          return (
+            <TableRow key={index}>
+              <TableCell>{rowValue.id}</TableCell>
+              <TableCell>{rowValue.description}</TableCell>
+              <TableCell>
+                {new Date(rowValue.timestamp * 1000).toLocaleString('it-it')}
+              </TableCell>
+              <TableCell>{rowValue.author.username}</TableCell>
+              <TableCell>{rowValue.approval_status}</TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     );
   }
@@ -106,12 +104,12 @@ class CommitsTable extends Component {
         <TableRow>
           <TablePagination
             count={this.props.itemsCount}
-            rowsPerPage={COMMITS_PER_PAGE}
+            rowsPerPage={LIST_ELEMENTS_PER_PAGE}
             page={this.state.currentPage}
-            rowsPerPageOptions={[COMMITS_PER_PAGE]}
+            rowsPerPageOptions={[LIST_ELEMENTS_PER_PAGE]}
             onChangePage={(evt, page) => {
               this.props.onPageChange(page, this.props.userRoleString);
-              this.setState({currentPage: page});
+              this.setState({ currentPage: page });
             }}
           />
         </TableRow>

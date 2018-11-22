@@ -1,15 +1,26 @@
+import { withStyles } from '@material-ui/core';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Route, Switch } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
+import { LogoLoader } from '../../components/LogoLoader';
+import { Navigation } from '../../components/Navigation';
 import { performLogoutAction } from '../../redux/actions/auth';
 import { requestCurrentUserInfoAction } from '../../redux/actions/user';
-import { HomeAppBar } from '../../components/HomeAppBar';
-import { LogoLoader } from '../../components/LogoLoader';
-import { USER_TYPE_IDS } from '../../constants/user';
-import { ProgrammerView } from '../../views/ProgrammerView';
-import { TechnicalAreaManagerView } from '../../views/TechnicalAreaManagerView';
-import { RevisionOfficeManagerView } from '../../views/RevisionOfficeManagerView';
-import { ClientView } from '../../views/ClientView';
+import { ROUTES_PARAMS } from '../../constants/routes';
+import { NAVIGATION_HIERARCHY, DESKTOP_DRAWER_WIDTH } from '../../constants/navigation';
+
+const style = theme => ({
+  root: {
+    display: 'flex'
+  },
+  content: {
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: `calc(${DESKTOP_DRAWER_WIDTH} + 16px)`,
+      width: `calc(100% - ${DESKTOP_DRAWER_WIDTH + 16})`
+    }
+  }
+});
 
 /**
  * @class
@@ -21,64 +32,51 @@ class Home extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      sectionValue: null
-    };
-
     props.requestCurrentUserInfoAction(props.accessToken);
-
-    this.onSectionChanged = this.onSectionChanged.bind(this);
-  }
-
-  // This is needed to select the first existing tab when user data are retrieved
-  static getDerivedStateFromProps(props, state) {
-    if (state.sectionValue == null)
-      return {
-        sectionValue: props.user.roles[0]
-      };
-    else
-      return null;    // don't change state
   }
 
   render() {
-    const { sectionValue } = this.state;
     return (
       <div>
-        {/* We don't want the appBar to be rendered before we get user data*/}
+        {/* We don't want the Navigation component to be rendered before we get user data*/}
         {!this.props.user.infoObtained ? (
           <LogoLoader />
         ) : (
           <div>
-            <HomeAppBar
+            <Navigation
+              match={this.props.match}
+              history={this.props.history}
               user={this.props.user}
-              onLogout={() => this.props.performLogoutAction(this.props.accessToken)}
-              onSectionChanged={this.onSectionChanged}
+              onLogout={() =>
+                this.props.performLogoutAction(this.props.accessToken)
+              }
             />
-            {this.renderTabsViews(sectionValue)}
+            <main className={this.props.classes.content}>{this.renderSubRoutes()}</main>
           </div>
         )}
       </div>
     );
   }
 
-  renderTabsViews(selectedTabValue) {
-    switch (selectedTabValue) {
-      case USER_TYPE_IDS.PROGRAMMER:
-        // This is only a placeholder, we will create specific views for each role.
-        return <ProgrammerView />;
-      case USER_TYPE_IDS.TECHNICAL_AREA_MANAGER:
-        return <TechnicalAreaManagerView />;
-      case USER_TYPE_IDS.REVISION_OFFICE_MANAGER:
-        return <RevisionOfficeManagerView />;
-      case USER_TYPE_IDS.CLIENT:
-        return <ClientView />;
-      default:
-        return 'Seleziona una scheda';
-    }
-  }
-
-  onSectionChanged(sectionValue) {
-    this.setState({ sectionValue });
+  renderSubRoutes() {
+    const { user, match } = this.props;
+    return (
+      <Switch>
+        {NAVIGATION_HIERARCHY.map((section, index) => {
+          if (user.roles.includes(section.value)) {
+            return (
+              <Route
+                key={index}
+                path={`${match.url}${section.routePath}${
+                  section.tabs.length > 0 ? ROUTES_PARAMS.TAB_INDEX : ''
+                }`}
+                component={section.component}
+              />
+            );
+          }
+        })}
+      </Switch>
+    );
   }
 }
 
@@ -90,10 +88,15 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ performLogoutAction, requestCurrentUserInfoAction }, dispatch);
+  return bindActionCreators(
+    { performLogoutAction, requestCurrentUserInfoAction },
+    dispatch
+  );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Home);
+export default withStyles(style)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Home)
+);

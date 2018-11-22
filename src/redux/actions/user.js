@@ -13,5 +13,5 @@ export function requestCurrentUserInfoAction(accessToken) {
   return {
     type: USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_REQUEST,
     accessToken
-  }
+  };
 }

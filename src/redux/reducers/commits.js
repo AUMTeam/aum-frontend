@@ -1,5 +1,5 @@
-import { COMMITS_ACTION_TYPE_KEYS } from "../actions/commits";
-import { AUTH_ACTION_TYPE_KEYS } from "../actions/auth";
+import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
+import { COMMITS_ACTION_TYPE_KEYS } from '../actions/commits';
 
 const initialState = {
   /*
@@ -39,7 +39,8 @@ export function commits(state = initialState, action) {
 
       // Here we assume that the latestCommitTimestamp value is always correctly initialized,
       // because update checking always happens before retrieving a page
-      newState.listPages[action.pageNumber].updateTimestamp = newState.latestCommitTimestamp;
+      newState.listPages[action.pageNumber].updateTimestamp =
+        newState.latestCommitTimestamp;
       return newState;
     case COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_RETRIEVAL_ERROR:
       return {
