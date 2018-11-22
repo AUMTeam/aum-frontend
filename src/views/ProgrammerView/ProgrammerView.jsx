@@ -61,6 +61,7 @@ class ProgrammerView extends Component {
               onPageChange={this.props.retrieveCommitsListPageAction}
               isLoading={this.props.commitsData.isLoadingList}
               userRoleString={USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]}
+              displayError={this.props.commitsData.errorWhileFetchingData}
             />
           </Grid>
         </Grid>
