@@ -16,8 +16,8 @@ const style = theme => ({
   },
   content: {
     [theme.breakpoints.up('sm')]: {
-      marginLeft: DESKTOP_DRAWER_WIDTH,
-      width: `calc(100% - ${DESKTOP_DRAWER_WIDTH})`
+      marginLeft: `calc(${DESKTOP_DRAWER_WIDTH} + 16px)`,
+      width: `calc(100% - ${DESKTOP_DRAWER_WIDTH + 16})`
     }
   }
 });
