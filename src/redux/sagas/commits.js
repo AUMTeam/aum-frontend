@@ -14,7 +14,8 @@ import {
   REQUEST_ACTIONS_PATHS
 } from '../../constants/api';
 import { makeAuthenticatedApiRequest } from '../../utils/apiUtils';
-import { COMMITS_ACTION_TYPE_KEYS, COMMITS_PER_PAGE } from '../actions/commits';
+import { COMMITS_ACTION_TYPE_KEYS } from '../actions/commits';
+import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
 
 /**
  * Called every time the user changes the page of the commits table or the latter is recreated
@@ -88,7 +89,7 @@ function* fetchCommitsListPageFromServer(pageNumber) {
     yield select(state => state.auth.accessToken),
     {
       page: pageNumber,
-      limit: COMMITS_PER_PAGE
+      limit: LIST_ELEMENTS_PER_PAGE
     }
   );
 

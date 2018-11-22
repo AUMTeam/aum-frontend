@@ -10,6 +10,8 @@ import { TechnicalAreaManagerView } from '../views/TechnicalAreaManagerView';
 import { RevisionOfficeManagerView } from '../views/RevisionOfficeManagerView';
 import { ClientView } from '../views/ClientView';
 
+export const DESKTOP_DRAWER_WIDTH = '300px';
+
 export const NAVIGATION_HIERARCHY = [
   {
     value: USER_TYPE_IDS.PROGRAMMER,

@@ -7,13 +7,8 @@ import { LogoLoader } from '../../components/LogoLoader';
 import { Navigation } from '../../components/Navigation';
 import { performLogoutAction } from '../../redux/actions/auth';
 import { requestCurrentUserInfoAction } from '../../redux/actions/user';
-import { ClientView } from '../../views/ClientView';
-import { ProgrammerView } from '../../views/ProgrammerView';
-import { RevisionOfficeManagerView } from '../../views/RevisionOfficeManagerView';
-import { TechnicalAreaManagerView } from '../../views/TechnicalAreaManagerView';
-import { ROUTES, ROUTES_PARAMS } from '../../constants/routes';
-import { drawerWidth } from '../../components/Navigation/Navigation';
-import { NAVIGATION_HIERARCHY } from '../../constants/navigation';
+import { ROUTES_PARAMS } from '../../constants/routes';
+import { NAVIGATION_HIERARCHY, DESKTOP_DRAWER_WIDTH } from '../../constants/navigation';
 
 const style = theme => ({
   root: {
@@ -21,8 +16,8 @@ const style = theme => ({
   },
   content: {
     [theme.breakpoints.up('sm')]: {
-      marginLeft: drawerWidth,
-      width: `calc(100% - ${drawerWidth}px)`
+      marginLeft: DESKTOP_DRAWER_WIDTH,
+      width: `calc(100% - ${DESKTOP_DRAWER_WIDTH})`
     }
   }
 });
@@ -41,7 +36,6 @@ class Home extends Component {
   }
 
   render() {
-    const { classes, user, match } = this.props;
     return (
       <div>
         {/* We don't want the Navigation component to be rendered before we get user data*/}
@@ -50,14 +44,14 @@ class Home extends Component {
         ) : (
           <div>
             <Navigation
-              {...this.props}
-              user={user}
-              match={match}
+              match={this.props.match}
+              history={this.props.history}
+              user={this.props.user}
               onLogout={() =>
                 this.props.performLogoutAction(this.props.accessToken)
               }
             />
-            <main className={classes.content}>{this.renderSubRoutes()}</main>
+            <main className={this.props.classes.content}>{this.renderSubRoutes()}</main>
           </div>
         )}
       </div>

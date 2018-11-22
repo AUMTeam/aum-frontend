@@ -20,11 +20,10 @@ import { getRandomColor } from '../../utils/colorUtils';
 import { InnerTabs } from '../InnerTabs';
 import {
   NAVIGATION_HIERARCHY,
-  getRouteForUser
+  getRouteForUser,
+  DESKTOP_DRAWER_WIDTH
 } from '../../constants/navigation';
 import { ROUTES_PARAMS } from '../../constants/routes';
-
-export const drawerWidth = 240;
 
 const styles = theme => ({
   root: {
@@ -32,9 +31,12 @@ const styles = theme => ({
   },
   appBar: {
     [theme.breakpoints.up('sm')]: {
-      marginLeft: drawerWidth,    // TODO FIND ANOTHER WAY, THIS IS NOT RELIABLE
-      width: `calc(100% - ${drawerWidth}px)`
+      marginLeft: DESKTOP_DRAWER_WIDTH,
+      width: `calc(100% - ${DESKTOP_DRAWER_WIDTH})`
     }
+  },
+  drawer: {
+    width: DESKTOP_DRAWER_WIDTH
   },
   menuButton: {
     marginRight: 20,
@@ -133,14 +135,14 @@ class Navigation extends Component {
           })}
         </AppBar>
 
-        <nav className={classes.drawer}>
+        <aside>
           <Hidden smUp implementation="css">
             {this.renderMobileDrawer()}
           </Hidden>
           <Hidden xsDown implementation="css">
             {this.renderDesktopDrawer()}
           </Hidden>
-        </nav>
+        </aside>
       </div>
     );
   }
@@ -160,7 +162,7 @@ class Navigation extends Component {
 
   renderDesktopDrawer() {
     return (
-      <Drawer open variant="permanent" anchor="left">
+      <Drawer classes={{paper: this.props.classes.drawer}} open variant="permanent" anchor="left">
         {this.renderDrawerLayout()}
       </Drawer>
     );
