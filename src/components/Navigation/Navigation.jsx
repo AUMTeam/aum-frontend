@@ -68,7 +68,8 @@ class Navigation extends Component {
     super(props);
 
     this.state = {
-      isDrawerOpen: false
+      isDrawerOpen: false,
+      selectedDrawerItem: 0
     };
 
     // Redirect the user to the view of its first role
@@ -170,6 +171,7 @@ class Navigation extends Component {
 
   renderDrawerLayout() {
     const { classes, match } = this.props;
+    const { selectedDrawerItem } = this.state;
     return (
       <div>
         {/*Avatar item is outside the div to avoid drawer closing when clicking on it*/}
@@ -198,12 +200,13 @@ class Navigation extends Component {
                   <ListItem
                     key={index}
                     button
+                    selected={selectedDrawerItem === index}
                     onClick={() =>
                       this.onSectionClicked(
                         section.tabs.length > 0
                           ? `${match.url}${section.routePath}/0`
-                          : `${match.url}${section.routePath}`
-                      )
+                          : `${match.url}${section.routePath}`,
+                      index)
                     }
                   >
                     <ListItemIcon>{section.drawerIcon}</ListItemIcon>
@@ -233,8 +236,9 @@ class Navigation extends Component {
     this.setState({ isDrawerOpen: false });
   }
 
-  onSectionClicked(url) {
+  onSectionClicked(url, index) {
     this.props.history.push(url);
+    this.setState({selectedDrawerItem: index})
   }
 
   onLogoutButtonClicked() {

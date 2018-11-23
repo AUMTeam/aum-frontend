@@ -23,6 +23,8 @@ const styles = {
   }
 };
 
+const PLACEHOLDER_VALUE = "-";
+
 /**
  * @class
  * This class is responsible of displaying a table
@@ -33,12 +35,28 @@ class CommitsTable extends Component {
     super(props);
 
     this.state = {
-      currentPage: 0
+      currentPage: 0,
+      dataSize: 0
     };
 
     this.renderTableToolbar = this.renderTableToolbar.bind(this);
     this.renderTableHeader = this.renderTableHeader.bind(this);
+    this.renderTableSkelethon = this.renderTableSkelethon.bind(this);
     this.renderTableBody = this.renderTableBody.bind(this);
+  }
+
+  static getDerivedStateFromProps(nextProps, oldState) {
+    if (nextProps.isLoading !== undefined && nextProps.isLoading) {
+      console.log(nextProps.tableData)
+      return {
+        dataSize:
+          nextProps.tableData[0] !== undefined
+            ? nextProps.tableData[0].data.length
+            : 0
+      };
+    }
+
+    return null;
   }
 
   render() {
@@ -48,7 +66,11 @@ class CommitsTable extends Component {
         {this.renderTableToolbar()}
         <Table>
           {this.renderTableHeader()}
-          {!isLoading && this.renderTableBody()}
+          {isLoading ? (
+            this.renderTableSkelethon()
+          ) : (
+            this.renderTableBody()
+          )}
           {this.renderTableFooter()}
         </Table>
       </Paper>
@@ -74,6 +96,27 @@ class CommitsTable extends Component {
           ))}
         </TableRow>
       </TableHead>
+    );
+  }
+
+  renderTableSkelethon() {
+    const { dataSize } = this.state;
+    return (
+      <TableBody>
+        {new Array(dataSize).fill().map((value, index) => {
+          return (
+            <TableRow key={index}>
+              <TableCell>{PLACEHOLDER_VALUE}</TableCell>
+              <TableCell>{PLACEHOLDER_VALUE}</TableCell>
+              <TableCell>
+              {PLACEHOLDER_VALUE}
+              </TableCell>
+              <TableCell>{PLACEHOLDER_VALUE}</TableCell>
+              <TableCell>{PLACEHOLDER_VALUE}</TableCell>
+            </TableRow>
+          );
+        })}
+      </TableBody>
     );
   }
 

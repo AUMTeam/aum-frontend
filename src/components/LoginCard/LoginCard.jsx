@@ -16,7 +16,8 @@ import { attemptLoginAction } from '../../redux/actions/auth';
 const styles = {
   card: {
     maxHeight: 512,
-    maxWidth: 512
+    maxWidth: 512,
+    margin: 16
   },
   root: {
     padding: 16
