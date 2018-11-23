@@ -51,7 +51,7 @@ class CommitsTable extends Component {
       return {
         dataSize:
           nextProps.tableData[0] !== undefined
-            ? nextProps.tableData[0].data.length
+            ? nextProps.tableData[0].data.length // TODO: the logic doesn't work properly, rework needed
             : 0
       };
     }
