@@ -1,4 +1,4 @@
-export const API_ENDPOINT_URL = 'http://aum.altervista.org/main.php';
+export const API_ENDPOINT_URL = 'https://aum.altervista.org/main.php';
 export const TOKEN_LOCALSTORAGE_KEY = 'token';
 
 export const LIST_AUTO_UPDATE_INTERVAL = 10000;
