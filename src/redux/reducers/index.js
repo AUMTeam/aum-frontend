@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import { auth } from './auth';
 import { programmer } from './programmer';
 import { user } from './user';
+import { globalError } from './globalError';
 
 /**
  * @file
@@ -20,12 +21,14 @@ import { user } from './user';
  * |   |-- sendRequests
  * |-- client
  * |   |-- ??? (TBD)
+ * |-- globalError
  */
 
 const reducers = combineReducers({
   auth,
   user,
-  programmer
+  programmer,
+  globalError
 });
 
 export default reducers;
