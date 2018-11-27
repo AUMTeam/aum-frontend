@@ -13,7 +13,13 @@ import {
 } from '../../redux/actions/commits';
 import { Snackbar, SnackbarContent } from '@material-ui/core';
 
-const COMMITS_TABLE_HEADER = ['ID', 'Descrizione', 'Data', 'Autore', 'Approvato'];
+const COMMITS_TABLE_COLUMNS = [
+  { label: 'ID', key: '' },
+  { label: 'Descrizione', key: '' },
+  { label: 'Data', key: '' },
+  { label: 'Autore', key: '' },
+  { label: 'Approvato', key: '' }
+];
 
 const styles = theme => ({
   root: {
@@ -51,10 +57,12 @@ class ProgrammerView extends Component {
             <Grid container justify="center">
               <CommitsTable
                 tableToolbarTitle="Lista commit"
-                tableHeaderLabels={COMMITS_TABLE_HEADER}
+                tableColumns={COMMITS_TABLE_COLUMNS}
                 tableData={this.props.commitsData.listPages}
+                sortBy={{ key: null, direction: null }}
                 itemsCount={this.props.commitsData.totalCommitsCount}
                 onPageChange={this.props.retrieveCommitsListPageAction}
+                onSortingRequested={this.props.retrieveCommitsListPageAction}
                 isLoading={this.props.commitsData.isLoadingList}
                 userRoleString={USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]}
                 displayError={this.props.commitsData.errorWhileFetchingData}

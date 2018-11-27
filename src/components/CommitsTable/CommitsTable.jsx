@@ -1,4 +1,4 @@
-import { TableFooter, TablePagination } from '@material-ui/core';
+import { TableFooter, TablePagination, TableSortLabel } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -65,12 +65,20 @@ class CommitsTable extends Component {
   }
 
   renderTableHeader() {
-    const { tableHeaderLabels } = this.props;
+    const { tableColumns, sortBy, userRoleString } = this.props;
     return (
       <TableHead>
         <TableRow>
-          {tableHeaderLabels.map((headerValue, index) => (
-            <TableCell key={index}>{headerValue}</TableCell>
+          {tableColumns.map((column, index) => (
+            <TableCell key={index}>
+              <TableSortLabel
+                active={sortBy.key === column.key}
+                direction={sortBy.direction}
+                onClick={() => this.props.onSortingRequested(this.state.currentPage, userRoleString, sortBy)} // TBD
+              >
+                {column.label}
+              </TableSortLabel>
+            </TableCell>
           ))}
         </TableRow>
       </TableHead>
@@ -91,9 +99,7 @@ class CommitsTable extends Component {
               <TableRow key={index}>
                 <TableCell>{rowValue.id}</TableCell>
                 <TableCell>{rowValue.description}</TableCell>
-                <TableCell>
-                  {new Date(rowValue.timestamp * 1000).toLocaleString('it-it')}
-                </TableCell>
+                <TableCell>{new Date(rowValue.timestamp * 1000).toLocaleString('it-it')}</TableCell>
                 <TableCell>{rowValue.author.username}</TableCell>
                 <TableCell>{rowValue.approval_status}</TableCell>
               </TableRow>
@@ -127,10 +133,12 @@ class CommitsTable extends Component {
 CommitsTable.propTypes = {
   classes: PropTypes.object.isRequired,
   tableToolbarTitle: PropTypes.string.isRequired,
-  tableHeaderLabels: PropTypes.array.isRequired,
+  tableColumns: PropTypes.array.isRequired,
   tableData: PropTypes.array.isRequired,
+  sortBy: PropTypes.object.isRequired,
   itemsCount: PropTypes.number.isRequired,
   onPageChange: PropTypes.func.isRequired,
+  onSortingRequested: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   userRoleString: PropTypes.string.isRequired,
   displayError: PropTypes.bool.isRequired
