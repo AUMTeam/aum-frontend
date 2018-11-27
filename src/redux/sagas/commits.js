@@ -109,13 +109,14 @@ function* checkForListUpdates(latestCommitTimestamp, userRoleString) {
   if (response != null) {
     const responseJson = yield response.json();
     if (response.ok) {
-      if (responseJson.response_data.updates_found)
-        yield put({
-          type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_UPDATE_FOUND,
-          latestCommitTimestamp: responseJson.response_data.latest_commit_timestamp,
-          userRoleString
-        });
-      else
+      yield put({
+        type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_UPDATE_RECEIVED,
+        latestCommitTimestamp: responseJson.response_data.latest_commit_timestamp,
+        updatesFound: responseJson.response_data.updates_found,
+        userRoleString
+      });
+
+      if (!responseJson.response_data.updates_found)
         console.log('No commits list updates found');
     }
     else {
