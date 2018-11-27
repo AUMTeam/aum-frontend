@@ -1,7 +1,8 @@
-import { all } from 'redux-saga/effects';
+import { all, put } from 'redux-saga/effects';
 import { authFlowSaga } from './auth';
 import { commitsSaga } from './commits';
 import { userSaga } from './user';
+import { GLOBAL_ERROR_ACTION_TYPE_KEYS } from '../actions/globalError';
 
 /**
  * @file
@@ -13,5 +14,13 @@ import { userSaga } from './user';
  */
 
 export default function* rootSaga() {
-  yield all([authFlowSaga(), ...userSaga, ...commitsSaga]);
+  try {
+    yield all([authFlowSaga(), ...userSaga, ...commitsSaga]);
+  }
+  // Since some of the functions passed to all() method never end (endless loop),
+  // this finally block is reached only when there's an uncaught exception in a saga
+  // (since all() is aborted when one of the passed functions/effects fails)
+  finally {
+    yield put({ type: GLOBAL_ERROR_ACTION_TYPE_KEYS.SAGA_ERROR });
+  }
 }

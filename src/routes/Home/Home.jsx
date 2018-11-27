@@ -1,4 +1,11 @@
-import { withStyles } from '@material-ui/core';
+import {
+  withStyles,
+  Dialog,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
+  Button
+} from '@material-ui/core';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
@@ -10,7 +17,7 @@ import { requestCurrentUserInfoAction } from '../../redux/actions/user';
 import { ROUTES_PARAMS } from '../../constants/routes';
 import { NAVIGATION_HIERARCHY, DESKTOP_DRAWER_WIDTH } from '../../constants/navigation';
 
-const style = theme => ({
+const homeStyles = theme => ({
   root: {
     display: 'flex'
   },
@@ -19,14 +26,16 @@ const style = theme => ({
       marginLeft: `calc(${DESKTOP_DRAWER_WIDTH} + 16px)`,
       width: `calc(100% - ${DESKTOP_DRAWER_WIDTH + 16})`
     }
+  },
+  errorDialog: {
+    backgroundColor: theme.palette.error.main
   }
 });
 
 /**
  * @class
- * This class represents the home page of the webapp.
- * In the home page the main UI will be loaded, so we will load
- * components responsible for loading new data and inserting new data.
+ * This class represents the home page of the web-app.
+ * In the home page the main UI will be loaded once the user data has been fetched from server.
  */
 class Home extends Component {
   constructor(props) {
@@ -38,27 +47,54 @@ class Home extends Component {
   render() {
     return (
       <div>
-        {/* We don't want the Navigation component to be rendered before we get user data*/}
         {!this.props.user.infoObtained ? (
-          <LogoLoader />
+          this.props.user.serverError ? (
+            <Dialog
+              classes={{ paper: this.props.classes.errorDialog }}
+              disableBackdropClick
+              disableEscapeKeyDown
+              open
+            >
+              <DialogContent>
+                <DialogContentText style={{ color: 'white' }}>
+                  Il server ha riscontrato un errore nell'ottenere i dati relativi al tuo utente. Riprova ad
+                  effettuare l'accesso più tardi o contatta l'amministratore se il problema persiste.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  style={{ color: 'white' }}
+                  onClick={() => this.props.performLogoutAction(this.props.accessToken)}
+                >
+                  Logout
+                </Button>
+              </DialogActions>
+            </Dialog>
+          ) : (
+            // Displayed while fetching user data from server
+            <LogoLoader />
+          )
         ) : (
+          // Displayed only when user data are obtained successfully
           <div>
             <Navigation
               match={this.props.match}
               history={this.props.history}
               user={this.props.user}
-              onLogout={() =>
-                this.props.performLogoutAction(this.props.accessToken)
-              }
+              onLogout={() => this.props.performLogoutAction(this.props.accessToken)}
             />
-            <main className={this.props.classes.content}>{this.renderSubRoutes()}</main>
+            <main className={this.props.classes.content}>{this.renderContentSubRoutes()}</main>
           </div>
         )}
       </div>
     );
   }
 
-  renderSubRoutes() {
+  /**
+   * Renders Route components which are responsible for displaying the contents of the
+   * user role view corresponding to the current URL
+   */
+  renderContentSubRoutes() {
     const { user, match } = this.props;
     return (
       <Switch>
@@ -88,13 +124,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    { performLogoutAction, requestCurrentUserInfoAction },
-    dispatch
-  );
+  return bindActionCreators({ performLogoutAction, requestCurrentUserInfoAction }, dispatch);
 };
 
-export default withStyles(style)(
+export default withStyles(homeStyles)(
   connect(
     mapStateToProps,
     mapDispatchToProps

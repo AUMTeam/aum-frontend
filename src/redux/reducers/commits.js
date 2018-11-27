@@ -33,7 +33,7 @@ export function commits(state = initialState, action) {
         totalCommitsCount: action.serverResponse.count_total
       };
       newState.listPages = [...state.listPages];   // objects are not deeply copied, that would just be too painful
-      if (!(action.pageNumber in newState.listPages))
+      if (!(action.pageNumber in newState.listPages) || newState.listPages[action.pageNumber] == null)
         newState.listPages[action.pageNumber] = {};
       newState.listPages[action.pageNumber].data = action.serverResponse.commit_list;
 
@@ -58,7 +58,7 @@ export function commits(state = initialState, action) {
         ...state,
         errorWhileCheckingUpdates: true
       };
-    case COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_UPDATE_FOUND:
+    case COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_UPDATE_RECEIVED:
       return {
         ...state,
         errorWhileCheckingUpdates: false,

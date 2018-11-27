@@ -14,8 +14,8 @@ export const COMMITS_ACTION_TYPE_KEYS = {
   // and therefore doesn't need to be retrieved from server
   COMMITS_LIST_NO_RETRIEVAL_NEEDED: 'COMMITS_LIST_NO_RETRIEVAL_NEEDED',
 
-  // Dispatched when a list update has been found server-side so that the user gets notified
-  COMMITS_LIST_UPDATE_FOUND: 'COMMITS_LIST_UPDATE_FOUND',
+  // Dispatched when the server responds successfully to an update check (regardless of there are updates or not)
+  COMMITS_LIST_UPDATE_RECEIVED: 'COMMITS_LIST_UPDATE_RECEIVED',
 
   // Dispatched when a list update check fails
   COMMITS_LIST_UPDATE_CHECKING_ERROR: 'COMMITS_LIST_UPDATE_CHECKING_ERROR',
