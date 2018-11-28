@@ -7,18 +7,18 @@ import { CommitsTable } from '../../components/CommitsTable';
 import { USER_ROLE_STRINGS, USER_TYPE_IDS } from '../../constants/user';
 import {
   retrieveCommitsListPageAction,
-  retrieveSortedCommitsListPage,
+  retrieveSortedCommitsListPageAction,
   startCommitsListUpdatesAutoCheckingAction,
   stopCommitsListUpdatesAutoCheckingAction
 } from '../../redux/actions/commits';
 import { Snackbar, SnackbarContent } from '@material-ui/core';
 
 const COMMITS_TABLE_COLUMNS = [
-  { label: 'ID', key: 'a' },
-  { label: 'Descrizione', key: 'b' },
-  { label: 'Data', key: 'c' },
-  { label: 'Autore', key: 'd' },
-  { label: 'Approvato', key: 'e' }
+  { label: 'ID', key: 'commit_id' },
+  { label: 'Descrizione', key: 'description' },
+  { label: 'Data', key: 'timestamp' },
+  { label: 'Autore', key: 'author_user_id' },
+  { label: 'Approvato', key: 'is_approved' }
 ];
 
 const styles = theme => ({
@@ -58,7 +58,7 @@ class ProgrammerView extends Component {
   }
 
   onCommitsTableSortingRequested(currentPage, sortingCriteria) {
-    this.props.retrieveSortedCommitsListPage(
+    this.props.retrieveSortedCommitsListPageAction(
       currentPage,
       sortingCriteria,
       USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]
@@ -114,7 +114,7 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       retrieveCommitsListPageAction,
-      retrieveSortedCommitsListPage,
+      retrieveSortedCommitsListPageAction,
       startCommitsListUpdatesAutoCheckingAction,
       stopCommitsListUpdatesAutoCheckingAction
     },

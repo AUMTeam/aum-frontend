@@ -37,7 +37,7 @@ export function retrieveCommitsListPageAction(pageNumber, userRoleString) {
   };
 }
 
-export function retrieveSortedCommitsListPage(pageNumber, sortingCriteria, userRoleString) {
+export function retrieveSortedCommitsListPageAction(pageNumber, sortingCriteria, userRoleString) {
   return {
     type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_REQUEST,
     pageNumber,
