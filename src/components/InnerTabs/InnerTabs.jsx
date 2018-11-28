@@ -1,5 +1,4 @@
-import { Hidden } from '@material-ui/core';
-import { withTheme } from '@material-ui/core/styles';
+import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import PropTypes from 'prop-types';
@@ -18,38 +17,20 @@ class InnerTabs extends Component {
   }
 
   render() {
-    const { tabs, match } = this.props;
+    const { tabs, match, width } = this.props;
     return (
-      <>
-        <Hidden smUp implementation="css">
-          <Tabs value={match.params.value} fullWidth={true} scrollable scrollButtons="auto">
-            {tabs.map((tab, index) => {
-              return (
-                <Tab
-                  key={index}
-                  value={tab.value}
-                  label={tab.label}
-                  onClick={() => this.onTabClicked(tab.value)}
-                />
-              );
-            })}
-          </Tabs>
-        </Hidden>
-        <Hidden xsDown implementation="css">
-          <Tabs value={match.params.value} fullWidth={false} scrollable scrollButtons="auto">
-            {tabs.map((tab, index) => {
-              return (
-                <Tab
-                  key={index}
-                  value={tab.value}
-                  label={tab.label}
-                  onClick={() => this.onTabClicked(tab.value)}
-                />
-              );
-            })}
-          </Tabs>
-        </Hidden>
-      </>
+      <Tabs value={match.params.value} fullWidth={isWidthDown('xs', width)} scrollable scrollButtons="auto">
+        {tabs.map((tab, index) => {
+          return (
+            <Tab
+              key={index}
+              value={tab.value}
+              label={tab.label}
+              onClick={() => this.onTabClicked(tab.value)}
+            />
+          );
+        })}
+      </Tabs>
     );
   }
 
@@ -65,4 +46,4 @@ InnerTabs.propTypes = {
   tabs: PropTypes.array.isRequired
 };
 
-export default withTheme()(InnerTabs);
+export default withWidth()(InnerTabs);

@@ -98,8 +98,6 @@ class ProgrammerView extends Component {
       default:
         return null;
     }
-
-    return null;
   }
 }
 

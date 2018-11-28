@@ -56,7 +56,7 @@ class CommitsTable extends Component {
 
   static getDerivedStateFromProps(nextProps, oldState) {
     if (nextProps.isLoading !== undefined && nextProps.isLoading) {
-      console.log(nextProps.tableData);
+      //console.log(nextProps.tableData);
       return {
         dataSize:
           nextProps.tableData[0] !== undefined

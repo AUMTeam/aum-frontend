@@ -25,7 +25,8 @@ export function* authFlowSaga() {
   if (tokenValidationRequestAction.accessToken == null) {
     yield put({ type: AUTH_ACTION_TYPE_KEYS.LOCAL_TOKEN_NOT_FOUND });
     console.log('Previous token not found in localStorage');
-  } else {
+  }
+  else {
     yield call(requestLocalAccessTokenValidation, tokenValidationRequestAction);
   }
 
@@ -42,7 +43,8 @@ export function* authFlowSaga() {
           errorMessage
         });
         console.error(`Login API error: ${errorMessage}`);
-      } else {
+      }
+      else {
         yield put({
           type: AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL,
           accessToken
@@ -94,9 +96,12 @@ function* notifyLogoutToServerAsync(action) {
   );
 
   logoutNotificationTask.done.then(response => {
-    if (response == null) console.error('Error during logout notification request to server');
-    else if (response.ok) console.log('Logout notification successful');
-    else console.error(`Server responded with an error after logout notification: ${response.statusText}`);
+    if (response == null)
+      console.error('Error during logout notification request to server');
+    else if (response.ok)
+      console.log('Logout notification successful');
+    else
+      console.error(`Server responded with an error after logout notification: ${response.statusText}`);
   });
 }
 
@@ -146,13 +151,16 @@ function* requestLocalAccessTokenValidation(action) {
       accessToken: action.accessToken
     });
     console.log('Local access token is valid');
-  } else {
+  }
+  else {
     yield put({ type: AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_FAILED });
     removeAccessTokenFromLocalStorage();
-    if (response == null) console.error('An error occurred during token validation request to server');
+    if (response == null)
+      console.error('An error occurred during token validation request to server');
     else if (response.status === 401)
       // Unauthorized, means that the token isn't valid anymore
       console.log('Local token is no more valid');
-    else console.error(`Unexpected error code for token validation request: ${response.status}`);
+    else
+      console.error(`Unexpected error code for token validation request: ${response.status}`);
   }
 }
