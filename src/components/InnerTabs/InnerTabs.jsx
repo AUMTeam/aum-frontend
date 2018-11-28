@@ -1,3 +1,5 @@
+import { Hidden } from '@material-ui/core';
+import { withTheme } from '@material-ui/core/styles';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import PropTypes from 'prop-types';
@@ -8,7 +10,7 @@ import React, { Component } from 'react';
  * This class is responsible of displaying inner tabs for
  * each member.
  */
-export default class InnerTabs extends Component {
+class InnerTabs extends Component {
   constructor(props) {
     super(props);
 
@@ -18,18 +20,36 @@ export default class InnerTabs extends Component {
   render() {
     const { tabs, match } = this.props;
     return (
-      <Tabs value={match.params.value} scrollable scrollButtons="auto">
-        {tabs.map((tab, index) => {
-          return (
-            <Tab
-              key={index}
-              value={tab.value}
-              label={tab.label}
-              onClick={() => this.onTabClicked(tab.value)}
-            />
-          );
-        })}
-      </Tabs>
+      <>
+        <Hidden smUp implementation="css">
+          <Tabs value={match.params.value} fullWidth={true} scrollable scrollButtons="auto">
+            {tabs.map((tab, index) => {
+              return (
+                <Tab
+                  key={index}
+                  value={tab.value}
+                  label={tab.label}
+                  onClick={() => this.onTabClicked(tab.value)}
+                />
+              );
+            })}
+          </Tabs>
+        </Hidden>
+        <Hidden xsDown implementation="css">
+          <Tabs value={match.params.value} fullWidth={false} scrollable scrollButtons="auto">
+            {tabs.map((tab, index) => {
+              return (
+                <Tab
+                  key={index}
+                  value={tab.value}
+                  label={tab.label}
+                  onClick={() => this.onTabClicked(tab.value)}
+                />
+              );
+            })}
+          </Tabs>
+        </Hidden>
+      </>
     );
   }
 
@@ -44,3 +64,5 @@ InnerTabs.propTypes = {
   prevUrl: PropTypes.string.isRequired,
   tabs: PropTypes.array.isRequired
 };
+
+export default withTheme()(InnerTabs);

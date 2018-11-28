@@ -23,8 +23,8 @@ const homeStyles = theme => ({
   },
   content: {
     [theme.breakpoints.up('sm')]: {
-      marginLeft: `calc(${DESKTOP_DRAWER_WIDTH} + 16px)`,
-      width: `calc(100% - ${DESKTOP_DRAWER_WIDTH + 16})`
+      marginLeft: `calc(${DESKTOP_DRAWER_WIDTH})`,
+      width: `calc(100% - ${DESKTOP_DRAWER_WIDTH})`
     }
   },
   errorDialog: {
