@@ -1,21 +1,14 @@
-import {
-  withStyles,
-  Dialog,
-  DialogContent,
-  DialogActions,
-  DialogContentText,
-  Button
-} from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, withStyles } from '@material-ui/core';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { LogoLoader } from '../../components/LogoLoader';
 import { Navigation } from '../../components/Navigation';
+import { DESKTOP_DRAWER_WIDTH, NAVIGATION_HIERARCHY } from '../../constants/navigation';
+import { ROUTE_PARAM } from '../../constants/routes';
 import { performLogoutAction } from '../../redux/actions/auth';
 import { requestCurrentUserInfoAction } from '../../redux/actions/user';
-import { ROUTE_PARAM } from '../../constants/routes';
-import { NAVIGATION_HIERARCHY, DESKTOP_DRAWER_WIDTH } from '../../constants/navigation';
 
 const homeStyles = theme => ({
   root: {

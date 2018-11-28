@@ -1,11 +1,6 @@
 import { call, fork, put, select, take } from 'redux-saga/effects';
 import { REQUEST_ACTIONS_PATH } from '../../constants/api';
-import {
-  makeAuthenticatedApiRequest,
-  makeUnauthenticatedApiRequest,
-  removeAccessTokenFromLocalStorage,
-  saveAccessTokenToLocalStorage
-} from '../../utils/apiUtils';
+import { makeAuthenticatedApiRequest, makeUnauthenticatedApiRequest, removeAccessTokenFromLocalStorage, saveAccessTokenToLocalStorage } from '../../utils/apiUtils';
 import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
 import { USER_ACTION_TYPE_KEYS } from '../actions/user';
 import { requestCurrentUserInfo } from './user';

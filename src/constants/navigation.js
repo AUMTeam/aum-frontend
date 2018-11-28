@@ -3,12 +3,12 @@ import CodeIcon from '@material-ui/icons/Code';
 import FaceIcon from '@material-ui/icons/Face';
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 import React from 'react';
-import { USER_TYPE_ID } from './user';
-import { ROUTE } from './routes';
-import { ProgrammerView } from '../views/ProgrammerView';
-import { TechnicalAreaManagerView } from '../views/TechnicalAreaManagerView';
-import { RevisionOfficeManagerView } from '../views/RevisionOfficeManagerView';
 import { ClientView } from '../views/ClientView';
+import { ProgrammerView } from '../views/ProgrammerView';
+import { RevisionOfficeManagerView } from '../views/RevisionOfficeManagerView';
+import { TechnicalAreaManagerView } from '../views/TechnicalAreaManagerView';
+import { ROUTE } from './routes';
+import { USER_TYPE_ID } from './user';
 
 export const DESKTOP_DRAWER_WIDTH = '300px';
 

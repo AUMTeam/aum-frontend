@@ -1,8 +1,8 @@
 import { all, put } from 'redux-saga/effects';
+import { GLOBAL_ERROR_ACTION_TYPE_KEYS } from '../actions/globalError';
 import { authFlowSaga } from './auth';
 import { commitsSaga } from './commits';
 import { userSaga } from './user';
-import { GLOBAL_ERROR_ACTION_TYPE_KEYS } from '../actions/globalError';
 
 /**
  * @file

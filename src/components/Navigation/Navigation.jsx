@@ -16,10 +16,10 @@ import MenuIcon from '@material-ui/icons/Menu';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
+import { DESKTOP_DRAWER_WIDTH, getRouteForUser, NAVIGATION_HIERARCHY } from '../../constants/navigation';
+import { ROUTE_PARAM } from '../../constants/routes';
 import { getRandomColor } from '../../utils/colorUtils';
 import { InnerTabs } from '../InnerTabs';
-import { NAVIGATION_HIERARCHY, getRouteForUser, DESKTOP_DRAWER_WIDTH } from '../../constants/navigation';
-import { ROUTE_PARAM } from '../../constants/routes';
 
 const styles = theme => ({
   root: {

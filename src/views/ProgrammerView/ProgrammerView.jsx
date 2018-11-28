@@ -1,3 +1,4 @@
+import { Snackbar, SnackbarContent } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
@@ -6,12 +7,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { CommitsTable } from '../../components/CommitsTable';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
-import {
-  retrieveCommitsListPageAction,
-  startCommitsListUpdatesAutoCheckingAction,
-  stopCommitsListUpdatesAutoCheckingAction
-} from '../../redux/actions/commits';
-import { Snackbar, SnackbarContent } from '@material-ui/core';
+import { retrieveCommitsListPageAction, startCommitsListUpdatesAutoCheckingAction, stopCommitsListUpdatesAutoCheckingAction } from '../../redux/actions/commits';
 
 const COMMITS_TABLE_HEADER = ['ID', 'Descrizione', 'Data', 'Autore', 'Approvato'];
 

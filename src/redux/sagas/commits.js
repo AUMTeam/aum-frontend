@@ -1,9 +1,8 @@
 import { delay } from 'redux-saga';
 import { call, cancel, cancelled, fork, put, select, take, takeLatest } from 'redux-saga/effects';
-import { LIST_AUTO_UPDATE_INTERVAL, REQUEST_ACTIONS_PATH } from '../../constants/api';
+import { LIST_AUTO_UPDATE_INTERVAL, LIST_ELEMENTS_PER_PAGE, REQUEST_ACTIONS_PATH } from '../../constants/api';
 import { makeAuthenticatedApiRequest } from '../../utils/apiUtils';
 import { COMMITS_ACTION_TYPE_KEYS } from '../actions/commits';
-import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
 
 /**
  * Called every time the user changes the page of the commits table or the latter is recreated

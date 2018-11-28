@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
 import { auth } from './auth';
+import { globalError } from './globalError';
 import { programmer } from './programmer';
 import { user } from './user';
-import { globalError } from './globalError';
 
 /**
  * @file

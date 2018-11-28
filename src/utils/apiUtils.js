@@ -2,7 +2,7 @@
  * @file
  * This file contains helper functions and constants used to make API calls.
  */
-import { API_ENDPOINT_URL, TOKEN_LOCALSTORAGE_KEY, REQUEST_TIMEOUT_MS } from '../constants/api';
+import { API_ENDPOINT_URL, REQUEST_TIMEOUT_MS, TOKEN_LOCALSTORAGE_KEY } from '../constants/api';
 
 /**
  * Returns a promise that is rejected after the specified timeout
