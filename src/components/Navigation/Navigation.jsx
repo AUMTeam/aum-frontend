@@ -65,7 +65,7 @@ class Navigation extends Component {
 
     this.state = {
       isDrawerOpen: false,
-      selectedDrawerItem: 0
+      selectedDrawerItem: NAVIGATION_HIERARCHY.findIndex(section => section.value === props.user.roles[0])
     };
 
     // Redirect the user to the view of its first role
