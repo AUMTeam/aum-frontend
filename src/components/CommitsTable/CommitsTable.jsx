@@ -9,6 +9,11 @@ import TableRow from '@material-ui/core/TableRow';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
+import Grid from '@material-ui/core/Grid';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import Button from '@material-ui/core/Button';
+
+import Badge from '@material-ui/core/Badge';
 import React, { Component } from 'react';
 import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
 
@@ -74,10 +79,32 @@ class CommitsTable extends Component {
   }
 
   renderTableToolbar() {
-    const { tableToolbarTitle } = this.props;
+    const { tableToolbarTitle, latestCommitTimestamp, tableData, onPageChange, userRoleString } = this.props;
+    const { currentPage } = this.state;
     return (
       <Toolbar>
-        <Typography variant="h5">{tableToolbarTitle}</Typography>
+        <Grid container direction="row" justify="space-between" alignItems="center" spacing={16}>
+          <Grid item>
+            <Typography variant="h5">{tableToolbarTitle}</Typography>
+          </Grid>
+          <Grid item>
+            {tableData.length > 0 &&
+              currentPage in tableData &&
+              tableData[currentPage] != null &&
+              latestCommitTimestamp > tableData[currentPage].updateTimestamp && (
+                <Badge color="secondary">
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => onPageChange(currentPage, userRoleString)}
+                  >
+                    Nuovi commit disponibili
+                    <RefreshIcon />
+                  </Button>
+                </Badge>
+              )}
+          </Grid>
+        </Grid>
       </Toolbar>
     );
   }

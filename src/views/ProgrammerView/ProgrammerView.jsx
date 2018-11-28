@@ -52,6 +52,7 @@ class ProgrammerView extends Component {
                 itemsCount={this.props.commitsData.totalCommitsCount}
                 onPageChange={this.props.retrieveCommitsListPageAction}
                 isLoading={this.props.commitsData.isLoadingList}
+                latestCommitTimestamp={this.props.commitsData.latestCommitTimestamp}
                 userRoleString={USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]}
                 displayError={this.props.commitsData.errorWhileFetchingData}
               />
