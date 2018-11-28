@@ -25,26 +25,21 @@ export const COMMITS_ACTION_TYPE_KEYS = {
 
   // Dispatched when the view containing the list is unmounted: stops the auto updater task
   COMMITS_LIST_STOP_AUTO_CHECKING: 'COMMITS_LIST_STOP_AUTO_CHECKING',
-  SHOW_COMMIT_DETAILS: 'SHOW_COMMIT_DETAILS',
+  SHOW_COMMIT_DETAILS: 'SHOW_COMMIT_DETAILS'
 };
 
-export function retrieveCommitsListPageAction(pageNumber, userRoleString) {
-  return {
-    type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_REQUEST,
-    pageNumber,
-    limit: LIST_ELEMENTS_PER_PAGE,
-    userRoleString
-  };
-}
-
-export function retrieveSortedCommitsListPageAction(pageNumber, sortingCriteria, userRoleString) {
+export function retrieveCommitsListPageAction(
+  pageNumber,
+  userRoleString,
+  sortingCriteria = { columnKey: null, direction: 'asc' }
+) {
   return {
     type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_REQUEST,
     pageNumber,
     limit: LIST_ELEMENTS_PER_PAGE,
     sortingCriteria,
     userRoleString
-  }
+  };
 }
 
 export function startCommitsListUpdatesAutoCheckingAction(userRoleString) {

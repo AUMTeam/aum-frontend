@@ -83,7 +83,7 @@ class CommitsTable extends Component {
                     columnKey: column.key,
                     direction: this.state.sorting.direction === 'asc' ? 'desc' : 'asc'
                   };
-                  this.props.onSortingRequested(this.state.currentPage, updatedSorting);
+                  this.props.onPageLoad(this.state.currentPage, updatedSorting);
                   this.setState({ sorting: updatedSorting });
                 }}
               >
@@ -131,7 +131,7 @@ class CommitsTable extends Component {
             page={this.state.currentPage}
             rowsPerPageOptions={[LIST_ELEMENTS_PER_PAGE]}
             onChangePage={(_, page) => {
-              this.props.onPageChange(page);
+              this.props.onPageLoad(page, this.state.sorting);
               this.setState({ currentPage: page });
             }}
           />
@@ -147,8 +147,7 @@ CommitsTable.propTypes = {
   tableColumns: PropTypes.array.isRequired,
   tableData: PropTypes.array.isRequired,
   itemsCount: PropTypes.number.isRequired,
-  onPageChange: PropTypes.func.isRequired,
-  onSortingRequested: PropTypes.func.isRequired,
+  onPageLoad: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   displayError: PropTypes.bool.isRequired
 };

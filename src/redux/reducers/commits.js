@@ -6,6 +6,7 @@ const initialState = {
     listPages will contain objects with the following shape:
     {
       data: [],             -- the list of commits for the page
+      sorting: {},
       updateTimestamp: 0    -- the value of state.latestCommitTimestamp when the page was retrieved
     }
   */
@@ -36,6 +37,8 @@ export function commits(state = initialState, action) {
       if (!(action.pageNumber in newState.listPages) || newState.listPages[action.pageNumber] == null)
         newState.listPages[action.pageNumber] = {};
       newState.listPages[action.pageNumber].data = action.serverResponse.list;
+
+      newState.listPages[action.pageNumber].sorting = action.sortingCriteria;
 
       // Here we assume that the latestCommitTimestamp value is always correctly initialized,
       // because update checking always happens before retrieving a page

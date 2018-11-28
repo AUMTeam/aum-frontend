@@ -7,7 +7,6 @@ import { CommitsTable } from '../../components/CommitsTable';
 import { USER_ROLE_STRINGS, USER_TYPE_IDS } from '../../constants/user';
 import {
   retrieveCommitsListPageAction,
-  retrieveSortedCommitsListPageAction,
   startCommitsListUpdatesAutoCheckingAction,
   stopCommitsListUpdatesAutoCheckingAction
 } from '../../redux/actions/commits';
@@ -64,19 +63,13 @@ class ProgrammerView extends Component {
                 tableColumns={COMMITS_TABLE_COLUMNS}
                 tableData={this.props.commitsData.listPages}
                 itemsCount={this.props.commitsData.totalCommitsCount}
-                onPageChange={pageNumber => {
+                onPageLoad={(pageNumber, sortingCriteria) => {
                   this.props.retrieveCommitsListPageAction(
                     pageNumber,
-                    USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]
+                    USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER],
+                    sortingCriteria
                   );
                 }}
-                onSortingRequested={(pageNumber, sortingCriteria) =>
-                  this.props.retrieveSortedCommitsListPageAction(
-                    pageNumber,
-                    sortingCriteria,
-                    USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]
-                  )
-                }
                 isLoading={this.props.commitsData.isLoadingList}
                 displayError={this.props.commitsData.errorWhileFetchingData}
               />
@@ -105,7 +98,6 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       retrieveCommitsListPageAction,
-      retrieveSortedCommitsListPageAction,
       startCommitsListUpdatesAutoCheckingAction,
       stopCommitsListUpdatesAutoCheckingAction
     },

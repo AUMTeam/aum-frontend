@@ -26,10 +26,18 @@ function* retrieveCommitsListPage(action) {
       state => state[action.userRoleString].commits.latestCommitTimestamp
     );
     var requestedPageNotUpdated = commitsListPages[action.pageNumber].updateTimestamp < latestCommitTimestamp;
+    var sortingCriteriaDifferent =
+      action.sortingCriteria.columnKey !== commitsListPages[action.pageNumber].sorting.columnKey ||
+      action.sortingCriteria.direction !== commitsListPages[action.pageNumber].sorting.direction;
   }
 
-  if (!requestedPageAlreadyFetched || requestedPageNotUpdated) {
-    const { serverResponse, errorMessage } = yield call(fetchCommitsListPageFromServer, action.pageNumber);
+  // Fetch page only if needed
+  if (!requestedPageAlreadyFetched || requestedPageNotUpdated || sortingCriteriaDifferent) {
+    const { serverResponse, errorMessage } = yield call(
+      fetchCommitsListPageFromServer,
+      action.pageNumber,
+      action.sortingCriteria
+    );
 
     if (errorMessage != null) {
       console.error(`Unable to get data for commits page ${action.pageNumber}: ${errorMessage}`);
@@ -44,7 +52,8 @@ function* retrieveCommitsListPage(action) {
         type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_RETRIEVED_FROM_SERVER,
         serverResponse,
         pageNumber: action.pageNumber,
-        userRoleString: action.userRoleString
+        userRoleString: action.userRoleString,
+        sortingCriteria: action.sortingCriteria
       });
     }
   }
@@ -60,13 +69,20 @@ function* retrieveCommitsListPage(action) {
  * Fetches the commits for a given page number from the server
  * @param {*} pageNumber The page requested
  */
-function* fetchCommitsListPageFromServer(pageNumber) {
+function* fetchCommitsListPageFromServer(pageNumber, sortingCriteria) {
   const response = yield makeAuthenticatedApiRequest(
     REQUEST_ACTIONS_PATHS.GET_COMMITS_LIST,
     yield select(state => state.auth.accessToken),
-    {
+    sortingCriteria.columnKey == null ? {
       page: pageNumber,
       limit: LIST_ELEMENTS_PER_PAGE
+    } : {
+      page: pageNumber,
+      limit: LIST_ELEMENTS_PER_PAGE,
+      sort: {
+        parameter: sortingCriteria.columnKey,
+        order: sortingCriteria.direction
+      }
     }
   );
 
