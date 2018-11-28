@@ -1,6 +1,5 @@
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -8,17 +7,18 @@ import { CommitsTable } from '../../components/CommitsTable';
 import { USER_ROLE_STRINGS, USER_TYPE_IDS } from '../../constants/user';
 import {
   retrieveCommitsListPageAction,
+  retrieveSortedCommitsListPage,
   startCommitsListUpdatesAutoCheckingAction,
   stopCommitsListUpdatesAutoCheckingAction
 } from '../../redux/actions/commits';
 import { Snackbar, SnackbarContent } from '@material-ui/core';
 
 const COMMITS_TABLE_COLUMNS = [
-  { label: 'ID', key: '' },
-  { label: 'Descrizione', key: '' },
-  { label: 'Data', key: '' },
-  { label: 'Autore', key: '' },
-  { label: 'Approvato', key: '' }
+  { label: 'ID', key: 'a' },
+  { label: 'Descrizione', key: 'b' },
+  { label: 'Data', key: 'c' },
+  { label: 'Autore', key: 'd' },
+  { label: 'Approvato', key: 'e' }
 ];
 
 const styles = theme => ({
@@ -40,12 +40,30 @@ class ProgrammerView extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      commitsTableSortingCriteria: {
+        columnKey: null,
+        direction: 'asc'
+      }
+    };
+
     this.props.retrieveCommitsListPageAction(0, USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
     this.props.startCommitsListUpdatesAutoCheckingAction(USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
+
+    this.onCommitsTableSortingRequested = this.onCommitsTableSortingRequested.bind(this);
   }
 
   componentWillUnmount() {
     this.props.stopCommitsListUpdatesAutoCheckingAction(USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
+  }
+
+  onCommitsTableSortingRequested(currentPage, sortingCriteria) {
+    this.props.retrieveSortedCommitsListPage(
+      currentPage,
+      sortingCriteria,
+      USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]
+    );
+    this.setState({ commitsTableSortingCriteria: sortingCriteria });
   }
 
   render() {
@@ -59,12 +77,16 @@ class ProgrammerView extends Component {
                 tableToolbarTitle="Lista commit"
                 tableColumns={COMMITS_TABLE_COLUMNS}
                 tableData={this.props.commitsData.listPages}
-                sortBy={{ key: null, direction: null }}
+                sortBy={this.state.commitsTableSortingCriteria}
                 itemsCount={this.props.commitsData.totalCommitsCount}
-                onPageChange={this.props.retrieveCommitsListPageAction}
-                onSortingRequested={this.props.retrieveCommitsListPageAction}
+                onPageChange={pageNumber => {
+                  this.props.retrieveCommitsListPageAction(
+                    pageNumber,
+                    USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]
+                  );
+                }}
+                onSortingRequested={this.onCommitsTableSortingRequested}
                 isLoading={this.props.commitsData.isLoadingList}
-                userRoleString={USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]}
                 displayError={this.props.commitsData.errorWhileFetchingData}
               />
             </Grid>
@@ -82,10 +104,6 @@ class ProgrammerView extends Component {
   }
 }
 
-ProgrammerView.propTypes = {
-  classes: PropTypes.object.isRequired
-};
-
 const mapStateToProps = state => {
   return {
     commitsData: state.programmer.commits
@@ -96,6 +114,7 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       retrieveCommitsListPageAction,
+      retrieveSortedCommitsListPage,
       startCommitsListUpdatesAutoCheckingAction,
       stopCommitsListUpdatesAutoCheckingAction
     },

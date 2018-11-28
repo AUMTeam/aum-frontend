@@ -37,6 +37,16 @@ export function retrieveCommitsListPageAction(pageNumber, userRoleString) {
   };
 }
 
+export function retrieveSortedCommitsListPage(pageNumber, sortingCriteria, userRoleString) {
+  return {
+    type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_REQUEST,
+    pageNumber,
+    limit: LIST_ELEMENTS_PER_PAGE,
+    sortingCriteria,
+    userRoleString
+  }
+}
+
 export function startCommitsListUpdatesAutoCheckingAction(userRoleString) {
   return {
     type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_START_AUTO_CHECKING,

@@ -65,16 +65,21 @@ class CommitsTable extends Component {
   }
 
   renderTableHeader() {
-    const { tableColumns, sortBy, userRoleString } = this.props;
+    const { tableColumns, sortBy } = this.props;
     return (
       <TableHead>
         <TableRow>
-          {tableColumns.map((column, index) => (
-            <TableCell key={index}>
+          {tableColumns.map(column => (
+            <TableCell key={column.key}>
               <TableSortLabel
-                active={sortBy.key === column.key}
+                active={sortBy.columnKey === column.key}
                 direction={sortBy.direction}
-                onClick={() => this.props.onSortingRequested(this.state.currentPage, userRoleString, sortBy)} // TBD
+                onClick={() =>
+                  this.props.onSortingRequested(this.state.currentPage, {
+                    columnKey: column.key,
+                    direction: sortBy.direction === 'asc' ? 'desc' : 'asc'
+                  })
+                }
               >
                 {column.label}
               </TableSortLabel>
@@ -94,9 +99,9 @@ class CommitsTable extends Component {
             <TableCell>Impossibile ottenere i dati.</TableCell>
           </TableRow>
         ) : (
-          tableData[this.state.currentPage].data.map((rowValue, index) => {
+          tableData[this.state.currentPage].data.map(rowValue => {
             return (
-              <TableRow key={index}>
+              <TableRow key={rowValue.id}>
                 <TableCell>{rowValue.id}</TableCell>
                 <TableCell>{rowValue.description}</TableCell>
                 <TableCell>{new Date(rowValue.timestamp * 1000).toLocaleString('it-it')}</TableCell>
@@ -119,8 +124,8 @@ class CommitsTable extends Component {
             rowsPerPage={LIST_ELEMENTS_PER_PAGE}
             page={this.state.currentPage}
             rowsPerPageOptions={[LIST_ELEMENTS_PER_PAGE]}
-            onChangePage={(evt, page) => {
-              this.props.onPageChange(page, this.props.userRoleString);
+            onChangePage={(_, page) => {
+              this.props.onPageChange(page);
               this.setState({ currentPage: page });
             }}
           />
@@ -140,7 +145,6 @@ CommitsTable.propTypes = {
   onPageChange: PropTypes.func.isRequired,
   onSortingRequested: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
-  userRoleString: PropTypes.string.isRequired,
   displayError: PropTypes.bool.isRequired
 };
 
