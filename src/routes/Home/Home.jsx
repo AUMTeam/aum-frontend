@@ -1,4 +1,11 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, withStyles } from '@material-ui/core';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  withStyles
+} from '@material-ui/core';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
@@ -91,6 +98,7 @@ class Home extends Component {
     const { user, match } = this.props;
     return (
       <Switch>
+        {/* Renders the specific routes for the different views */}
         {NAVIGATION_HIERARCHY.map((section, index) => {
           if (user.roles.includes(section.value)) {
             return (

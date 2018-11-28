@@ -155,7 +155,7 @@ class Navigation extends Component {
     const { selectedDrawerItem } = this.state;
     return (
       <>
-        {/*Avatar item is outside the div to avoid drawer closing when clicking on it*/}
+        {/* Avatar item is outside the div to avoid drawer closing when clicking on it */}
         <ListItem>
           <ListItemIcon>
             <Avatar className={classes.avatar}>{this.props.user.name.charAt(0)}</Avatar>
