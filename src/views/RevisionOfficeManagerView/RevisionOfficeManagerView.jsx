@@ -6,6 +6,6 @@ export default class RevisionOfficeManagerView extends Component {
   }
 
   render() {
-    return <div />;
+    return <></>;
   }
 }

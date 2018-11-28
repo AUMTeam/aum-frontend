@@ -154,7 +154,7 @@ class Navigation extends Component {
     const { classes, match } = this.props;
     const { selectedDrawerItem } = this.state;
     return (
-      <div>
+      <>
         {/*Avatar item is outside the div to avoid drawer closing when clicking on it*/}
         <ListItem>
           <ListItemIcon>
@@ -196,7 +196,7 @@ class Navigation extends Component {
             </ListItem>
           </List>
         </div>
-      </div>
+      </>
     );
   }
 

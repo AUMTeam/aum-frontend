@@ -36,7 +36,7 @@ class Routes extends Component {
 
   render() {
     return (
-      <div>
+      <>
         {this.props.isValidatingToken ? (
           <LogoLoader />
         ) : (
@@ -83,7 +83,7 @@ class Routes extends Component {
             />
           </Snackbar>
         )}
-      </div>
+      </>
     );
   }
 }

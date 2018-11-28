@@ -39,7 +39,7 @@ class Home extends Component {
 
   render() {
     return (
-      <div>
+      <>
         {!this.props.user.infoObtained ? (
           this.props.user.serverError ? (
             <Dialog
@@ -79,7 +79,7 @@ class Home extends Component {
             <main className={this.props.classes.content}>{this.renderContentSubRoutes()}</main>
           </div>
         )}
-      </div>
+      </>
     );
   }
 

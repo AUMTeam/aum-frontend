@@ -7,9 +7,9 @@ export default class TechnicalAreaManagerView extends Component {
 
   render() {
     return (
-      <div>
+      <>
         <h1>TechnicalAreaManagerView</h1>
-      </div>
+      </>
     );
   }
 }

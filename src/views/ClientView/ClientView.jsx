@@ -6,6 +6,6 @@ export default class ClientView extends Component {
   }
 
   render() {
-    return <div />;
+    return <></>;
   }
 }
