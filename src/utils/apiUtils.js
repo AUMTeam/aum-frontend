@@ -2,7 +2,7 @@
  * @file
  * This file contains helper functions and constants used to make API calls.
  */
-import { API_ENDPOINT_URL, TOKEN_LOCALSTORAGE_KEY, REQUEST_TIMEOUT_MS } from '../constants/api';
+import { API_ENDPOINT_URL, REQUEST_TIMEOUT_MS, TOKEN_LOCALSTORAGE_KEY } from '../constants/api';
 
 /**
  * Returns a promise that is rejected after the specified timeout
@@ -20,7 +20,7 @@ function withTimeout(timeoutInMilliseconds, promise) {
  * Makes a request to the server without passing the access token in the headers
  * Intended for those actions that don't require authentication
  * Promise returns null if the request fails for whatever reason
- * @param {*} actionPath One of the paths defined in REQUEST_ACTIONS_PATHS
+ * @param {*} actionPath One of the paths defined in REQUEST_ACTIONS_PATH
  * @param {*} requestData The object containing the request data (optional for an empty object)
  */
 export function makeUnauthenticatedApiRequest(actionPath, requestData = {}) {
@@ -41,7 +41,7 @@ export function makeUnauthenticatedApiRequest(actionPath, requestData = {}) {
  * Makes a request to the server passing the access token in the headers
  * Used for those actions that need user authentication
  * Promise returns null if the request fails for whatever reason
- * @param {*} actionPath One of the paths defined in REQUEST_ACTIONS_PATHS
+ * @param {*} actionPath One of the paths defined in REQUEST_ACTIONS_PATH
  * @param {*} requestData The object containing the request data (optional for an empty object)
  */
 export function makeAuthenticatedApiRequest(actionPath, accessToken, requestData = {}) {
@@ -65,8 +65,7 @@ export function saveAccessTokenToLocalStorage(accessToken) {
   console.log('Saving access token to local storage');
   try {
     localStorage.setItem(TOKEN_LOCALSTORAGE_KEY, accessToken);
-  }
-  catch (err) {
+  } catch (err) {
     console.error(`Unable to save access token in local storage: ${err}`);
   }
 }
@@ -75,8 +74,7 @@ export function removeAccessTokenFromLocalStorage() {
   console.log('Removing access token from local storage');
   try {
     localStorage.removeItem(TOKEN_LOCALSTORAGE_KEY);
-  }
-  catch (err) {
+  } catch (err) {
     console.error(`Unable to remove access token from local storage: ${err}`);
   }
 }

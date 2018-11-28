@@ -36,11 +36,7 @@ class LogoLoader extends Component {
         spacing={16}
       >
         <Grid item>
-          <img
-            className={classes.logo}
-            src={gesbank_logo}
-            alt="Gesbank Evolution"
-          />
+          <img className={classes.logo} src={gesbank_logo} alt="Gesbank Evolution" />
         </Grid>
         <Grid item>
           <CircularProgress className={classes.progress} color="secondary" />

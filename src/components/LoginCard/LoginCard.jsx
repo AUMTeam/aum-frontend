@@ -16,7 +16,8 @@ import { attemptLoginAction } from '../../redux/actions/auth';
 const styles = {
   card: {
     maxHeight: 512,
-    maxWidth: 512
+    maxWidth: 512,
+    margin: 16
   },
   root: {
     padding: 16
@@ -72,9 +73,7 @@ class LoginCard extends Component {
                 value={username}
                 onChange={event => this.onInputChanged('username', event)}
               />
-              {usernameError && (
-                <FormHelperText>Devi inserire uno username</FormHelperText>
-              )}
+              {usernameError && <FormHelperText>Devi inserire uno username</FormHelperText>}
             </FormControl>
           </Grid>
           <Grid item xs={12}>
@@ -86,9 +85,7 @@ class LoginCard extends Component {
                 value={password}
                 onChange={event => this.onInputChanged('password', event)}
               />
-              {passwordError && (
-                <FormHelperText>Devi inserire una password</FormHelperText>
-              )}
+              {passwordError && <FormHelperText>Devi inserire una password</FormHelperText>}
             </FormControl>
           </Grid>
           <Grid item xs={12}>

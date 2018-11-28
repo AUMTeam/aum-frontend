@@ -11,11 +11,7 @@ import rootSaga from './sagas';
 
 export function configureStore() {
   const saga = createSagaMiddleware();
-  const store = createStore(
-    reducers,
-    window.STATE_FROM_SERVER,
-    applyMiddleware(saga)
-  );
+  const store = createStore(reducers, window.STATE_FROM_SERVER, applyMiddleware(saga));
   saga.run(rootSaga);
 
   return store;
