@@ -75,22 +75,28 @@ class ProgrammerView extends Component {
     const { match } = this.props;
 
     switch (match.params.value) {
-      case "0":
+      case '0':
         return (
           <CommitsTable
             tableToolbarTitle="Lista commit"
-            tableHeaderLabels={COMMITS_TABLE_COLUMNS}
+            tableColumns={COMMITS_TABLE_COLUMNS}
             tableData={this.props.commitsData.listPages}
             itemsCount={this.props.commitsData.totalCommitsCount}
-            onPageChange={this.props.retrieveCommitsListPageAction}
+            onPageLoad={(pageNumber, sortingCriteria) => {
+              this.props.retrieveCommitsListPageAction(
+                pageNumber,
+                USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER],
+                sortingCriteria
+              );
+            }}
             isLoading={this.props.commitsData.isLoadingList}
-            latestCommitTimestamp={this.props.commitsData.latestCommitTimestamp}
-            userRoleString={USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]}
             displayError={this.props.commitsData.errorWhileFetchingData}
           />
         );
-      case "1":
+      case '1':
         return <h1>Richieste di invio</h1>;
+      default:
+        return null;
     }
 
     return null;
