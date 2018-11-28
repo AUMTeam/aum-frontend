@@ -21,13 +21,7 @@ class Login extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <Grid
-        className={classes.root}
-        container
-        direction="column"
-        justify="center"
-        alignItems="center"
-      >
+      <Grid className={classes.root} container direction="column" justify="center" alignItems="center">
         <LoginCard />
       </Grid>
     );

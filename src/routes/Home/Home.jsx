@@ -1,10 +1,10 @@
 import {
-  withStyles,
+  Button,
   Dialog,
-  DialogContent,
   DialogActions,
+  DialogContent,
   DialogContentText,
-  Button
+  withStyles
 } from '@material-ui/core';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -12,10 +12,10 @@ import { Route, Switch } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { LogoLoader } from '../../components/LogoLoader';
 import { Navigation } from '../../components/Navigation';
+import { DESKTOP_DRAWER_WIDTH, NAVIGATION_HIERARCHY } from '../../constants/navigation';
+import { ROUTE_PARAM } from '../../constants/routes';
 import { performLogoutAction } from '../../redux/actions/auth';
 import { requestCurrentUserInfoAction } from '../../redux/actions/user';
-import { ROUTES_PARAMS } from '../../constants/routes';
-import { NAVIGATION_HIERARCHY, DESKTOP_DRAWER_WIDTH } from '../../constants/navigation';
 
 const homeStyles = theme => ({
   root: {
@@ -23,8 +23,8 @@ const homeStyles = theme => ({
   },
   content: {
     [theme.breakpoints.up('sm')]: {
-      marginLeft: `calc(${DESKTOP_DRAWER_WIDTH} + 16px)`,
-      width: `calc(100% - ${DESKTOP_DRAWER_WIDTH + 16})`
+      marginLeft: `calc(${DESKTOP_DRAWER_WIDTH})`,
+      width: `calc(100% - ${DESKTOP_DRAWER_WIDTH})`
     }
   },
   errorDialog: {
@@ -46,7 +46,7 @@ class Home extends Component {
 
   render() {
     return (
-      <div>
+      <>
         {!this.props.user.infoObtained ? (
           this.props.user.serverError ? (
             <Dialog
@@ -86,7 +86,7 @@ class Home extends Component {
             <main className={this.props.classes.content}>{this.renderContentSubRoutes()}</main>
           </div>
         )}
-      </div>
+      </>
     );
   }
 
@@ -98,13 +98,14 @@ class Home extends Component {
     const { user, match } = this.props;
     return (
       <Switch>
+        {/* Renders the specific routes for the different views */}
         {NAVIGATION_HIERARCHY.map((section, index) => {
           if (user.roles.includes(section.value)) {
             return (
               <Route
                 key={index}
                 path={`${match.url}${section.routePath}${
-                  section.tabs.length > 0 ? ROUTES_PARAMS.TAB_INDEX : ''
+                  section.tabs.length > 0 ? ROUTE_PARAM.TAB_INDEX : ''
                 }`}
                 component={section.component}
               />

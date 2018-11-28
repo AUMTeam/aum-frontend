@@ -1,4 +1,4 @@
-import { USER_ROLE_STRINGS, USER_TYPE_IDS } from '../../constants/user';
+import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import { commits } from './commits';
 
 const initialState = {
@@ -12,7 +12,7 @@ const initialState = {
  */
 export function programmer(state = initialState, action) {
   if (action.userRoleString) {
-    if (action.userRoleString === USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]) {
+    if (action.userRoleString === USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]) {
       return {
         commits: commits(state.commits, action)
         //sendRequests(state.sendRequests, action)

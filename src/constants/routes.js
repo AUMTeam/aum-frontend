@@ -1,4 +1,4 @@
-export const ROUTES = {
+export const ROUTE = {
   ROOT: '/',
   LOGIN: '/login',
   HOME: '/home',
@@ -8,6 +8,6 @@ export const ROUTES = {
   CLIENT: '/client'
 };
 
-export const ROUTES_PARAMS = {
+export const ROUTE_PARAM = {
   TAB_INDEX: '/:value'
-}
+};
