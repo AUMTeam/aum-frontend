@@ -25,7 +25,7 @@ export const COMMITS_ACTION_TYPE_KEYS = {
 
   // Dispatched when the view containing the list is unmounted: stops the auto updater task
   COMMITS_LIST_STOP_AUTO_CHECKING: 'COMMITS_LIST_STOP_AUTO_CHECKING',
-  SHOW_COMMIT_DETAILS: 'SHOW_COMMIT_DETAILS',
+  SHOW_COMMIT_DETAILS: 'SHOW_COMMIT_DETAILS'
 };
 
 export function retrieveCommitsListPageAction(pageNumber, userRoleString) {

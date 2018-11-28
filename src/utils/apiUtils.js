@@ -65,8 +65,7 @@ export function saveAccessTokenToLocalStorage(accessToken) {
   console.log('Saving access token to local storage');
   try {
     localStorage.setItem(TOKEN_LOCALSTORAGE_KEY, accessToken);
-  }
-  catch (err) {
+  } catch (err) {
     console.error(`Unable to save access token in local storage: ${err}`);
   }
 }
@@ -75,8 +74,7 @@ export function removeAccessTokenFromLocalStorage() {
   console.log('Removing access token from local storage');
   try {
     localStorage.removeItem(TOKEN_LOCALSTORAGE_KEY);
-  }
-  catch (err) {
+  } catch (err) {
     console.error(`Unable to remove access token from local storage: ${err}`);
   }
 }

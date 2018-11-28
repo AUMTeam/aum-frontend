@@ -18,11 +18,7 @@ import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import { getRandomColor } from '../../utils/colorUtils';
 import { InnerTabs } from '../InnerTabs';
-import {
-  NAVIGATION_HIERARCHY,
-  getRouteForUser,
-  DESKTOP_DRAWER_WIDTH
-} from '../../constants/navigation';
+import { NAVIGATION_HIERARCHY, getRouteForUser, DESKTOP_DRAWER_WIDTH } from '../../constants/navigation';
 import { ROUTES_PARAMS } from '../../constants/routes';
 
 const styles = theme => ({
@@ -73,9 +69,7 @@ class Navigation extends Component {
     };
 
     // Redirect the user to the view of its first role
-    props.history.push(
-      `${props.match.url}${getRouteForUser(props.user.roles[0])}`
-    );
+    props.history.push(`${props.match.url}${getRouteForUser(props.user.roles[0])}`);
 
     this.renderMobileDrawer = this.renderMobileDrawer.bind(this);
     this.renderDesktopDrawer = this.renderDesktopDrawer.bind(this);
@@ -101,12 +95,7 @@ class Navigation extends Component {
             >
               <MenuIcon />
             </IconButton>
-            <Typography
-              className={classes.toolbarTitle}
-              variant="h6"
-              color="inherit"
-              noWrap
-            >
+            <Typography className={classes.toolbarTitle} variant="h6" color="inherit" noWrap>
               Authorization Manager
             </Typography>
           </Toolbar>
@@ -116,17 +105,13 @@ class Navigation extends Component {
               return (
                 <Route
                   key={index}
-                  path={`${match.url}${section.routePath}${
-                    ROUTES_PARAMS.TAB_INDEX
-                  }`}
+                  path={`${match.url}${section.routePath}${ROUTES_PARAMS.TAB_INDEX}`}
                   render={routeProps => (
                     <InnerTabs
                       {...routeProps}
                       prevUrl={`${match.url}${section.routePath}`}
                       tabs={
-                        NAVIGATION_HIERARCHY.find(
-                          innerSection => innerSection.value === section.value
-                        ).tabs
+                        NAVIGATION_HIERARCHY.find(innerSection => innerSection.value === section.value).tabs
                       }
                     />
                   )}
@@ -151,11 +136,7 @@ class Navigation extends Component {
   renderMobileDrawer() {
     const { isDrawerOpen } = this.state;
     return (
-      <Drawer
-        open={isDrawerOpen}
-        variant="temporary"
-        onClose={this.closeDrawer}
-      >
+      <Drawer open={isDrawerOpen} variant="temporary" onClose={this.closeDrawer}>
         {this.renderDrawerLayout()}
       </Drawer>
     );
@@ -163,7 +144,7 @@ class Navigation extends Component {
 
   renderDesktopDrawer() {
     return (
-      <Drawer classes={{paper: this.props.classes.drawer}} open variant="permanent" anchor="left">
+      <Drawer classes={{ paper: this.props.classes.drawer }} open variant="permanent" anchor="left">
         {this.renderDrawerLayout()}
       </Drawer>
     );
@@ -177,22 +158,12 @@ class Navigation extends Component {
         {/*Avatar item is outside the div to avoid drawer closing when clicking on it*/}
         <ListItem>
           <ListItemIcon>
-            <Avatar className={classes.avatar}>
-              {this.props.user.name.charAt(0)}
-            </Avatar>
+            <Avatar className={classes.avatar}>{this.props.user.name.charAt(0)}</Avatar>
           </ListItemIcon>
-          <ListItemText
-            primary={this.props.user.name}
-            secondary={this.props.user.email}
-          />
+          <ListItemText primary={this.props.user.name} secondary={this.props.user.email} />
         </ListItem>
 
-        <div
-          tabIndex={0}
-          role="button"
-          onClick={this.closeDrawer}
-          onKeyDown={this.closeDrawer}
-        >
+        <div tabIndex={0} role="button" onClick={this.closeDrawer} onKeyDown={this.closeDrawer}>
           <List className={classes.drawerItems}>
             {NAVIGATION_HIERARCHY.map((section, index) => {
               if (this.props.user.roles.includes(section.value))
@@ -206,7 +177,8 @@ class Navigation extends Component {
                         section.tabs.length > 0
                           ? `${match.url}${section.routePath}/0`
                           : `${match.url}${section.routePath}`,
-                      index)
+                        index
+                      )
                     }
                   >
                     <ListItemIcon>{section.drawerIcon}</ListItemIcon>
@@ -238,7 +210,7 @@ class Navigation extends Component {
 
   onSectionClicked(url, index) {
     this.props.history.push(url);
-    this.setState({selectedDrawerItem: index})
+    this.setState({ selectedDrawerItem: index });
   }
 
   onLogoutButtonClicked() {

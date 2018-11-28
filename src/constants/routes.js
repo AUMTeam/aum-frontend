@@ -10,4 +10,4 @@ export const ROUTES = {
 
 export const ROUTES_PARAMS = {
   TAB_INDEX: '/:value'
-}
+};

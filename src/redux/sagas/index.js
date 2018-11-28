@@ -16,11 +16,10 @@ import { GLOBAL_ERROR_ACTION_TYPE_KEYS } from '../actions/globalError';
 export default function* rootSaga() {
   try {
     yield all([authFlowSaga(), ...userSaga, ...commitsSaga]);
-  }
-  // Since some of the functions passed to all() method never end (endless loop),
-  // this finally block is reached only when there's an uncaught exception in a saga
-  // (since all() is aborted when one of the passed functions/effects fails)
-  finally {
+  } finally {
+    // Since some of the functions passed to all() method never end (endless loop),
+    // this finally block is reached only when there's an uncaught exception in a saga
+    // (since all() is aborted when one of the passed functions/effects fails)
     yield put({ type: GLOBAL_ERROR_ACTION_TYPE_KEYS.SAGA_ERROR });
   }
 }

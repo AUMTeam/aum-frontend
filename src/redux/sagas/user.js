@@ -20,12 +20,9 @@ export function* requestCurrentUserInfo(action) {
   while (!responseReceived) {
     attemptNumber++;
     console.log(`Retrieving user info: attempt ${attemptNumber}...`);
-    response = yield makeAuthenticatedApiRequest(REQUEST_ACTIONS_PATHS.GET_USER_INFO,
-      action.accessToken
-    );
-    
-    if (response != null)
-      responseReceived = true;
+    response = yield makeAuthenticatedApiRequest(REQUEST_ACTIONS_PATHS.GET_USER_INFO, action.accessToken);
+
+    if (response != null) responseReceived = true;
   }
 
   const responseJson = yield response.json();

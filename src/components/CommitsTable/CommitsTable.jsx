@@ -23,7 +23,7 @@ const styles = {
   }
 };
 
-const PLACEHOLDER_VALUE = "-";
+const PLACEHOLDER_VALUE = '-';
 
 /**
  * @class
@@ -47,7 +47,7 @@ class CommitsTable extends Component {
 
   static getDerivedStateFromProps(nextProps, oldState) {
     if (nextProps.isLoading !== undefined && nextProps.isLoading) {
-      console.log(nextProps.tableData)
+      console.log(nextProps.tableData);
       return {
         dataSize:
           nextProps.tableData[0] !== undefined
@@ -66,11 +66,7 @@ class CommitsTable extends Component {
         {this.renderTableToolbar()}
         <Table>
           {this.renderTableHeader()}
-          {isLoading ? (
-            this.renderTableSkelethon()
-          ) : (
-            this.renderTableBody()
-          )}
+          {isLoading ? this.renderTableSkelethon() : this.renderTableBody()}
           {this.renderTableFooter()}
         </Table>
       </Paper>
@@ -108,9 +104,7 @@ class CommitsTable extends Component {
             <TableRow key={index}>
               <TableCell>{PLACEHOLDER_VALUE}</TableCell>
               <TableCell>{PLACEHOLDER_VALUE}</TableCell>
-              <TableCell>
-              {PLACEHOLDER_VALUE}
-              </TableCell>
+              <TableCell>{PLACEHOLDER_VALUE}</TableCell>
               <TableCell>{PLACEHOLDER_VALUE}</TableCell>
               <TableCell>{PLACEHOLDER_VALUE}</TableCell>
             </TableRow>
@@ -134,9 +128,7 @@ class CommitsTable extends Component {
               <TableRow key={index}>
                 <TableCell>{rowValue.id}</TableCell>
                 <TableCell>{rowValue.description}</TableCell>
-                <TableCell>
-                  {new Date(rowValue.timestamp * 1000).toLocaleString('it-it')}
-                </TableCell>
+                <TableCell>{new Date(rowValue.timestamp * 1000).toLocaleString('it-it')}</TableCell>
                 <TableCell>{rowValue.author.username}</TableCell>
                 <TableCell>{rowValue.approval_status}</TableCell>
               </TableRow>
