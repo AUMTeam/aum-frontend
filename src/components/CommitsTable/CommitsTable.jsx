@@ -33,7 +33,11 @@ class CommitsTable extends Component {
     super(props);
 
     this.state = {
-      currentPage: 0
+      currentPage: 0,
+      sorting: {
+        columnKey: null,
+        direction: 'asc'
+      }
     };
 
     this.renderTableToolbar = this.renderTableToolbar.bind(this);
@@ -65,21 +69,23 @@ class CommitsTable extends Component {
   }
 
   renderTableHeader() {
-    const { tableColumns, sortBy } = this.props;
+    const { tableColumns } = this.props;
     return (
       <TableHead>
         <TableRow>
           {tableColumns.map(column => (
             <TableCell key={column.key}>
               <TableSortLabel
-                active={sortBy.columnKey === column.key}
-                direction={sortBy.direction}
-                onClick={() =>
-                  this.props.onSortingRequested(this.state.currentPage, {
+                active={this.state.sorting.columnKey === column.key}
+                direction={this.state.sorting.direction}
+                onClick={() => {
+                  const updatedSorting = {
                     columnKey: column.key,
-                    direction: sortBy.direction === 'asc' ? 'desc' : 'asc'
-                  })
-                }
+                    direction: this.state.sorting.direction === 'asc' ? 'desc' : 'asc'
+                  };
+                  this.props.onSortingRequested(this.state.currentPage, updatedSorting);
+                  this.setState({ sorting: updatedSorting });
+                }}
               >
                 {column.label}
               </TableSortLabel>
@@ -140,7 +146,6 @@ CommitsTable.propTypes = {
   tableToolbarTitle: PropTypes.string.isRequired,
   tableColumns: PropTypes.array.isRequired,
   tableData: PropTypes.array.isRequired,
-  sortBy: PropTypes.object.isRequired,
   itemsCount: PropTypes.number.isRequired,
   onPageChange: PropTypes.func.isRequired,
   onSortingRequested: PropTypes.func.isRequired,

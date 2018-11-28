@@ -40,30 +40,16 @@ class ProgrammerView extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      commitsTableSortingCriteria: {
-        columnKey: null,
-        direction: 'asc'
-      }
-    };
-
     this.props.retrieveCommitsListPageAction(0, USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
-    this.props.startCommitsListUpdatesAutoCheckingAction(USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
-
-    this.onCommitsTableSortingRequested = this.onCommitsTableSortingRequested.bind(this);
+    this.props.startCommitsListUpdatesAutoCheckingAction(
+      USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]
+    );
   }
 
   componentWillUnmount() {
-    this.props.stopCommitsListUpdatesAutoCheckingAction(USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
-  }
-
-  onCommitsTableSortingRequested(currentPage, sortingCriteria) {
-    this.props.retrieveSortedCommitsListPageAction(
-      currentPage,
-      sortingCriteria,
+    this.props.stopCommitsListUpdatesAutoCheckingAction(
       USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]
     );
-    this.setState({ commitsTableSortingCriteria: sortingCriteria });
   }
 
   render() {
@@ -77,7 +63,6 @@ class ProgrammerView extends Component {
                 tableToolbarTitle="Lista commit"
                 tableColumns={COMMITS_TABLE_COLUMNS}
                 tableData={this.props.commitsData.listPages}
-                sortBy={this.state.commitsTableSortingCriteria}
                 itemsCount={this.props.commitsData.totalCommitsCount}
                 onPageChange={pageNumber => {
                   this.props.retrieveCommitsListPageAction(
@@ -85,7 +70,13 @@ class ProgrammerView extends Component {
                     USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]
                   );
                 }}
-                onSortingRequested={this.onCommitsTableSortingRequested}
+                onSortingRequested={(pageNumber, sortingCriteria) =>
+                  this.props.retrieveSortedCommitsListPageAction(
+                    pageNumber,
+                    sortingCriteria,
+                    USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]
+                  )
+                }
                 isLoading={this.props.commitsData.isLoadingList}
                 displayError={this.props.commitsData.errorWhileFetchingData}
               />
