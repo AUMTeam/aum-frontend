@@ -1,0 +1,3 @@
+export const GLOBAL_ERROR_ACTION_TYPE_KEYS = {
+    SAGA_ERROR: 'SAGA_ERROR'
+}

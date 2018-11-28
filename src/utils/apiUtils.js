@@ -2,7 +2,19 @@
  * @file
  * This file contains helper functions and constants used to make API calls.
  */
-import { API_ENDPOINT_URL, TOKEN_LOCALSTORAGE_KEY } from '../constants/api';
+import { API_ENDPOINT_URL, TOKEN_LOCALSTORAGE_KEY, REQUEST_TIMEOUT_MS } from '../constants/api';
+
+/**
+ * Returns a promise that is rejected after the specified timeout
+ * @param {*} timeoutInMilliseconds Timeout in ms
+ * @param {*} promise The promise which has to be completed before the timeout
+ */
+function withTimeout(timeoutInMilliseconds, promise) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), timeoutInMilliseconds))
+  ]);
+}
 
 /**
  * Makes a request to the server without passing the access token in the headers
@@ -12,11 +24,14 @@ import { API_ENDPOINT_URL, TOKEN_LOCALSTORAGE_KEY } from '../constants/api';
  * @param {*} requestData The object containing the request data (optional for an empty object)
  */
 export function makeUnauthenticatedApiRequest(actionPath, requestData = {}) {
-  return fetch(`${API_ENDPOINT_URL}/${actionPath}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ request_data: requestData })
-  }).catch(error => {
+  return withTimeout(
+    REQUEST_TIMEOUT_MS,
+    fetch(`${API_ENDPOINT_URL}/${actionPath}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ request_data: requestData })
+    })
+  ).catch(error => {
     console.error(error, `occurred during unauthenticated API request to ${actionPath}`);
     return null;
   });
@@ -30,17 +45,20 @@ export function makeUnauthenticatedApiRequest(actionPath, requestData = {}) {
  * @param {*} requestData The object containing the request data (optional for an empty object)
  */
 export function makeAuthenticatedApiRequest(actionPath, accessToken, requestData = {}) {
-  return fetch(`${API_ENDPOINT_URL}/${actionPath}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Auth-Header': accessToken
-    },
-    body: JSON.stringify({ request_data: requestData })
-  }).catch(error => {
+  return withTimeout(
+    REQUEST_TIMEOUT_MS,
+    fetch(`${API_ENDPOINT_URL}/${actionPath}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-Header': accessToken
+      },
+      body: JSON.stringify({ request_data: requestData })
+    })
+  ).catch(error => {
     console.error(error, `occurred during authenticated API request to ${actionPath}`);
     return null;
-  })
+  });
 }
 
 export function saveAccessTokenToLocalStorage(accessToken) {

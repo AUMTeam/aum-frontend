@@ -14,24 +14,28 @@ const initialState = {
   area: null,
   email: null,
   roles: [],
-  infoObtained: false
+  infoObtained: false,
+  serverError: false
 };
 
 export function user(state = initialState, action) {
   switch (action.type) {
     case USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_REQUEST:
       return {
+        ...state,
         infoObtained: false,
-        ...state
+        serverError: false
       };
     case USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_FAILED:
       return {
+        ...state,
         infoObtained: false,
-        ...state
+        serverError: true
       };
     case USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_SUCCESSFUL:
       return {
         infoObtained: true,
+        serverError: false,
         id: action.user_id,
         name: action.name,
         area: action.area,

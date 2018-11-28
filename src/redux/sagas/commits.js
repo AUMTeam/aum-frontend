@@ -1,18 +1,6 @@
 import { delay } from 'redux-saga';
-import {
-  call,
-  cancel,
-  cancelled,
-  fork,
-  put,
-  select,
-  take,
-  takeLatest
-} from 'redux-saga/effects';
-import {
-  LIST_AUTO_UPDATE_INTERVAL,
-  REQUEST_ACTIONS_PATHS
-} from '../../constants/api';
+import { call, cancel, cancelled, fork, put, select, take, takeLatest } from 'redux-saga/effects';
+import { LIST_AUTO_UPDATE_INTERVAL, REQUEST_ACTIONS_PATHS } from '../../constants/api';
 import { makeAuthenticatedApiRequest } from '../../utils/apiUtils';
 import { COMMITS_ACTION_TYPE_KEYS } from '../actions/commits';
 import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
@@ -27,37 +15,24 @@ import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
 function* retrieveCommitsListPage(action) {
   yield call(
     checkForListUpdates,
-    yield select(
-      state => state[action.userRoleString].commits.latestCommitTimestamp
-    ),
+    yield select(state => state[action.userRoleString].commits.latestCommitTimestamp),
     action.userRoleString
   );
 
-  const commitsListPages = yield select(
-    state => state[action.userRoleString].commits.listPages
-  );
+  const commitsListPages = yield select(state => state[action.userRoleString].commits.listPages);
   const requestedPageAlreadyFetched = action.pageNumber in commitsListPages;
   if (requestedPageAlreadyFetched) {
     const latestCommitTimestamp = yield select(
       state => state[action.userRoleString].commits.latestCommitTimestamp
     );
-    var requestedPageNotUpdated =
-      commitsListPages[action.pageNumber].updateTimestamp <
-      latestCommitTimestamp;
+    var requestedPageNotUpdated = commitsListPages[action.pageNumber].updateTimestamp < latestCommitTimestamp;
   }
 
   if (!requestedPageAlreadyFetched || requestedPageNotUpdated) {
-    const { serverResponse, errorMessage } = yield call(
-      fetchCommitsListPageFromServer,
-      action.pageNumber
-    );
+    const { serverResponse, errorMessage } = yield call(fetchCommitsListPageFromServer, action.pageNumber);
 
     if (errorMessage != null) {
-      console.error(
-        `Unable to get data for commits page ${
-          action.pageNumber
-        }: ${errorMessage}`
-      );
+      console.error(`Unable to get data for commits page ${action.pageNumber}: ${errorMessage}`);
       yield put({
         type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_RETRIEVAL_ERROR,
         errorMessage,
@@ -72,7 +47,8 @@ function* retrieveCommitsListPage(action) {
         userRoleString: action.userRoleString
       });
     }
-  } else {
+  }
+  else {
     yield put({
       type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_NO_RETRIEVAL_NEEDED,
       userRoleString: action.userRoleString
@@ -125,19 +101,22 @@ function* checkForListUpdates(latestCommitTimestamp, userRoleString) {
   const response = yield makeAuthenticatedApiRequest(
     REQUEST_ACTIONS_PATHS.CHECK_COMMITS_UPDATES,
     yield select(state => state.auth.accessToken),
-    { latest_commit_timestamp: latestCommitTimestamp }
+    {
+      latest_commit_timestamp: latestCommitTimestamp
+    }
   );
 
   if (response != null) {
     const responseJson = yield response.json();
     if (response.ok) {
-      if (responseJson.response_data.updates_found)
-        yield put({
-          type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_UPDATE_FOUND,
-          latestCommitTimestamp: responseJson.response_data.latest_commit_timestamp,
-          userRoleString
-        });
-      else 
+      yield put({
+        type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_UPDATE_RECEIVED,
+        latestCommitTimestamp: responseJson.response_data.latest_commit_timestamp,
+        updatesFound: responseJson.response_data.updates_found,
+        userRoleString
+      });
+
+      if (!responseJson.response_data.updates_found)
         console.log('No commits list updates found');
     }
     else {
@@ -145,7 +124,9 @@ function* checkForListUpdates(latestCommitTimestamp, userRoleString) {
         type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_UPDATE_CHECKING_ERROR,
         userRoleString
       });
-      console.error(`Server responded with an error when checking for commits list updates: ${responseJson.message}`);
+      console.error(
+        `Server responded with an error when checking for commits list updates: ${responseJson.message}`
+      );
     }
   }
   else {
@@ -167,36 +148,28 @@ function* runAutoListUpdateChecker(action) {
     while (true) {
       yield delay(LIST_AUTO_UPDATE_INTERVAL);
       // Avoid checking for updates when retrieveCommitsListPage() is running
-      if (
-        yield select(
-          state => !state[action.userRoleString].commits.isLoadingList
-        )
-      ) {
+      if (yield select(state => !state[action.userRoleString].commits.isLoadingList)) {
         console.log('Checking for commits list updates...');
         yield call(
           checkForListUpdates,
-          yield select(
-            state => state[action.userRoleString].commits.latestCommitTimestamp
-          ),
+          yield select(state => state[action.userRoleString].commits.latestCommitTimestamp),
           action.userRoleString
         );
       }
     }
-  } finally {
+  }
+  finally {
     if (yield cancelled())
       console.log('Commits list: auto update checking stopped');
-    else console.error(`Unexpected error during commits list auto updating`);
+    else
+      console.error(`Unexpected error during commits list auto updating`);
   }
 }
 
 function* autoListUpdateCheckController() {
   while (true) {
-    const action = yield take(
-      COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_START_AUTO_CHECKING
-    );
-    const updateCheckingTask = yield fork(() =>
-      runAutoListUpdateChecker(action)
-    );
+    const action = yield take(COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_START_AUTO_CHECKING);
+    const updateCheckingTask = yield fork(() => runAutoListUpdateChecker(action));
     yield take(COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_STOP_AUTO_CHECKING);
     yield cancel(updateCheckingTask);
   }
@@ -204,8 +177,5 @@ function* autoListUpdateCheckController() {
 
 export const commitsSaga = [
   autoListUpdateCheckController(),
-  takeLatest(
-    COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_REQUEST,
-    retrieveCommitsListPage
-  )
+  takeLatest(COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_REQUEST, retrieveCommitsListPage)
 ];

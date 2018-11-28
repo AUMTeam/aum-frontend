@@ -124,19 +124,25 @@ class CommitsTable extends Component {
     const { tableData } = this.props;
     return (
       <TableBody>
-        {tableData[this.state.currentPage].data.map((rowValue, index) => {
-          return (
-            <TableRow key={index}>
-              <TableCell>{rowValue.id}</TableCell>
-              <TableCell>{rowValue.description}</TableCell>
-              <TableCell>
-                {new Date(rowValue.timestamp * 1000).toLocaleString('it-it')}
-              </TableCell>
-              <TableCell>{rowValue.author.username}</TableCell>
-              <TableCell>{rowValue.approval_status}</TableCell>
-            </TableRow>
-          );
-        })}
+        {this.props.displayError ? (
+          <TableRow>
+            <TableCell>Impossibile ottenere i dati.</TableCell>
+          </TableRow>
+        ) : (
+          tableData[this.state.currentPage].data.map((rowValue, index) => {
+            return (
+              <TableRow key={index}>
+                <TableCell>{rowValue.id}</TableCell>
+                <TableCell>{rowValue.description}</TableCell>
+                <TableCell>
+                  {new Date(rowValue.timestamp * 1000).toLocaleString('it-it')}
+                </TableCell>
+                <TableCell>{rowValue.author.username}</TableCell>
+                <TableCell>{rowValue.approval_status}</TableCell>
+              </TableRow>
+            );
+          })
+        )}
       </TableBody>
     );
   }
@@ -169,7 +175,8 @@ CommitsTable.propTypes = {
   itemsCount: PropTypes.number.isRequired,
   onPageChange: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
-  userRoleString: PropTypes.string.isRequired
+  userRoleString: PropTypes.string.isRequired,
+  displayError: PropTypes.bool.isRequired
 };
 
 export default withStyles(styles)(CommitsTable);
