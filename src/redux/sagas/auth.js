@@ -1,5 +1,5 @@
 import { call, fork, put, select, take } from 'redux-saga/effects';
-import { REQUEST_ACTIONS_PATHS } from '../../constants/api';
+import { REQUEST_ACTIONS_PATH } from '../../constants/api';
 import {
   makeAuthenticatedApiRequest,
   makeUnauthenticatedApiRequest,
@@ -94,7 +94,7 @@ export function* authFlowSaga() {
 function* notifyLogoutToServerAsync(action) {
   const logoutNotificationTask = yield fork(
     makeAuthenticatedApiRequest,
-    REQUEST_ACTIONS_PATHS.LOGOUT,
+    REQUEST_ACTIONS_PATH.LOGOUT,
     action.accessToken
   );
 
@@ -111,7 +111,7 @@ function* notifyLogoutToServerAsync(action) {
  * @param {*} action
  */
 function* attemptLogin(action) {
-  const response = yield makeUnauthenticatedApiRequest(REQUEST_ACTIONS_PATHS.LOGIN, {
+  const response = yield makeUnauthenticatedApiRequest(REQUEST_ACTIONS_PATH.LOGIN, {
     username: action.username,
     password: action.password
   });
@@ -141,7 +141,7 @@ function* attemptLogin(action) {
  */
 function* requestLocalAccessTokenValidation(action) {
   const response = yield makeAuthenticatedApiRequest(
-    REQUEST_ACTIONS_PATHS.VALIDATE_TOKEN,
+    REQUEST_ACTIONS_PATH.VALIDATE_TOKEN,
     action.accessToken
   );
 

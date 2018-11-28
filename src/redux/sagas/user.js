@@ -1,4 +1,4 @@
-import { REQUEST_ACTIONS_PATHS } from '../../constants/api';
+import { REQUEST_ACTIONS_PATH } from '../../constants/api';
 import { makeAuthenticatedApiRequest } from '../../utils/apiUtils';
 
 /**
@@ -20,7 +20,7 @@ export function* requestCurrentUserInfo(action) {
   while (!responseReceived) {
     attemptNumber++;
     console.log(`Retrieving user info: attempt ${attemptNumber}...`);
-    response = yield makeAuthenticatedApiRequest(REQUEST_ACTIONS_PATHS.GET_USER_INFO, action.accessToken);
+    response = yield makeAuthenticatedApiRequest(REQUEST_ACTIONS_PATH.GET_USER_INFO, action.accessToken);
 
     if (response != null) responseReceived = true;
   }

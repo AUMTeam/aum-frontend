@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { CommitsTable } from '../../components/CommitsTable';
-import { USER_ROLE_STRINGS, USER_TYPE_IDS } from '../../constants/user';
+import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import {
   retrieveCommitsListPageAction,
   startCommitsListUpdatesAutoCheckingAction,
@@ -34,12 +34,12 @@ class ProgrammerView extends Component {
   constructor(props) {
     super(props);
 
-    this.props.retrieveCommitsListPageAction(0, USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
-    this.props.startCommitsListUpdatesAutoCheckingAction(USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
+    this.props.retrieveCommitsListPageAction(0, USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
+    this.props.startCommitsListUpdatesAutoCheckingAction(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
   }
 
   componentWillUnmount() {
-    this.props.stopCommitsListUpdatesAutoCheckingAction(USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
+    this.props.stopCommitsListUpdatesAutoCheckingAction(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
   }
 
   render() {
@@ -56,7 +56,7 @@ class ProgrammerView extends Component {
                 itemsCount={this.props.commitsData.totalCommitsCount}
                 onPageChange={this.props.retrieveCommitsListPageAction}
                 isLoading={this.props.commitsData.isLoadingList}
-                userRoleString={USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]}
+                userRoleString={USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]}
                 displayError={this.props.commitsData.errorWhileFetchingData}
               />
             </Grid>

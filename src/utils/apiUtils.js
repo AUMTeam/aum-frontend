@@ -20,7 +20,7 @@ function withTimeout(timeoutInMilliseconds, promise) {
  * Makes a request to the server without passing the access token in the headers
  * Intended for those actions that don't require authentication
  * Promise returns null if the request fails for whatever reason
- * @param {*} actionPath One of the paths defined in REQUEST_ACTIONS_PATHS
+ * @param {*} actionPath One of the paths defined in REQUEST_ACTIONS_PATH
  * @param {*} requestData The object containing the request data (optional for an empty object)
  */
 export function makeUnauthenticatedApiRequest(actionPath, requestData = {}) {
@@ -41,7 +41,7 @@ export function makeUnauthenticatedApiRequest(actionPath, requestData = {}) {
  * Makes a request to the server passing the access token in the headers
  * Used for those actions that need user authentication
  * Promise returns null if the request fails for whatever reason
- * @param {*} actionPath One of the paths defined in REQUEST_ACTIONS_PATHS
+ * @param {*} actionPath One of the paths defined in REQUEST_ACTIONS_PATH
  * @param {*} requestData The object containing the request data (optional for an empty object)
  */
 export function makeAuthenticatedApiRequest(actionPath, accessToken, requestData = {}) {

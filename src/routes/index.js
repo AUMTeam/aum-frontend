@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { LogoLoader } from '../components/LogoLoader';
-import { ROUTES } from '../constants/routes';
+import { ROUTE } from '../constants/routes';
 import { requestLocalTokenValidationIfPresentAction } from '../redux/actions/auth';
 import { Snackbar, SnackbarContent, Button, withTheme } from '@material-ui/core';
 import { Home } from './Home';
@@ -45,21 +45,21 @@ class Routes extends Component {
               <AuthRoute
                 condition={() => this.props.accessToken != null}
                 exact
-                path={ROUTES.ROOT}
+                path={ROUTE.ROOT}
                 component={Home}
-                redirectPath={ROUTES.LOGIN}
+                redirectPath={ROUTE.LOGIN}
               />
               <AuthRoute
                 condition={() => this.props.accessToken == null}
-                path={ROUTES.LOGIN}
+                path={ROUTE.LOGIN}
                 component={Login}
-                redirectPath={ROUTES.HOME}
+                redirectPath={ROUTE.HOME}
               />
               <AuthRoute
                 condition={() => this.props.accessToken != null}
-                path={ROUTES.HOME}
+                path={ROUTE.HOME}
                 component={Home}
-                redirectPath={ROUTES.LOGIN}
+                redirectPath={ROUTE.LOGIN}
               />
             </Switch>
           </HashRouter>

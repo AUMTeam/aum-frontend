@@ -1,4 +1,4 @@
-export const USER_TYPE_IDS = {
+export const USER_TYPE_ID = {
   CLIENT: 1,
   TECHNICAL_AREA_MANAGER: 2,
   REVISION_OFFICE_MANAGER: 3,
@@ -6,7 +6,7 @@ export const USER_TYPE_IDS = {
 };
 
 // indexes of this array match user IDs defined above
-export const USER_ROLE_STRINGS = [
+export const USER_ROLE_STRING = [
   null,
   'client',
   'technicalAreaManager',

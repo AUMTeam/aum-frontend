@@ -14,7 +14,7 @@ import { LogoLoader } from '../../components/LogoLoader';
 import { Navigation } from '../../components/Navigation';
 import { performLogoutAction } from '../../redux/actions/auth';
 import { requestCurrentUserInfoAction } from '../../redux/actions/user';
-import { ROUTES_PARAMS } from '../../constants/routes';
+import { ROUTE_PARAM } from '../../constants/routes';
 import { NAVIGATION_HIERARCHY, DESKTOP_DRAWER_WIDTH } from '../../constants/navigation';
 
 const homeStyles = theme => ({
@@ -104,7 +104,7 @@ class Home extends Component {
               <Route
                 key={index}
                 path={`${match.url}${section.routePath}${
-                  section.tabs.length > 0 ? ROUTES_PARAMS.TAB_INDEX : ''
+                  section.tabs.length > 0 ? ROUTE_PARAM.TAB_INDEX : ''
                 }`}
                 component={section.component}
               />

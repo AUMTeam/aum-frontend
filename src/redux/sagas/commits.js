@@ -1,6 +1,6 @@
 import { delay } from 'redux-saga';
 import { call, cancel, cancelled, fork, put, select, take, takeLatest } from 'redux-saga/effects';
-import { LIST_AUTO_UPDATE_INTERVAL, REQUEST_ACTIONS_PATHS } from '../../constants/api';
+import { LIST_AUTO_UPDATE_INTERVAL, REQUEST_ACTIONS_PATH } from '../../constants/api';
 import { makeAuthenticatedApiRequest } from '../../utils/apiUtils';
 import { COMMITS_ACTION_TYPE_KEYS } from '../actions/commits';
 import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
@@ -60,7 +60,7 @@ function* retrieveCommitsListPage(action) {
  */
 function* fetchCommitsListPageFromServer(pageNumber) {
   const response = yield makeAuthenticatedApiRequest(
-    REQUEST_ACTIONS_PATHS.GET_COMMITS_LIST,
+    REQUEST_ACTIONS_PATH.GET_COMMITS_LIST,
     yield select(state => state.auth.accessToken),
     {
       page: pageNumber,
@@ -97,7 +97,7 @@ function* fetchCommitsListPageFromServer(pageNumber) {
  */
 function* checkForListUpdates(latestCommitTimestamp, userRoleString) {
   const response = yield makeAuthenticatedApiRequest(
-    REQUEST_ACTIONS_PATHS.CHECK_COMMITS_UPDATES,
+    REQUEST_ACTIONS_PATH.CHECK_COMMITS_UPDATES,
     yield select(state => state.auth.accessToken),
     {
       latest_commit_timestamp: latestCommitTimestamp

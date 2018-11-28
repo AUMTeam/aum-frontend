@@ -19,7 +19,7 @@ import { Route } from 'react-router-dom';
 import { getRandomColor } from '../../utils/colorUtils';
 import { InnerTabs } from '../InnerTabs';
 import { NAVIGATION_HIERARCHY, getRouteForUser, DESKTOP_DRAWER_WIDTH } from '../../constants/navigation';
-import { ROUTES_PARAMS } from '../../constants/routes';
+import { ROUTE_PARAM } from '../../constants/routes';
 
 const styles = theme => ({
   root: {
@@ -105,7 +105,7 @@ class Navigation extends Component {
               return (
                 <Route
                   key={index}
-                  path={`${match.url}${section.routePath}${ROUTES_PARAMS.TAB_INDEX}`}
+                  path={`${match.url}${section.routePath}${ROUTE_PARAM.TAB_INDEX}`}
                   render={routeProps => (
                     <InnerTabs
                       {...routeProps}
