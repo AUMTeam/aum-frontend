@@ -43,29 +43,14 @@ class CommitsTable extends Component {
       currentPage: 0,
       sorting: {
         columnKey: null,
-        direction: 'asc'
-      },
-      dataSize: 0
+        direction: 'desc'
+      }
     };
 
     this.renderTableToolbar = this.renderTableToolbar.bind(this);
     this.renderTableHeader = this.renderTableHeader.bind(this);
-    this.renderTableSkelethon = this.renderTableSkelethon.bind(this);
+    this.renderTableSkelethon = this.renderTableSkeleton.bind(this);
     this.renderTableBody = this.renderTableBody.bind(this);
-  }
-
-  static getDerivedStateFromProps(nextProps, oldState) {
-    if (nextProps.isLoading !== undefined && nextProps.isLoading) {
-      //console.log(nextProps.tableData);
-      return {
-        dataSize:
-          nextProps.tableData[0] !== undefined
-            ? nextProps.tableData[0].data.length // TODO: the logic doesn't work properly, rework needed
-            : 0
-      };
-    }
-
-    return null;
   }
 
   render() {
@@ -75,7 +60,7 @@ class CommitsTable extends Component {
         {this.renderTableToolbar()}
         <Table>
           {this.renderTableHeader()}
-          {isLoading ? this.renderTableSkelethon() : this.renderTableBody()}
+          {isLoading ? this.renderTableSkeleton() : this.renderTableBody()}
           {this.renderTableFooter()}
         </Table>
       </Paper>
@@ -91,6 +76,8 @@ class CommitsTable extends Component {
           <Grid item>
             <Typography variant="h5">{tableToolbarTitle}</Typography>
           </Grid>
+
+          {/* Display badge when new updates have been found */}
           <Grid item>
             {tableData.length > 0 &&
               currentPage in tableData &&
@@ -141,11 +128,13 @@ class CommitsTable extends Component {
     );
   }
 
-  renderTableSkelethon() {
-    const { dataSize } = this.state;
+  /**
+   * Renders placeholder rows in the table while it's loading
+   */
+  renderTableSkeleton() {
     return (
       <TableBody>
-        {new Array(dataSize).fill().map((value, index) => {
+        {new Array(LIST_ELEMENTS_PER_PAGE).fill().map((_, index) => {
           return (
             <TableRow key={index}>
               <TableCell>{PLACEHOLDER_VALUE}</TableCell>
@@ -161,12 +150,14 @@ class CommitsTable extends Component {
   }
 
   renderTableBody() {
-    const { tableData } = this.props;
+    const { tableData, tableColumns } = this.props;
     return (
       <TableBody>
         {this.props.displayError ? (
           <TableRow>
             <TableCell>Impossibile ottenere i dati.</TableCell>
+            {/* Render other empty cells to complete the row (otherwise the line would stop at the first cell) */}
+            { React.Children.map(Array(tableColumns.length-1), () => <TableCell />) }
           </TableRow>
         ) : (
           tableData[this.state.currentPage].data.map(rowValue => {
@@ -185,6 +176,9 @@ class CommitsTable extends Component {
     );
   }
 
+  /**
+   * Renders the table footer, which contains the pagination components
+   */
   renderTableFooter() {
     return (
       <TableFooter>
