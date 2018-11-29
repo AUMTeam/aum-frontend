@@ -12,6 +12,11 @@ import TableRow from '@material-ui/core/TableRow';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
+import Grid from '@material-ui/core/Grid';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import Button from '@material-ui/core/Button';
+
+import Badge from '@material-ui/core/Badge';
 import React, { Component } from 'react';
 import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
 
@@ -26,6 +31,8 @@ const styles = {
   }
 };
 
+const PLACEHOLDER_VALUE = '-';
+
 /**
  * @class
  * This class is responsible of displaying a table
@@ -39,13 +46,14 @@ class CommitsTable extends Component {
       currentPage: 0,
       sorting: {
         columnKey: null,
-        direction: 'asc'
+        direction: 'desc'
       }
     };
 
     this.renderTableToolbar = this.renderTableToolbar.bind(this);
     this.renderTableHeader = this.renderTableHeader.bind(this);
     this.renderTableBody = this.renderTableBody.bind(this);
+    this.currentlyShowingColumnsCount = this.currentlyShowingColumnsCount.bind(this);
   }
 
   render() {
@@ -55,7 +63,7 @@ class CommitsTable extends Component {
         {this.renderTableToolbar()}
         <Table>
           {this.renderTableHeader()}
-          {!isLoading && this.renderTableBody()}
+          {isLoading ? this.renderTableSkeleton() : this.renderTableBody()}
           {this.renderTableFooter()}
         </Table>
       </Paper>
@@ -63,10 +71,42 @@ class CommitsTable extends Component {
   }
 
   renderTableToolbar() {
-    const { tableToolbarTitle } = this.props;
+    const {
+      tableToolbarTitle,
+      latestCommitTimestamp,
+      tableData,
+      onPageLoad,
+      userRoleString,
+      isLoading
+    } = this.props;
+    const { currentPage } = this.state;
+
     return (
       <Toolbar>
-        <Typography variant="h5">{tableToolbarTitle}</Typography>
+        <Grid container direction="row" justify="space-between" alignItems="center" spacing={16}>
+          <Grid item>
+            <Typography variant="h5">{tableToolbarTitle}</Typography>
+          </Grid>
+
+          {/* Display badge when new updates have been found */}
+          <Grid item>
+            {!isLoading &&
+              tableData.length > 0 &&
+              tableData[currentPage] != null &&
+              latestCommitTimestamp > tableData[currentPage].updateTimestamp && (
+                <Badge color="secondary">
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => onPageLoad(currentPage, userRoleString)}
+                  >
+                    Nuovi commit disponibili
+                    <RefreshIcon />
+                  </Button>
+                </Badge>
+              )}
+          </Grid>
+        </Grid>
       </Toolbar>
     );
   }
@@ -86,7 +126,7 @@ class CommitsTable extends Component {
                     columnKey: column.key,
                     direction: this.state.sorting.direction === 'asc' ? 'desc' : 'asc'
                   };
-                  this.props.onSortingRequested(this.state.currentPage, updatedSorting);
+                  this.props.onPageLoad(this.state.currentPage, updatedSorting);
                   this.setState({ sorting: updatedSorting });
                 }}
               >
@@ -99,6 +139,25 @@ class CommitsTable extends Component {
     );
   }
 
+  /**
+   * Renders placeholder rows in the table while it's loading
+   */
+  renderTableSkeleton() {
+    return (
+      <TableBody>
+        {React.Children.map(Array(LIST_ELEMENTS_PER_PAGE), () => {
+          return (
+            <TableRow>
+              {React.Children.map(Array(this.currentlyShowingColumnsCount()), () => (
+                <TableCell>{PLACEHOLDER_VALUE}</TableCell>
+              ))}
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    );
+  }
+
   renderTableBody() {
     const { tableData } = this.props;
     return (
@@ -106,11 +165,15 @@ class CommitsTable extends Component {
         {this.props.displayError ? (
           <TableRow>
             <TableCell>Impossibile ottenere i dati.</TableCell>
+            {/* Render other empty cells to complete the row (otherwise the line would stop at the first cell) */}
+            {React.Children.map(this.currentlyShowingColumnsCount() - 1, () => (
+              <TableCell />
+            ))}
           </TableRow>
         ) : (
           tableData[this.state.currentPage].data.map(rowValue => {
             return (
-              <TableRow key={rowValue.id}>
+              <TableRow hover key={rowValue.id}>
                 <TableCell>{rowValue.id}</TableCell>
                 <TableCell>{rowValue.description}</TableCell>
                 <TableCell>{new Date(rowValue.timestamp * 1000).toLocaleString('it-it')}</TableCell>
@@ -137,6 +200,9 @@ class CommitsTable extends Component {
     }
   }
 
+  /**
+   * Renders the table footer, which contains the pagination components
+   */
   renderTableFooter() {
     return (
       <TableFooter>
@@ -147,13 +213,18 @@ class CommitsTable extends Component {
             page={this.state.currentPage}
             rowsPerPageOptions={[LIST_ELEMENTS_PER_PAGE]}
             onChangePage={(_, page) => {
-              this.props.onPageChange(page);
+              this.props.onPageLoad(page, this.state.sorting);
               this.setState({ currentPage: page });
             }}
           />
         </TableRow>
       </TableFooter>
     );
+  }
+
+  currentlyShowingColumnsCount() {
+    // TODO update when hiding columns on mobile will be implemented
+    return this.props.tableColumns.length;
   }
 }
 
@@ -163,9 +234,9 @@ CommitsTable.propTypes = {
   tableColumns: PropTypes.array.isRequired,
   tableData: PropTypes.array.isRequired,
   itemsCount: PropTypes.number.isRequired,
-  onPageChange: PropTypes.func.isRequired,
-  onSortingRequested: PropTypes.func.isRequired,
+  onPageLoad: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
+  latestCommitTimestamp: PropTypes.number.isRequired,
   displayError: PropTypes.bool.isRequired
 };
 

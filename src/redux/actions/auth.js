@@ -7,7 +7,7 @@
  * used in the last session (when the user closes the app without logging out).
  */
 
-export const AUTH_ACTION_TYPE_KEYS = {
+export const AUTH_ACTION_TYPE = {
   LOGIN_REQUESTED: 'LOGIN_REQUESTED',
   LOGIN_SUCCESSFUL: 'LOGIN_SUCCESSFUL',
   LOGIN_FAILED: 'LOGIN_FAILED',
@@ -20,7 +20,7 @@ export const AUTH_ACTION_TYPE_KEYS = {
 
 export function attemptLoginAction(username, password) {
   return {
-    type: AUTH_ACTION_TYPE_KEYS.LOGIN_REQUESTED,
+    type: AUTH_ACTION_TYPE.LOGIN_REQUESTED,
     username,
     password
   };
@@ -28,14 +28,14 @@ export function attemptLoginAction(username, password) {
 
 export function performLogoutAction(accessToken) {
   return {
-    type: AUTH_ACTION_TYPE_KEYS.LOGOUT,
+    type: AUTH_ACTION_TYPE.LOGOUT,
     accessToken
   };
 }
 
 export function requestLocalTokenValidationIfPresentAction(accessToken) {
   return {
-    type: AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_REQUESTED,
+    type: AUTH_ACTION_TYPE.TOKEN_VALIDATION_REQUESTED,
     accessToken
   };
 }

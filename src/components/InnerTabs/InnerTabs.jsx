@@ -1,3 +1,4 @@
+import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import PropTypes from 'prop-types';
@@ -8,7 +9,7 @@ import React, { Component } from 'react';
  * This class is responsible of displaying inner tabs for
  * each member.
  */
-export default class InnerTabs extends Component {
+class InnerTabs extends Component {
   constructor(props) {
     super(props);
 
@@ -16,9 +17,9 @@ export default class InnerTabs extends Component {
   }
 
   render() {
-    const { tabs, match } = this.props;
+    const { tabs, match, width } = this.props;
     return (
-      <Tabs value={match.params.value} scrollable scrollButtons="auto">
+      <Tabs value={match.params.value} fullWidth={isWidthDown('xs', width)} scrollable scrollButtons="auto">
         {tabs.map((tab, index) => {
           return (
             <Tab
@@ -44,3 +45,5 @@ InnerTabs.propTypes = {
   prevUrl: PropTypes.string.isRequired,
   tabs: PropTypes.array.isRequired
 };
+
+export default withWidth()(InnerTabs);

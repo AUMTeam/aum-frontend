@@ -1,6 +1,6 @@
 import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
 
-export const COMMITS_ACTION_TYPE_KEYS = {
+export const COMMITS_ACTION_TYPE = {
   // Dispatched when a page of the commits list needs to be loaded
   COMMITS_LIST_PAGE_REQUEST: 'COMMITS_LIST_PAGE_REQUEST',
 
@@ -25,38 +25,33 @@ export const COMMITS_ACTION_TYPE_KEYS = {
 
   // Dispatched when the view containing the list is unmounted: stops the auto updater task
   COMMITS_LIST_STOP_AUTO_CHECKING: 'COMMITS_LIST_STOP_AUTO_CHECKING',
-  SHOW_COMMIT_DETAILS: 'SHOW_COMMIT_DETAILS',
+  SHOW_COMMIT_DETAILS: 'SHOW_COMMIT_DETAILS'
 };
 
-export function retrieveCommitsListPageAction(pageNumber, userRoleString) {
+export function retrieveCommitsListPageAction(
+  pageNumber,
+  userRoleString,
+  sortingCriteria = { columnKey: null, direction: 'asc' }
+) {
   return {
-    type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_REQUEST,
-    pageNumber,
-    limit: LIST_ELEMENTS_PER_PAGE,
-    userRoleString
-  };
-}
-
-export function retrieveSortedCommitsListPageAction(pageNumber, sortingCriteria, userRoleString) {
-  return {
-    type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_REQUEST,
+    type: COMMITS_ACTION_TYPE.COMMITS_LIST_PAGE_REQUEST,
     pageNumber,
     limit: LIST_ELEMENTS_PER_PAGE,
     sortingCriteria,
     userRoleString
-  }
+  };
 }
 
 export function startCommitsListUpdatesAutoCheckingAction(userRoleString) {
   return {
-    type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_START_AUTO_CHECKING,
+    type: COMMITS_ACTION_TYPE.COMMITS_LIST_START_AUTO_CHECKING,
     userRoleString
   };
 }
 
 export function stopCommitsListUpdatesAutoCheckingAction(userRoleString) {
   return {
-    type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_STOP_AUTO_CHECKING,
+    type: COMMITS_ACTION_TYPE.COMMITS_LIST_STOP_AUTO_CHECKING,
     userRoleString
   };
 }

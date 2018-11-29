@@ -1,17 +1,16 @@
+import { Snackbar, SnackbarContent } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { CommitsTable } from '../../components/CommitsTable';
-import { USER_ROLE_STRINGS, USER_TYPE_IDS } from '../../constants/user';
+import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import {
   retrieveCommitsListPageAction,
-  retrieveSortedCommitsListPageAction,
   startCommitsListUpdatesAutoCheckingAction,
   stopCommitsListUpdatesAutoCheckingAction
 } from '../../redux/actions/commits';
-import { Snackbar, SnackbarContent } from '@material-ui/core';
 
 const COMMITS_TABLE_COLUMNS = [
   { label: 'ID', key: 'commit_id' },
@@ -40,51 +39,29 @@ class ProgrammerView extends Component {
   constructor(props) {
     super(props);
 
-    this.props.retrieveCommitsListPageAction(0, USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]);
-    this.props.startCommitsListUpdatesAutoCheckingAction(
-      USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]
-    );
+    this.props.retrieveCommitsListPageAction(0, USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
+    this.props.startCommitsListUpdatesAutoCheckingAction(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
+
+    this.renderSubView = this.renderSubView.bind(this);
   }
 
   componentWillUnmount() {
-    this.props.stopCommitsListUpdatesAutoCheckingAction(
-      USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]
-    );
+    this.props.stopCommitsListUpdatesAutoCheckingAction(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, commitsData } = this.props;
     return (
       <>
         <Grid container className={classes.root} spacing={16}>
           <Grid item xs={12}>
             <Grid container justify="center">
-              <CommitsTable
-                tableToolbarTitle="Lista commit"
-                tableColumns={COMMITS_TABLE_COLUMNS}
-                tableData={this.props.commitsData.listPages}
-                itemsCount={this.props.commitsData.totalCommitsCount}
-                onPageChange={pageNumber => {
-                  this.props.retrieveCommitsListPageAction(
-                    pageNumber,
-                    USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]
-                  );
-                }}
-                onSortingRequested={(pageNumber, sortingCriteria) =>
-                  this.props.retrieveSortedCommitsListPageAction(
-                    pageNumber,
-                    sortingCriteria,
-                    USER_ROLE_STRINGS[USER_TYPE_IDS.PROGRAMMER]
-                  )
-                }
-                isLoading={this.props.commitsData.isLoadingList}
-                displayError={this.props.commitsData.errorWhileFetchingData}
-              />
+              {this.renderSubView()}
             </Grid>
           </Grid>
         </Grid>
 
-        <Snackbar open={this.props.commitsData.errorWhileCheckingUpdates}>
+        <Snackbar open={commitsData.errorWhileCheckingUpdates}>
           <SnackbarContent
             className={classes.errorSnackbar}
             message="Impossibile controllare gli aggiornamenti per la lista. Controlla la tua connessione."
@@ -92,6 +69,36 @@ class ProgrammerView extends Component {
         </Snackbar>
       </>
     );
+  }
+
+  renderSubView() {
+    const { match } = this.props;
+
+    switch (match.params.value) {
+      case '0':
+        return (
+          <CommitsTable
+            tableToolbarTitle="Lista commit"
+            tableColumns={COMMITS_TABLE_COLUMNS}
+            tableData={this.props.commitsData.listPages}
+            itemsCount={this.props.commitsData.totalCommitsCount}
+            onPageLoad={(pageNumber, sortingCriteria) => {
+              this.props.retrieveCommitsListPageAction(
+                pageNumber,
+                USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER],
+                sortingCriteria
+              );
+            }}
+            isLoading={this.props.commitsData.isLoadingList}
+            latestCommitTimestamp={this.props.commitsData.latestCommitTimestamp}
+            displayError={this.props.commitsData.errorWhileFetchingData}
+          />
+        );
+      case '1':
+        return <h1>Richieste di invio</h1>;
+      default:
+        return null;
+    }
   }
 }
 
@@ -105,7 +112,6 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       retrieveCommitsListPageAction,
-      retrieveSortedCommitsListPageAction,
       startCommitsListUpdatesAutoCheckingAction,
       stopCommitsListUpdatesAutoCheckingAction
     },
