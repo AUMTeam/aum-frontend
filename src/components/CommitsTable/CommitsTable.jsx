@@ -5,7 +5,6 @@ import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
-import Hidden from '@material-ui/core/Hidden';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
@@ -113,9 +112,7 @@ class CommitsTable extends Component {
             return (
               <TableRow key={rowValue.id}>
                 <TableCell>{rowValue.id}</TableCell>
-                <Hidden smDown>
-                  <TableCell>{rowValue.description}</TableCell>
-                </Hidden>
+                <TableCell>{rowValue.description}</TableCell>
                 <TableCell>{new Date(rowValue.timestamp * 1000).toLocaleString('it-it')}</TableCell>
                 <TableCell>{rowValue.author.username}</TableCell>
                 <TableCell>{this.renderApprovalStatusIcon(rowValue.approval_status)}</TableCell>
@@ -130,11 +127,11 @@ class CommitsTable extends Component {
   renderApprovalStatusIcon(approvalStatus) {
     switch (approvalStatus) {
       case 1:
-        return <CheckCircleOutline />;
+        return <CheckCircleOutline color="primary" />;
       case 0:
-        return <Schedule />;
+        return <Schedule color="action" />;
       case -1:
-        return <HighlightOff />;
+        return <HighlightOff color="error" />;
       default:
         return null;
     }
