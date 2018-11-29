@@ -1,4 +1,4 @@
-import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
+import { AUTH_ACTION_TYPE } from '../actions/auth';
 
 /**
  * @file
@@ -16,42 +16,42 @@ const initialState = {
 
 export function auth(state = initialState, action) {
   switch (action.type) {
-    case AUTH_ACTION_TYPE_KEYS.LOGIN_REQUESTED:
+    case AUTH_ACTION_TYPE.LOGIN_REQUESTED:
       return {
         ...state,
         isAttemptingLogin: true
       };
-    case AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL:
+    case AUTH_ACTION_TYPE.LOGIN_SUCCESSFUL:
       return {
         ...state,
         accessToken: action.accessToken,
         isAttemptingLogin: false
       };
-    case AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED:
+    case AUTH_ACTION_TYPE.LOGIN_FAILED:
       return {
         ...state,
         isAttemptingLogin: false,
         loginErrorMessage: action.errorMessage
       };
 
-    case AUTH_ACTION_TYPE_KEYS.LOGOUT:
+    case AUTH_ACTION_TYPE.LOGOUT:
       return {
         ...initialState
       };
 
-    case AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_REQUESTED:
+    case AUTH_ACTION_TYPE.TOKEN_VALIDATION_REQUESTED:
       return {
         ...state,
         isValidatingToken: true
       };
-    case AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_SUCCESSFUL:
+    case AUTH_ACTION_TYPE.TOKEN_VALIDATION_SUCCESSFUL:
       return {
         ...state,
         accessToken: action.accessToken,
         isValidatingToken: false
       };
-    case AUTH_ACTION_TYPE_KEYS.LOCAL_TOKEN_NOT_FOUND:
-    case AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_FAILED:
+    case AUTH_ACTION_TYPE.LOCAL_TOKEN_NOT_FOUND:
+    case AUTH_ACTION_TYPE.TOKEN_VALIDATION_FAILED:
       return {
         ...state,
         accessToken: null,

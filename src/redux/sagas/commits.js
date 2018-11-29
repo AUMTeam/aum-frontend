@@ -2,7 +2,7 @@ import { delay } from 'redux-saga';
 import { call, cancel, cancelled, fork, put, select, take, takeLatest } from 'redux-saga/effects';
 import { LIST_AUTO_UPDATE_INTERVAL, LIST_ELEMENTS_PER_PAGE, REQUEST_ACTIONS_PATH } from '../../constants/api';
 import { makeAuthenticatedApiRequest } from '../../utils/apiUtils';
-import { COMMITS_ACTION_TYPE_KEYS } from '../actions/commits';
+import { COMMITS_ACTION_TYPE } from '../actions/commits';
 
 /**
  * Called every time the user changes the page of the commits table or the latter is recreated
@@ -41,13 +41,13 @@ function* retrieveCommitsListPage(action) {
     if (errorMessage != null) {
       console.error(`Unable to get data for commits page ${action.pageNumber}: ${errorMessage}`);
       yield put({
-        type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_RETRIEVAL_ERROR,
+        type: COMMITS_ACTION_TYPE.COMMITS_LIST_PAGE_RETRIEVAL_ERROR,
         errorMessage,
         userRoleString: action.userRoleString
       });
     } else {
       yield put({
-        type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_RETRIEVED_FROM_SERVER,
+        type: COMMITS_ACTION_TYPE.COMMITS_LIST_PAGE_RETRIEVED_FROM_SERVER,
         serverResponse,
         pageNumber: action.pageNumber,
         userRoleString: action.userRoleString,
@@ -56,7 +56,7 @@ function* retrieveCommitsListPage(action) {
     }
   } else {
     yield put({
-      type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_NO_RETRIEVAL_NEEDED,
+      type: COMMITS_ACTION_TYPE.COMMITS_LIST_NO_RETRIEVAL_NEEDED,
       userRoleString: action.userRoleString
     });
   }
@@ -123,7 +123,7 @@ function* checkForListUpdates(latestCommitTimestamp, userRoleString) {
     const responseJson = yield response.json();
     if (response.ok) {
       yield put({
-        type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_UPDATE_RECEIVED,
+        type: COMMITS_ACTION_TYPE.COMMITS_LIST_UPDATE_RECEIVED,
         latestCommitTimestamp: responseJson.response_data.latest_commit_timestamp,
         updatesFound: responseJson.response_data.updates_found,
         userRoleString
@@ -132,7 +132,7 @@ function* checkForListUpdates(latestCommitTimestamp, userRoleString) {
       if (!responseJson.response_data.updates_found) console.log('No commits list updates found');
     } else {
       yield put({
-        type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_UPDATE_CHECKING_ERROR,
+        type: COMMITS_ACTION_TYPE.COMMITS_LIST_UPDATE_CHECKING_ERROR,
         userRoleString
       });
       console.error(
@@ -141,7 +141,7 @@ function* checkForListUpdates(latestCommitTimestamp, userRoleString) {
     }
   } else {
     yield put({
-      type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_UPDATE_CHECKING_ERROR,
+      type: COMMITS_ACTION_TYPE.COMMITS_LIST_UPDATE_CHECKING_ERROR,
       userRoleString
     });
     console.error('An error occurred during commits list update check request to server');
@@ -175,14 +175,14 @@ function* runAutoListUpdateChecker(action) {
 
 function* autoListUpdateCheckController() {
   while (true) {
-    const action = yield take(COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_START_AUTO_CHECKING);
+    const action = yield take(COMMITS_ACTION_TYPE.COMMITS_LIST_START_AUTO_CHECKING);
     const updateCheckingTask = yield fork(() => runAutoListUpdateChecker(action));
-    yield take(COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_STOP_AUTO_CHECKING);
+    yield take(COMMITS_ACTION_TYPE.COMMITS_LIST_STOP_AUTO_CHECKING);
     yield cancel(updateCheckingTask);
   }
 }
 
 export const commitsSaga = [
   autoListUpdateCheckController(),
-  takeLatest(COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_REQUEST, retrieveCommitsListPage)
+  takeLatest(COMMITS_ACTION_TYPE.COMMITS_LIST_PAGE_REQUEST, retrieveCommitsListPage)
 ];

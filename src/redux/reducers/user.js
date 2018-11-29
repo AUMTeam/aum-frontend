@@ -1,4 +1,4 @@
-import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
+import { AUTH_ACTION_TYPE } from '../actions/auth';
 import { USER_ACTION_TYPE_KEYS } from '../actions/user';
 
 /**
@@ -45,7 +45,7 @@ export function user(state = initialState, action) {
 
     // We need to wipe all user-related data when user logs out
     // We don't want to have old values when another user logs in
-    case AUTH_ACTION_TYPE_KEYS.LOGOUT:
+    case AUTH_ACTION_TYPE.LOGOUT:
       return {
         ...initialState
       };

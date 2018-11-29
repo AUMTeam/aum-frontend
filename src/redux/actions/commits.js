@@ -1,6 +1,6 @@
 import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
 
-export const COMMITS_ACTION_TYPE_KEYS = {
+export const COMMITS_ACTION_TYPE = {
   // Dispatched when a page of the commits list needs to be loaded
   COMMITS_LIST_PAGE_REQUEST: 'COMMITS_LIST_PAGE_REQUEST',
 
@@ -34,7 +34,7 @@ export function retrieveCommitsListPageAction(
   sortingCriteria = { columnKey: null, direction: 'asc' }
 ) {
   return {
-    type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_REQUEST,
+    type: COMMITS_ACTION_TYPE.COMMITS_LIST_PAGE_REQUEST,
     pageNumber,
     limit: LIST_ELEMENTS_PER_PAGE,
     sortingCriteria,
@@ -44,14 +44,14 @@ export function retrieveCommitsListPageAction(
 
 export function startCommitsListUpdatesAutoCheckingAction(userRoleString) {
   return {
-    type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_START_AUTO_CHECKING,
+    type: COMMITS_ACTION_TYPE.COMMITS_LIST_START_AUTO_CHECKING,
     userRoleString
   };
 }
 
 export function stopCommitsListUpdatesAutoCheckingAction(userRoleString) {
   return {
-    type: COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_STOP_AUTO_CHECKING,
+    type: COMMITS_ACTION_TYPE.COMMITS_LIST_STOP_AUTO_CHECKING,
     userRoleString
   };
 }

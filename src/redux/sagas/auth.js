@@ -1,7 +1,7 @@
 import { call, fork, put, select, take } from 'redux-saga/effects';
 import { REQUEST_ACTIONS_PATH } from '../../constants/api';
 import { makeAuthenticatedApiRequest, makeUnauthenticatedApiRequest, removeAccessTokenFromLocalStorage, saveAccessTokenToLocalStorage } from '../../utils/apiUtils';
-import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
+import { AUTH_ACTION_TYPE } from '../actions/auth';
 import { USER_ACTION_TYPE_KEYS } from '../actions/user';
 import { requestCurrentUserInfo } from './user';
 
@@ -21,9 +21,9 @@ import { requestCurrentUserInfo } from './user';
  */
 export function* authFlowSaga() {
   // Application startup: request local token validation to the server if it's found
-  const tokenValidationRequestAction = yield take(AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_REQUESTED);
+  const tokenValidationRequestAction = yield take(AUTH_ACTION_TYPE.TOKEN_VALIDATION_REQUESTED);
   if (tokenValidationRequestAction.accessToken == null) {
-    yield put({ type: AUTH_ACTION_TYPE_KEYS.LOCAL_TOKEN_NOT_FOUND });
+    yield put({ type: AUTH_ACTION_TYPE.LOCAL_TOKEN_NOT_FOUND });
     console.log('Previous token not found in localStorage');
   }
   else {
@@ -35,18 +35,18 @@ export function* authFlowSaga() {
     // If the user hasn't been logged in with the local token found in localStorage,
     // watch for login request action
     if (!userLoggedIn) {
-      const loginRequestAction = yield take(AUTH_ACTION_TYPE_KEYS.LOGIN_REQUESTED);
+      const loginRequestAction = yield take(AUTH_ACTION_TYPE.LOGIN_REQUESTED);
       const { accessToken, errorMessage } = yield call(attemptLogin, loginRequestAction);
       if (errorMessage != null) {
         yield put({
-          type: AUTH_ACTION_TYPE_KEYS.LOGIN_FAILED,
+          type: AUTH_ACTION_TYPE.LOGIN_FAILED,
           errorMessage
         });
         console.error(`Login API error: ${errorMessage}`);
       }
       else {
         yield put({
-          type: AUTH_ACTION_TYPE_KEYS.LOGIN_SUCCESSFUL,
+          type: AUTH_ACTION_TYPE.LOGIN_SUCCESSFUL,
           accessToken
         });
         console.log('Login successful');
@@ -75,7 +75,7 @@ export function* authFlowSaga() {
 
       // We watch for logout even if the server doesn't give us user info,
       // since we may want to display a fallback UI with a logout button
-      const logoutAction = yield take(AUTH_ACTION_TYPE_KEYS.LOGOUT);
+      const logoutAction = yield take(AUTH_ACTION_TYPE.LOGOUT);
       yield call(notifyLogoutToServerAsync, logoutAction);
       yield call(removeAccessTokenFromLocalStorage);
       userLoggedIn = false;
@@ -147,13 +147,13 @@ function* requestLocalAccessTokenValidation(action) {
 
   if (response && response.ok) {
     yield put({
-      type: AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_SUCCESSFUL,
+      type: AUTH_ACTION_TYPE.TOKEN_VALIDATION_SUCCESSFUL,
       accessToken: action.accessToken
     });
     console.log('Local access token is valid');
   }
   else {
-    yield put({ type: AUTH_ACTION_TYPE_KEYS.TOKEN_VALIDATION_FAILED });
+    yield put({ type: AUTH_ACTION_TYPE.TOKEN_VALIDATION_FAILED });
     removeAccessTokenFromLocalStorage();
     if (response == null)
       console.error('An error occurred during token validation request to server');

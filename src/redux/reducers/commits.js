@@ -1,5 +1,5 @@
-import { AUTH_ACTION_TYPE_KEYS } from '../actions/auth';
-import { COMMITS_ACTION_TYPE_KEYS } from '../actions/commits';
+import { AUTH_ACTION_TYPE } from '../actions/auth';
+import { COMMITS_ACTION_TYPE } from '../actions/commits';
 
 const initialState = {
   /*
@@ -21,13 +21,13 @@ const initialState = {
 
 export function commits(state = initialState, action) {
   switch (action.type) {
-    case COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_REQUEST:
+    case COMMITS_ACTION_TYPE.COMMITS_LIST_PAGE_REQUEST:
       return {
         ...state,
         errorWhileFetchingData: false,
         isLoadingList: true
       };
-    case COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_RETRIEVED_FROM_SERVER:
+    case COMMITS_ACTION_TYPE.COMMITS_LIST_PAGE_RETRIEVED_FROM_SERVER:
       const newState = {
         ...state,
         isLoadingList: false,
@@ -44,29 +44,29 @@ export function commits(state = initialState, action) {
       // because update checking always happens before retrieving a page
       newState.listPages[action.pageNumber].updateTimestamp = newState.latestCommitTimestamp;
       return newState;
-    case COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_PAGE_RETRIEVAL_ERROR:
+    case COMMITS_ACTION_TYPE.COMMITS_LIST_PAGE_RETRIEVAL_ERROR:
       return {
         ...state,
         errorWhileFetchingData: true,
         isLoadingList: false
       };
-    case COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_NO_RETRIEVAL_NEEDED:
+    case COMMITS_ACTION_TYPE.COMMITS_LIST_NO_RETRIEVAL_NEEDED:
       return {
         ...state,
         isLoadingList: false
       };
-    case COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_UPDATE_CHECKING_ERROR:
+    case COMMITS_ACTION_TYPE.COMMITS_LIST_UPDATE_CHECKING_ERROR:
       return {
         ...state,
         errorWhileCheckingUpdates: true
       };
-    case COMMITS_ACTION_TYPE_KEYS.COMMITS_LIST_UPDATE_RECEIVED:
+    case COMMITS_ACTION_TYPE.COMMITS_LIST_UPDATE_RECEIVED:
       return {
         ...state,
         errorWhileCheckingUpdates: false,
         latestCommitTimestamp: action.latestCommitTimestamp
       };
-    case AUTH_ACTION_TYPE_KEYS.LOGOUT:
+    case AUTH_ACTION_TYPE.LOGOUT:
       return {
         ...initialState
       };
