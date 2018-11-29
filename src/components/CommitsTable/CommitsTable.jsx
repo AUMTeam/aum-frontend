@@ -49,8 +49,8 @@ class CommitsTable extends Component {
 
     this.renderTableToolbar = this.renderTableToolbar.bind(this);
     this.renderTableHeader = this.renderTableHeader.bind(this);
-    this.renderTableSkelethon = this.renderTableSkeleton.bind(this);
     this.renderTableBody = this.renderTableBody.bind(this);
+    this.currentlyShowingColumnsCount = this.currentlyShowingColumnsCount.bind(this);
   }
 
   render() {
@@ -68,8 +68,16 @@ class CommitsTable extends Component {
   }
 
   renderTableToolbar() {
-    const { tableToolbarTitle, latestCommitTimestamp, tableData, onPageChange, userRoleString } = this.props;
+    const {
+      tableToolbarTitle,
+      latestCommitTimestamp,
+      tableData,
+      onPageLoad,
+      userRoleString,
+      isLoading
+    } = this.props;
     const { currentPage } = this.state;
+
     return (
       <Toolbar>
         <Grid container direction="row" justify="space-between" alignItems="center" spacing={16}>
@@ -79,15 +87,15 @@ class CommitsTable extends Component {
 
           {/* Display badge when new updates have been found */}
           <Grid item>
-            {tableData.length > 0 &&
-              currentPage in tableData &&
+            {!isLoading &&
+              tableData.length > 0 &&
               tableData[currentPage] != null &&
               latestCommitTimestamp > tableData[currentPage].updateTimestamp && (
                 <Badge color="secondary">
                   <Button
                     variant="outlined"
                     color="primary"
-                    onClick={() => onPageChange(currentPage, userRoleString)}
+                    onClick={() => onPageLoad(currentPage, userRoleString)}
                   >
                     Nuovi commit disponibili
                     <RefreshIcon />
@@ -134,14 +142,12 @@ class CommitsTable extends Component {
   renderTableSkeleton() {
     return (
       <TableBody>
-        {new Array(LIST_ELEMENTS_PER_PAGE).fill().map((_, index) => {
+        {React.Children.map(Array(LIST_ELEMENTS_PER_PAGE), () => {
           return (
-            <TableRow key={index}>
-              <TableCell>{PLACEHOLDER_VALUE}</TableCell>
-              <TableCell>{PLACEHOLDER_VALUE}</TableCell>
-              <TableCell>{PLACEHOLDER_VALUE}</TableCell>
-              <TableCell>{PLACEHOLDER_VALUE}</TableCell>
-              <TableCell>{PLACEHOLDER_VALUE}</TableCell>
+            <TableRow>
+              {React.Children.map(Array(this.currentlyShowingColumnsCount()), () => (
+                <TableCell>{PLACEHOLDER_VALUE}</TableCell>
+              ))}
             </TableRow>
           );
         })}
@@ -150,19 +156,21 @@ class CommitsTable extends Component {
   }
 
   renderTableBody() {
-    const { tableData, tableColumns } = this.props;
+    const { tableData } = this.props;
     return (
       <TableBody>
         {this.props.displayError ? (
           <TableRow>
             <TableCell>Impossibile ottenere i dati.</TableCell>
             {/* Render other empty cells to complete the row (otherwise the line would stop at the first cell) */}
-            { React.Children.map(Array(tableColumns.length-1), () => <TableCell />) }
+            {React.Children.map(this.currentlyShowingColumnsCount() - 1, () => (
+              <TableCell />
+            ))}
           </TableRow>
         ) : (
           tableData[this.state.currentPage].data.map(rowValue => {
             return (
-              <TableRow key={rowValue.id}>
+              <TableRow hover key={rowValue.id}>
                 <TableCell>{rowValue.id}</TableCell>
                 <TableCell>{rowValue.description}</TableCell>
                 <TableCell>{new Date(rowValue.timestamp * 1000).toLocaleString('it-it')}</TableCell>
@@ -197,6 +205,11 @@ class CommitsTable extends Component {
       </TableFooter>
     );
   }
+
+  currentlyShowingColumnsCount() {
+    // TODO update when hiding columns on mobile will be implemented
+    return this.props.tableColumns.length;
+  }
 }
 
 CommitsTable.propTypes = {
@@ -207,6 +220,7 @@ CommitsTable.propTypes = {
   itemsCount: PropTypes.number.isRequired,
   onPageLoad: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
+  latestCommitTimestamp: PropTypes.number.isRequired,
   displayError: PropTypes.bool.isRequired
 };
 

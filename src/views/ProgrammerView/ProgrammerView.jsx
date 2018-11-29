@@ -90,6 +90,7 @@ class ProgrammerView extends Component {
               );
             }}
             isLoading={this.props.commitsData.isLoadingList}
+            latestCommitTimestamp={this.props.commitsData.latestCommitTimestamp}
             displayError={this.props.commitsData.errorWhileFetchingData}
           />
         );

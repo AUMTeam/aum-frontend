@@ -34,7 +34,7 @@ export function commits(state = initialState, action) {
         totalCommitsCount: action.serverResponse.count_total
       };
       newState.listPages = [...state.listPages]; // objects are not deeply copied, that would just be too painful
-      if (!(action.pageNumber in newState.listPages) || newState.listPages[action.pageNumber] == null)
+      if (newState.listPages[action.pageNumber] == null)
         newState.listPages[action.pageNumber] = {};
       newState.listPages[action.pageNumber].data = action.serverResponse.list;
 
