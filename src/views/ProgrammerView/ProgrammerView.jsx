@@ -13,11 +13,11 @@ import {
 } from '../../redux/actions/commits';
 
 const COMMITS_TABLE_COLUMNS = [
-  { label: 'ID', key: 'commit_id' },
-  { label: 'Descrizione', key: 'description' },
-  { label: 'Data', key: 'timestamp' },
-  { label: 'Autore', key: 'author_user_id' },
-  { label: 'Approvato', key: 'is_approved' }
+  { label: 'ID', key: 'id', displayOnMobile: false },
+  { label: 'Descrizione', key: 'description', displayOnMobile: true },
+  { label: 'Data', key: 'timestamp', displayOnMobile: true },
+  { label: 'Autore', key: 'author', displayOnMobile: false },
+  { label: 'Approvato', key: 'approval_status', displayOnMobile: true }
 ];
 
 const styles = theme => ({
