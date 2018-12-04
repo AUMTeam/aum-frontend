@@ -22,9 +22,12 @@ const COMMITS_TABLE_COLUMNS = [
 ];
 
 const styles = theme => ({
-  root: {
-    flexGrow: 1,
-    padding: 16
+  grid: {
+    margin: 0,
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      padding: 16
+    }
   },
   errorSnackbar: {
     backgroundColor: theme.palette.error.main
@@ -54,7 +57,7 @@ class ProgrammerView extends Component {
     const { classes, commitsData } = this.props;
     return (
       <>
-        <Grid container className={classes.root} spacing={16}>
+        <Grid container className={classes.grid}>
           <Grid item xs={12}>
             <Grid container justify="center">
               {this.renderSubView()}

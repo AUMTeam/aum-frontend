@@ -23,13 +23,10 @@ import { COMMITS_ATTRIBUTE } from '../../constants/commits';
 import { isWidthDown } from '@material-ui/core/withWidth';
 
 const styles = {
-  root: {
+  paper: {
     flexGrow: 1,
-    width: '100%'
-  },
-  progressContainer: {
-    width: 'inherit',
-    height: 'inherit'
+    width: '100%',
+    overflowX: 'auto'
   }
 };
 
@@ -61,7 +58,7 @@ class ProgrammerTable extends Component {
   render() {
     const { classes, isLoading } = this.props;
     return (
-      <Paper className={classes.root}>
+      <Paper className={classes.paper}>
         {this.renderTableToolbar()}
         <Table>
           {this.renderTableHeader()}
@@ -252,11 +249,8 @@ class ProgrammerTable extends Component {
     let columnCount = 0;
     this.props.tableColumns.map(column => {
       if (isWidthDown('sm', this.props.width)) {
-        if (column.displayOnMobile)
-          columnCount++;
-      }
-      else
-        columnCount++;
+        if (column.displayOnMobile) columnCount++;
+      } else columnCount++;
     });
     return columnCount;
   }
@@ -274,4 +268,4 @@ ProgrammerTable.propTypes = {
   displayError: PropTypes.bool.isRequired
 };
 
-export default withWidth()(withStyles(styles)(ProgrammerTable));
+export default withWidth({ noSSR: true })(withStyles(styles)(ProgrammerTable));

@@ -46,4 +46,4 @@ InnerTabs.propTypes = {
   tabs: PropTypes.array.isRequired
 };
 
-export default withWidth()(InnerTabs);
+export default withWidth({ noSSR: true })(InnerTabs);
