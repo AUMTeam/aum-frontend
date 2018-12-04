@@ -72,7 +72,7 @@ class ProgrammerTable extends Component {
   renderTableToolbar() {
     const {
       tableToolbarTitle,
-      latestCommitTimestamp,
+      latestUpdateTimestamp,
       tableData,
       onPageLoad,
       userRoleString,
@@ -92,7 +92,7 @@ class ProgrammerTable extends Component {
             {!isLoading &&
               tableData.length > 0 &&
               tableData[currentPage] != null &&
-              latestCommitTimestamp > tableData[currentPage].updateTimestamp && (
+              latestUpdateTimestamp > tableData[currentPage].updateTimestamp && (
                 <Badge color="secondary">
                   <Button
                     variant="outlined"
@@ -264,7 +264,7 @@ ProgrammerTable.propTypes = {
   itemsCount: PropTypes.number.isRequired,
   onPageLoad: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
-  latestCommitTimestamp: PropTypes.number.isRequired,
+  latestUpdateTimestamp: PropTypes.number.isRequired,
   displayError: PropTypes.bool.isRequired
 };
 

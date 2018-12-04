@@ -1,4 +1,5 @@
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
+import { LIST_ELEMENTS_TYPE } from '../../constants/api';
 import { commits } from './commits';
 
 const initialState = {
@@ -14,8 +15,8 @@ export function programmer(state = initialState, action) {
   if ('userRoleString' in action) {
     if (action.userRoleString === USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]) {
       return {
-        commits: commits(state.commits, action)
-        //sendRequests(state.sendRequests, action)
+        commits: action.elementType === LIST_ELEMENTS_TYPE.COMMITS ? commits(state.commits, action) : state.commits
+        //sendRequests: action.elementType === LIST_ELEMENTS_TYPE.SEND_REQUESTS ? sendRequests(state.sendRequests, action) : state.sendRequests
       };
     }
     return state;

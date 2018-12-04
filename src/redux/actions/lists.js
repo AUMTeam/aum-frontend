@@ -1,0 +1,30 @@
+export const LIST_ACTION_TYPE = {
+    // Dispatched when a page of the list needs to be loaded
+    PAGE_REQUEST: 'PAGE_REQUEST',
+  
+    // Dispatched when an error occurred during a remote request to retrieve elements
+    PAGE_RETRIEVAL_ERROR: 'PAGE_LOADING_ERROR',
+  
+    // Dispatched when a list page is succesfully retrieved from the server
+    PAGE_RETRIEVED_FROM_SERVER: 'PAGE_LOADED',
+  
+    // Dispatched when a list page is already present locally and up-to-date
+    // and therefore doesn't need to be retrieved from server
+    NO_RETRIEVAL_NEEDED: 'NO_RETRIEVAL_NEEDED',
+  
+    // Dispatched when the server responds successfully to an update check (regardless of there are updates or not)
+    UPDATE_RECEIVED: 'UPDATE_RECEIVED',
+  
+    // Dispatched when a list update check fails
+    UPDATE_CHECKING_ERROR: 'UPDATE_CHECKING_ERROR',
+  
+    // Dispatched when the view containing the list is loaded, so that the auto updater task can start
+    START_AUTO_CHECKING: 'START_AUTO_CHECKING',
+  
+    // Dispatched when the view containing the list is unmounted: stops the auto updater task
+    STOP_AUTO_CHECKING: 'STOP_AUTO_CHECKING',
+
+    // TBD
+    SHOW_ELEMENT_DETAILS: 'SHOW_ELEMENT_DETAILS'
+  };
+  

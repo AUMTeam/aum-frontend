@@ -2,7 +2,7 @@
  * @file
  * This file contains helper functions and constants used to make API calls.
  */
-import { API_ENDPOINT_URL, REQUEST_TIMEOUT_MS, TOKEN_LOCALSTORAGE_KEY } from '../constants/api';
+import { API_ENDPOINT_URL, REQUEST_TIMEOUT_MS, TOKEN_LOCALSTORAGE_KEY, LIST_ELEMENTS_TYPE } from '../constants/api';
 
 /**
  * Returns a promise that is rejected after the specified timeout
@@ -59,6 +59,28 @@ export function makeAuthenticatedApiRequest(actionPath, accessToken, requestData
     console.error(error, `occurred during authenticated API request to ${actionPath}`);
     return null;
   });
+}
+
+/**
+ * Gets the API relative path to make a specified operation on the list of the given type
+ * @param {*} elementType One of the elements contained in LIST_ELEMENTS_TYPE
+ * @param {*} requestType One of the following: add, list, update
+ */
+export function getListRequestPath(elementType, requestType)
+{
+  let requestPath = '';
+  switch (elementType)
+  {
+    case LIST_ELEMENTS_TYPE.COMMITS:
+      requestPath += 'commit';
+      break;
+    case LIST_ELEMENTS_TYPE.SEND_REQUESTS:
+      requestPath += 'request';
+      break;
+    default:
+      break;
+  }
+  return requestPath + `/${requestType}`;
 }
 
 export function saveAccessTokenToLocalStorage(accessToken) {

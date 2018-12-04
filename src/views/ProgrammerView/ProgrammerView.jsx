@@ -85,7 +85,7 @@ class ProgrammerView extends Component {
             tableToolbarTitle="Lista commit"
             tableColumns={COMMITS_TABLE_COLUMNS}
             tableData={this.props.commitsData.listPages}
-            itemsCount={this.props.commitsData.totalCommitsCount}
+            itemsCount={this.props.commitsData.totalItemsCount}
             onPageLoad={(pageNumber, sortingCriteria) => {
               this.props.retrieveCommitsListPageAction(
                 pageNumber,
@@ -94,7 +94,7 @@ class ProgrammerView extends Component {
               );
             }}
             isLoading={this.props.commitsData.isLoadingList}
-            latestCommitTimestamp={this.props.commitsData.latestCommitTimestamp}
+            latestUpdateTimestamp={this.props.commitsData.latestUpdateTimestamp}
             displayError={this.props.commitsData.errorWhileFetchingData}
           />
         );
