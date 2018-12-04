@@ -4,8 +4,9 @@ import { withStyles } from '@material-ui/core/styles';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { CommitsTable } from '../../components/CommitsTable';
+import { ProgrammerTable } from '../../components/ProgrammerTable';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
+import { COMMITS_ATTRIBUTE } from '../../constants/commits';
 import {
   retrieveCommitsListPageAction,
   startCommitsListUpdatesAutoCheckingAction,
@@ -13,11 +14,11 @@ import {
 } from '../../redux/actions/commits';
 
 const COMMITS_TABLE_COLUMNS = [
-  { label: 'ID', key: 'id', displayOnMobile: false },
-  { label: 'Descrizione', key: 'description', displayOnMobile: true },
-  { label: 'Data', key: 'timestamp', displayOnMobile: true },
-  { label: 'Autore', key: 'author', displayOnMobile: false },
-  { label: 'Approvato', key: 'approval_status', displayOnMobile: true }
+  { label: 'ID', key: COMMITS_ATTRIBUTE.ID, displayOnMobile: false },
+  { label: 'Descrizione', key: COMMITS_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
+  { label: 'Data', key: COMMITS_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
+  { label: 'Autore', key: COMMITS_ATTRIBUTE.AUTHOR, displayOnMobile: false },
+  { label: 'Approvato', key: COMMITS_ATTRIBUTE.APPROVAL_STATUS, displayOnMobile: true }
 ];
 
 const styles = theme => ({
@@ -77,7 +78,7 @@ class ProgrammerView extends Component {
     switch (match.params.value) {
       case '0':
         return (
-          <CommitsTable
+          <ProgrammerTable
             tableToolbarTitle="Lista commit"
             tableColumns={COMMITS_TABLE_COLUMNS}
             tableData={this.props.commitsData.listPages}

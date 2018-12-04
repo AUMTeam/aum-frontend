@@ -19,6 +19,7 @@ import Button from '@material-ui/core/Button';
 import Badge from '@material-ui/core/Badge';
 import React, { Component } from 'react';
 import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
+import { COMMITS_ATTRIBUTE } from '../../constants/commits';
 import { isWidthDown } from '@material-ui/core/withWidth';
 
 const styles = {
@@ -39,7 +40,7 @@ const PLACEHOLDER_VALUE = '-';
  * This class is responsible of displaying a table
  * with specific commits data.
  */
-class CommitsTable extends Component {
+class ProgrammerTable extends Component {
   constructor(props) {
     super(props);
 
@@ -101,7 +102,7 @@ class CommitsTable extends Component {
                     color="primary"
                     onClick={() => onPageLoad(currentPage, userRoleString)}
                   >
-                    Nuovi commit disponibili
+                    Aggiornamenti disponibili
                     <RefreshIcon />
                   </Button>
                 </Badge>
@@ -119,7 +120,7 @@ class CommitsTable extends Component {
         <TableRow>
           {tableColumns.map(column => (
             <Hidden key={column.key} smDown={!column.displayOnMobile}>
-              <TableCell key={column.key}>
+              <TableCell>
                 <TableSortLabel
                   active={this.state.sorting.columnKey === column.key}
                   direction={this.state.sorting.direction}
@@ -169,7 +170,7 @@ class CommitsTable extends Component {
           <TableRow>
             <TableCell>Impossibile ottenere i dati.</TableCell>
             {/* Render other empty cells to complete the row (otherwise the line would stop at the first cell) */}
-            {React.Children.map(this.currentlyShowingColumnsCount() - 1, () => (
+            {React.Children.map(Array(this.currentlyShowingColumnsCount() - 1), () => (
               <TableCell />
             ))}
           </TableRow>
@@ -198,11 +199,11 @@ class CommitsTable extends Component {
    */
   renderCellContent(columnKey, value) {
     switch (columnKey) {
-      case 'author':
+      case COMMITS_ATTRIBUTE.AUTHOR:
         return value.name;
-      case 'approval_status':
+      case COMMITS_ATTRIBUTE.APPROVAL_STATUS:
         return this.renderApprovalStatusIcon(value);
-      case 'timestamp':
+      case COMMITS_ATTRIBUTE.TIMESTAMP:
         return new Date(value * 1000).toLocaleString('it-it');
       default:
         return value;
@@ -261,7 +262,7 @@ class CommitsTable extends Component {
   }
 }
 
-CommitsTable.propTypes = {
+ProgrammerTable.propTypes = {
   classes: PropTypes.object.isRequired,
   tableToolbarTitle: PropTypes.string.isRequired,
   tableColumns: PropTypes.array.isRequired,
@@ -273,4 +274,4 @@ CommitsTable.propTypes = {
   displayError: PropTypes.bool.isRequired
 };
 
-export default withWidth()(withStyles(styles)(CommitsTable));
+export default withWidth()(withStyles(styles)(ProgrammerTable));
