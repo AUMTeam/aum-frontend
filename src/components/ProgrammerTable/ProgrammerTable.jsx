@@ -49,6 +49,8 @@ class ProgrammerTable extends Component {
       }
     };
 
+    props.onPageLoad(0, this.state.sorting);
+
     this.renderTableToolbar = this.renderTableToolbar.bind(this);
     this.renderTableHeader = this.renderTableHeader.bind(this);
     this.renderTableBody = this.renderTableBody.bind(this);

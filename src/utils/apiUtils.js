@@ -75,7 +75,7 @@ export function getListRequestPath(elementType, requestType)
       requestPath += 'commit';
       break;
     case LIST_ELEMENTS_TYPE.SEND_REQUESTS:
-      requestPath += 'request';
+      requestPath += 'requests';
       break;
     default:
       break;

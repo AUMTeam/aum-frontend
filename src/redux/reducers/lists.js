@@ -19,7 +19,7 @@ const initialState = {
   errorWhileCheckingUpdates: false
 };
 
-export function commits(state = initialState, action) {
+export function listReducer(state = initialState, action) {
   switch (action.type) {
     case LIST_ACTION_TYPE.PAGE_REQUEST:
       return {

@@ -1,6 +1,6 @@
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import { LIST_ELEMENTS_TYPE } from '../../constants/api';
-import { commits } from './commits';
+import { listReducer } from './lists';
 
 const initialState = {
   commits: undefined,
@@ -15,8 +15,8 @@ export function programmer(state = initialState, action) {
   if ('userRoleString' in action) {
     if (action.userRoleString === USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]) {
       return {
-        commits: action.elementType === LIST_ELEMENTS_TYPE.COMMITS ? commits(state.commits, action) : state.commits
-        //sendRequests: action.elementType === LIST_ELEMENTS_TYPE.SEND_REQUESTS ? sendRequests(state.sendRequests, action) : state.sendRequests
+        commits: action.elementType === LIST_ELEMENTS_TYPE.COMMITS ? listReducer(state.commits, action) : state.commits,
+        sendRequests: action.elementType === LIST_ELEMENTS_TYPE.SEND_REQUESTS ? listReducer(state.sendRequests, action) : state.sendRequests
       };
     }
     return state;
@@ -24,8 +24,8 @@ export function programmer(state = initialState, action) {
   // Actions that are not view-specific must be passed in any case to sub-reducers to allow initialization
   else {
     return {
-      commits: commits(state.commits, action)
-      //sendRequests(state.sendRequests, action)
+      commits: listReducer(state.commits, action),
+      sendRequests: listReducer(state.sendRequests, action)
     };
   }
 }

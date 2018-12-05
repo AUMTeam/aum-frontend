@@ -1,6 +1,6 @@
 import { delay } from 'redux-saga';
 import { call, cancel, cancelled, fork, put, select, take, takeLatest } from 'redux-saga/effects';
-import { LIST_AUTO_UPDATE_INTERVAL, LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
+import { LIST_AUTO_UPDATE_INTERVAL, LIST_ELEMENTS_PER_PAGE, LIST_ELEMENTS_TYPE } from '../../constants/api';
 import { makeAuthenticatedApiRequest, getListRequestPath } from '../../utils/apiUtils';
 import { LIST_ACTION_TYPE } from '../actions/lists';
 
@@ -116,7 +116,7 @@ function* checkForListUpdates(latestUpdateTimestamp, action) {
     getListRequestPath(action.elementType, 'update'),
     yield select(state => state.auth.accessToken),
     {
-      latest_commit_timestamp: latestUpdateTimestamp
+      latest_update_timestamp: latestUpdateTimestamp
     }
   );
 
@@ -127,7 +127,7 @@ function* checkForListUpdates(latestUpdateTimestamp, action) {
         type: LIST_ACTION_TYPE.UPDATE_RECEIVED,
         userRoleString: action.userRoleString,
         elementType: action.elementType,
-        latestUpdateTimestamp: responseJson.response_data.latest_commit_timestamp,
+        latestUpdateTimestamp: responseJson.response_data.latest_update_timestamp,
         updatesFound: responseJson.response_data.updates_found
       });
 
@@ -155,16 +155,26 @@ function* checkForListUpdates(latestUpdateTimestamp, action) {
   }
 }
 
+// Contains the auto update checking tasks corresponding to the lists of the specified element type,
+// so that they can be started and stopped from different functions (see below).
+// This assumes that there can't be more than a list for the same element type in the same view
+let autoUpdateTasks = {
+  [LIST_ELEMENTS_TYPE.COMMITS]: null,
+  [LIST_ELEMENTS_TYPE.SEND_REQUESTS]: null
+};
+
 /**
  * Performs automatic update checking for the list
  * every LIST_AUTO_UPDATE_INTERVAL milliseconds
  * @param {*} action Action of type START_AUTO_CHECKING
  */
-function* runAutoListUpdateChecker(action) {
+function* runListUpdateChecker(action) {
   try {
+    console.log(`Auto update checking started for ${action.elementType} list`);
     while (true) {
       yield delay(LIST_AUTO_UPDATE_INTERVAL);
       // Avoid checking for updates when retrieveListPage() is running
+      // TODO: fix checker crash caused by select when the state of the view is undefined
       if (yield select(state => !state[action.userRoleString][action.elementType].isLoadingList)) {
         console.log(`Checking for ${action.elementType} list updates...`);
         yield call(
@@ -182,16 +192,30 @@ function* runAutoListUpdateChecker(action) {
   }
 }
 
-function* autoListUpdateCheckController() {
+function* updateCheckingTasksRunner() {
   while (true) {
     const action = yield take(LIST_ACTION_TYPE.START_AUTO_CHECKING);
-    const updateCheckingTask = yield fork(() => runAutoListUpdateChecker(action));
-    yield take(LIST_ACTION_TYPE.STOP_AUTO_CHECKING);
-    yield cancel(updateCheckingTask);
+    if (autoUpdateTasks[action.elementType] == null)
+      autoUpdateTasks[action.elementType] = yield fork(() => runListUpdateChecker(action));
+    else
+      console.error(`There is another update checking task running for element type ${action.elementType}`);
+  }
+}
+
+function* updateCheckingTasksStopper() {
+  while (true) {
+    const action = yield take(LIST_ACTION_TYPE.STOP_AUTO_CHECKING);
+    if (autoUpdateTasks[action.elementType] != null) {
+      yield cancel(autoUpdateTasks[action.elementType]);
+      autoUpdateTasks[action.elementType] = null;
+    }
+    else
+      console.error('Tried to stop an unexisting update checking task.');
   }
 }
 
 export const listsSaga = [
-  autoListUpdateCheckController(),
+  updateCheckingTasksRunner(),
+  updateCheckingTasksStopper(),
   takeLatest(LIST_ACTION_TYPE.PAGE_REQUEST, retrieveListPage)
 ];
