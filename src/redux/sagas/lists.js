@@ -173,9 +173,10 @@ function* runListUpdateChecker(action) {
     console.log(`Auto update checking started for ${action.elementType} list`);
     while (true) {
       yield delay(LIST_AUTO_UPDATE_INTERVAL);
-      // Avoid checking for updates when retrieveListPage() is running
-      // TODO: fix checker crash caused by select when the state of the view is undefined
-      if (yield select(state => !state[action.userRoleString][action.elementType].isLoadingList)) {
+      // Avoid checking for updates when the state of the list is not yet initialized
+      // or when retrieveListPage() is running
+      if ((yield select(state => state[action.userRoleString][action.elementType] != null)) &&
+          (yield select(state => !state[action.userRoleString][action.elementType].isLoadingList))) {
         console.log(`Checking for ${action.elementType} list updates...`);
         yield call(
           checkForListUpdates,
