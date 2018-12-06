@@ -17,6 +17,7 @@ import {
   startSendRequestsListUpdatesAutoCheckingAction,
   stopSendRequestsListUpdatesAutoCheckingAction
 } from '../../redux/actions/sendRequests';
+import { CommitsSubView } from './CommitsSubView';
 
 const COMMITS_TABLE_COLUMNS = [
   { label: 'ID', key: COMMITS_ATTRIBUTE.ID, displayOnMobile: false },
@@ -63,7 +64,20 @@ class ProgrammerView extends Component {
     const { classes, commitsData, sendRequestsData } = this.props;
     return (
       <>
-        <Grid container className={classes.grid}>
+        <CommitsSubView
+          classes={classes}
+          startUpdateChecking={this.props.startCommitsListUpdatesAutoCheckingAction}
+          stopUpdateChecking={this.props.stopCommitsListUpdatesAutoCheckingAction}
+          commitsData={commitsData}
+          onTablePageLoad={(pageNumber, sortingCriteria) => {
+            this.props.retrieveCommitsListPageAction(
+              pageNumber,
+              USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER],
+              sortingCriteria
+            );
+          }}
+        />
+        {/*<Grid container className={classes.grid}>
           <Grid item xs={12}>
             <Grid container justify="center">
               {this.renderSubView()}
@@ -71,13 +85,12 @@ class ProgrammerView extends Component {
           </Grid>
         </Grid>
 
-        {/* TO BE IMPROVED */}
         <Snackbar open={commitsData.errorWhileCheckingUpdates || sendRequestsData.errorWhileCheckingUpdates}>
           <SnackbarContent
             className={classes.errorSnackbar}
             message="Impossibile controllare gli aggiornamenti per la lista. Controlla la tua connessione."
           />
-        </Snackbar>
+      </Snackbar>*/}
       </>
     );
   }
