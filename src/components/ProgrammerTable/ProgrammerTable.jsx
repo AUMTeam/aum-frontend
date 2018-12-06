@@ -34,8 +34,8 @@ const PLACEHOLDER_VALUE = '-';
 
 /**
  * @class
- * This class is responsible of displaying a table
- * with specific commits data.
+ * This class is responsible for displaying a responsive table
+ * with generic data passed as props
  */
 class ProgrammerTable extends Component {
   constructor(props) {
@@ -251,8 +251,11 @@ class ProgrammerTable extends Component {
     let columnCount = 0;
     this.props.tableColumns.map(column => {
       if (isWidthDown('sm', this.props.width)) {
-        if (column.displayOnMobile) columnCount++;
-      } else columnCount++;
+        if (column.displayOnMobile)
+          columnCount++;
+      }
+      else
+        columnCount++;
     });
     return columnCount;
   }
