@@ -13,15 +13,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ENTER_KEY } from '../../constants/keyboard';
 import { attemptLoginAction } from '../../redux/actions/auth';
-import './LoginCard.css';
 
 const styles = {
   card: {
-    maxHeight: 512,
     maxWidth: 512,
-    minHeight: 256,
-    overflowY: 'auto',
-    margin: 16
+    margin: 16,
+    overflow: 'visible'
   },
   root: {
     padding: 16
@@ -45,7 +42,7 @@ class LoginCard extends Component {
     this.onInputChanged = this.onInputChanged.bind(this);
     this.onLoginButtonClicked = this.onLoginButtonClicked.bind(this);
     this.onEnterKeyClicked = this.onEnterKeyClicked.bind(this);
-    this.checkTextFields = this.checkTextFields.bind(this);
+    this.checkTextFields = this.textFieldsAreValidated.bind(this);
   }
 
   render() {
@@ -54,6 +51,7 @@ class LoginCard extends Component {
     return (
       <Card className={classes.card} onKeyDown={this.onEnterKeyClicked}>
         <Grid className={classes.root} container spacing={24}>
+        
           <Grid item xs={12}>
             <Grid container justify="flex-start" alignContent="center">
               <Grid item xs={12}>
@@ -68,6 +66,7 @@ class LoginCard extends Component {
               </Grid>
             </Grid>
           </Grid>
+
           <Grid item xs={12}>
             <FormControl style={{ marginBottom: -8 }} error={usernameError} fullWidth={true}>
               <TextField
@@ -82,6 +81,7 @@ class LoginCard extends Component {
               {usernameError && <FormHelperText>Devi inserire uno username</FormHelperText>}
             </FormControl>
           </Grid>
+
           <Grid item xs={12}>
             <FormControl error={passwordError} fullWidth={true}>
               <TextField
@@ -95,6 +95,7 @@ class LoginCard extends Component {
               {passwordError && <FormHelperText>Devi inserire una password</FormHelperText>}
             </FormControl>
           </Grid>
+
           <Grid item xs={12}>
             <Grid container justify="flex-end" alignContent="center">
               <Grid item>
@@ -111,6 +112,7 @@ class LoginCard extends Component {
               </Grid>
             </Grid>
           </Grid>
+
         </Grid>
         <Snackbar
           open={this.props.loginErrorMessage != null}
@@ -120,6 +122,11 @@ class LoginCard extends Component {
     );
   }
 
+  /**
+   * Updates value of username and password in component state
+   * @param {*} name 'username' or 'password'
+   * @param {*} event Event descriptor
+   */
   onInputChanged(name, event) {
     this.setState({
       [name]: event.target.value,
@@ -128,51 +135,45 @@ class LoginCard extends Component {
     });
   }
 
+  /**
+   * Triggers login action when button is clicked
+   */
   onLoginButtonClicked() {
     const { username, password } = this.state;
 
-    if (this.checkTextFields()) {
+    if (this.textFieldsAreValidated()) {
       this.props.attemptLoginAction(username, password);
     }
   }
 
+  /**
+   * Triggers login action when user presses enter in one of the input fields
+   */
   onEnterKeyClicked(event) {
     if (event.key === ENTER_KEY) {
       this.onLoginButtonClicked();
     }
   }
 
-  checkTextFields() {
+  /**
+   * Checks if username and password fields' content is valid (they must not be empty)
+   * Returns false if one of the two fields is empty and updates state accordingly
+   */
+  textFieldsAreValidated() {
     const { username, password } = this.state;
 
-    if (this.validateField(username) && this.validateField(password)) {
-      this.setState({
-        usernameError: true,
-        passwordError: true
-      });
+    const usernameError = username.length === 0;
+    const passwordError = password.length === 0;
 
-      return false;
-    } else if (this.validateField(username)) {
+    if (usernameError || passwordError) {
       this.setState({
-        usernameError: true,
-        passwordError: false
+        usernameError,
+        passwordError
       });
-
-      return false;
-    } else if (this.validateField(password)) {
-      this.setState({
-        usernameError: false,
-        passwordError: true
-      });
-
       return false;
     }
 
     return true;
-  }
-
-  validateField(value) {
-    return value.length === 0;
   }
 }
 
