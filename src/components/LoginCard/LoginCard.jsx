@@ -12,8 +12,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { attemptLoginAction } from '../../redux/actions/auth';
+import { ENTER_KEY } from '../../constants/keyboard';
 
-const styles = {
+const styles = theme => ({
   card: {
     maxHeight: 512,
     maxWidth: 512,
@@ -25,7 +26,7 @@ const styles = {
   loginButton: {
     width: 56
   }
-};
+});
 
 class LoginCard extends Component {
   constructor(props) {
@@ -40,6 +41,7 @@ class LoginCard extends Component {
 
     this.onInputChanged = this.onInputChanged.bind(this);
     this.onLoginButtonClicked = this.onLoginButtonClicked.bind(this);
+    this.onEnterKeyClicked = this.onEnterKeyClicked.bind(this);
     this.checkTextFields = this.checkTextFields.bind(this);
   }
 
@@ -47,8 +49,8 @@ class LoginCard extends Component {
     const { classes } = this.props;
     const { username, password, usernameError, passwordError } = this.state;
     return (
-      <Card className={classes.card}>
-        <Grid className={classes.root} container spacing={16}>
+      <Card className={classes.card} onKeyDown={this.onEnterKeyClicked}>
+        <Grid className={classes.root} container spacing={24}>
           <Grid item xs={12}>
             <Grid container justify="flex-start" alignContent="center">
               <Grid item xs={12}>
@@ -64,10 +66,11 @@ class LoginCard extends Component {
             </Grid>
           </Grid>
           <Grid item xs={12}>
-            <FormControl error={usernameError} fullWidth={true}>
+            <FormControl style={{ marginBottom: -8 }} error={usernameError} fullWidth={true}>
               <TextField
                 label="Username"
                 type="text"
+                variant="outlined"
                 error={usernameError}
                 autoFocus={true}
                 value={username}
@@ -81,6 +84,7 @@ class LoginCard extends Component {
               <TextField
                 label="Password"
                 type="password"
+                variant="outlined"
                 error={passwordError}
                 value={password}
                 onChange={event => this.onInputChanged('password', event)}
@@ -97,6 +101,7 @@ class LoginCard extends Component {
                   variant="contained"
                   color="secondary"
                   onClick={this.onLoginButtonClicked}
+                  onKeyPress={this.onLoginButtonClicked}
                 >
                   Login
                 </Button>
@@ -126,6 +131,12 @@ class LoginCard extends Component {
     if (this.checkTextFields()) {
       this.props.attemptLoginAction(username, password);
     }
+  }
+
+  onEnterKeyClicked(event) {
+      if (event.key === ENTER_KEY) {
+        this.onLoginButtonClicked();
+      }
   }
 
   checkTextFields() {

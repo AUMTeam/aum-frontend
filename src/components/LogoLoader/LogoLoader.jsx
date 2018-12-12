@@ -14,7 +14,7 @@ const styles = {
   logo: {
     maxWidth: '100%',
     width: 'auto',
-    height: 256
+    height: 'auto'
   }
 };
 

@@ -1,10 +1,11 @@
-import { TableFooter, TablePagination, TableSortLabel, Hidden } from '@material-ui/core';
-import Schedule from '@material-ui/icons/Schedule';
-import HighlightOff from '@material-ui/icons/HighlightOff';
-import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
+import { Hidden, TableFooter, TablePagination, TableSortLabel } from '@material-ui/core';
+import Badge from '@material-ui/core/Badge';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import InputBase from '@material-ui/core/InputBase';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
-import withWidth from '@material-ui/core/withWidth';
+import { fade } from '@material-ui/core/styles/colorManipulator';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -12,23 +13,67 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import PropTypes from 'prop-types';
-import Grid from '@material-ui/core/Grid';
+import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
+import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
+import HighlightOff from '@material-ui/icons/HighlightOff';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import Button from '@material-ui/core/Button';
-import Badge from '@material-ui/core/Badge';
+import Schedule from '@material-ui/icons/Schedule';
+import SearchIcon from '@material-ui/icons/Search';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
 import { COMMITS_ATTRIBUTE } from '../../constants/commits';
-import { isWidthDown } from '@material-ui/core/withWidth';
 
-const styles = {
+const styles = theme => ({
   paper: {
     flexGrow: 1,
     width: '100%',
     overflowX: 'auto'
+  },
+  search: {
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    borderWidth: 2,
+    borderStyle: "solid",
+    borderColor: fade(theme.palette.common.black, 0.05),
+    '&:hover': {
+      borderColor: fade(theme.palette.common.black, 0.10)
+    },
+    marginLeft: 0,
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing.unit,
+      width: 'auto'
+    }
+  },
+  searchIcon: {
+    width: theme.spacing.unit * 9,
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  inputRoot: {
+    color: 'inherit',
+    width: '100%'
+  },
+  inputInput: {
+    paddingTop: theme.spacing.unit,
+    paddingRight: theme.spacing.unit,
+    paddingBottom: theme.spacing.unit,
+    paddingLeft: theme.spacing.unit * 10,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      width: 128,
+      '&:focus': {
+        width: 256
+      }
+    }
   }
-};
+});
 
 const PLACEHOLDER_VALUE = '-';
 
@@ -73,6 +118,7 @@ class ProgrammerTable extends Component {
 
   renderTableToolbar() {
     const {
+      classes,
       tableToolbarTitle,
       latestUpdateTimestamp,
       tableData,
@@ -106,6 +152,20 @@ class ProgrammerTable extends Component {
                   </Button>
                 </Badge>
               )}
+          </Grid>
+          <Grid item>
+          <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <SearchIcon />
+            </div>
+            <InputBase
+              placeholder="Cerca..."
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput
+              }}
+            />
+          </div>
           </Grid>
         </Grid>
       </Toolbar>
@@ -251,11 +311,8 @@ class ProgrammerTable extends Component {
     let columnCount = 0;
     this.props.tableColumns.map(column => {
       if (isWidthDown('sm', this.props.width)) {
-        if (column.displayOnMobile)
-          columnCount++;
-      }
-      else
-        columnCount++;
+        if (column.displayOnMobile) columnCount++;
+      } else columnCount++;
     });
     return columnCount;
   }
