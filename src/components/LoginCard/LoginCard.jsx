@@ -13,11 +13,14 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { attemptLoginAction } from '../../redux/actions/auth';
 import { ENTER_KEY } from '../../constants/keyboard';
+import './LoginCard.css';
 
-const styles = theme => ({
+const styles = {
   card: {
     maxHeight: 512,
     maxWidth: 512,
+    minHeight: 256,
+    overflowY: 'auto',
     margin: 16
   },
   root: {
@@ -26,7 +29,7 @@ const styles = theme => ({
   loginButton: {
     width: 56
   }
-});
+};
 
 class LoginCard extends Component {
   constructor(props) {
