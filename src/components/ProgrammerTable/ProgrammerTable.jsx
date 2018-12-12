@@ -34,10 +34,10 @@ const styles = theme => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
     borderWidth: 2,
-    borderStyle: "solid",
+    borderStyle: 'solid',
     borderColor: fade(theme.palette.common.black, 0.05),
     '&:hover': {
-      borderColor: fade(theme.palette.common.black, 0.10)
+      borderColor: fade(theme.palette.common.black, 0.1)
     },
     marginLeft: 0,
     width: '100%',
@@ -154,18 +154,18 @@ class ProgrammerTable extends Component {
               )}
           </Grid>
           <Grid item>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
+            <div className={classes.search}>
+              <div className={classes.searchIcon}>
+                <SearchIcon />
+              </div>
+              <InputBase
+                placeholder="Cerca..."
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput
+                }}
+              />
             </div>
-            <InputBase
-              placeholder="Cerca..."
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput
-              }}
-            />
-          </div>
           </Grid>
         </Grid>
       </Toolbar>

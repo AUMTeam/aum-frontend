@@ -11,8 +11,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { attemptLoginAction } from '../../redux/actions/auth';
 import { ENTER_KEY } from '../../constants/keyboard';
+import { attemptLoginAction } from '../../redux/actions/auth';
 import './LoginCard.css';
 
 const styles = {
@@ -137,9 +137,9 @@ class LoginCard extends Component {
   }
 
   onEnterKeyClicked(event) {
-      if (event.key === ENTER_KEY) {
-        this.onLoginButtonClicked();
-      }
+    if (event.key === ENTER_KEY) {
+      this.onLoginButtonClicked();
+    }
   }
 
   checkTextFields() {
