@@ -39,8 +39,7 @@ export function* authFlowSaga() {
     // watch for login request action
     if (!userLoggedIn) {
       const loginRequestAction = yield take(AUTH_ACTION_TYPE.LOGIN_REQUESTED);
-      const loginResponseData = yield call(
-        makeRequestAndReportErrors,
+      const loginResponseData = yield makeRequestAndReportErrors(
         REQUEST_ACTIONS_PATH.LOGIN,
         { type: AUTH_ACTION_TYPE.LOGIN_FAILED },
         {
@@ -63,8 +62,7 @@ export function* authFlowSaga() {
     // Once the user has logged in, watch for the request of its information
     if (userLoggedIn) {
       const userInfoRequestAction = yield take(USER_ACTION_TYPE.GET_CURRENT_USER_INFO_REQUEST);
-      const userInfoResponseData = yield call(
-        makeRequestAndReportErrors,
+      const userInfoResponseData = yield makeRequestAndReportErrors(
         REQUEST_ACTIONS_PATH.GET_USER_INFO,
         { type: USER_ACTION_TYPE.GET_CURRENT_USER_INFO_FAILED },
         null,
@@ -118,24 +116,21 @@ function* notifyLogoutToServerAsync(accessToken) {
  * Asks the server if the found token is still valid
  */
 function* requestLocalAccessTokenValidation(action) {
-  const response = yield makeAuthenticatedApiRequest(REQUEST_ACTIONS_PATH.VALIDATE_TOKEN, action.accessToken);
+  const validationResponseData = yield makeRequestAndReportErrors(
+    REQUEST_ACTIONS_PATH.VALIDATE_TOKEN,
+    { type: AUTH_ACTION_TYPE.TOKEN_VALIDATION_FAILED },
+    null,
+    action.accessToken,
+    false
+  );
 
-  if (response && response.ok) {
+  if (validationResponseData != null) {
     yield put({
       type: AUTH_ACTION_TYPE.TOKEN_VALIDATION_SUCCESSFUL,
       accessToken: action.accessToken
     });
     console.log('Local access token is valid');
   }
-  else {
-    yield put({ type: AUTH_ACTION_TYPE.TOKEN_VALIDATION_FAILED });
+  else
     removeAccessTokenFromLocalStorage();
-    if (response == null)
-      console.error('An error occurred during token validation request to server');
-    else if (response.status === 401)
-      // Unauthorized, means that the token isn't valid anymore
-      console.log('Local token is no more valid');
-    else
-      console.error(`Unexpected error code for token validation request: ${response.status}`);
-  }
 }

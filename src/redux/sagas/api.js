@@ -1,14 +1,19 @@
-import { put } from 'redux-saga/effects';
+import { call, put } from 'redux-saga/effects';
 import { makeAuthenticatedApiRequest, makeUnauthenticatedApiRequest } from '../../utils/apiUtils';
 import { AUTH_ACTION_TYPE } from '../actions/auth';
 
 /**
- * 
- * @param {*} requestPath 
- * @param {*} errorAction 
- * @param {*} requestData 
- * @param {*} accessToken 
- * @param {*} dispatchExpiredTokenAction 
+ * Performs an API request to the specified path, dispatching the given Redux action in case of errors
+ * with an errorMessage attribute injected in it.
+ * Also dispatches by default a SESSION_EXPIRED action when the server responds with code 401 (unauthorized),
+ * which means that the token is expired.
+ * Returns null if there were any errors, otherwise the parsed response data object.
+ * @param {*} requestPath relative path to API endpoint
+ * @param {*} errorAction action object to be dispatched in case of error (MUST have a type attribute)
+ * @param {*} requestData object with the body of the request (optional)
+ * @param {*} accessToken if provided, an authenticated request will be made (optional)
+ * @param {*} dispatchExpiredTokenAction default to true, enables the dispatching of a SESSION_EXPIRED action
+ *                                       in case of 401 response code
  */
 export function* makeRequestAndReportErrors(
   requestPath,
@@ -19,9 +24,9 @@ export function* makeRequestAndReportErrors(
 ) {
   let response;
   if (accessToken == null)
-    response = yield makeUnauthenticatedApiRequest(requestPath, requestData);
+    response = yield call(makeUnauthenticatedApiRequest, requestPath, requestData);
   else
-    response = yield makeAuthenticatedApiRequest(requestPath, accessToken, requestData);
+    response = yield call(makeAuthenticatedApiRequest, requestPath, accessToken, requestData);
 
   if (response == null) {
     yield put({ ...errorAction, errorMessage: 'Richiesta al server fallita, possibile problema di connessione' });
@@ -30,7 +35,7 @@ export function* makeRequestAndReportErrors(
 
   let responseJson;
   try {
-    responseJson = yield response.json();
+    responseJson = yield call([response, response.json]);
   }
   catch (err) {
     yield put({ ...errorAction, errorMessage: "È stata ricevuta una risposta malformata dal server. Contatta l'amministratore di sistema." });
