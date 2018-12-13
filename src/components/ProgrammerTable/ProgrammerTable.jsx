@@ -227,11 +227,9 @@ class ProgrammerTable extends Component {
       <TableBody>
         {this.props.displayError ? (
           <TableRow>
-            <TableCell>Impossibile ottenere i dati.</TableCell>
-            {/* Render other empty cells to complete the row (otherwise the line would stop at the first cell) */}
-            {React.Children.map(Array(this.currentlyShowingColumnsCount() - 1), () => (
-              <TableCell />
-            ))}
+            <TableCell colSpan={this.currentlyShowingColumnsCount()}>
+              Impossibile ottenere i dati.
+            </TableCell>
           </TableRow>
         ) : (
           tableData[this.state.currentPage].data.map(rowValue => {
