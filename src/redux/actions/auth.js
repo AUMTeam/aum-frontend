@@ -12,6 +12,7 @@ export const AUTH_ACTION_TYPE = {
   LOGIN_SUCCESSFUL: 'LOGIN_SUCCESSFUL',
   LOGIN_FAILED: 'LOGIN_FAILED',
   LOGOUT: 'LOGOUT',
+  SESSION_EXPIRED: 'SESSION_EXPIRED',
   LOCAL_TOKEN_NOT_FOUND: 'LOCAL_TOKEN_NOT_FOUND',
   TOKEN_VALIDATION_REQUESTED: 'TOKEN_VALIDATION_REQUESTED',
   TOKEN_VALIDATION_SUCCESSFUL: 'TOKEN_VALIDATION_SUCCESSFUL',
@@ -26,7 +27,7 @@ export function attemptLoginAction(username, password) {
   };
 }
 
-export function performLogoutAction(accessToken) {
+export function performLogoutAction(accessToken = null) {
   return {
     type: AUTH_ACTION_TYPE.LOGOUT,
     accessToken

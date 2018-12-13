@@ -29,7 +29,8 @@ const homeStyles = theme => ({
   },
   errorDialog: {
     backgroundColor: theme.palette.error.main
-  }
+  },
+  dialogText: { color: 'white' }
 });
 
 /**
@@ -56,14 +57,14 @@ class Home extends Component {
               open
             >
               <DialogContent>
-                <DialogContentText style={{ color: 'white' }}>
-                  Il server ha riscontrato un errore nell'ottenere i dati relativi al tuo utente. Riprova ad
+                <DialogContentText style={homeStyles.dialogText}>
+                  È stato riscontrato un errore nell'ottenere i dati relativi al tuo utente. Riprova ad
                   effettuare l'accesso più tardi o contatta l'amministratore se il problema persiste.
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
                 <Button
-                  style={{ color: 'white' }}
+                  style={homeStyles.dialogText}
                   onClick={() => this.props.performLogoutAction(this.props.accessToken)}
                 >
                   Logout
@@ -85,6 +86,30 @@ class Home extends Component {
             />
             <main className={this.props.classes.content}>{this.renderContentSubRoutes()}</main>
           </div>
+        )}
+
+        {this.props.isSessionExpired && (
+          <Dialog
+            classes={{ paper: this.props.classes.errorDialog }}
+            disableBackdropClick
+            disableEscapeKeyDown
+            open
+          >
+            <DialogContent>
+              <DialogContentText style={homeStyles.dialogText}>
+                La tua sessione è scaduta. Effettua nuovamente il login.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                style={homeStyles.dialogText}
+                // In this case, token is not passed to the action since logout notification to server isn't needed
+                onClick={() => this.props.performLogoutAction()}
+              >
+                Vai alla pagina di login
+              </Button>
+            </DialogActions>
+          </Dialog>
         )}
       </>
     );
@@ -120,6 +145,7 @@ class Home extends Component {
 const mapStateToProps = state => {
   return {
     accessToken: state.auth.accessToken,
+    isSessionExpired: state.auth.isSessionExpired,
     user: state.user
   };
 };

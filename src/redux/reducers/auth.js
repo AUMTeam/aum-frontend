@@ -11,6 +11,7 @@ const initialState = {
   accessToken: null,
   isAttemptingLogin: false,
   isValidatingToken: false,
+  isSessionExpired: false,
   loginErrorMessage: null
 };
 
@@ -38,7 +39,12 @@ export function auth(state = initialState, action) {
       return {
         ...initialState
       };
-
+    case AUTH_ACTION_TYPE.SESSION_EXPIRED:
+      return {
+        ...state,
+        isSessionExpired: true
+      };
+    
     case AUTH_ACTION_TYPE.TOKEN_VALIDATION_REQUESTED:
       return {
         ...state,
