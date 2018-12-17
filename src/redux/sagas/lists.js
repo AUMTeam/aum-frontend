@@ -39,19 +39,14 @@ function* retrieveListPage(action) {
         elementType: action.elementType,
         userRoleString: action.userRoleString
       },
-      action.sortingCriteria.columnKey == null
-        ? {
-            page: action.pageNumber,
-            limit: LIST_ELEMENTS_PER_PAGE
-          }
-        : {
-            page: action.pageNumber,
-            limit: LIST_ELEMENTS_PER_PAGE,
-            sort: {
-              parameter: action.sortingCriteria.columnKey,
-              order: action.sortingCriteria.direction
-            }
-          },
+      {
+        page: action.pageNumber,
+        limit: LIST_ELEMENTS_PER_PAGE,
+        sort: action.sortingCriteria.columnKey == null ? {} : {
+          parameter: action.sortingCriteria.columnKey,
+          order: action.sortingCriteria.direction
+        }
+      },
       yield select(state => state.auth.accessToken)
     );
 
@@ -60,7 +55,7 @@ function* retrieveListPage(action) {
         type: LIST_ACTION_TYPE.PAGE_RETRIEVED_FROM_SERVER,
         elementType: action.elementType,
         userRoleString: action.userRoleString,
-        pageResponseData,
+        serverResponse: pageResponseData,
         pageNumber: action.pageNumber,
         sortingCriteria: action.sortingCriteria
       });
