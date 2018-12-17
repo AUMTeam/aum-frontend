@@ -28,9 +28,14 @@ const homeStyles = theme => ({
     }
   },
   errorDialog: {
-    backgroundColor: theme.palette.error.main
+    backgroundColor: theme.palette.error.dark
   },
-  dialogText: { color: 'white' }
+  errorDialogText: {
+    color: 'white'
+  },
+  dialogButton: {
+    color: theme.palette.primary.main
+  }
 });
 
 /**
@@ -57,14 +62,14 @@ class Home extends Component {
               open
             >
               <DialogContent>
-                <DialogContentText style={homeStyles.dialogText}>
+                <DialogContentText className={this.props.classes.errorDialogText}>
                   È stato riscontrato un errore nell'ottenere i dati relativi al tuo utente. Riprova ad
                   effettuare l'accesso più tardi o contatta l'amministratore se il problema persiste.
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
                 <Button
-                  style={homeStyles.dialogText}
+                  className={this.props.classes.errorDialogText}
                   onClick={() => this.props.performLogoutAction(this.props.accessToken)}
                 >
                   Logout
@@ -90,19 +95,18 @@ class Home extends Component {
 
         {this.props.isSessionExpired && (
           <Dialog
-            classes={{ paper: this.props.classes.errorDialog }}
             disableBackdropClick
             disableEscapeKeyDown
             open
           >
             <DialogContent>
-              <DialogContentText style={homeStyles.dialogText}>
+              <DialogContentText>
                 La tua sessione è scaduta. Effettua nuovamente il login.
               </DialogContentText>
             </DialogContent>
             <DialogActions>
               <Button
-                style={homeStyles.dialogText}
+                className={this.props.classes.dialogButton}
                 // In this case, token is not passed to the action since logout notification to server isn't needed
                 onClick={() => this.props.performLogoutAction()}
               >
