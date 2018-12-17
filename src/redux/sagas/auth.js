@@ -1,9 +1,13 @@
 import { call, fork, put, select, take } from 'redux-saga/effects';
 import { REQUEST_ACTIONS_PATH } from '../../constants/api';
-import { makeAuthenticatedApiRequest, makeUnauthenticatedApiRequest, removeAccessTokenFromLocalStorage, saveAccessTokenToLocalStorage } from '../../utils/apiUtils';
+import {
+  makeAuthenticatedApiRequest,
+  removeAccessTokenFromLocalStorage,
+  saveAccessTokenToLocalStorage
+} from '../../utils/apiUtils';
 import { AUTH_ACTION_TYPE } from '../actions/auth';
-import { USER_ACTION_TYPE_KEYS } from '../actions/user';
-import { requestCurrentUserInfo } from './user';
+import { USER_ACTION_TYPE } from '../actions/user';
+import { makeRequestAndReportErrors } from './api';
 
 /**
  * This function describes the order in which Saga must listen the dispatch of authentication-related
@@ -26,9 +30,8 @@ export function* authFlowSaga() {
     yield put({ type: AUTH_ACTION_TYPE.LOCAL_TOKEN_NOT_FOUND });
     console.log('Previous token not found in localStorage');
   }
-  else {
+  else
     yield call(requestLocalAccessTokenValidation, tokenValidationRequestAction);
-  }
 
   let userLoggedIn = (yield select(state => state.auth.accessToken)) != null;
   while (true) {
@@ -36,48 +39,51 @@ export function* authFlowSaga() {
     // watch for login request action
     if (!userLoggedIn) {
       const loginRequestAction = yield take(AUTH_ACTION_TYPE.LOGIN_REQUESTED);
-      const { accessToken, errorMessage } = yield call(attemptLogin, loginRequestAction);
-      if (errorMessage != null) {
-        yield put({
-          type: AUTH_ACTION_TYPE.LOGIN_FAILED,
-          errorMessage
-        });
-        console.error(`Login API error: ${errorMessage}`);
-      }
-      else {
+      const loginResponseData = yield makeRequestAndReportErrors(
+        REQUEST_ACTIONS_PATH.LOGIN,
+        { type: AUTH_ACTION_TYPE.LOGIN_FAILED },
+        {
+          username: loginRequestAction.username,
+          password: loginRequestAction.password
+        }
+      );
+
+      if (loginResponseData != null) {
         yield put({
           type: AUTH_ACTION_TYPE.LOGIN_SUCCESSFUL,
-          accessToken
+          accessToken: loginResponseData.token
         });
         console.log('Login successful');
-        yield call(saveAccessTokenToLocalStorage, accessToken);
+        saveAccessTokenToLocalStorage(loginResponseData.token);
         userLoggedIn = true;
       }
     }
 
     // Once the user has logged in, watch for the request of its information
     if (userLoggedIn) {
-      const currentUserInfoRequestAction = yield take(USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_REQUEST);
-      const { userData, errorMessage } = yield call(requestCurrentUserInfo, currentUserInfoRequestAction);
-      if (errorMessage != null) {
+      const userInfoRequestAction = yield take(USER_ACTION_TYPE.GET_CURRENT_USER_INFO_REQUEST);
+      const userInfoResponseData = yield makeRequestAndReportErrors(
+        REQUEST_ACTIONS_PATH.GET_USER_INFO,
+        { type: USER_ACTION_TYPE.GET_CURRENT_USER_INFO_FAILED },
+        null,
+        userInfoRequestAction.accessToken
+      );
+
+      if (userInfoResponseData != null) {
         yield put({
-          type: USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_FAILED,
-          errorMessage
-        });
-        console.error(`FATAL: Unable to get user info: ${errorMessage}`);
-      } else {
-        yield put({
-          type: USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_SUCCESSFUL,
-          ...userData
+          type: USER_ACTION_TYPE.GET_CURRENT_USER_INFO_SUCCESSFUL,
+          ...userInfoResponseData
         });
         console.log('User info retrieved successfully');
       }
 
       // We watch for logout even if the server doesn't give us user info,
-      // since we may want to display a fallback UI with a logout button
+      // since in that case an error dialog with a logout button is displayed
       const logoutAction = yield take(AUTH_ACTION_TYPE.LOGOUT);
-      yield call(notifyLogoutToServerAsync, logoutAction);
-      yield call(removeAccessTokenFromLocalStorage);
+      if (logoutAction.accessToken != null)
+        yield call(notifyLogoutToServerAsync, logoutAction.accessToken);
+
+      removeAccessTokenFromLocalStorage();
       userLoggedIn = false;
     }
   }
@@ -88,11 +94,11 @@ export function* authFlowSaga() {
  * Notifies asynchronously the server that the user has logged out, so that it can invalidate the token
  * @param {*} action
  */
-function* notifyLogoutToServerAsync(action) {
+function* notifyLogoutToServerAsync(accessToken) {
   const logoutNotificationTask = yield fork(
     makeAuthenticatedApiRequest,
     REQUEST_ACTIONS_PATH.LOGOUT,
-    action.accessToken
+    accessToken
   );
 
   logoutNotificationTask.done.then(response => {
@@ -106,61 +112,25 @@ function* notifyLogoutToServerAsync(action) {
 }
 
 /**
- * Called when the user clicks on Login button
- * Performs login request to the server and returns the token received or an error message
- * @param {*} action
- */
-function* attemptLogin(action) {
-  const response = yield makeUnauthenticatedApiRequest(REQUEST_ACTIONS_PATH.LOGIN, {
-    username: action.username,
-    password: action.password
-  });
-
-  if (response == null)
-    return {
-      accessToken: null,
-      errorMessage: 'Richiesta al server fallita, possibile problema di connessione'
-    };
-
-  const responseJson = yield response.json();
-  if (response.ok)
-    return {
-      accessToken: responseJson.response_data.token,
-      errorMessage: null
-    };
-  else
-    return {
-      accessToken: null,
-      errorMessage: responseJson.message
-    };
-}
-
-/**
  * Executed if a token is found in localStorage
  * Asks the server if the found token is still valid
  */
 function* requestLocalAccessTokenValidation(action) {
-  const response = yield makeAuthenticatedApiRequest(
+  const validationResponseData = yield makeRequestAndReportErrors(
     REQUEST_ACTIONS_PATH.VALIDATE_TOKEN,
-    action.accessToken
+    { type: AUTH_ACTION_TYPE.TOKEN_VALIDATION_FAILED },
+    null,
+    action.accessToken,
+    false
   );
 
-  if (response && response.ok) {
+  if (validationResponseData != null) {
     yield put({
       type: AUTH_ACTION_TYPE.TOKEN_VALIDATION_SUCCESSFUL,
       accessToken: action.accessToken
     });
     console.log('Local access token is valid');
   }
-  else {
-    yield put({ type: AUTH_ACTION_TYPE.TOKEN_VALIDATION_FAILED });
+  else
     removeAccessTokenFromLocalStorage();
-    if (response == null)
-      console.error('An error occurred during token validation request to server');
-    else if (response.status === 401)
-      // Unauthorized, means that the token isn't valid anymore
-      console.log('Local token is no more valid');
-    else
-      console.error(`Unexpected error code for token validation request: ${response.status}`);
-  }
 }

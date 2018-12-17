@@ -1,5 +1,5 @@
 import { AUTH_ACTION_TYPE } from '../actions/auth';
-import { USER_ACTION_TYPE_KEYS } from '../actions/user';
+import { USER_ACTION_TYPE } from '../actions/user';
 
 /**
  * @file
@@ -20,19 +20,19 @@ const initialState = {
 
 export function user(state = initialState, action) {
   switch (action.type) {
-    case USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_REQUEST:
+    case USER_ACTION_TYPE.GET_CURRENT_USER_INFO_REQUEST:
       return {
         ...state,
         infoObtained: false,
         serverError: false
       };
-    case USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_FAILED:
+    case USER_ACTION_TYPE.GET_CURRENT_USER_INFO_FAILED:
       return {
         ...state,
         infoObtained: false,
         serverError: true
       };
-    case USER_ACTION_TYPE_KEYS.GET_CURRENT_USER_INFO_SUCCESSFUL:
+    case USER_ACTION_TYPE.GET_CURRENT_USER_INFO_SUCCESSFUL:
       return {
         infoObtained: true,
         serverError: false,

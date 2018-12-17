@@ -268,7 +268,7 @@ class ProgrammerTable extends Component {
   }
 
   renderApprovalStatusIcon(approvalStatus) {
-    switch (approvalStatus) {
+    switch (+approvalStatus) {
       case 1:
         return <CheckCircleOutline color="primary" />;
       case 0:
