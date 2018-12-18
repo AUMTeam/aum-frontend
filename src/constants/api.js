@@ -1,4 +1,4 @@
-export const API_ENDPOINT_URL = 'https://aum.altervista.org/main.php';
+export let API_ENDPOINT_URL = 'https://aum.altervista.org/main.php';
 export const TOKEN_LOCALSTORAGE_KEY = 'token';
 
 export const REQUEST_TIMEOUT_MS = 7000;
@@ -16,3 +16,9 @@ export const REQUEST_ACTIONS_PATH = {
   VALIDATE_TOKEN: 'auth/validateToken',
   GET_USER_INFO: 'user/info'
 };
+
+// Used only in dev code for test purposes, should never be called in production!
+export function changeEndpointUrl(newUrl) {
+  API_ENDPOINT_URL = 'https://' + newUrl;
+  console.log(`API endpoint changed to ${API_ENDPOINT_URL}`);
+}

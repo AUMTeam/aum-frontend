@@ -6,6 +6,7 @@ import { configureStore } from './redux/configureStore';
 import Routes from './routes';
 import * as serviceWorker from './serviceWorker';
 import { configureTheme } from './theme/configureTheme';
+import { changeEndpointUrl } from './constants/api';
 
 /**
  * @file
@@ -33,3 +34,14 @@ ReactDOM.render(<App />, document.getElementById('root'));
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister();
+
+// If we are in development build, with Ctrl+E we can change the API endpoint URL for testing purposes
+if (process.env.NODE_ENV === 'development') {
+  window.onkeyup = event => {
+    if (event.ctrlKey && event.key === 'e') {
+      const newApiAddress = prompt("Inserisci il nuovo indirizzo dell'API endpoint:", 'domain.com/main.php');
+      if (newApiAddress != null)
+        changeEndpointUrl(newApiAddress);
+    }
+  };
+}
