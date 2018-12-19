@@ -7,6 +7,7 @@ const initialState = {
     {
       data: [],             -- the list of commits for the page
       sorting: {},
+      searchQuery: '',
       updateTimestamp: 0    -- the value of state.latestUpdateTimestamp when the page was retrieved
     }
   */

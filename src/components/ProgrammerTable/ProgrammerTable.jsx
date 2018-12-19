@@ -123,6 +123,7 @@ class ProgrammerTable extends Component {
       latestUpdateTimestamp,
       tableData,
       onPageLoad,
+      onSearchRequested,
       userRoleString,
       isLoading
     } = this.props;
@@ -164,6 +165,7 @@ class ProgrammerTable extends Component {
                   root: classes.inputRoot,
                   input: classes.inputInput
                 }}
+                onChange={(event) => onSearchRequested(event.value)}
               />
             </div>
           </Grid>
@@ -323,6 +325,7 @@ ProgrammerTable.propTypes = {
   tableData: PropTypes.array.isRequired,
   itemsCount: PropTypes.number.isRequired,
   onPageLoad: PropTypes.func.isRequired,
+  onSearchRequested: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   latestUpdateTimestamp: PropTypes.number.isRequired,
   displayError: PropTypes.bool.isRequired

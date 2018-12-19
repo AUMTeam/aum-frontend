@@ -65,5 +65,6 @@ SendRequestsSubView.propTypes = {
   startUpdateChecking: PropTypes.func.isRequired,
   stopUpdateChecking: PropTypes.func.isRequired,
   sendRequestsData: PropTypes.object.isRequired,
-  onTablePageLoad: PropTypes.func.isRequired
+  onTablePageLoad: PropTypes.func.isRequired,
+  onSearchRequested: PropTypes.func.isRequired
 };

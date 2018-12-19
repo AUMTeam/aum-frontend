@@ -15,6 +15,7 @@ import {
 } from '../../redux/actions/sendRequests';
 import { CommitsSubView } from './CommitsSubView';
 import { SendRequestsSubView } from './SendRequestsSubView';
+import { search } from '../../redux/actions/search';
 
 const styles = theme => ({
   grid: {
@@ -52,6 +53,7 @@ class ProgrammerView extends Component {
                 sortingCriteria
               );
             }}
+            onSearchRequested={(searchQuery) => this.props.search(searchQuery)}
           />
         )}
 
@@ -68,6 +70,7 @@ class ProgrammerView extends Component {
                 sortingCriteria
               );
             }}
+            onSearchRequested={(searchQuery) => this.props.search(searchQuery)}
           />
         )}
       </>
@@ -90,7 +93,8 @@ const mapDispatchToProps = dispatch => {
       stopCommitsListUpdatesAutoCheckingAction,
       retrieveSendRequestsListPageAction,
       startSendRequestsListUpdatesAutoCheckingAction,
-      stopSendRequestsListUpdatesAutoCheckingAction
+      stopSendRequestsListUpdatesAutoCheckingAction,
+      search
     },
     dispatch
   );
