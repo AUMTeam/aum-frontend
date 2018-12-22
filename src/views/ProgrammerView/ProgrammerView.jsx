@@ -42,11 +42,11 @@ class ProgrammerView extends Component {
         {this.props.match.params.value === '0' && (
           <CommitsSubView
             classes={classes}
-            startUpdateChecking={this.props.startCommitsListUpdatesAutoCheckingAction}
-            stopUpdateChecking={this.props.stopCommitsListUpdatesAutoCheckingAction}
+            startUpdateChecking={this.props.startCommitsListUpdatesAutoChecking}
+            stopUpdateChecking={this.props.stopCommitsListUpdatesAutoChecking}
             commitsData={commitsData}
             onTablePageLoad={(pageNumber, sortingCriteria) => {
-              this.props.retrieveCommitsListPageAction(
+              this.props.retrieveCommitsListPage(
                 pageNumber,
                 USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER],
                 sortingCriteria
@@ -58,11 +58,11 @@ class ProgrammerView extends Component {
         {this.props.match.params.value === '1' && (
           <SendRequestsSubView
             classes={classes}
-            startUpdateChecking={this.props.startSendRequestsListUpdatesAutoCheckingAction}
-            stopUpdateChecking={this.props.stopSendRequestsListUpdatesAutoCheckingAction}
+            startUpdateChecking={this.props.startSendRequestsListUpdatesAutoChecking}
+            stopUpdateChecking={this.props.stopSendRequestsListUpdatesAutoChecking}
             sendRequestsData={sendRequestsData}
             onTablePageLoad={(pageNumber, sortingCriteria) => {
-              this.props.retrieveSendRequestsListPageAction(
+              this.props.retrieveSendRequestsListPage(
                 pageNumber,
                 USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER],
                 sortingCriteria
@@ -85,12 +85,12 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      retrieveCommitsListPageAction,
-      startCommitsListUpdatesAutoCheckingAction,
-      stopCommitsListUpdatesAutoCheckingAction,
-      retrieveSendRequestsListPageAction,
-      startSendRequestsListUpdatesAutoCheckingAction,
-      stopSendRequestsListUpdatesAutoCheckingAction
+      retrieveCommitsListPage: retrieveCommitsListPageAction,
+      startCommitsListUpdatesAutoChecking: startCommitsListUpdatesAutoCheckingAction,
+      stopCommitsListUpdatesAutoChecking: stopCommitsListUpdatesAutoCheckingAction,
+      retrieveSendRequestsListPage: retrieveSendRequestsListPageAction,
+      startSendRequestsListUpdatesAutoChecking: startSendRequestsListUpdatesAutoCheckingAction,
+      stopSendRequestsListUpdatesAutoChecking: stopSendRequestsListUpdatesAutoCheckingAction
     },
     dispatch
   );
