@@ -63,11 +63,17 @@ class Home extends Component {
             >
               <DialogContent>
                 <DialogContentText className={this.props.classes.errorDialogText}>
-                  È stato riscontrato un errore nell'ottenere i dati relativi al tuo utente. Riprova ad
-                  effettuare l'accesso più tardi o contatta l'amministratore se il problema persiste.
+                  Non è stato possibile ottenere i dati relativi al tuo utente. Riprova 
+                  o contatta l'amministratore se il problema persiste.
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
+                <Button
+                    className={this.props.classes.errorDialogText}
+                    onClick={() => this.props.requestCurrentUserInfoAction(this.props.accessToken)}
+                  >
+                  Riprova
+                </Button>
                 <Button
                   className={this.props.classes.errorDialogText}
                   onClick={() => this.props.performLogoutAction(this.props.accessToken)}

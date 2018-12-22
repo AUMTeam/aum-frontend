@@ -59,32 +59,36 @@ export function* authFlowSaga() {
       }
     }
 
-    // Once the user has logged in, watch for the request of its information
-    if (userLoggedIn) {
-      const userInfoRequestAction = yield take(USER_ACTION_TYPE.GET_CURRENT_USER_INFO_REQUEST);
-      const userInfoResponseData = yield makeRequestAndReportErrors(
-        REQUEST_ACTIONS_PATH.GET_USER_INFO,
-        { type: USER_ACTION_TYPE.GET_CURRENT_USER_INFO_FAILED },
-        null,
-        userInfoRequestAction.accessToken
-      );
+    // Once the user has logged in, its information are requested to the server.
+    // If this process fails, the user can choose to retry or log out.
+    // That's why we watch for logout and user info request actions as long as the user is logged in. 
+    while (userLoggedIn) {
+      const action = yield take([USER_ACTION_TYPE.GET_CURRENT_USER_INFO_REQUEST, AUTH_ACTION_TYPE.LOGOUT]);
+      if (action.type === USER_ACTION_TYPE.GET_CURRENT_USER_INFO_REQUEST) {
+        const userInfoResponseData = yield makeRequestAndReportErrors(
+          REQUEST_ACTIONS_PATH.GET_USER_INFO,
+          { type: USER_ACTION_TYPE.GET_CURRENT_USER_INFO_FAILED },
+          null,
+          action.accessToken
+        );
 
-      if (userInfoResponseData != null) {
-        yield put({
-          type: USER_ACTION_TYPE.GET_CURRENT_USER_INFO_SUCCESSFUL,
-          ...userInfoResponseData
-        });
-        console.log('User info retrieved successfully');
+        if (userInfoResponseData != null) {
+          yield put({
+            type: USER_ACTION_TYPE.GET_CURRENT_USER_INFO_SUCCESSFUL,
+            ...userInfoResponseData
+          });
+          console.log('User info retrieved successfully');
+        }
       }
-
-      // We watch for logout even if the server doesn't give us user info,
-      // since in that case an error dialog with a logout button is displayed
-      const logoutAction = yield take(AUTH_ACTION_TYPE.LOGOUT);
-      if (logoutAction.accessToken != null)
-        yield call(notifyLogoutToServerAsync, logoutAction.accessToken);
-
-      removeAccessTokenFromLocalStorage();
-      userLoggedIn = false;
+      else {
+        // accessToken is null in LOGOUT action when server logout notification
+        // is not needed (token already expired)
+        if (action.accessToken != null)
+          yield call(notifyLogoutToServerAsync, action.accessToken);
+  
+        removeAccessTokenFromLocalStorage();
+        userLoggedIn = false;
+      }
     }
   }
 }

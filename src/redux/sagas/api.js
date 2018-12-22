@@ -38,7 +38,7 @@ export function* makeRequestAndReportErrors(
     responseJson = yield call([response, response.json]);
   }
   catch (err) {
-    yield put({ ...errorAction, errorMessage: "È stata ricevuta una risposta malformata dal server. Contatta l'amministratore di sistema." });
+    yield put({ ...errorAction, errorMessage: "È stata ricevuta una risposta contenente dati errati dal server. Contatta l'amministratore di sistema." });
     console.error('Error when parsing JSON response from server: ', err);
     return null;
   }
