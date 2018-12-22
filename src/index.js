@@ -6,7 +6,7 @@ import { configureStore } from './redux/configureStore';
 import Routes from './routes';
 import * as serviceWorker from './serviceWorker';
 import { configureTheme } from './theme/configureTheme';
-import { changeEndpointUrl } from './constants/api';
+import { changeEndpointUrl, API_ENDPOINT_URL } from './constants/api';
 
 /**
  * @file
@@ -37,9 +37,10 @@ serviceWorker.unregister();
 
 // If we are in development build, with Ctrl+E we can change the API endpoint URL for testing purposes
 if (process.env.NODE_ENV === 'development') {
-  window.onkeyup = event => {
+  window.onkeypress = event => {
     if (event.ctrlKey && event.key === 'e') {
-      const newApiAddress = prompt("Inserisci il nuovo indirizzo dell'API endpoint:", 'domain.com/main.php');
+      event.preventDefault();
+      const newApiAddress = prompt("Inserisci il nuovo indirizzo dell'API endpoint:", API_ENDPOINT_URL);
       if (newApiAddress != null)
         changeEndpointUrl(newApiAddress);
     }
