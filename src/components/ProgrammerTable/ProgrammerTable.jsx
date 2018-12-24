@@ -91,10 +91,11 @@ class ProgrammerTable extends Component {
       sorting: {
         columnKey: null,
         direction: 'desc'
-      }
+      },
+      searchQuery: ''
     };
 
-    props.onPageLoad(0, this.state.sorting);
+    props.loadPage(0, this.state.sorting, this.state.searchQuery);
 
     this.renderTableToolbar = this.renderTableToolbar.bind(this);
     this.renderTableHeader = this.renderTableHeader.bind(this);
@@ -116,18 +117,22 @@ class ProgrammerTable extends Component {
     );
   }
 
+  /**
+   * Table toolbar contains title label, 'available updates' button (which appears when new updates are found)
+   * and the search field.
+   * Debouncing for search text input is handled by Saga.
+   */
   renderTableToolbar() {
     const {
       classes,
       tableToolbarTitle,
       latestUpdateTimestamp,
       tableData,
-      onPageLoad,
-      onSearchRequested,
-      userRoleString,
+      loadPage,
+      onSearchQueryChanged,
       isLoading
     } = this.props;
-    const { currentPage } = this.state;
+    const { sorting, searchQuery, currentPage } = this.state;
 
     return (
       <Toolbar>
@@ -146,7 +151,7 @@ class ProgrammerTable extends Component {
                   <Button
                     variant="outlined"
                     color="primary"
-                    onClick={() => onPageLoad(currentPage, userRoleString)}
+                    onClick={() => loadPage(currentPage, sorting, searchQuery)}
                   >
                     Aggiornamenti disponibili
                     <RefreshIcon />
@@ -165,7 +170,10 @@ class ProgrammerTable extends Component {
                   root: classes.inputRoot,
                   input: classes.inputInput
                 }}
-                onChange={(event) => onSearchRequested(event.value)}
+                onChange={event => {
+                  onSearchQueryChanged(event.value);
+                  this.state.searchQuery = event.value;
+                }}
               />
             </div>
           </Grid>
@@ -190,7 +198,7 @@ class ProgrammerTable extends Component {
                       columnKey: column.key,
                       direction: this.state.sorting.direction === 'asc' ? 'desc' : 'asc'
                     };
-                    this.props.onPageLoad(this.state.currentPage, updatedSorting);
+                    this.props.loadPage(this.state.currentPage, updatedSorting, this.state.searchQuery);
                     this.setState({ sorting: updatedSorting });
                   }}
                 >
@@ -294,9 +302,9 @@ class ProgrammerTable extends Component {
             rowsPerPage={LIST_ELEMENTS_PER_PAGE}
             page={this.state.currentPage}
             rowsPerPageOptions={[LIST_ELEMENTS_PER_PAGE]}
-            onChangePage={(_, page) => {
-              this.props.onPageLoad(page, this.state.sorting);
-              this.setState({ currentPage: page });
+            onChangePage={(_, pageNumber) => {
+              this.props.loadPage(pageNumber, this.state.sorting, this.state.searchQuery);
+              this.setState({ currentPage: pageNumber });
             }}
           />
         </TableRow>
@@ -324,8 +332,8 @@ ProgrammerTable.propTypes = {
   tableColumns: PropTypes.array.isRequired,
   tableData: PropTypes.array.isRequired,
   itemsCount: PropTypes.number.isRequired,
-  onPageLoad: PropTypes.func.isRequired,
-  onSearchRequested: PropTypes.func.isRequired,
+  loadPage: PropTypes.func.isRequired,
+  onSearchQueryChanged: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   latestUpdateTimestamp: PropTypes.number.isRequired,
   displayError: PropTypes.bool.isRequired

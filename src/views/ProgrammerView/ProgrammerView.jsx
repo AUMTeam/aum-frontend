@@ -15,7 +15,7 @@ import {
 } from '../../redux/actions/sendRequests';
 import { CommitsSubView } from './CommitsSubView';
 import { SendRequestsSubView } from './SendRequestsSubView';
-import { search } from '../../redux/actions/search';
+import { performNewSearchAction } from '../../redux/actions/lists';
 
 const styles = theme => ({
   grid: {
@@ -37,7 +37,15 @@ const styles = theme => ({
  */
 class ProgrammerView extends Component {
   render() {
-    const { classes, commitsData, sendRequestsData } = this.props;
+    const {
+      classes,
+      commitsData,
+      sendRequestsData,
+      retrieveCommitsListPage,
+      retrieveSendRequestsListPage,
+      performNewSearch
+    } = this.props;
+
     return (
       <>
         {this.props.match.params.value === '0' && (
@@ -46,14 +54,20 @@ class ProgrammerView extends Component {
             startUpdateChecking={this.props.startCommitsListUpdatesAutoChecking}
             stopUpdateChecking={this.props.stopCommitsListUpdatesAutoChecking}
             commitsData={commitsData}
-            onTablePageLoad={(pageNumber, sortingCriteria) => {
-              this.props.retrieveCommitsListPage(
-                pageNumber,
+            onTablePageLoad={(pageNumber, sortingCriteria, searchQuery) => {
+              retrieveCommitsListPage(
                 USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER],
-                sortingCriteria
+                pageNumber,
+                sortingCriteria,
+                searchQuery
               );
             }}
-            onSearchRequested={(searchQuery) => this.props.search(searchQuery)}
+            onSearchQueryChanged={searchQuery => {
+              performNewSearch(
+                retrieveCommitsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]),
+                searchQuery
+              );
+            }}
           />
         )}
 
@@ -63,14 +77,20 @@ class ProgrammerView extends Component {
             startUpdateChecking={this.props.startSendRequestsListUpdatesAutoChecking}
             stopUpdateChecking={this.props.stopSendRequestsListUpdatesAutoChecking}
             sendRequestsData={sendRequestsData}
-            onTablePageLoad={(pageNumber, sortingCriteria) => {
-              this.props.retrieveSendRequestsListPage(
-                pageNumber,
+            onTablePageLoad={(pageNumber, sortingCriteria, searchQuery) => {
+              retrieveSendRequestsListPage(
                 USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER],
-                sortingCriteria
+                pageNumber,
+                sortingCriteria,
+                searchQuery
               );
             }}
-            onSearchRequested={(searchQuery) => this.props.search(searchQuery)}
+            onSearchQueryChanged={searchQuery => {
+              performNewSearch(
+                retrieveSendRequestsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]),
+                searchQuery
+              );
+            }}
           />
         )}
       </>
@@ -94,7 +114,7 @@ const mapDispatchToProps = dispatch => {
       retrieveSendRequestsListPage: retrieveSendRequestsListPageAction,
       startSendRequestsListUpdatesAutoChecking: startSendRequestsListUpdatesAutoCheckingAction,
       stopSendRequestsListUpdatesAutoChecking: stopSendRequestsListUpdatesAutoCheckingAction,
-      search
+      performNewSearch: performNewSearchAction
     },
     dispatch
   );

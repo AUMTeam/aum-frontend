@@ -40,8 +40,9 @@ export class SendRequestsSubView extends Component {
                 tableColumns={SEND_REQUESTS_TABLE_COLUMNS}
                 tableData={this.props.sendRequestsData.listPages}
                 itemsCount={this.props.sendRequestsData.totalItemsCount}
-                onPageLoad={this.props.onTablePageLoad}
+                loadPage={this.props.onTablePageLoad}
                 isLoading={this.props.sendRequestsData.isLoadingList}
+                onSearchQueryChanged={this.props.onSearchQueryChanged}
                 latestUpdateTimestamp={this.props.sendRequestsData.latestUpdateTimestamp}
                 displayError={this.props.sendRequestsData.errorWhileFetchingData}
               />
@@ -66,5 +67,5 @@ SendRequestsSubView.propTypes = {
   stopUpdateChecking: PropTypes.func.isRequired,
   sendRequestsData: PropTypes.object.isRequired,
   onTablePageLoad: PropTypes.func.isRequired,
-  onSearchRequested: PropTypes.func.isRequired
+  onSearchQueryChanged: PropTypes.func.isRequired
 };

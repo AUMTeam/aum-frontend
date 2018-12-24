@@ -2,9 +2,10 @@ import { LIST_ELEMENTS_PER_PAGE, LIST_ELEMENTS_TYPE } from '../../constants/api'
 import { LIST_ACTION_TYPE } from './lists';
 
 export function retrieveCommitsListPageAction(
-  pageNumber,
   userRoleString,
-  sortingCriteria = { columnKey: null, direction: 'asc' }
+  pageNumber = 0,
+  sortingCriteria = { columnKey: null, direction: 'desc' },
+  searchQuery = ''
 ) {
   return {
     type: LIST_ACTION_TYPE.PAGE_REQUEST,
@@ -12,7 +13,8 @@ export function retrieveCommitsListPageAction(
     userRoleString,
     pageNumber,
     limit: LIST_ELEMENTS_PER_PAGE,
-    sortingCriteria
+    sortingCriteria,
+    searchQuery
   };
 }
 

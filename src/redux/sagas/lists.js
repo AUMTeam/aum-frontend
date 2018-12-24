@@ -1,5 +1,5 @@
 import { delay } from 'redux-saga';
-import { cancel, cancelled, fork, put, select, take, takeLatest, throttle } from 'redux-saga/effects';
+import { cancel, cancelled, fork, put, select, take, takeLatest, /* debounce */ } from 'redux-saga/effects';
 import { LIST_AUTO_UPDATE_INTERVAL, LIST_ELEMENTS_PER_PAGE, LIST_ELEMENTS_TYPE, SEARCH_DEBOUNCE_DELAY_MS } from '../../constants/api';
 import { getListRequestPath } from '../../utils/apiUtils';
 import { LIST_ACTION_TYPE } from '../actions/lists';
@@ -68,10 +68,6 @@ function* retrieveListPage(action) {
       userRoleString: action.userRoleString
     });
   }
-}
-
-function* performListSearch(action) {
-    console.log(action.searchQuery);
 }
 
 /**
@@ -171,5 +167,5 @@ export const listSagas = [
   updateCheckingTasksRunner(),
   updateCheckingTasksStopper(),
   takeLatest(LIST_ACTION_TYPE.PAGE_REQUEST, retrieveListPage),
-  throttle(SEARCH_DEBOUNCE_DELAY_MS, LIST_ACTION_TYPE.ON_SEARCH_QUERY_CHANGED, performListSearch)
+  //debounce(SEARCH_DEBOUNCE_DELAY_MS, LIST_ACTION_TYPE.ON_SEARCH_QUERY_CHANGED, retrieveListPage)
 ];

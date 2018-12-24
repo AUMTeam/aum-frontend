@@ -40,8 +40,8 @@ export class CommitsSubView extends Component {
                 tableColumns={COMMITS_TABLE_COLUMNS}
                 tableData={this.props.commitsData.listPages}
                 itemsCount={this.props.commitsData.totalItemsCount}
-                onPageLoad={this.props.onTablePageLoad}
-                onSearchRequested={this.props.onSearchRequested}
+                loadPage={this.props.onTablePageLoad}
+                onSearchQueryChanged={this.props.onSearchQueryChanged}
                 isLoading={this.props.commitsData.isLoadingList}
                 latestUpdateTimestamp={this.props.commitsData.latestUpdateTimestamp}
                 displayError={this.props.commitsData.errorWhileFetchingData}
@@ -67,5 +67,5 @@ CommitsSubView.propTypes = {
   stopUpdateChecking: PropTypes.func.isRequired,
   commitsData: PropTypes.object.isRequired,
   onTablePageLoad: PropTypes.func.isRequired,
-  onSearchRequested: PropTypes.func.isRequired
+  onSearchQueryChanged: PropTypes.func.isRequired
 };
