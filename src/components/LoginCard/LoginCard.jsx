@@ -142,7 +142,7 @@ class LoginCard extends Component {
     const { username, password } = this.state;
 
     if (this.textFieldsAreValidated()) {
-      this.props.attemptLoginAction(username, password);
+      this.props.attemptLogin(username, password);
     }
   }
 
@@ -191,7 +191,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      attemptLoginAction
+      attemptLogin: attemptLoginAction
     },
     dispatch
   );

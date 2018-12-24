@@ -31,7 +31,7 @@ class Routes extends Component {
   constructor(props) {
     super(props);
 
-    this.props.requestLocalTokenValidationIfPresentAction(localStorage.getItem('token'));
+    this.props.requestLocalTokenValidationIfPresent(localStorage.getItem('token'));
   }
 
   render() {
@@ -99,7 +99,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      requestLocalTokenValidationIfPresentAction
+      requestLocalTokenValidationIfPresent: requestLocalTokenValidationIfPresentAction
     },
     dispatch
   );

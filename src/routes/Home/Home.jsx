@@ -47,7 +47,7 @@ class Home extends Component {
   constructor(props) {
     super(props);
 
-    props.requestCurrentUserInfoAction(props.accessToken);
+    props.requestCurrentUserInfo(props.accessToken);
   }
 
   render() {
@@ -63,14 +63,20 @@ class Home extends Component {
             >
               <DialogContent>
                 <DialogContentText className={this.props.classes.errorDialogText}>
-                  È stato riscontrato un errore nell'ottenere i dati relativi al tuo utente. Riprova ad
-                  effettuare l'accesso più tardi o contatta l'amministratore se il problema persiste.
+                  Non è stato possibile ottenere i dati relativi al tuo utente. Riprova 
+                  o contatta l'amministratore se il problema persiste.
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
                 <Button
+                    className={this.props.classes.errorDialogText}
+                    onClick={() => this.props.requestCurrentUserInfo(this.props.accessToken)}
+                  >
+                  Riprova
+                </Button>
+                <Button
                   className={this.props.classes.errorDialogText}
-                  onClick={() => this.props.performLogoutAction(this.props.accessToken)}
+                  onClick={() => this.props.performLogout(this.props.accessToken)}
                 >
                   Logout
                 </Button>
@@ -87,7 +93,7 @@ class Home extends Component {
               match={this.props.match}
               history={this.props.history}
               user={this.props.user}
-              onLogout={() => this.props.performLogoutAction(this.props.accessToken)}
+              onLogout={() => this.props.performLogout(this.props.accessToken)}
             />
             <main className={this.props.classes.content}>{this.renderContentSubRoutes()}</main>
           </div>
@@ -108,7 +114,7 @@ class Home extends Component {
               <Button
                 className={this.props.classes.dialogButton}
                 // In this case, token is not passed to the action since logout notification to server isn't needed
-                onClick={() => this.props.performLogoutAction()}
+                onClick={() => this.props.performLogout()}
               >
                 Vai alla pagina di login
               </Button>
@@ -155,7 +161,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ performLogoutAction, requestCurrentUserInfoAction }, dispatch);
+  return bindActionCreators({
+    performLogout: performLogoutAction,
+    requestCurrentUserInfo: requestCurrentUserInfoAction
+  }, dispatch);
 };
 
 export default withStyles(homeStyles)(

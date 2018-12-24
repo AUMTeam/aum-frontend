@@ -21,6 +21,8 @@ export const REQUEST_ACTIONS_PATH = {
 
 // Used only in dev code for test purposes, should never be called in production!
 export function changeEndpointUrl(newUrl) {
-  API_ENDPOINT_URL = 'https://' + newUrl;
+  API_ENDPOINT_URL = newUrl;
   console.log(`API endpoint changed to ${API_ENDPOINT_URL}`);
+  if (!API_ENDPOINT_URL.startsWith('https://'))
+    console.warn('You are not using a secure protocol for API connection. Data can be easily intercepted!');
 }
