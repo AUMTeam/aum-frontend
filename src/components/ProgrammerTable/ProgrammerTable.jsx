@@ -171,8 +171,8 @@ class ProgrammerTable extends Component {
                   input: classes.inputInput
                 }}
                 onChange={event => {
-                  onSearchQueryChanged(event.value);
-                  this.state.searchQuery = event.value;
+                  onSearchQueryChanged(event.target.value);
+                  this.setState({ searchQuery: event.target.value });
                 }}
               />
             </div>
@@ -319,8 +319,11 @@ class ProgrammerTable extends Component {
     let columnCount = 0;
     this.props.tableColumns.map(column => {
       if (isWidthDown('sm', this.props.width)) {
-        if (column.displayOnMobile) columnCount++;
-      } else columnCount++;
+        if (column.displayOnMobile)
+          columnCount++;
+      }
+      else
+        columnCount++;
     });
     return columnCount;
   }

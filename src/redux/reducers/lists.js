@@ -22,6 +22,7 @@ const initialState = {
 
 export function listReducer(state = initialState, action) {
   switch (action.type) {
+    case LIST_ACTION_TYPE.SEARCH_QUERY_CHANGED:
     case LIST_ACTION_TYPE.PAGE_REQUEST:
       return {
         ...state,
@@ -40,6 +41,7 @@ export function listReducer(state = initialState, action) {
       newState.listPages[action.pageNumber].data = action.serverResponse.list;
 
       newState.listPages[action.pageNumber].sorting = action.sortingCriteria;
+      newState.listPages[action.pageNumber].searchQuery = action.searchQuery;
 
       // Here we assume that the latestUpdateTimestamp value is always correctly initialized,
       // because update checking always happens before retrieving a page
