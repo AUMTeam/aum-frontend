@@ -17,6 +17,7 @@ import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import HighlightOff from '@material-ui/icons/HighlightOff';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import ErrorOutline from '@material-ui/icons/ErrorOutline';
 import Schedule from '@material-ui/icons/Schedule';
 import SearchIcon from '@material-ui/icons/Search';
 import PropTypes from 'prop-types';
@@ -55,6 +56,9 @@ const styles = theme => ({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  approvedIcon: {
+    color: '#2eb72c'
+  },
   inputRoot: {
     color: 'inherit',
     width: '100%'
@@ -72,6 +76,10 @@ const styles = theme => ({
         width: 256
       }
     }
+  },
+  verticalAlignedContent: {
+    display: 'flex',
+    alignItems: 'center'
   }
 });
 
@@ -108,8 +116,10 @@ class ProgrammerTable extends Component {
    * or when there are new updates (displays the badge)
    */
   shouldComponentUpdate(nextProps) {
-    return this.props.isLoading !== nextProps.isLoading ||
-           this.props.latestUpdateTimestamp !== nextProps.latestUpdateTimestamp;
+    return (
+      this.props.isLoading !== nextProps.isLoading ||
+      this.props.latestUpdateTimestamp !== nextProps.latestUpdateTimestamp
+    );
   }
 
   render() {
@@ -247,8 +257,14 @@ class ProgrammerTable extends Component {
         {this.props.displayError ? (
           <TableRow>
             <TableCell colSpan={this.currentlyShowingColumnsCount()}>
-              Impossibile ottenere i dati.
+              <div className={this.props.classes.verticalAlignedContent}>
+                <ErrorOutline color="error" /> &ensp; Impossibile ottenere i dati.
+              </div>
             </TableCell>
+          </TableRow>
+        ) : tableData.length === 0 ? (
+          <TableRow>
+            <TableCell colSpan={this.currentlyShowingColumnsCount()}>Nessun dato presente.</TableCell>
           </TableRow>
         ) : (
           tableData[this.state.currentPage].data.map(rowValue => {
@@ -289,7 +305,7 @@ class ProgrammerTable extends Component {
   renderApprovalStatusIcon(approvalStatus) {
     switch (+approvalStatus) {
       case 1:
-        return <CheckCircleOutline color="primary" />;
+        return <CheckCircleOutline className={this.props.classes.approvedIcon} />;
       case 0:
         return <Schedule color="action" />;
       case -1:
