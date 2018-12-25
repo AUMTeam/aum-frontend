@@ -103,6 +103,15 @@ class ProgrammerTable extends Component {
     this.currentlyShowingColumnsCount = this.currentlyShowingColumnsCount.bind(this);
   }
 
+  /**
+   * Guarantees that the component is re-rendered only when its loading state changes
+   * or when there are new updates (displays the badge)
+   */
+  shouldComponentUpdate(nextProps) {
+    return this.props.isLoading !== nextProps.isLoading ||
+           this.props.latestUpdateTimestamp !== nextProps.latestUpdateTimestamp;
+  }
+
   render() {
     const { classes, isLoading } = this.props;
     return (
