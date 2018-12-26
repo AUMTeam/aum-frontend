@@ -251,7 +251,7 @@ class ProgrammerTable extends Component {
   }
 
   renderTableBody() {
-    const { tableData, tableColumns } = this.props;
+    const { tableData, tableColumns, itemsCount } = this.props;
     return (
       <TableBody>
         {this.props.displayError ? (
@@ -262,7 +262,7 @@ class ProgrammerTable extends Component {
               </div>
             </TableCell>
           </TableRow>
-        ) : tableData.length === 0 ? (
+        ) : itemsCount === 0 ? (
           <TableRow>
             <TableCell colSpan={this.currentlyShowingColumnsCount()}>Nessun dato presente.</TableCell>
           </TableRow>
