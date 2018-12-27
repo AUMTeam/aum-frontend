@@ -69,6 +69,14 @@ export function listReducer(state = initialState, action) {
         errorWhileCheckingUpdates: false,
         latestUpdateTimestamp: action.latestUpdateTimestamp
       };
+    // This assumes that table is unmounted after auto checking stops.
+    // Avoids an useless re-render when loading the view again: the populated table is rendered at first but not shown,
+    // because an update check occurs and the loading skeleton is what the user actually sees firstly
+    case LIST_ACTION_TYPE.STOP_AUTO_CHECKING:
+      return {
+        ...state,
+        isLoadingList: true
+      };
     case AUTH_ACTION_TYPE.LOGOUT:
       return {
         ...initialState

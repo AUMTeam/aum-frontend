@@ -235,12 +235,13 @@ class ProgrammerTable extends Component {
    * Renders placeholder rows in the table while it's loading
    */
   renderTableSkeleton() {
+    const currentColumnsCount = this.currentlyShowingColumnsCount();
     return (
       <TableBody>
         {React.Children.map(Array(LIST_ELEMENTS_PER_PAGE), () => {
           return (
             <TableRow>
-              {React.Children.map(Array(this.currentlyShowingColumnsCount()), () => (
+              {React.Children.map(Array(currentColumnsCount), () => (
                 <TableCell>{PLACEHOLDER_VALUE}</TableCell>
               ))}
             </TableRow>
