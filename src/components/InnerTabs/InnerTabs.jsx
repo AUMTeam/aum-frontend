@@ -13,7 +13,7 @@ class InnerTabs extends Component {
   render() {
     const { tabs, match, width } = this.props;
     return (
-      <Tabs value={match.params.value} fullWidth={isWidthDown('xs', width)} scrollable scrollButtons="auto">
+      <Tabs value={match.params.value} variant={isWidthDown('xs', width) ? 'fullWidth' : 'scrollable'} scrollButtons="auto">
         {tabs.map((tab, index) => {
           return (
             <Tab
