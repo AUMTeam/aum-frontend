@@ -71,15 +71,6 @@ class Navigation extends Component {
 
     // Redirect the user to the view of its first role
     props.history.push(`${props.match.url}${getRouteForUser(props.user.roles[0])}`);
-
-    this.renderMobileDrawer = this.renderMobileDrawer.bind(this);
-    this.renderDesktopDrawer = this.renderDesktopDrawer.bind(this);
-    this.renderDrawerLayout = this.renderDrawerLayout.bind(this);
-
-    this.openDrawer = this.openDrawer.bind(this);
-    this.closeDrawer = this.closeDrawer.bind(this);
-    this.onSectionClicked = this.onSectionClicked.bind(this);
-    this.onLogoutButtonClicked = this.onLogoutButtonClicked.bind(this);
   }
 
   render() {
@@ -100,6 +91,7 @@ class Navigation extends Component {
               Authorization Manager
             </Typography>
           </Toolbar>
+
           {/* Render tabs and their corresponding routes */}
           {NAVIGATION_HIERARCHY.map((section, index) => {
             if (user.roles.includes(section.value) && section.tabs.length > 0) {
@@ -111,9 +103,7 @@ class Navigation extends Component {
                     <InnerTabs
                       {...routeProps}
                       prevUrl={`${match.url}${section.routePath}`}
-                      tabs={
-                        NAVIGATION_HIERARCHY.find(innerSection => innerSection.value === section.value).tabs
-                      }
+                      tabs={NAVIGATION_HIERARCHY.find(innerSection => innerSection.value === section.value).tabs}
                     />
                   )}
                 />
@@ -134,24 +124,23 @@ class Navigation extends Component {
     );
   }
 
-  renderMobileDrawer() {
-    const { isDrawerOpen } = this.state;
+  renderMobileDrawer = () => {
     return (
-      <Drawer open={isDrawerOpen} variant="temporary" onClose={this.closeDrawer}>
+      <Drawer open={this.state.isDrawerOpen} variant="temporary" onClose={this.closeDrawer}>
         {this.renderDrawerLayout()}
       </Drawer>
     );
-  }
+  };
 
-  renderDesktopDrawer() {
+  renderDesktopDrawer = () => {
     return (
       <Drawer classes={{ paper: this.props.classes.drawer }} open variant="permanent" anchor="left">
         {this.renderDrawerLayout()}
       </Drawer>
     );
-  }
+  };
 
-  renderDrawerLayout() {
+  renderDrawerLayout = () => {
     const { classes, match } = this.props;
     const { selectedDrawerItem } = this.state;
     return (
@@ -199,25 +188,25 @@ class Navigation extends Component {
         </div>
       </>
     );
-  }
+  };
 
-  openDrawer() {
+  openDrawer = () => {
     this.setState({ isDrawerOpen: true });
-  }
+  };
 
-  closeDrawer() {
+  closeDrawer = () => {
     this.setState({ isDrawerOpen: false });
-  }
+  };
 
-  onSectionClicked(url, index) {
+  onSectionClicked = (url, index) => {
     this.props.history.push(url);
     this.setState({ selectedDrawerItem: index });
-  }
+  };
 
-  onLogoutButtonClicked() {
+  onLogoutButtonClicked = () => {
     this.setState({ anchorEl: null });
     this.props.onLogout();
-  }
+  };
 }
 
 Navigation.propTypes = {

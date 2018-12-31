@@ -38,11 +38,6 @@ class LoginCard extends Component {
       usernameError: false,
       passwordError: false
     };
-
-    this.onInputChanged = this.onInputChanged.bind(this);
-    this.onLoginButtonClicked = this.onLoginButtonClicked.bind(this);
-    this.onEnterKeyClicked = this.onEnterKeyClicked.bind(this);
-    this.checkTextFields = this.textFieldsAreValidated.bind(this);
   }
 
   render() {
@@ -127,41 +122,40 @@ class LoginCard extends Component {
    * @param {*} name 'username' or 'password'
    * @param {*} event Event descriptor
    */
-  onInputChanged(name, event) {
+  onInputChanged = (name, event) => {
     this.setState({
       [name]: event.target.value,
       usernameError: false,
       passwordError: false
     });
-  }
+  };
 
   /**
    * Triggers login action when button is clicked
    */
-  onLoginButtonClicked() {
+  onLoginButtonClicked = () => {
     const { username, password } = this.state;
 
     if (this.textFieldsAreValidated()) {
       this.props.attemptLogin(username, password);
     }
-  }
+  };
 
   /**
    * Triggers login action when user presses enter in one of the input fields
    */
-  onEnterKeyClicked(event) {
+  onEnterKeyClicked = (event) => {
     if (event.key === ENTER_KEY) {
       this.onLoginButtonClicked();
     }
-  }
+  };
 
   /**
    * Checks if username and password fields' content is valid (they must not be empty)
    * Returns false if one of the two fields is empty and updates state accordingly
    */
-  textFieldsAreValidated() {
+  textFieldsAreValidated = () => {
     const { username, password } = this.state;
-
     const usernameError = username.length === 0;
     const passwordError = password.length === 0;
 
@@ -174,7 +168,7 @@ class LoginCard extends Component {
     }
 
     return true;
-  }
+  };
 }
 
 LoginCard.propTypes = {

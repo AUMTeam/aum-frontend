@@ -10,12 +10,6 @@ import React, { Component } from 'react';
  * each member.
  */
 class InnerTabs extends Component {
-  constructor(props) {
-    super(props);
-
-    this.onTabClicked = this.onTabClicked.bind(this);
-  }
-
   render() {
     const { tabs, match, width } = this.props;
     return (
@@ -34,10 +28,10 @@ class InnerTabs extends Component {
     );
   }
 
-  onTabClicked(value) {
+  onTabClicked = (value) => {
     const { history, prevUrl } = this.props;
     history.push(`${prevUrl}/${value}`);
-  }
+  };
 }
 
 InnerTabs.propTypes = {
