@@ -1,3 +1,1 @@
-import TechnicalAreaManagerView from './TechnicalAreaManagerView';
-
-export { TechnicalAreaManagerView };
+export { default } from './TechnicalAreaManagerView';

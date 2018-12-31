@@ -1,3 +1,1 @@
-import ClientView from './ClientView';
-
-export { ClientView };
+export { default } from './ClientView';

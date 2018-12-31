@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import {
   Button,
   Dialog,
@@ -10,8 +11,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
-import { LogoLoader } from '../../components/LogoLoader';
-import { Navigation } from '../../components/Navigation';
+import LogoLoader from '../../components/LogoLoader';
+import Navigation from '../../components/Navigation';
 import { DESKTOP_DRAWER_WIDTH, NAVIGATION_HIERARCHY } from '../../constants/navigation';
 import { ROUTE_PARAM } from '../../constants/routes';
 import { performLogoutAction } from '../../redux/actions/auth';

@@ -1,3 +1,1 @@
-import InnerTabs from './InnerTabs';
-
-export { InnerTabs };
+export { default } from './InnerTabs';

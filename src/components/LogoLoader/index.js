@@ -1,3 +1,1 @@
-import LogoLoader from './LogoLoader';
-
-export { LogoLoader };
+export { default } from './LogoLoader';

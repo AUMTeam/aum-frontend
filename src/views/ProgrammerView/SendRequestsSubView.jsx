@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Snackbar, SnackbarContent } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import { ProgrammerTable } from '../../components/ProgrammerTable';
+import ProgrammerTable from '../../components/ProgrammerTable';
 import { SEND_REQUESTS_ATTRIBUTE } from '../../constants/sendRequests';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 

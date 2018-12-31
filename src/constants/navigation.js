@@ -3,10 +3,10 @@ import CodeIcon from '@material-ui/icons/Code';
 import FaceIcon from '@material-ui/icons/Face';
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 import React from 'react';
-import { ClientView } from '../views/ClientView';
-import { ProgrammerView } from '../views/ProgrammerView';
-import { RevisionOfficeManagerView } from '../views/RevisionOfficeManagerView';
-import { TechnicalAreaManagerView } from '../views/TechnicalAreaManagerView';
+import ClientView from '../views/ClientView';
+import ProgrammerView from '../views/ProgrammerView';
+import RevisionOfficeManagerView from '../views/RevisionOfficeManagerView';
+import TechnicalAreaManagerView from '../views/TechnicalAreaManagerView';
 import { ROUTE } from './routes';
 import { USER_TYPE_ID } from './user';
 

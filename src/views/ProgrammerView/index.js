@@ -1,3 +1,1 @@
-import ProgrammerView from './ProgrammerView';
-
-export { ProgrammerView };
+export { default } from './ProgrammerView';

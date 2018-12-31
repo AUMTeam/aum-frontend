@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import { Divider } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
@@ -19,7 +20,7 @@ import { Route } from 'react-router-dom';
 import { DESKTOP_DRAWER_WIDTH, getRouteForUser, NAVIGATION_HIERARCHY } from '../../constants/navigation';
 import { ROUTE_PARAM } from '../../constants/routes';
 import { getRandomColor } from '../../utils/colorUtils';
-import { InnerTabs } from '../InnerTabs';
+import InnerTabs from '../InnerTabs';
 
 const styles = theme => ({
   root: {

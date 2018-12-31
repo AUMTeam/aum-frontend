@@ -3,11 +3,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
-import { LogoLoader } from '../components/LogoLoader';
+import LogoLoader from '../components/LogoLoader';
 import { ROUTE } from '../constants/routes';
 import { requestLocalTokenValidationIfPresentAction } from '../redux/actions/auth';
-import { Home } from './Home';
-import { Login } from './Login';
+import Home from './Home';
+import Login from './Login';
 
 /**
  * Custom made routing component that, based on a condition,

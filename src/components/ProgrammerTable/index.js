@@ -1,3 +1,1 @@
-import ProgrammerTable from './ProgrammerTable';
-
-export { ProgrammerTable };
+export { default } from './ProgrammerTable';

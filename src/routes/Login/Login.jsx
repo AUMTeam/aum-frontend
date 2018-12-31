@@ -1,7 +1,7 @@
 import { Grid, withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { LoginCard } from '../../components/LoginCard';
+import LoginCard from '../../components/LoginCard';
 
 const styles = {
   root: {

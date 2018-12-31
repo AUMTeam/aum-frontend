@@ -36,7 +36,6 @@ class InnerTabs extends Component {
 
   onTabClicked(value) {
     const { history, prevUrl } = this.props;
-
     history.push(`${prevUrl}/${value}`);
   }
 }

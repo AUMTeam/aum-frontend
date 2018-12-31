@@ -1,3 +1,1 @@
-import RevisionOfficeManagerView from './RevisionOfficeManagerView';
-
-export { RevisionOfficeManagerView };
+export { default } from './RevisionOfficeManagerView';
