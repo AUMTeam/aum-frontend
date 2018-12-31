@@ -1,89 +1,32 @@
-import { Hidden, TableFooter, TablePagination, TableSortLabel } from '@material-ui/core';
-import Badge from '@material-ui/core/Badge';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import InputBase from '@material-ui/core/InputBase';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
-import { fade } from '@material-ui/core/styles/colorManipulator';
 import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
-import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
-import HighlightOff from '@material-ui/icons/HighlightOff';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import ErrorOutline from '@material-ui/icons/ErrorOutline';
-import Schedule from '@material-ui/icons/Schedule';
-import SearchIcon from '@material-ui/icons/Search';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
 import { COMMITS_ATTRIBUTE } from '../../constants/commits';
+import SortableTableHeader from '../SortableTableHeader';
+import TableToolbar from '../TableToolbar';
+import TablePaginationFooter from '../TablePaginationFooter';
+import TableBodySkeleton from '../TableBodySkeleton';
+import DynamicTableBody from '../DynamicTableBody';
+import ApprovalStatusIcon from '../ApprovalStatusIcon';
 
-const styles = theme => ({
+const styles = {
   paper: {
     flexGrow: 1,
     width: '100%',
     overflowX: 'auto'
   },
-  search: {
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    borderWidth: 2,
-    borderStyle: 'solid',
-    borderColor: fade(theme.palette.common.black, 0.05),
-    '&:hover': {
-      borderColor: fade(theme.palette.common.black, 0.1)
-    },
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing.unit,
-      width: 'auto'
-    }
-  },
-  searchIcon: {
-    width: theme.spacing.unit * 9,
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
   approvedIcon: {
     color: '#2eb72c'
-  },
-  inputRoot: {
-    color: 'inherit',
-    width: '100%'
-  },
-  inputInput: {
-    paddingTop: theme.spacing.unit,
-    paddingRight: theme.spacing.unit,
-    paddingBottom: theme.spacing.unit,
-    paddingLeft: theme.spacing.unit * 10,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      width: 128,
-      '&:focus': {
-        width: 256
-      }
-    }
   },
   verticalAlignedContent: {
     display: 'flex',
     alignItems: 'center'
   }
-});
-
-const PLACEHOLDER_VALUE = '-';
+};
 
 /**
  * @class
@@ -104,11 +47,6 @@ class ProgrammerTable extends Component {
     };
 
     props.loadPage(0, this.state.sorting, this.state.searchQuery);
-
-    this.renderTableToolbar = this.renderTableToolbar.bind(this);
-    this.renderTableHeader = this.renderTableHeader.bind(this);
-    this.renderTableBody = this.renderTableBody.bind(this);
-    this.currentlyShowingColumnsCount = this.currentlyShowingColumnsCount.bind(this);
   }
 
   /**
@@ -123,166 +61,61 @@ class ProgrammerTable extends Component {
   }
 
   render() {
-    const { classes, isLoading } = this.props;
-    return (
-      <Paper className={classes.paper}>
-        {this.renderTableToolbar()}
-        <Table>
-          {this.renderTableHeader()}
-          {isLoading ? this.renderTableSkeleton() : this.renderTableBody()}
-          {this.renderTableFooter()}
-        </Table>
-      </Paper>
-    );
-  }
-
-  /**
-   * Table toolbar contains title label, 'available updates' button (which appears when new updates are found)
-   * and the search field.
-   * Debouncing for search text input is handled by Saga.
-   */
-  renderTableToolbar() {
     const {
       classes,
+      isLoading,
+      tableColumns,
       tableToolbarTitle,
-      latestUpdateTimestamp,
       tableData,
-      loadPage,
-      onSearchQueryChanged,
-      isLoading
+      latestUpdateTimestamp,
+      itemsCount,
+      displayError
     } = this.props;
-    const { sorting, searchQuery, currentPage } = this.state;
 
     return (
-      <Toolbar>
-        <Grid container direction="row" justify="space-between" alignItems="center" spacing={16}>
-          <Grid item>
-            <Typography variant="h5">{tableToolbarTitle}</Typography>
-          </Grid>
+      <Paper className={classes.paper}>
+        <TableToolbar
+          toolbarTitle={tableToolbarTitle}
+          showAvailableUpdatesBadge={
+            !isLoading &&
+            tableData.length > 0 &&
+            tableData[this.state.currentPage] != null &&
+            latestUpdateTimestamp > tableData[this.state.currentPage].updateTimestamp
+          }
+          loadCurrentPage={this.loadCurrentPage}
+          onSearchQueryChange={this.onSearchQueryChange}
+        />
+        <Table>
+          <SortableTableHeader
+            tableColumns={tableColumns}
+            sortingCriteria={this.state.sorting}
+            onSortingUpdate={this.onSortingUpdate}
+          />
 
-          {/* Display badge when new updates have been found */}
-          <Grid item>
-            {!isLoading &&
-              tableData.length > 0 &&
-              tableData[currentPage] != null &&
-              latestUpdateTimestamp > tableData[currentPage].updateTimestamp && (
-                <Badge color="secondary">
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => loadPage(currentPage, sorting, searchQuery)}
-                  >
-                    Aggiornamenti disponibili
-                    <RefreshIcon />
-                  </Button>
-                </Badge>
-              )}
-          </Grid>
-          <Grid item>
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <InputBase
-                placeholder="Cerca..."
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput
-                }}
-                onChange={event => {
-                  onSearchQueryChanged(event.target.value);
-                  this.setState({ searchQuery: event.target.value });
-                }}
-              />
-            </div>
-          </Grid>
-        </Grid>
-      </Toolbar>
-    );
-  }
+          {isLoading ? (
+            <TableBodySkeleton
+              columnsCount={this.currentlyShowingColumnsCount()}
+              itemsPerPage={LIST_ELEMENTS_PER_PAGE}
+            />
+          ) : (
+            <DynamicTableBody
+              tableColumns={tableColumns}
+              tableData={tableData}
+              totalItemsCount={itemsCount}
+              displayError={displayError}
+              pageNumber={this.state.currentPage}
+              renderCellContent={this.renderCellContent}
+            />
+          )}
 
-  renderTableHeader() {
-    const { tableColumns } = this.props;
-    return (
-      <TableHead>
-        <TableRow>
-          {tableColumns.map(column => (
-            <Hidden key={column.key} smDown={!column.displayOnMobile}>
-              <TableCell>
-                <TableSortLabel
-                  active={this.state.sorting.columnKey === column.key}
-                  direction={this.state.sorting.direction}
-                  onClick={() => {
-                    const updatedSorting = {
-                      columnKey: column.key,
-                      direction: this.state.sorting.direction === 'asc' ? 'desc' : 'asc'
-                    };
-                    this.props.loadPage(this.state.currentPage, updatedSorting, this.state.searchQuery);
-                    this.setState({ sorting: updatedSorting });
-                  }}
-                >
-                  {column.label}
-                </TableSortLabel>
-              </TableCell>
-            </Hidden>
-          ))}
-        </TableRow>
-      </TableHead>
-    );
-  }
-
-  /**
-   * Renders placeholder rows in the table while it's loading
-   */
-  renderTableSkeleton() {
-    const currentColumnsCount = this.currentlyShowingColumnsCount();
-    return (
-      <TableBody>
-        {React.Children.map(Array(LIST_ELEMENTS_PER_PAGE), () => {
-          return (
-            <TableRow>
-              {React.Children.map(Array(currentColumnsCount), () => (
-                <TableCell>{PLACEHOLDER_VALUE}</TableCell>
-              ))}
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    );
-  }
-
-  renderTableBody() {
-    const { tableData, tableColumns, itemsCount } = this.props;
-    return (
-      <TableBody>
-        {this.props.displayError ? (
-          <TableRow>
-            <TableCell colSpan={this.currentlyShowingColumnsCount()}>
-              <div className={this.props.classes.verticalAlignedContent}>
-                <ErrorOutline color="error" /> &ensp; Impossibile ottenere i dati.
-              </div>
-            </TableCell>
-          </TableRow>
-        ) : itemsCount === 0 ? (
-          <TableRow>
-            <TableCell colSpan={this.currentlyShowingColumnsCount()}>Nessun dato presente.</TableCell>
-          </TableRow>
-        ) : (
-          tableData[this.state.currentPage].data.map(rowValue => {
-            return (
-              <TableRow hover key={rowValue.id}>
-                {tableColumns.map(column => (
-                  <Hidden key={rowValue[column.key]} smDown={!column.displayOnMobile}>
-                    <TableCell padding="dense">
-                      {this.renderCellContent(column.key, rowValue[column.key])}
-                    </TableCell>
-                  </Hidden>
-                ))}
-              </TableRow>
-            );
-          })
-        )}
-      </TableBody>
+          <TablePaginationFooter
+            itemsCount={itemsCount}
+            itemsPerPage={LIST_ELEMENTS_PER_PAGE}
+            currentPage={this.state.currentPage}
+            onPageChange={this.onPageChange}
+          />
+        </Table>
+      </Paper>
     );
   }
 
@@ -295,7 +128,7 @@ class ProgrammerTable extends Component {
       case COMMITS_ATTRIBUTE.AUTHOR:
         return value.name;
       case COMMITS_ATTRIBUTE.APPROVAL_STATUS:
-        return this.renderApprovalStatusIcon(value);
+        return <ApprovalStatusIcon status={+value} />
       case COMMITS_ATTRIBUTE.TIMESTAMP:
         return new Date(value * 1000).toLocaleString('it-it');
       default:
@@ -303,45 +136,10 @@ class ProgrammerTable extends Component {
     }
   }
 
-  renderApprovalStatusIcon(approvalStatus) {
-    switch (+approvalStatus) {
-      case 1:
-        return <CheckCircleOutline className={this.props.classes.approvedIcon} />;
-      case 0:
-        return <Schedule color="action" />;
-      case -1:
-        return <HighlightOff color="error" />;
-      default:
-        return null;
-    }
-  }
-
-  /**
-   * Renders the table footer, which contains the pagination components
-   */
-  renderTableFooter() {
-    return (
-      <TableFooter>
-        <TableRow>
-          <TablePagination
-            count={this.props.itemsCount}
-            rowsPerPage={LIST_ELEMENTS_PER_PAGE}
-            page={this.state.currentPage}
-            rowsPerPageOptions={[LIST_ELEMENTS_PER_PAGE]}
-            onChangePage={(_, pageNumber) => {
-              this.props.loadPage(pageNumber, this.state.sorting, this.state.searchQuery);
-              this.setState({ currentPage: pageNumber });
-            }}
-          />
-        </TableRow>
-      </TableFooter>
-    );
-  }
-
   /**
    * Returns the count of the effectively shown columns depending on screen size
    */
-  currentlyShowingColumnsCount() {
+  currentlyShowingColumnsCount = () => {
     let columnCount = 0;
     this.props.tableColumns.map(column => {
       if (isWidthDown('sm', this.props.width)) {
@@ -352,7 +150,26 @@ class ProgrammerTable extends Component {
         columnCount++;
     });
     return columnCount;
-  }
+  };
+
+  onPageChange = nextPage => {
+    this.setState({ currentPage: nextPage });
+    this.props.loadPage(nextPage, this.state.sorting, this.state.searchQuery);
+  };
+
+  onSortingUpdate = updatedSorting => {
+    this.setState({ sorting: updatedSorting });
+    this.props.loadPage(this.state.currentPage, updatedSorting, this.state.searchQuery);
+  };
+
+  onSearchQueryChange = newQuery => {
+    this.setState({ searchQuery: newQuery });
+    this.props.onSearchQueryChanged(newQuery);
+  };
+
+  loadCurrentPage = () => {
+    this.props.loadPage(this.state.currentPage, this.state.sorting, this.state.searchQuery);
+  };
 }
 
 ProgrammerTable.propTypes = {
