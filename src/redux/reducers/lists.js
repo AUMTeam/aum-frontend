@@ -6,8 +6,8 @@ const initialState = {
     listPages will contain objects with the following shape:
     {
       data: [],             -- the list of commits for the page
-      sorting: {},
-      searchQuery: '',
+      sorting: {},          -- the sorting criteria of the page
+      filter: {},           -- the filtering options of the page (used to display data with certain conditions)
       updateTimestamp: 0    -- the value of state.latestUpdateTimestamp when the page was retrieved
     }
   */
@@ -41,7 +41,7 @@ export function listReducer(state = initialState, action) {
       newState.listPages[action.pageNumber].data = action.serverResponse.list;
 
       newState.listPages[action.pageNumber].sorting = action.sortingCriteria;
-      newState.listPages[action.pageNumber].searchQuery = action.searchQuery;
+      newState.listPages[action.pageNumber].filter = action.filter;
 
       // Here we assume that the latestUpdateTimestamp value is always correctly initialized,
       // because update checking always happens before retrieving a page

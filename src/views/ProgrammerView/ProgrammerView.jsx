@@ -54,12 +54,12 @@ class ProgrammerView extends Component {
             startUpdateChecking={this.props.startCommitsListUpdatesAutoChecking}
             stopUpdateChecking={this.props.stopCommitsListUpdatesAutoChecking}
             commitsData={commitsData}
-            onTablePageLoad={(pageNumber, sortingCriteria, searchQuery) => {
+            onTablePageLoad={(pageNumber, sortingCriteria, filter) => {
               retrieveCommitsListPage(
                 USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER],
                 pageNumber,
                 sortingCriteria,
-                searchQuery
+                filter
               );
             }}
             onSearchQueryChanged={searchQuery => {
@@ -77,12 +77,12 @@ class ProgrammerView extends Component {
             startUpdateChecking={this.props.startSendRequestsListUpdatesAutoChecking}
             stopUpdateChecking={this.props.stopSendRequestsListUpdatesAutoChecking}
             sendRequestsData={sendRequestsData}
-            onTablePageLoad={(pageNumber, sortingCriteria, searchQuery) => {
+            onTablePageLoad={(pageNumber, sortingCriteria, filter) => {
               retrieveSendRequestsListPage(
                 USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER],
                 pageNumber,
                 sortingCriteria,
-                searchQuery
+                filter
               );
             }}
             onSearchQueryChanged={searchQuery => {

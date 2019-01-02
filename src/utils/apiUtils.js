@@ -1,8 +1,9 @@
 /**
  * @file
- * This file contains helper functions and constants used to make API calls.
+ * This file contains helper functions used for API requests.
  */
 import { API_ENDPOINT_URL, REQUEST_TIMEOUT_MS, TOKEN_LOCALSTORAGE_KEY, LIST_ELEMENTS_TYPE } from '../constants/api';
+import { COMMITS_ATTRIBUTE } from '../constants/commits';
 
 /**
  * Returns a promise that is rejected after the specified timeout
@@ -62,9 +63,25 @@ export function makeAuthenticatedApiRequest(actionPath, accessToken, requestData
 }
 
 /**
+ * Gets the filter object corresponding to the given search term.
+ * The filter logic is common so we can change the behavior globally without any inconsistencies
+ * @param {*} searchQuery the searched term
+ */
+export function getSearchFilter(searchQuery) {
+  if (searchQuery != null && searchQuery !== '')
+    return {
+      // it must be the same regardless of the type
+      attribute: COMMITS_ATTRIBUTE.DESCRIPTION,
+      valueMatches: searchQuery
+    }
+  else
+    return {};
+}
+
+/**
  * Gets the API relative path to make a specified operation on the list of the given type
  * @param {*} elementType One of the elements contained in LIST_ELEMENTS_TYPE
- * @param {*} requestType One of the following: add, list, update
+ * @param {*} requestType One of the following: add, list, update, approve
  */
 export function getListRequestPath(elementType, requestType)
 {

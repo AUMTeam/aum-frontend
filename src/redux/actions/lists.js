@@ -1,3 +1,5 @@
+import { getSearchFilter } from '../../utils/apiUtils';
+
 export const LIST_ACTION_TYPE = {
   // Dispatched when a page of the list needs to be loaded
   PAGE_REQUEST: 'PAGE_REQUEST',
@@ -24,11 +26,14 @@ export const LIST_ACTION_TYPE = {
   // Dispatched when the view containing the list is unmounted: stops the auto updater task
   STOP_AUTO_CHECKING: 'STOP_AUTO_CHECKING',
 
+  // Dispatched when the search query is changed
+  SEARCH_QUERY_CHANGED: 'SEARCH_QUERY_CHANGED',
+
   // TBD
   SHOW_ELEMENT_DETAILS: 'SHOW_ELEMENT_DETAILS',
 
-  // Dispatched when the search query is changed
-  SEARCH_QUERY_CHANGED: 'SEARCH_QUERY_CHANGED'
+  // TBD
+  ADD_ELEMENT: 'ADD_ELEMENT'
 };
 
 /**
@@ -45,6 +50,6 @@ export function performNewSearchAction(pageRequestAction, searchQuery) {
     pageNumber: 0,
     limit: pageRequestAction.limit,
     sortingCriteria: pageRequestAction.sortingCriteria,
-    searchQuery
+    filter: getSearchFilter(searchQuery)
   };
 }

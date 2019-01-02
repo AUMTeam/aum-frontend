@@ -5,14 +5,15 @@ import Table from '@material-ui/core/Table';
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
-import { COMMITS_ATTRIBUTE } from '../../constants/commits';
 import SortableTableHeader from '../SortableTableHeader';
 import TableToolbar from '../TableToolbar';
 import TablePaginationFooter from '../TablePaginationFooter';
 import TableBodySkeleton from '../TableBodySkeleton';
 import DynamicTableBody from '../DynamicTableBody';
 import ApprovalStatusIcon from '../ApprovalStatusIcon';
+import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
+import { COMMITS_ATTRIBUTE } from '../../constants/commits';
+import { getSearchFilter } from '../../utils/apiUtils'
 
 const styles = {
   paper: {
@@ -44,10 +45,10 @@ class ProgrammerTable extends Component {
         columnKey: null,
         direction: 'desc'
       },
-      searchQuery: ''
+      filter: {}
     };
 
-    props.loadPage(0, this.state.sorting, this.state.searchQuery);
+    props.loadPage(0, this.state.sorting, this.state.filter);
   }
 
   /**
@@ -155,21 +156,21 @@ class ProgrammerTable extends Component {
 
   onPageChange = nextPage => {
     this.setState({ currentPage: nextPage });
-    this.props.loadPage(nextPage, this.state.sorting, this.state.searchQuery);
+    this.props.loadPage(nextPage, this.state.sorting, this.state.filter);
   };
 
   onSortingUpdate = updatedSorting => {
     this.setState({ sorting: updatedSorting });
-    this.props.loadPage(this.state.currentPage, updatedSorting, this.state.searchQuery);
+    this.props.loadPage(this.state.currentPage, updatedSorting, this.state.filter);
   };
 
   onSearchQueryChange = newQuery => {
-    this.setState({ searchQuery: newQuery });
+    this.setState({ filter: getSearchFilter(newQuery) });
     this.props.onSearchQueryChanged(newQuery);
   };
 
   loadCurrentPage = () => {
-    this.props.loadPage(this.state.currentPage, this.state.sorting, this.state.searchQuery);
+    this.props.loadPage(this.state.currentPage, this.state.sorting, this.state.filter);
   };
 }
 

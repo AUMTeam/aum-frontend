@@ -5,7 +5,7 @@ export function retrieveSendRequestsListPageAction(
   userRoleString,
   pageNumber = 0,
   sortingCriteria = { columnKey: null, direction: 'desc' },
-  searchQuery = ''
+  filter = {}
 ) {
   return {
     type: LIST_ACTION_TYPE.PAGE_REQUEST,
@@ -14,7 +14,7 @@ export function retrieveSendRequestsListPageAction(
     pageNumber,
     limit: LIST_ELEMENTS_PER_PAGE,
     sortingCriteria,
-    searchQuery
+    filter
   };
 }
 

@@ -28,10 +28,14 @@ function* retrieveListPage(action) {
     var sortingCriteriaDifferent =
       action.sortingCriteria.columnKey !== listPages[action.pageNumber].sorting.columnKey ||
       action.sortingCriteria.direction !== listPages[action.pageNumber].sorting.direction;
+    var filteringDifferent =
+      action.filter.attribute !== listPages[action.pageNumber].filter.attribute ||
+      action.filter.valueMatches !== listPages[action.pageNumber].filter.valueMatches ||
+      action.filter.valueDifferentFrom !== listPages[action.pageNumber].filter.valueDifferentFrom;
   }
 
-  // Fetch page only if needed -- TODO: controllare presenza attributo searchQuery nei dati della page
-  if (!requestedPageAlreadyFetched || requestedPageNotUpdated || sortingCriteriaDifferent) {
+  // Fetch page only if needed
+  if (!requestedPageAlreadyFetched || requestedPageNotUpdated || sortingCriteriaDifferent || filteringDifferent) {
     const pageResponseData = yield makeRequestAndReportErrors(
       getListRequestPath(action.elementType, 'list'),
       {
@@ -45,7 +49,8 @@ function* retrieveListPage(action) {
         sort: action.sortingCriteria.columnKey == null ? {} : {
           parameter: action.sortingCriteria.columnKey,
           order: action.sortingCriteria.direction
-        }
+        },
+        filter: action.filter
       },
       yield select(state => state.auth.accessToken)
     );
@@ -57,7 +62,8 @@ function* retrieveListPage(action) {
         userRoleString: action.userRoleString,
         serverResponse: pageResponseData,
         pageNumber: action.pageNumber,
-        sortingCriteria: action.sortingCriteria
+        sortingCriteria: action.sortingCriteria,
+        filter: action.filter
       });
     }
   }
@@ -167,5 +173,5 @@ export const listSagas = [
   updateCheckingTasksRunner(),
   updateCheckingTasksStopper(),
   takeLatest(LIST_ACTION_TYPE.PAGE_REQUEST, retrieveListPage),
-  //debounce(SEARCH_DEBOUNCE_DELAY_MS, LIST_ACTION_TYPE.ON_SEARCH_QUERY_CHANGED, retrieveListPage)
+  takeLatest(LIST_ACTION_TYPE.SEARCH_QUERY_CHANGED, retrieveListPage)  // TODO debounce with saga v1
 ];
