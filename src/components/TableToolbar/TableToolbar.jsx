@@ -59,9 +59,11 @@ const toolbarStyles = theme => ({
 
 
 /**
- * Table toolbar contains title label, 'available updates' button (which appears when new updates are found)
- * and the search field.
- * Debouncing for search text input is handled by Saga.
+ * @class
+ * Toolbar to be used on top of tables, which contains title label, 'available updates' button (which appears when
+ * new updates are found) and the search field.
+ * Can optionally receive a function to display custom components between the updates button and the search field.
+ * Debouncing for search text input is handled by the middleware that receives the action (in our case Saga).
  */
 class TableToolbar extends React.PureComponent {
   render() {

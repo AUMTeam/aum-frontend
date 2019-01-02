@@ -6,6 +6,12 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Hidden from '@material-ui/core/Hidden';
 
+/**
+ * @class
+ * Displays the header for the specified table columns, which can be clicked to trigger sorting.
+ * Table columns array contains objects with the following shape: { label: string, key: string, displayOnMobile: bool }.
+ * This allows us to display only certain columns on mobile devices.
+ */
 export default class SortableTableHeader extends React.PureComponent {
   render() {
     const { tableColumns, sortingCriteria, onSortingUpdate } = this.props;

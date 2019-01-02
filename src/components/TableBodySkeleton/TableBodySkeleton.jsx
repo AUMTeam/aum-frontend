@@ -6,6 +6,10 @@ import TableRow from '@material-ui/core/TableRow';
 
 const PLACEHOLDER_VALUE = '—';
 
+/**
+ * @class
+ * Placeholder table body used during data fetching from server.
+ */
 export default class TableBodySkeleton extends React.PureComponent {
   render() {
     const { columnsCount, itemsPerPage } = this.props;

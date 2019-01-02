@@ -11,6 +11,14 @@ const verticallyAlignedContentStyle = {
   alignItems: 'center'
 };
 
+/**
+ * @class
+ * The body of the tables present in the different views. Data is rendered according to the given columns array,
+ * which specifies the key to access data of the specific columns and whether they should be shown on mobile.
+ * Columns are objects with the following shape: { label: string, key: string, displayOnMobile: bool }.
+ * This component accepts also a function (renderCellContent) which defines how the values of the specific columns
+ * must be rendered. Typically is a switch-case which always return a JSX snippet (in other words a component).
+ */
 export default class DynamicTableBody extends React.PureComponent {
   render() {
     const { tableData, tableColumns, displayError, totalItemsCount, pageNumber, renderCellContent } = this.props;
