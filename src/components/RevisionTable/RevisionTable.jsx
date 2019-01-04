@@ -5,6 +5,8 @@ import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import { withStyles } from '@material-ui/core/styles';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Radio from '@material-ui/core/Radio';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import HighlightOff from '@material-ui/icons/HighlightOff';
 import SortableTableHeader from '../SortableTableHeader';
@@ -15,8 +17,7 @@ import DynamicTableBody from '../DynamicTableBody';
 import ApprovalStatusIcon from '../ApprovalStatusIcon';
 import { LIST_ELEMENTS_PER_PAGE, LIST_ELEMENTS_TYPE } from '../../constants/api';
 import { LIST_ELEMENT_ATTRIBUTE, APPROVAL_STATUS } from '../../constants/listElements';
-import { getSearchFilter } from '../../utils/apiUtils';
-import { FormControlLabel } from '@material-ui/core';
+import { getSearchFilter, getHistoryFilter, getToBeReviewedFilter } from '../../utils/apiUtils';
 
 const tableStyles = theme => ({
   paper: {
@@ -57,7 +58,7 @@ class RevisionTable extends React.Component {
         columnKey: null,
         direction: 'desc'
       },
-      filter: {}
+      filter: getToBeReviewedFilter()
     };
 
     props.loadPage(0, this.state.sorting, this.state.filter);
@@ -141,13 +142,13 @@ class RevisionTable extends React.Component {
           checked={reviewMode}
           control={<Radio />}
           label="Da revisionare"
-          onChange={() => this.props.loadPage(0, this.state.sorting, getReviewFilter())}
+          onChange={() => this.props.loadPage(0, this.state.sorting, getToBeReviewedFilter())}
         />
       </>
     );
   };
 
-  renderCellContent(columnKey, value, elementId) {
+  renderCellContent = (columnKey, value, elementId) => {
     switch (columnKey) {
       case LIST_ELEMENT_ATTRIBUTE.AUTHOR:
         return value.name;
@@ -170,25 +171,11 @@ class RevisionTable extends React.Component {
     }
   }
 
-  getHistoryFilter() {
-    return {
-      attribute: LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS,
-      valueDifferentFrom: APPROVAL_STATUS.PENDING
-    };
-  }
-
-  getReviewFilter() {
-    return {
-      attribute: LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS,
-      valueMatches: APPROVAL_STATUS.PENDING
-    };
-  }
-
   // Used to determine if review buttons should be displayed
   isReviewMode = () => {
     return (
-      this.state.filter.attribute === getReviewFilter().attribute &&
-      this.state.filter.valueMatches === getReviewFilter().valueMatches
+      this.state.filter.attribute === getToBeReviewedFilter().attribute &&
+      this.state.filter.valueMatches === getToBeReviewedFilter().valueMatches
     );
   };
 
