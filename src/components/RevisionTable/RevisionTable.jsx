@@ -27,6 +27,13 @@ const tableStyles = theme => ({
   },
   approvedIcon: {
     color: theme.palette.approved
+  },
+  iconButton: {
+    fontSize: '28px',
+    marginRight: '4px',
+    '&:hover': {
+      filter: 'brightness(0.7)'
+    }
   }
 });
 
@@ -159,8 +166,13 @@ class RevisionTable extends React.Component {
       case REVIEW_BUTTONS_COLUMN:
         return (
           <>
-            <HighlightOff color="error" onClick={() => this.props.onItemReview(elementId, APPROVAL_STATUS.REJECTED)} />
+            <HighlightOff
+              classes={{ root: this.props.classes.iconButton }}
+              color="error"
+              onClick={() => this.props.onItemReview(elementId, APPROVAL_STATUS.REJECTED)}
+            />
             <CheckCircleOutline
+              classes={{ root: this.props.classes.iconButton }}
               className={this.props.classes.approvedIcon}
               onClick={() => this.props.onItemReview(elementId, APPROVAL_STATUS.APPROVED)}
             />
