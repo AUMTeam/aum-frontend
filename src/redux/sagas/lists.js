@@ -1,6 +1,6 @@
 import { delay } from 'redux-saga';
 import { cancel, cancelled, fork, put, select, take, takeLatest, /* debounce */ } from 'redux-saga/effects';
-import { LIST_AUTO_UPDATE_INTERVAL, LIST_ELEMENTS_PER_PAGE, LIST_ELEMENTS_TYPE, SEARCH_DEBOUNCE_DELAY_MS } from '../../constants/api';
+import { LIST_AUTO_UPDATE_INTERVAL, LIST_ELEMENTS_PER_PAGE, SEARCH_DEBOUNCE_DELAY_MS } from '../../constants/api';
 import { getListRequestPath } from '../../utils/apiUtils';
 import { LIST_ACTION_TYPE } from '../actions/lists';
 import { makeRequestAndReportErrors } from './api';
@@ -109,13 +109,11 @@ function* checkForListUpdates(latestUpdateTimestamp, action) {
   }
 }
 
-// Contains the auto update checking tasks corresponding to the lists of the specified element type,
+// Contains the auto update checking tasks corresponding to the lists of the specified element type and view,
 // so that they can be started and stopped from different functions (see below).
-// This assumes that there can't be more than a list for the same element type in the same view
-const autoUpdateTasks = {
-  [LIST_ELEMENTS_TYPE.COMMITS]: null,
-  [LIST_ELEMENTS_TYPE.SEND_REQUESTS]: null
-};
+// Keys are in the form `${userRoleString}.${elementType}`.
+// This assumes that there can't be more than a update checking task for the same list in the same view
+const autoUpdateTasks = {};
 
 /**
  * Performs automatic update checking for the list
@@ -124,14 +122,14 @@ const autoUpdateTasks = {
  */
 function* runListUpdateChecker(action) {
   try {
-    console.log(`Auto update checking started for ${action.elementType} list`);
+    console.log(`Auto update checking started for ${action.userRoleString}.${action.elementType}`);
     while (true) {
       yield delay(LIST_AUTO_UPDATE_INTERVAL);
       // Avoid checking for updates when the state of the list is not yet initialized
       // or when retrieveListPage() is running
       if ((yield select(state => state[action.userRoleString][action.elementType] != null)) &&
           (yield select(state => !state[action.userRoleString][action.elementType].isLoadingList))) {
-        console.log(`Checking for ${action.elementType} list updates...`);
+        console.log(`Checking for ${action.userRoleString}.${action.elementType} updates...`);
         yield checkForListUpdates(
           yield select(state => state[action.userRoleString][action.elementType].latestUpdateTimestamp),
           action
@@ -141,28 +139,30 @@ function* runListUpdateChecker(action) {
   }
   finally {
     if (yield cancelled())
-      console.log(`Auto update checking stopped for ${action.elementType} list`);
+      console.log(`Auto update checking stopped for ${action.userRoleString}.${action.elementType}`);
     else
-      console.error(`Unexpected error during ${action.elementType} list auto updating`);
+      console.error(`Unexpected error during ${action.userRoleString}.${action.elementType} auto updating task`);
   }
 }
 
 function* updateCheckingTasksRunner() {
   while (true) {
     const action = yield take(LIST_ACTION_TYPE.START_AUTO_CHECKING);
-    if (autoUpdateTasks[action.elementType] == null)
-      autoUpdateTasks[action.elementType] = yield fork(() => runListUpdateChecker(action));
+    if (autoUpdateTasks[`${action.userRoleString}.${action.elementType}`] == null)
+      autoUpdateTasks[`${action.userRoleString}.${action.elementType}`] = yield fork(() =>
+        runListUpdateChecker(action)
+      );
     else
-      console.error(`There is another update checking task running for element type ${action.elementType}`);
+      console.error(`There is another update checking task running for ${action.userRoleString}.${action.elementType}`);
   }
 }
 
 function* updateCheckingTasksStopper() {
   while (true) {
     const action = yield take(LIST_ACTION_TYPE.STOP_AUTO_CHECKING);
-    if (autoUpdateTasks[action.elementType] != null) {
-      yield cancel(autoUpdateTasks[action.elementType]);
-      autoUpdateTasks[action.elementType] = null;
+    if (autoUpdateTasks[`${action.userRoleString}.${action.elementType}`] != null) {
+      yield cancel(autoUpdateTasks[`${action.userRoleString}.${action.elementType}`]);
+      autoUpdateTasks[`${action.userRoleString}.${action.elementType}`] = null;
     }
     else
       console.error('Tried to stop an unexisting update checking task.');

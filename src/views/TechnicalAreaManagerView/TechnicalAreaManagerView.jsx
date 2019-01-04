@@ -24,6 +24,10 @@ class TechnicalAreaManagerView extends React.Component {
     props.startCommitsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]);
   }
 
+  componentWillUnmount() {
+    this.props.stopCommitsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]);
+  }
+
   render() {
     const { classes, commitsData, retrieveCommitsListPage, performNewSearch } = this.props;
     return (
