@@ -65,7 +65,7 @@ const toolbarStyles = theme => ({
  * Can optionally receive a function to display custom components between the updates button and the search field.
  * Debouncing for search text input is handled by the middleware that receives the action (in our case Saga).
  */
-class TableToolbar extends React.PureComponent {
+class TableToolbar extends React.Component {
   render() {
     const {
       classes,

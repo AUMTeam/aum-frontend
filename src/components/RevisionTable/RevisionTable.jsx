@@ -132,17 +132,17 @@ class RevisionTable extends React.Component {
       <>
         <FormControlLabel
           disabled={isSearching}
-          checked={!reviewMode}
-          control={<Radio />}
+          checked={!reviewMode && !isSearching}
+          control={<Radio color="primary" />}
           label="Già revisionati"
-          onChange={() => this.props.loadPage(0, this.state.sorting, getHistoryFilter())}
+          onChange={() => this.onFilterChange(getHistoryFilter())}
         />
         <FormControlLabel
           disabled={isSearching}
-          checked={reviewMode}
-          control={<Radio />}
+          checked={reviewMode && !isSearching}
+          control={<Radio color="primary" />}
           label="Da revisionare"
-          onChange={() => this.props.loadPage(0, this.state.sorting, getToBeReviewedFilter())}
+          onChange={() => this.onFilterChange(getToBeReviewedFilter())}
         />
       </>
     );
@@ -169,7 +169,7 @@ class RevisionTable extends React.Component {
       default:
         return value;
     }
-  }
+  };
 
   // Used to determine if review buttons should be displayed
   isReviewMode = () => {
@@ -215,9 +215,19 @@ class RevisionTable extends React.Component {
     this.props.loadPage(this.state.currentPage, updatedSorting, this.state.filter);
   };
 
+  onFilterChange = newFilter => {
+    this.setState({ filter: newFilter });
+    this.props.loadPage(0, this.state.sorting, newFilter);
+  };
+
   onSearchQueryChange = newQuery => {
-    this.setState({ filter: getSearchFilter(newQuery) });
-    this.props.onSearchQueryChanged(newQuery);
+    if (newQuery !== '') {
+      this.setState({ filter: getSearchFilter(newQuery) });
+      this.props.onSearchQueryChange(newQuery);
+    }
+    else {
+      this.onFilterChange(getHistoryFilter());
+    }
   };
 }
 
