@@ -42,7 +42,7 @@ export default class DynamicTableBody extends React.PureComponent {
               <TableRow hover key={rowValue.id}>
                 {tableColumns.map(column => (
                   <Hidden key={rowValue[column.key]} smDown={!column.displayOnMobile}>
-                    <TableCell padding="dense">{renderCellContent(column.key, rowValue[column.key])}</TableCell>
+                    <TableCell padding="dense">{renderCellContent(column.key, rowValue[column.key], rowValue.id)}</TableCell>
                   </Hidden>
                 ))}
               </TableRow>

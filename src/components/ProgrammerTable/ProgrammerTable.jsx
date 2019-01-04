@@ -141,6 +141,7 @@ class ProgrammerTable extends Component {
   /**
    * Returns the count of the effectively shown columns depending on screen size
    */
+  // prettier-ignore
   currentlyShowingColumnsCount = () => {
     let columnCount = 0;
     tableColumns.map(column => {
