@@ -29,7 +29,11 @@ import { USER_TYPE_ID } from '../../constants/user';
 const reducers = combineReducers({
   auth,
   user,
-  ...generateViewReducers([USER_TYPE_ID.PROGRAMMER, USER_TYPE_ID.TECHNICAL_AREA_MANAGER]),
+  ...generateViewReducers([
+    USER_TYPE_ID.PROGRAMMER,
+    USER_TYPE_ID.TECHNICAL_AREA_MANAGER,
+    USER_TYPE_ID.REVISION_OFFICE_MANAGER
+  ]),
   globalError
 });
 

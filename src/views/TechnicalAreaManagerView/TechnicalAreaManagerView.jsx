@@ -11,7 +11,7 @@ import {
 import { performNewSearchAction } from '../../redux/actions/lists';
 import { viewStyles } from '../styles';
 import RevisionTable from '../../components/RevisionTable';
-import Snackbar from '@material-ui/core/SnackbarContent';
+import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import Grid from '@material-ui/core/Grid';
 import { LIST_ELEMENTS_TYPE } from '../../constants/api';
@@ -66,13 +66,12 @@ class TechnicalAreaManagerView extends React.Component {
           </Grid>
         </Grid>
 
-        {/* looks broken when it should be closed, why?
         <Snackbar open={commitsData.errorWhileCheckingUpdates}>
           <SnackbarContent
             className={classes.errorSnackbar}
             message="Impossibile controllare gli aggiornamenti per la lista. Controlla la tua connessione."
           />
-        </Snackbar>*/}
+        </Snackbar>
       </>
     );
   }
