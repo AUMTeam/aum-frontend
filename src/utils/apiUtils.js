@@ -3,7 +3,7 @@
  * This file contains helper functions used for API requests.
  */
 import { API_ENDPOINT_URL, REQUEST_TIMEOUT_MS, TOKEN_LOCALSTORAGE_KEY, LIST_ELEMENTS_TYPE } from '../constants/api';
-import { COMMITS_ATTRIBUTE } from '../constants/commits';
+import { LIST_ELEMENT_ATTRIBUTE } from '../constants/listElements';
 
 /**
  * Returns a promise that is rejected after the specified timeout
@@ -70,8 +70,7 @@ export function makeAuthenticatedApiRequest(actionPath, accessToken, requestData
 export function getSearchFilter(searchQuery) {
   if (searchQuery != null && searchQuery !== '')
     return {
-      // it must be the same regardless of the type
-      attribute: COMMITS_ATTRIBUTE.DESCRIPTION,
+      attribute: LIST_ELEMENT_ATTRIBUTE.DESCRIPTION,
       valueMatches: searchQuery
     }
   else

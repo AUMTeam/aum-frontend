@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import HighlightOff from '@material-ui/icons/HighlightOff';
 import Schedule from '@material-ui/icons/Schedule';
-import { APPROVAL_STATUS } from '../../constants/commits';
+import { APPROVAL_STATUS } from '../../constants/listElements';
 
 const approvedIconStyle = {
   color: '#2eb72c'
