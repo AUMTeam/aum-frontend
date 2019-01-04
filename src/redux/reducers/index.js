@@ -23,6 +23,7 @@ import { USER_TYPE_ID } from '../../constants/user';
  * |-- client
  * |   |-- ??? (TBD)
  * |-- globalError
+ * User view-specific reducers are generated dynamically (see views.js for details).
  */
 
 const reducers = combineReducers({
