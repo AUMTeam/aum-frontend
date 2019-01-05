@@ -1,5 +1,5 @@
 import { delay } from 'redux-saga';
-import { cancel, cancelled, fork, put, select, take, takeLatest, /* debounce */ } from 'redux-saga/effects';
+import { cancel, cancelled, fork, put, select, take, takeLatest, takeEvery, /* debounce */ } from 'redux-saga/effects';
 import { LIST_AUTO_UPDATE_INTERVAL, LIST_ELEMENTS_PER_PAGE, SEARCH_DEBOUNCE_DELAY_MS } from '../../constants/api';
 import { getListRequestPath } from '../../utils/apiUtils';
 import { LIST_ACTION_TYPE } from '../actions/lists';
@@ -109,6 +109,31 @@ function* checkForListUpdates(latestUpdateTimestamp, action) {
   }
 }
 
+/**
+ * Performs approval of rejection of the commit/send request passed through the action.
+ * The outcome of this operation isn't notified with the dispatch of an action, rather with
+ * the execution of a callback whose signature is (elementId, success: bool)
+ * @param {*} action action of type ELEMENT_REVIEW_REQUEST
+ */
+function* reviewListElement(action) {
+  const reviewResponseData = yield makeRequestAndReportErrors(
+    getListRequestPath(action.elementType, 'approve'),
+    { ...action, type: LIST_ACTION_TYPE.ELEMENT_REVIEW_FAILED },
+    {
+      id: action.elementId,
+      approve_flag: action.approvalStatus
+    },
+    yield select(state => state.auth.accessToken)
+  );
+
+  if (reviewResponseData != null) {
+    console.log(`Element ${action.elementId} reviewed successfully`);
+    action.callback(action.elementId, true);
+  }
+  // Error callback is called by the saga triggered by ELEMENT_REVIEW_FAILED action (see below)
+}
+
+
 // Contains the auto update checking tasks corresponding to the lists of the specified element type and view,
 // so that they can be started and stopped from different functions (see below).
 // Keys are in the form `${userRoleString}.${elementType}`.
@@ -173,5 +198,8 @@ export const listSagas = [
   updateCheckingTasksRunner(),
   updateCheckingTasksStopper(),
   takeLatest(LIST_ACTION_TYPE.PAGE_REQUEST, retrieveListPage),
-  takeLatest(LIST_ACTION_TYPE.SEARCH_QUERY_CHANGED, retrieveListPage)  // TODO debounce with saga v1
+  takeLatest(LIST_ACTION_TYPE.SEARCH_QUERY_CHANGED, retrieveListPage),  // TODO debounce with saga v1
+  takeEvery(LIST_ACTION_TYPE.ELEMENT_REVIEW_REQUEST, reviewListElement),
+  // reports errors in review requests
+  takeEvery(LIST_ACTION_TYPE.ELEMENT_REVIEW_FAILED, action => action.callback(action.elementId, false))
 ];

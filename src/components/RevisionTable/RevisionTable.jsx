@@ -9,6 +9,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import HighlightOff from '@material-ui/icons/HighlightOff';
+import DoneIcon from '@material-ui/icons/Done';
+import ErrorOutline from '@material-ui/icons/ErrorOutline';
 import SortableTableHeader from '../SortableTableHeader';
 import TableToolbar from '../TableToolbar';
 import TablePaginationFooter from '../TablePaginationFooter';
@@ -18,6 +20,7 @@ import ApprovalStatusIcon from '../ApprovalStatusIcon';
 import { LIST_ELEMENTS_PER_PAGE, LIST_ELEMENTS_TYPE } from '../../constants/api';
 import { LIST_ELEMENT_ATTRIBUTE, APPROVAL_STATUS } from '../../constants/listElements';
 import { getSearchFilter, getHistoryFilter, getToBeReviewedFilter } from '../../utils/apiUtils';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const tableStyles = theme => ({
   paper: {
@@ -42,7 +45,7 @@ const REVIEW_BUTTONS_COLUMN = 'REVIEW_BUTTONS_COLUMN';
 const historyTableColumns = [
   { label: 'ID', key: LIST_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
   { label: 'Descrizione', key: LIST_ELEMENT_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
-  { label: 'Data', key: LIST_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
+  { label: 'Data creazione', key: LIST_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
   { label: 'Autore', key: LIST_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
   { label: 'Approvato', key: LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS, displayOnMobile: true }
 ];
@@ -50,11 +53,19 @@ const historyTableColumns = [
 const reviewTableColumns = [
   { label: 'ID', key: LIST_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
   { label: 'Descrizione', key: LIST_ELEMENT_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
-  { label: 'Data', key: LIST_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
+  { label: 'Data creazione', key: LIST_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
   { label: 'Autore', key: LIST_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
   { label: 'Azioni', key: REVIEW_BUTTONS_COLUMN, displayOnMobile: true }
 ];
 
+/**
+ * @class
+ * Table which allows the user to show previously reviewed commits/send requests and to approve
+ * or reject them.
+ * Through radio buttons on the toolbar, the user can switch between the two functionalities. In
+ * the code, the first is called "history mode", while the second "review mode".
+ * Search functionality acts regardless of the selected mode (in fact, radio buttons are disabled during search).
+ */
 class RevisionTable extends React.Component {
   constructor(props) {
     super(props);
@@ -65,21 +76,38 @@ class RevisionTable extends React.Component {
         columnKey: null,
         direction: 'desc'
       },
-      filter: getToBeReviewedFilter()
+      filter: getToBeReviewedFilter(),
+
+      // these arrays contain the ids of the items whose review is in progress,
+      // has been completed or is failed
+      reviewInProgressItems: [],
+      successfullyReviewedItems: [],
+      failedReviewItems: []
     };
 
     props.loadPage(0, this.state.sorting, this.state.filter);
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
     return (
       this.props.isLoading !== nextProps.isLoading ||
-      this.props.latestUpdateTimestamp !== nextProps.latestUpdateTimestamp
+      this.props.latestUpdateTimestamp !== nextProps.latestUpdateTimestamp ||
+      this.state.reviewInProgressItems !== nextState.reviewInProgressItems ||
+      this.state.successfullyReviewedItems !== nextState.successfullyReviewedItems ||
+      this.state.failedReviewItems !== nextState.failedReviewItems
     );
   }
 
   render() {
-    const { classes, tableData, elementType, itemsCount, isLoading, latestUpdateTimestamp, displayError } = this.props;
+    const {
+      classes,
+      tableData,
+      elementType,
+      itemsCount,
+      isLoading,
+      latestUpdateTimestamp,
+      displayError
+    } = this.props;
     const reviewMode = this.isReviewMode();
 
     return (
@@ -166,16 +194,26 @@ class RevisionTable extends React.Component {
       case REVIEW_BUTTONS_COLUMN:
         return (
           <>
-            <HighlightOff
-              classes={{ root: this.props.classes.iconButton }}
-              color="error"
-              onClick={() => this.props.onItemReview(elementId, APPROVAL_STATUS.REJECTED)}
-            />
-            <CheckCircleOutline
-              classes={{ root: this.props.classes.iconButton }}
-              className={this.props.classes.approvedIcon}
-              onClick={() => this.props.onItemReview(elementId, APPROVAL_STATUS.APPROVED)}
-            />
+            {this.state.successfullyReviewedItems.includes(elementId) ? (
+              <DoneIcon color="action" />
+            ) : this.state.failedReviewItems.includes(elementId) ? (
+              <ErrorOutline color="action" />
+            ) : this.state.reviewInProgressItems.includes(elementId) ? (
+              <CircularProgress size={28} />
+            ) : (
+              <>
+                <HighlightOff
+                  classes={{ root: this.props.classes.iconButton }}
+                  color="error"
+                  onClick={() => this.onItemReviewRequest(elementId, APPROVAL_STATUS.REJECTED)}
+                />
+                <CheckCircleOutline
+                  classes={{ root: this.props.classes.iconButton }}
+                  className={this.props.classes.approvedIcon}
+                  onClick={() => this.onItemReviewRequest(elementId, APPROVAL_STATUS.APPROVED)}
+                />
+              </>
+            )}
           </>
         );
       default:
@@ -227,9 +265,48 @@ class RevisionTable extends React.Component {
     this.props.loadPage(this.state.currentPage, updatedSorting, this.state.filter);
   };
 
+  /**
+   * Called when the user switches between "history" and "review" mode.
+   * Success and failed (especially the latter) review items arrays are wiped because if we don't,
+   * when a review request fails and the user selects "history" and then goes back to review mode,
+   * error icon will be displayed again on the items whose review request failed
+   */
   onFilterChange = newFilter => {
-    this.setState({ filter: newFilter });
+    this.setState({
+      filter: newFilter,
+      failedReviewItems: [],
+      successfullyReviewedItems: []
+    });
     this.props.loadPage(0, this.state.sorting, newFilter);
+  };
+
+  // Called when review is requested for an item of the list
+  // Updates state to show a spinner instead of buttons while API request is in progress
+  onItemReviewRequest = (elementId, approvalStatus) => {
+    const reviewInProgressItemsUpdated = [...this.state.reviewInProgressItems, elementId];
+    this.setState({ reviewInProgressItems: reviewInProgressItemsUpdated });
+    this.props.onItemReview(elementId, approvalStatus, this.onItemReviewCompleted);
+  };
+
+  // Callback passed to the function which performs the approval/rejection request
+  // Updates state to display error or done icon instead of buttons
+  onItemReviewCompleted = (elementId, success) => {
+    const reviewInProgressItemsUpdated = [...this.state.reviewInProgressItems];
+    reviewInProgressItemsUpdated.splice(reviewInProgressItemsUpdated.indexOf(elementId), 1);
+    if (success) {
+      const successfullyReviewedItemsUpdated = [...this.state.successfullyReviewedItems, elementId];
+      this.setState({
+        reviewInProgressItems: reviewInProgressItemsUpdated,
+        successfullyReviewedItems: successfullyReviewedItemsUpdated
+      });
+    }
+    else {
+      const failedReviewItemsUpdated = [...this.state.failedReviewItems, elementId];
+      this.setState({
+        reviewInProgressItems: reviewInProgressItemsUpdated,
+        failedReviewItems: failedReviewItemsUpdated
+      });
+    }
   };
 
   onSearchQueryChange = newQuery => {

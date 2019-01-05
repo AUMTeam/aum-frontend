@@ -8,14 +8,13 @@ import {
   startSendRequestsListUpdatesAutoCheckingAction,
   stopSendRequestsListUpdatesAutoCheckingAction
 } from '../../redux/actions/sendRequests';
-import { performNewSearchAction } from '../../redux/actions/lists';
+import { performNewSearchAction, reviewItemAction } from '../../redux/actions/lists';
 import { viewStyles } from '../styles';
 import RevisionTable from '../../components/RevisionTable';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import Grid from '@material-ui/core/Grid';
 import { LIST_ELEMENTS_TYPE } from '../../constants/api';
-import { APPROVAL_STATUS } from '../../constants/listElements';
 
 class RevisionOfficeManagerView extends React.Component {
   constructor(props) {
@@ -29,7 +28,7 @@ class RevisionOfficeManagerView extends React.Component {
   }
 
   render() {
-    const { classes, sendRequestsData, retrieveSendRequestsListPage, performNewSearch } = this.props;
+    const { classes, sendRequestsData, retrieveSendRequestsListPage, performNewSearch, reviewItem } = this.props;
     return (
       <>
         <Grid container className={classes.grid}>
@@ -56,10 +55,8 @@ class RevisionOfficeManagerView extends React.Component {
                     searchQuery
                   );
                 }}
-                onItemReview={(elementId, approvalStatus) =>
-                  console.log(
-                    `Send request ${elementId} ${approvalStatus === APPROVAL_STATUS.APPROVED ? 'approved' : 'rejected'}`
-                  )
+                onItemReview={(elementId, approvalStatus, callback) =>
+                  reviewItem(LIST_ELEMENTS_TYPE.SEND_REQUESTS, elementId, approvalStatus, callback)
                 }
               />
             </Grid>
@@ -89,7 +86,8 @@ const mapDispatchToProps = dispatch => {
       retrieveSendRequestsListPage: retrieveSendRequestsListPageAction,
       startSendRequestsListUpdatesAutoChecking: startSendRequestsListUpdatesAutoCheckingAction,
       stopSendRequestsListUpdatesAutoChecking: stopSendRequestsListUpdatesAutoCheckingAction,
-      performNewSearch: performNewSearchAction
+      performNewSearch: performNewSearchAction,
+      reviewItem: reviewItemAction
     },
     dispatch
   );
