@@ -7,6 +7,7 @@ import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import { withStyles } from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
+import Tooltip from '@material-ui/core/Tooltip';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import HighlightOff from '@material-ui/icons/HighlightOff';
 import DoneIcon from '@material-ui/icons/Done';
@@ -31,11 +32,13 @@ const tableStyles = theme => ({
   approvedIcon: {
     color: theme.palette.approved
   },
-  iconButton: {
+  biggerIcon: {
     fontSize: '28px',
-    marginRight: '4px',
+    marginRight: '4px'
+  },
+  iconHover: {
     '&:hover': {
-      filter: 'brightness(0.7)'
+      filter: 'opacity(0.7)'
     }
   }
 });
@@ -184,6 +187,8 @@ class RevisionTable extends React.Component {
   };
 
   renderCellContent = (columnKey, value, elementId) => {
+    const { classes } = this.props;
+
     switch (columnKey) {
       case LIST_ELEMENT_ATTRIBUTE.AUTHOR:
         return value.name;
@@ -195,21 +200,31 @@ class RevisionTable extends React.Component {
         return (
           <>
             {this.state.successfullyReviewedItems.includes(elementId) ? (
-              <DoneIcon color="action" />
+              <DoneIcon classes={{ root: classes.biggerIcon }} color="action" />
             ) : this.state.failedReviewItems.includes(elementId) ? (
-              <ErrorOutline color="action" />
+              <Tooltip title="Si è verificato un errore. Clicca l'icona per riprovare." placement="top" enterDelay={250}>
+                <ErrorOutline
+                  classes={{ root: `${classes.biggerIcon} ${classes.iconHover}` }}
+                  color="action"
+                  onClick={() => {
+                    const failedReviewItemsUpdated = [...this.state.failedReviewItems];
+                    failedReviewItemsUpdated.splice(failedReviewItemsUpdated.indexOf(elementId), 1);
+                    this.setState({ failedReviewItems: failedReviewItemsUpdated });
+                  }}
+                />
+              </Tooltip>
             ) : this.state.reviewInProgressItems.includes(elementId) ? (
               <CircularProgress size={28} />
             ) : (
               <>
                 <HighlightOff
-                  classes={{ root: this.props.classes.iconButton }}
+                  classes={{ root: `${classes.biggerIcon} ${classes.iconHover}` }}
                   color="error"
                   onClick={() => this.onItemReviewRequest(elementId, APPROVAL_STATUS.REJECTED)}
                 />
                 <CheckCircleOutline
-                  classes={{ root: this.props.classes.iconButton }}
-                  className={this.props.classes.approvedIcon}
+                  classes={{ root: `${classes.biggerIcon} ${classes.iconHover}` }}
+                  className={classes.approvedIcon}
                   onClick={() => this.onItemReviewRequest(elementId, APPROVAL_STATUS.APPROVED)}
                 />
               </>
