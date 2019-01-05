@@ -26,7 +26,8 @@ export function configureTheme() {
         main: '#f44336',
         dark: '#d32f2f',
         contrastText: '#ffffff'
-      }
+      },
+      approved: '#2eb72c'
     },
     typography: {
       useNextVariants: true

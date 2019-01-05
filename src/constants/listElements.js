@@ -1,7 +1,7 @@
 /**
- * List of fields contained in commits objects
+ * List of attributes which are common between commits and send requests
  */
-export const COMMITS_ATTRIBUTE = {
+export const LIST_ELEMENT_ATTRIBUTE = {
   ID: 'id',
   DESCRIPTION: 'description',
   TIMESTAMP: 'timestamp',
@@ -9,7 +9,6 @@ export const COMMITS_ATTRIBUTE = {
   APPROVAL_STATUS: 'approval_status'
 };
 
-// Used for send requests too
 export const APPROVAL_STATUS = {
   APPROVED: 1,
   PENDING: 0,

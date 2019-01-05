@@ -12,7 +12,7 @@ import TableBodySkeleton from '../TableBodySkeleton';
 import DynamicTableBody from '../DynamicTableBody';
 import ApprovalStatusIcon from '../ApprovalStatusIcon';
 import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
-import { COMMITS_ATTRIBUTE } from '../../constants/commits';
+import { LIST_ELEMENT_ATTRIBUTE } from '../../constants/listElements';
 import { getSearchFilter } from '../../utils/apiUtils'
 
 const styles = {
@@ -20,15 +20,16 @@ const styles = {
     flexGrow: 1,
     width: '100%',
     overflowX: 'auto'
-  },
-  approvedIcon: {
-    color: '#2eb72c'
-  },
-  verticalAlignedContent: {
-    display: 'flex',
-    alignItems: 'center'
   }
 };
+
+const tableColumns = [
+  { label: 'ID', key: LIST_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
+  { label: 'Descrizione', key: LIST_ELEMENT_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
+  { label: 'Data', key: LIST_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
+  { label: 'Autore', key: LIST_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
+  { label: 'Approvato', key: LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS, displayOnMobile: true }
+];
 
 /**
  * @class
@@ -66,7 +67,6 @@ class ProgrammerTable extends Component {
     const {
       classes,
       isLoading,
-      tableColumns,
       tableToolbarTitle,
       tableData,
       latestUpdateTimestamp,
@@ -127,11 +127,11 @@ class ProgrammerTable extends Component {
    */
   renderCellContent(columnKey, value) {
     switch (columnKey) {
-      case COMMITS_ATTRIBUTE.AUTHOR:
+      case LIST_ELEMENT_ATTRIBUTE.AUTHOR:
         return value.name;
-      case COMMITS_ATTRIBUTE.APPROVAL_STATUS:
+      case LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS:
         return <ApprovalStatusIcon status={+value} />
-      case COMMITS_ATTRIBUTE.TIMESTAMP:
+      case LIST_ELEMENT_ATTRIBUTE.TIMESTAMP:
         return new Date(value * 1000).toLocaleString('it-it');
       default:
         return value;
@@ -141,9 +141,10 @@ class ProgrammerTable extends Component {
   /**
    * Returns the count of the effectively shown columns depending on screen size
    */
+  // prettier-ignore
   currentlyShowingColumnsCount = () => {
     let columnCount = 0;
-    this.props.tableColumns.map(column => {
+    tableColumns.map(column => {
       if (isWidthDown('sm', this.props.width)) {
         if (column.displayOnMobile)
           columnCount++;
@@ -177,7 +178,6 @@ class ProgrammerTable extends Component {
 ProgrammerTable.propTypes = {
   classes: PropTypes.object.isRequired,
   tableToolbarTitle: PropTypes.string.isRequired,
-  tableColumns: PropTypes.array.isRequired,
   tableData: PropTypes.array.isRequired,
   itemsCount: PropTypes.number.isRequired,
   loadPage: PropTypes.func.isRequired,

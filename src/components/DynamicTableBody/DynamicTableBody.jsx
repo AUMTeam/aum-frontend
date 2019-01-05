@@ -19,7 +19,7 @@ const verticallyAlignedContentStyle = {
  * This component accepts also a function (renderCellContent) which defines how the values of the specific columns
  * must be rendered. Typically is a switch-case which always return a JSX snippet (in other words a component).
  */
-export default class DynamicTableBody extends React.PureComponent {
+export default class DynamicTableBody extends React.Component {
   render() {
     const { tableData, tableColumns, displayError, totalItemsCount, pageNumber, renderCellContent } = this.props;
     return (
@@ -42,7 +42,7 @@ export default class DynamicTableBody extends React.PureComponent {
               <TableRow hover key={rowValue.id}>
                 {tableColumns.map(column => (
                   <Hidden key={rowValue[column.key]} smDown={!column.displayOnMobile}>
-                    <TableCell padding="dense">{renderCellContent(column.key, rowValue[column.key])}</TableCell>
+                    <TableCell padding="dense">{renderCellContent(column.key, rowValue[column.key], rowValue.id)}</TableCell>
                   </Hidden>
                 ))}
               </TableRow>

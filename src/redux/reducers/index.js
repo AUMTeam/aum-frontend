@@ -1,8 +1,9 @@
 import { combineReducers } from 'redux';
 import { auth } from './auth';
 import { globalError } from './globalError';
-import { programmer } from './programmer';
+import { generateViewReducers } from './views';
 import { user } from './user';
+import { USER_TYPE_ID } from '../../constants/user';
 
 /**
  * @file
@@ -22,12 +23,17 @@ import { user } from './user';
  * |-- client
  * |   |-- ??? (TBD)
  * |-- globalError
+ * User view-specific reducers are generated dynamically (see views.js for details).
  */
 
 const reducers = combineReducers({
   auth,
   user,
-  programmer,
+  ...generateViewReducers([
+    USER_TYPE_ID.PROGRAMMER,
+    USER_TYPE_ID.TECHNICAL_AREA_MANAGER,
+    USER_TYPE_ID.REVISION_OFFICE_MANAGER
+  ]),
   globalError
 });
 

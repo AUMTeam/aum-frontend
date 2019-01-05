@@ -16,19 +16,7 @@ import {
 import { CommitsSubView } from './CommitsSubView';
 import { SendRequestsSubView } from './SendRequestsSubView';
 import { performNewSearchAction } from '../../redux/actions/lists';
-
-const styles = theme => ({
-  grid: {
-    margin: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      padding: 16
-    }
-  },
-  errorSnackbar: {
-    backgroundColor: theme.palette.error.main
-  }
-});
+import { viewStyles } from '../styles';
 
 /**
  * @class
@@ -120,7 +108,7 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default withStyles(styles)(
+export default withStyles(viewStyles)(
   connect(
     mapStateToProps,
     mapDispatchToProps

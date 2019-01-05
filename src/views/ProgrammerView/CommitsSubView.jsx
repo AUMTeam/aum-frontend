@@ -3,16 +3,7 @@ import PropTypes from 'prop-types';
 import { Snackbar, SnackbarContent } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import ProgrammerTable from '../../components/ProgrammerTable';
-import { COMMITS_ATTRIBUTE } from '../../constants/commits';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
-
-const COMMITS_TABLE_COLUMNS = [
-  { label: 'ID', key: COMMITS_ATTRIBUTE.ID, displayOnMobile: false },
-  { label: 'Descrizione', key: COMMITS_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
-  { label: 'Data', key: COMMITS_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
-  { label: 'Autore', key: COMMITS_ATTRIBUTE.AUTHOR, displayOnMobile: false },
-  { label: 'Approvato', key: COMMITS_ATTRIBUTE.APPROVAL_STATUS, displayOnMobile: true }
-];
 
 /**
  * @class
@@ -37,7 +28,6 @@ export class CommitsSubView extends Component {
             <Grid container justify="center">
               <ProgrammerTable
                 tableToolbarTitle="Lista commit"
-                tableColumns={COMMITS_TABLE_COLUMNS}
                 tableData={this.props.commitsData.listPages}
                 itemsCount={this.props.commitsData.totalItemsCount}
                 loadPage={this.props.onTablePageLoad}
