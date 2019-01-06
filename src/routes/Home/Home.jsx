@@ -23,7 +23,7 @@ const homeStyles = theme => ({
     display: 'flex'
   },
   content: {
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
       marginLeft: `calc(${DESKTOP_DRAWER_WIDTH})`,
       width: `calc(100% - ${DESKTOP_DRAWER_WIDTH})`
     }

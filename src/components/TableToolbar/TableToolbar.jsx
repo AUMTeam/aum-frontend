@@ -54,9 +54,11 @@ const toolbarStyles = theme => ({
         width: 256
       }
     }
+  },
+  toolbarContainer: {
+    margin: '0 -8px'
   }
 });
-
 
 /**
  * @class
@@ -78,7 +80,14 @@ class TableToolbar extends React.Component {
 
     return (
       <Toolbar>
-        <Grid container direction="row" justify="space-between" alignItems="center" spacing={16}>
+        <Grid
+          className={classes.toolbarContainer}
+          container
+          direction="row"
+          justify="space-between"
+          alignItems="center"
+          spacing={16}
+        >
           <Grid item>
             <Typography variant="h5">{toolbarTitle}</Typography>
           </Grid>

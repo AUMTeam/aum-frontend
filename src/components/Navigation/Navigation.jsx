@@ -27,7 +27,7 @@ const styles = theme => ({
     display: 'flex'
   },
   appBar: {
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
       marginLeft: DESKTOP_DRAWER_WIDTH,
       width: `calc(100% - ${DESKTOP_DRAWER_WIDTH})`
     }
@@ -37,12 +37,12 @@ const styles = theme => ({
   },
   menuButton: {
     marginRight: 20,
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
       display: 'none'
     }
   },
   toolbarTitle: {
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
       marginLeft: 16
     }
   },
@@ -113,10 +113,10 @@ class Navigation extends Component {
         </AppBar>
 
         <aside>
-          <Hidden smUp implementation="css">
+          <Hidden mdUp implementation="css">
             {this.renderMobileDrawer()}
           </Hidden>
-          <Hidden xsDown implementation="css">
+          <Hidden smDown implementation="css">
             {this.renderDesktopDrawer()}
           </Hidden>
         </aside>

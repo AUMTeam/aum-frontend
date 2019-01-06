@@ -20,7 +20,7 @@ export default class SortableTableHeader extends React.PureComponent {
         <TableRow>
           {tableColumns.map(column => (
             <Hidden key={column.key} smDown={!column.displayOnMobile}>
-              <TableCell>
+              <TableCell padding="dense">
                 <TableSortLabel
                   active={sortingCriteria.columnKey === column.key}
                   direction={sortingCriteria.direction}
