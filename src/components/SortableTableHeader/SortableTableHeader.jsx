@@ -24,7 +24,7 @@ export default class SortableTableHeader extends React.PureComponent {
                 <TableSortLabel
                   active={sortingCriteria.columnKey === column.key}
                   direction={sortingCriteria.direction}
-                  onClick={() => {
+                  onClick={column.notSortable ? null : () => {
                     const updatedSorting = {
                       columnKey: column.key,
                       direction: sortingCriteria.direction === 'asc' ? 'desc' : 'asc'

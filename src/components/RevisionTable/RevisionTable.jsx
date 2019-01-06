@@ -58,7 +58,7 @@ const reviewTableColumns = [
   { label: 'Descrizione', key: LIST_ELEMENT_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
   { label: 'Data creazione', key: LIST_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
   { label: 'Autore', key: LIST_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
-  { label: 'Azioni', key: REVIEW_BUTTONS_COLUMN, displayOnMobile: true }
+  { label: 'Azioni', key: REVIEW_BUTTONS_COLUMN, displayOnMobile: true, notSortable: true }
 ];
 
 /**
