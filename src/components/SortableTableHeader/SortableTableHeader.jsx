@@ -9,7 +9,8 @@ import Hidden from '@material-ui/core/Hidden';
 /**
  * @class
  * Displays the header for the specified table columns, which can be clicked to trigger sorting.
- * Table columns array contains objects with the following shape: { label: string, key: string, displayOnMobile: bool }.
+ * Table columns array contains objects with the following shape:
+ * { label: string, key: string, displayOnMobile: bool, alignOption?: string, notSortable?: bool }.
  * This allows us to display only certain columns on mobile devices.
  */
 export default class SortableTableHeader extends React.PureComponent {
@@ -20,7 +21,7 @@ export default class SortableTableHeader extends React.PureComponent {
         <TableRow>
           {tableColumns.map(column => (
             <Hidden key={column.key} smDown={!column.displayOnMobile}>
-              <TableCell padding="dense">
+              <TableCell align={column.alignOption != null ? column.alignOption : undefined} padding="dense">
                 <TableSortLabel
                   active={sortingCriteria.columnKey === column.key}
                   direction={sortingCriteria.direction}

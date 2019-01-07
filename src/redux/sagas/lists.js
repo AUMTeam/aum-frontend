@@ -128,7 +128,7 @@ function* reviewListElement(action) {
 
   if (reviewResponseData != null) {
     console.log(`Element ${action.elementId} reviewed successfully`);
-    action.callback(action.elementId, true);
+    action.callback(action.elementId, action.approvalStatus, true);
   }
   // Error callback is called by the saga triggered by ELEMENT_REVIEW_FAILED action (see below)
 }
@@ -198,8 +198,10 @@ export const listSagas = [
   updateCheckingTasksRunner(),
   updateCheckingTasksStopper(),
   takeLatest(LIST_ACTION_TYPE.PAGE_REQUEST, retrieveListPage),
-  takeLatest(LIST_ACTION_TYPE.SEARCH_QUERY_CHANGED, retrieveListPage),  // TODO debounce with saga v1
+  takeLatest(LIST_ACTION_TYPE.SEARCH_QUERY_CHANGED, retrieveListPage), // TODO debounce with saga v1
   takeEvery(LIST_ACTION_TYPE.ELEMENT_REVIEW_REQUEST, reviewListElement),
   // reports errors in review requests
-  takeEvery(LIST_ACTION_TYPE.ELEMENT_REVIEW_FAILED, action => action.callback(action.elementId, false))
+  takeEvery(LIST_ACTION_TYPE.ELEMENT_REVIEW_FAILED, action =>
+    action.callback(action.elementId, action.approvalStatus, false)
+  )
 ];

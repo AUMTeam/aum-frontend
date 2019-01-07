@@ -15,13 +15,20 @@ const verticallyAlignedContentStyle = {
  * @class
  * The body of the tables present in the different views. Data is rendered according to the given columns array,
  * which specifies the key to access data of the specific columns and whether they should be shown on mobile.
- * Columns are objects with the following shape: { label: string, key: string, displayOnMobile: bool }.
+ * Columns are objects with the following shape: { label: string, key: string, displayOnMobile: bool, alignOption?: string }.
  * This component accepts also a function (renderCellContent) which defines how the values of the specific columns
  * must be rendered. Typically is a switch-case which always return a JSX snippet (in other words a component).
  */
 export default class DynamicTableBody extends React.Component {
   render() {
-    const { tableData, tableColumns, displayError, totalItemsCount, pageNumber, renderCellContent } = this.props;
+    const {
+      tableData,
+      tableColumns,
+      displayError,
+      totalItemsCount,
+      pageNumber,
+      renderCellContent
+    } = this.props;
     return (
       <TableBody>
         {displayError ? (
@@ -42,7 +49,9 @@ export default class DynamicTableBody extends React.Component {
               <TableRow hover key={rowValue.id}>
                 {tableColumns.map(column => (
                   <Hidden key={rowValue[column.key]} smDown={!column.displayOnMobile}>
-                    <TableCell padding="dense">{renderCellContent(column.key, rowValue[column.key], rowValue.id)}</TableCell>
+                    <TableCell align={column.alignOption != null ? column.alignOption : undefined} padding="dense">
+                      {renderCellContent(column.key, rowValue[column.key], rowValue.id)}
+                    </TableCell>
                   </Hidden>
                 ))}
               </TableRow>
