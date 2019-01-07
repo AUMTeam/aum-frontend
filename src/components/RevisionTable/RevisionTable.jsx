@@ -33,6 +33,9 @@ const tableStyles = theme => ({
   approvedIcon: {
     color: theme.palette.approved
   },
+  inactiveIcon: {
+    filter: 'opacity(70%)'
+  },
   errorSnackbar: {
     backgroundColor: theme.palette.error.main
   }
@@ -223,9 +226,9 @@ class RevisionTable extends React.Component {
           <>
             {this.state.successfullyReviewedItems[elementId] != null ? (
               this.state.successfullyReviewedItems[elementId] === APPROVAL_STATUS.APPROVED ? (
-                <CheckCircleOutline className={classes.approvedIcon} />
+                <CheckCircleOutline className={`${classes.approvedIcon} ${classes.inactiveIcon}`} />
               ) : (
-                <HighlightOff color="error" />
+                <HighlightOff className={classes.inactiveIcon} color="error" />
               )
             ) : this.state.reviewInProgressItems.includes(elementId) ? (
               <CircularProgress size={24} />
