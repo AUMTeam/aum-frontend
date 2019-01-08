@@ -5,12 +5,15 @@ import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import { withStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Badge from '@material-ui/core/Badge';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import IconButton from '@material-ui/core/IconButton';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import HighlightOff from '@material-ui/icons/HighlightOff';
 import SortableTableHeader from '../SortableTableHeader';
@@ -22,7 +25,6 @@ import ApprovalStatusIcon from '../ApprovalStatusIcon';
 import { LIST_ELEMENTS_PER_PAGE, LIST_ELEMENTS_TYPE } from '../../constants/api';
 import { LIST_ELEMENT_ATTRIBUTE, APPROVAL_STATUS } from '../../constants/listElements';
 import { getSearchFilter, getHistoryFilter, getToBeReviewedFilter } from '../../utils/apiUtils';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 const tableStyles = theme => ({
   paper: {
@@ -34,10 +36,14 @@ const tableStyles = theme => ({
     color: theme.palette.approved
   },
   inactiveIcon: {
-    filter: 'opacity(70%)'
+    filter: 'opacity(60%)'
   },
   errorSnackbar: {
     backgroundColor: theme.palette.error.main
+  },
+  errorBadge: {
+    width: '18px',
+    height: '18px'
   }
 });
 
@@ -230,6 +236,12 @@ class RevisionTable extends React.Component {
               ) : (
                 <HighlightOff className={classes.inactiveIcon} color="error" />
               )
+            ) : this.state.failedReviewItems[elementId] != null ? (
+                <IconButton onClick={() => this.onItemReviewRequest(elementId, this.state.failedReviewItems[elementId])}>
+                  <Badge classes={{badge: classes.errorBadge}} badgeContent="!" color="error">
+                    <RefreshIcon color="action" />
+                  </Badge>
+                </IconButton>
             ) : this.state.reviewInProgressItems.includes(elementId) ? (
               <CircularProgress size={24} />
             ) : (
