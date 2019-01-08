@@ -61,7 +61,8 @@ function* retrieveListPage(action) {
         elementType: action.elementType,
         userRoleString: action.userRoleString,
         serverResponse: pageResponseData,
-        pageNumber: action.pageNumber,
+        // if we asked for a non-existing page, the server gives us the last page
+        pageNumber: pageResponseData.page,
         sortingCriteria: action.sortingCriteria,
         filter: action.filter
       });
