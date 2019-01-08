@@ -1,8 +1,8 @@
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { configureStore } from './redux/configureStore';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import { SnackbarProvider } from 'notistack';
+import ReduxStoreProvider from './redux/configureStore';
 import Routes from './routes';
 import * as serviceWorker from './serviceWorker';
 import { configureTheme } from './theme/configureTheme';
@@ -15,17 +15,23 @@ import { changeEndpointUrl, API_ENDPOINT_URL } from './constants/api';
  * render the whole application from a root html element.
  */
 
-const store = configureStore();
-
 const theme = createMuiTheme(configureTheme());
 
 // App component that acts as the root of the webapp.
 const App = () => (
-  <Provider store={store}>
-    <MuiThemeProvider theme={theme}>
-      <Routes />
-    </MuiThemeProvider>
-  </Provider>
+  <MuiThemeProvider theme={theme}>
+    <SnackbarProvider
+      maxSnack={4}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'center'
+      }}
+    >
+      <ReduxStoreProvider>
+        <Routes />
+      </ReduxStoreProvider>
+    </SnackbarProvider>
+  </MuiThemeProvider>
 );
 
 ReactDOM.render(<App />, document.getElementById('root'));
@@ -41,8 +47,7 @@ if (process.env.NODE_ENV === 'development') {
     if (event.ctrlKey && event.key === 'e') {
       event.preventDefault();
       const newApiAddress = prompt("Inserisci il nuovo indirizzo dell'API endpoint:", API_ENDPOINT_URL);
-      if (newApiAddress != null)
-        changeEndpointUrl(newApiAddress);
+      if (newApiAddress != null) changeEndpointUrl(newApiAddress);
     }
   };
 }

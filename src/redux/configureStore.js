@@ -1,7 +1,10 @@
+import React from 'react';
 import { applyMiddleware, createStore, compose } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import reducers from './reducers';
 import rootSaga from './sagas';
+import { withSnackbar } from 'notistack';
+import { Provider } from 'react-redux';
 
 /**
  * @file
@@ -9,7 +12,7 @@ import rootSaga from './sagas';
  * We bind together reducers, state and all the needed middlewares.
  */
 
-export function configureStore() {
+function configureStore(notistackCallback) {
   const composeWithDevToolsIfPresent = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
   const saga = createSagaMiddleware();
@@ -21,3 +24,13 @@ export function configureStore() {
 
   return store;
 }
+
+function ReduxStoreProvider(props) {
+  return (
+    <Provider store={configureStore(props.enqueueSnackbar)}>
+      {props.children}
+    </Provider>
+  )
+}
+
+export default withSnackbar(ReduxStoreProvider);
