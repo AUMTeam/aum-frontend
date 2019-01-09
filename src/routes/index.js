@@ -65,18 +65,18 @@ class Routes extends Component {
           </HashRouter>
         )}
 
-        {/* Display a snackbar which allows the user to reload the page if there's a global uncaught error in Saga */}
+        {/*
+            Display a snackbar which allows the user to reload the page if there's a global uncaught error in Saga
+            TODO: This will become an error screen that will prevent the app to be usable
+          */}
         {this.props.globalError && (
           <Snackbar open>
             <SnackbarContent
               style={{ backgroundColor: this.props.theme.palette.error.main }}
               message="Abbiamo rilevato un errore inatteso nell'applicazione che ha portato ad una perdita di funzionalità. Per ripristinarla, ricaricare la pagina."
+              anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
               action={[
-                <Button
-                  style={{ color: this.props.theme.palette.common.white }}
-                  size="small"
-                  onClick={() => window.location.reload()}
-                >
+                <Button style={{ color: '#ffffff' }} size="small" onClick={() => window.location.reload()}>
                   Ricarica
                 </Button>
               ]}
