@@ -14,7 +14,7 @@ export const LIST_ACTION_TYPE = {
   // and therefore doesn't need to be retrieved from server
   NO_RETRIEVAL_NEEDED: 'NO_RETRIEVAL_NEEDED',
 
-  // Dispatched when the server responds successfully to an update check (regardless of there are updates or not)
+  // Dispatched when the server responds to an update check reporting new changes
   UPDATE_RECEIVED: 'UPDATE_RECEIVED',
 
   // Dispatched when a list update check fails

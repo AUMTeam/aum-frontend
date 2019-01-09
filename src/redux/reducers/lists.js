@@ -16,8 +16,7 @@ const initialState = {
   totalItemsCount: 0,
   currentlyShowingItem: null,
   isLoadingList: true,
-  errorWhileFetchingData: false,
-  errorWhileCheckingUpdates: false
+  errorWhileFetchingData: false
 };
 
 export function listReducer(state = initialState, action) {
@@ -58,15 +57,9 @@ export function listReducer(state = initialState, action) {
         ...state,
         isLoadingList: false
       };
-    case LIST_ACTION_TYPE.UPDATE_CHECKING_ERROR:
-      return {
-        ...state,
-        errorWhileCheckingUpdates: true
-      };
     case LIST_ACTION_TYPE.UPDATE_RECEIVED:
       return {
         ...state,
-        errorWhileCheckingUpdates: false,
         latestUpdateTimestamp: action.latestUpdateTimestamp
       };
     // This assumes that table is unmounted after auto checking stops.

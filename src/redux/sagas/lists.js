@@ -97,15 +97,14 @@ function* checkForListUpdates(latestUpdateTimestamp, action) {
   );
 
   if (updateResponseData != null) {
-    yield put({
-      type: LIST_ACTION_TYPE.UPDATE_RECEIVED,
-      userRoleString: action.userRoleString,
-      elementType: action.elementType,
-      latestUpdateTimestamp: updateResponseData.latest_update_timestamp,
-      updatesFound: updateResponseData.updates_found
-    });
-
-    if (!updateResponseData.updates_found)
+    if (updateResponseData.updates_found)
+      yield put({
+        type: LIST_ACTION_TYPE.UPDATE_RECEIVED,
+        userRoleString: action.userRoleString,
+        elementType: action.elementType,
+        latestUpdateTimestamp: updateResponseData.latest_update_timestamp
+      });
+    else
       console.log(`No ${action.elementType} list updates found`);
   }
 }
