@@ -3,7 +3,6 @@ import Card from '@material-ui/core/Card';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Grid from '@material-ui/core/Grid';
-import Snackbar from '@material-ui/core/Snackbar';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -40,7 +39,7 @@ class LoginCard extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, isAttemptingLogin } = this.props;
     const { username, password, usernameError, passwordError } = this.state;
     return (
       <Card className={classes.card} onKeyDown={this.onEnterKeyClicked}>
@@ -95,6 +94,7 @@ class LoginCard extends Component {
               <Grid item>
                 <Button
                   className={classes.loginButton}
+                  disabled={isAttemptingLogin}
                   size="large"
                   variant="contained"
                   color="secondary"
@@ -108,10 +108,6 @@ class LoginCard extends Component {
           </Grid>
 
         </Grid>
-        <Snackbar
-          open={this.props.loginErrorMessage != null}
-          message={<span>{this.props.loginErrorMessage}</span>}
-        />
       </Card>
     );
   }
@@ -176,8 +172,7 @@ LoginCard.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    isAttemptingLogin: state.auth.isAttemptingLogin,
-    loginErrorMessage: state.auth.loginErrorMessage
+    isAttemptingLogin: state.auth.isAttemptingLogin
   };
 };
 

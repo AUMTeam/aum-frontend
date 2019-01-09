@@ -11,8 +11,7 @@ const initialState = {
   accessToken: null,
   isAttemptingLogin: false,
   isValidatingToken: false,
-  isSessionExpired: false,
-  loginErrorMessage: null
+  isSessionExpired: false
 };
 
 export function auth(state = initialState, action) {
@@ -31,8 +30,7 @@ export function auth(state = initialState, action) {
     case AUTH_ACTION_TYPE.LOGIN_FAILED:
       return {
         ...state,
-        isAttemptingLogin: false,
-        loginErrorMessage: action.errorMessage
+        isAttemptingLogin: false
       };
 
     case AUTH_ACTION_TYPE.LOGOUT:
