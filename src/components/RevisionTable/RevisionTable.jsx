@@ -9,9 +9,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Badge from '@material-ui/core/Badge';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
-import Button from '@material-ui/core/Button';
-import Snackbar from '@material-ui/core/Snackbar';
-import SnackbarContent from '@material-ui/core/SnackbarContent';
 import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
@@ -124,73 +121,52 @@ class RevisionTable extends React.Component {
     const reviewMode = this.isReviewMode();
 
     return (
-      <>
-        <Paper className={classes.paper}>
-          <TableToolbar
-            toolbarTitle={
-              elementType === LIST_ELEMENTS_TYPE.COMMITS ? 'Revisione commit' : 'Revisione richieste di invio'
-            }
-            showAvailableUpdatesBadge={
-              !isLoading &&
-              tableData.length > 0 &&
-              tableData[this.state.currentPage] != null &&
-              latestUpdateTimestamp > tableData[this.state.currentPage].updateTimestamp
-            }
-            loadCurrentPage={this.loadCurrentPage}
-            onSearchQueryChange={this.onSearchQueryChange}
-            renderCustomContent={this.renderToolbarRadioButtons}
+      <Paper className={classes.paper}>
+        <TableToolbar
+          toolbarTitle={
+            elementType === LIST_ELEMENTS_TYPE.COMMITS ? 'Revisione commit' : 'Revisione richieste di invio'
+          }
+          showAvailableUpdatesBadge={
+            !isLoading &&
+            tableData.length > 0 &&
+            tableData[this.state.currentPage] != null &&
+            latestUpdateTimestamp > tableData[this.state.currentPage].updateTimestamp
+          }
+          loadCurrentPage={this.loadCurrentPage}
+          onSearchQueryChange={this.onSearchQueryChange}
+          renderCustomContent={this.renderToolbarRadioButtons}
+        />
+        <Table>
+          <SortableTableHeader
+            tableColumns={reviewMode ? reviewTableColumns : historyTableColumns}
+            sortingCriteria={this.state.sorting}
+            onSortingUpdate={this.onSortingUpdate}
           />
-          <Table>
-            <SortableTableHeader
-              tableColumns={reviewMode ? reviewTableColumns : historyTableColumns}
-              sortingCriteria={this.state.sorting}
-              onSortingUpdate={this.onSortingUpdate}
-            />
 
-            {isLoading ? (
-              <TableBodySkeleton
-                columnsCount={this.currentlyShowingColumnsCount(reviewMode)}
-                itemsPerPage={LIST_ELEMENTS_PER_PAGE}
-              />
-            ) : (
-              <DynamicTableBody
-                tableColumns={reviewMode ? reviewTableColumns : historyTableColumns}
-                tableData={tableData}
-                totalItemsCount={itemsCount}
-                displayError={displayError}
-                pageNumber={this.state.currentPage}
-                renderCellContent={this.renderCellContent}
-              />
-            )}
-
-            <TablePaginationFooter
-              itemsCount={itemsCount}
+          {isLoading ? (
+            <TableBodySkeleton
+              columnsCount={this.currentlyShowingColumnsCount(reviewMode)}
               itemsPerPage={LIST_ELEMENTS_PER_PAGE}
-              currentPage={this.state.currentPage}
-              onPageChange={this.onPageChange}
             />
-          </Table>
-        </Paper>
+          ) : (
+            <DynamicTableBody
+              tableColumns={reviewMode ? reviewTableColumns : historyTableColumns}
+              tableData={tableData}
+              totalItemsCount={itemsCount}
+              displayError={displayError}
+              pageNumber={this.state.currentPage}
+              renderCellContent={this.renderCellContent}
+            />
+          )}
 
-        {/* Display error snackbars on top of the screen for items whose review is failed */}
-        {Object.entries(this.state.failedReviewItems).map(elementPair => (
-          <Snackbar open anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-            <SnackbarContent
-              className={classes.errorSnackbar}
-              message={`Si è verificato un errore durante la revisione dell'elemento #${elementPair[0]}.`}
-              action={[
-                <Button
-                  style={{ color: '#ffffff' }}
-                  size="small"
-                  onClick={() => this.onItemReviewRequest(elementPair[0], elementPair[1])}
-                >
-                  RIPROVA
-                </Button>
-              ]}
-            />
-          </Snackbar>
-        ))}
-      </>
+          <TablePaginationFooter
+            itemsCount={itemsCount}
+            itemsPerPage={LIST_ELEMENTS_PER_PAGE}
+            currentPage={this.state.currentPage}
+            onPageChange={this.onPageChange}
+          />
+        </Table>
+      </Paper>
     );
   }
 
@@ -237,11 +213,13 @@ class RevisionTable extends React.Component {
                 <HighlightOff className={classes.inactiveIcon} color="error" />
               )
             ) : this.state.failedReviewItems[elementId] != null ? (
-                <IconButton onClick={() => this.onItemReviewRequest(elementId, this.state.failedReviewItems[elementId])}>
-                  <Badge classes={{badge: classes.errorBadge}} badgeContent="!" color="error">
-                    <RefreshIcon color="action" />
-                  </Badge>
-                </IconButton>
+              <IconButton
+                onClick={() => this.onItemReviewRequest(elementId, this.state.failedReviewItems[elementId])}
+              >
+                <Badge classes={{ badge: classes.errorBadge }} badgeContent="!" color="error">
+                  <RefreshIcon color="action" />
+                </Badge>
+              </IconButton>
             ) : this.state.reviewInProgressItems.includes(elementId) ? (
               <CircularProgress size={24} />
             ) : (

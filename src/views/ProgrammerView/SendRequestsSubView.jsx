@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Snackbar, SnackbarContent } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import ProgrammerTable from '../../components/ProgrammerTable';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
@@ -22,31 +21,22 @@ export class SendRequestsSubView extends Component {
 
   render() {
     return (
-      <>
-        <Grid container className={this.props.classes.grid}>
-          <Grid item xs={12}>
-            <Grid container justify="center">
-              <ProgrammerTable
-                tableToolbarTitle="Lista richieste di invio"
-                tableData={this.props.sendRequestsData.listPages}
-                itemsCount={this.props.sendRequestsData.totalItemsCount}
-                loadPage={this.props.onTablePageLoad}
-                isLoading={this.props.sendRequestsData.isLoadingList}
-                onSearchQueryChanged={this.props.onSearchQueryChanged}
-                latestUpdateTimestamp={this.props.sendRequestsData.latestUpdateTimestamp}
-                displayError={this.props.sendRequestsData.errorWhileFetchingData}
-              />
-            </Grid>
+      <Grid container className={this.props.classes.grid}>
+        <Grid item xs={12}>
+          <Grid container justify="center">
+            <ProgrammerTable
+              tableToolbarTitle="Lista richieste di invio"
+              tableData={this.props.sendRequestsData.listPages}
+              itemsCount={this.props.sendRequestsData.totalItemsCount}
+              loadPage={this.props.onTablePageLoad}
+              isLoading={this.props.sendRequestsData.isLoadingList}
+              onSearchQueryChanged={this.props.onSearchQueryChanged}
+              latestUpdateTimestamp={this.props.sendRequestsData.latestUpdateTimestamp}
+              displayError={this.props.sendRequestsData.errorWhileFetchingData}
+            />
           </Grid>
         </Grid>
-
-        <Snackbar open={this.props.sendRequestsData.errorWhileCheckingUpdates}>
-          <SnackbarContent
-            className={this.props.classes.errorSnackbar}
-            message="Impossibile controllare gli aggiornamenti per la lista. Controlla la tua connessione."
-          />
-        </Snackbar>
-      </>
+      </Grid>
     );
   }
 }
