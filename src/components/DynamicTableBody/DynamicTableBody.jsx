@@ -47,8 +47,8 @@ export default class DynamicTableBody extends React.Component {
           tableData[pageNumber].data.map(rowValue => {
             return (
               <TableRow hover key={rowValue.id}>
-                {tableColumns.map(column => (
-                  <Hidden key={rowValue[column.key]} smDown={!column.displayOnMobile}>
+                {tableColumns.map((column, index) => (
+                  <Hidden key={index} smDown={!column.displayOnMobile}>
                     <TableCell align={column.alignOption != null ? column.alignOption : undefined} padding="dense">
                       {renderCellContent(column.key, rowValue[column.key], rowValue.id)}
                     </TableCell>
