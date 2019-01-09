@@ -32,6 +32,12 @@ export function createNotistackMiddleware(enqueueSnackbar) {
           autoHideDuration: 5000
         });
         break;
+      case LIST_ACTION_TYPE.PAGE_RETRIEVAL_ERROR:
+        enqueueSnackbar('Impossibile caricare la pagina: ' + action.errorMessage, {
+          variant: 'error',
+          autoHideDuration: 5000
+        });
+        break;
     }
     next(action);
   };
