@@ -28,7 +28,7 @@ class TechnicalAreaManagerView extends React.Component {
   render() {
     const { classes, commitsData, retrieveCommitsListPage, performNewSearch, reviewItem } = this.props;
     return (
-      <Grid container className={classes.grid}>
+      <Grid container className={classes.root}>
         <Grid item xs={12}>
           <Grid container justify="center">
             <RevisionTable

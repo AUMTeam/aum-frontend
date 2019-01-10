@@ -20,19 +20,21 @@ export class SendRequestsSubView extends Component {
   }
 
   render() {
+    const { classes, sendRequestsData, onTablePageLoad, onSearchQueryChanged } = this.props;
+
     return (
-      <Grid container className={this.props.classes.grid}>
+      <Grid container className={classes.root}>
         <Grid item xs={12}>
           <Grid container justify="center">
             <ProgrammerTable
               tableToolbarTitle="Lista richieste di invio"
-              tableData={this.props.sendRequestsData.listPages}
-              itemsCount={this.props.sendRequestsData.totalItemsCount}
-              loadPage={this.props.onTablePageLoad}
-              isLoading={this.props.sendRequestsData.isLoadingList}
-              onSearchQueryChanged={this.props.onSearchQueryChanged}
-              latestUpdateTimestamp={this.props.sendRequestsData.latestUpdateTimestamp}
-              displayError={this.props.sendRequestsData.errorWhileFetchingData}
+              tableData={sendRequestsData.listPages}
+              itemsCount={sendRequestsData.totalItemsCount}
+              loadPage={onTablePageLoad}
+              isLoading={sendRequestsData.isLoadingList}
+              onSearchQueryChanged={onSearchQueryChanged}
+              latestUpdateTimestamp={sendRequestsData.latestUpdateTimestamp}
+              displayError={sendRequestsData.errorWhileFetchingData}
             />
           </Grid>
         </Grid>

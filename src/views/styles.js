@@ -4,11 +4,17 @@
  */
 
 export const viewStyles = theme => ({
-  grid: {
-    margin: 0,
+  root: {
     width: '100%',
+    paddingTop: 0,
+    paddingBottom: 79,
+    paddingLeft: 0,
+    paddingRight: 0,
     [theme.breakpoints.up('sm')]: {
-      padding: 16
+      paddingTop: 16,
+      paddingBottom: 79,
+      paddingLeft: 16,
+      paddingRight: 16
     }
   },
   errorSnackbar: {

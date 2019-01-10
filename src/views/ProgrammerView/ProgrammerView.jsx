@@ -15,7 +15,7 @@ import {
   stopSendRequestsListUpdatesAutoCheckingAction
 } from '../../redux/actions/sendRequests';
 import { viewStyles } from '../styles';
-import { CommitsSubView } from './CommitsSubView';
+import CommitsSubView from './CommitsSubView';
 import { SendRequestsSubView } from './SendRequestsSubView';
 import { NAVIGATION_HIERARCHY } from '../../constants/navigation';
 
