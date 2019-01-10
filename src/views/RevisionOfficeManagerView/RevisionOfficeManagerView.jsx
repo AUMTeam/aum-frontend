@@ -1,18 +1,18 @@
+import Grid from '@material-ui/core/Grid';
+import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { withStyles } from '@material-ui/core/styles';
+import RevisionTable from '../../components/RevisionTable';
+import { LIST_ELEMENTS_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
+import { performNewSearchAction, reviewItemAction } from '../../redux/actions/lists';
 import {
   retrieveSendRequestsListPageAction,
   startSendRequestsListUpdatesAutoCheckingAction,
   stopSendRequestsListUpdatesAutoCheckingAction
 } from '../../redux/actions/sendRequests';
-import { performNewSearchAction, reviewItemAction } from '../../redux/actions/lists';
 import { viewStyles } from '../styles';
-import RevisionTable from '../../components/RevisionTable';
-import Grid from '@material-ui/core/Grid';
-import { LIST_ELEMENTS_TYPE } from '../../constants/api';
 
 class RevisionOfficeManagerView extends React.Component {
   constructor(props) {
@@ -22,19 +22,11 @@ class RevisionOfficeManagerView extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.stopSendRequestsListUpdatesAutoChecking(
-      USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]
-    );
+    this.props.stopSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]);
   }
 
   render() {
-    const {
-      classes,
-      sendRequestsData,
-      retrieveSendRequestsListPage,
-      performNewSearch,
-      reviewItem
-    } = this.props;
+    const { classes, sendRequestsData, retrieveSendRequestsListPage, performNewSearch, reviewItem } = this.props;
 
     return (
       <Grid container className={classes.grid}>

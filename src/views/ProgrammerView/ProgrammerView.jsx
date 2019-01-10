@@ -1,22 +1,22 @@
+import { withStyles } from '@material-ui/core/styles';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { withStyles } from '@material-ui/core/styles';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import {
   retrieveCommitsListPageAction,
   startCommitsListUpdatesAutoCheckingAction,
   stopCommitsListUpdatesAutoCheckingAction
 } from '../../redux/actions/commits';
+import { performNewSearchAction } from '../../redux/actions/lists';
 import {
   retrieveSendRequestsListPageAction,
   startSendRequestsListUpdatesAutoCheckingAction,
   stopSendRequestsListUpdatesAutoCheckingAction
 } from '../../redux/actions/sendRequests';
+import { viewStyles } from '../styles';
 import { CommitsSubView } from './CommitsSubView';
 import { SendRequestsSubView } from './SendRequestsSubView';
-import { performNewSearchAction } from '../../redux/actions/lists';
-import { viewStyles } from '../styles';
 
 /**
  * @class
@@ -43,18 +43,10 @@ class ProgrammerView extends Component {
             stopUpdateChecking={this.props.stopCommitsListUpdatesAutoChecking}
             commitsData={commitsData}
             onTablePageLoad={(pageNumber, sortingCriteria, filter) => {
-              retrieveCommitsListPage(
-                USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER],
-                pageNumber,
-                sortingCriteria,
-                filter
-              );
+              retrieveCommitsListPage(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER], pageNumber, sortingCriteria, filter);
             }}
             onSearchQueryChanged={searchQuery => {
-              performNewSearch(
-                retrieveCommitsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]),
-                searchQuery
-              );
+              performNewSearch(retrieveCommitsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]), searchQuery);
             }}
           />
         )}

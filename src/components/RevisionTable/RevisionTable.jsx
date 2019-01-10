@@ -1,27 +1,27 @@
 /* eslint-disable array-callback-return */
-import React from 'react';
-import PropTypes from 'prop-types';
+import Badge from '@material-ui/core/Badge';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
+import Radio from '@material-ui/core/Radio';
+import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
-import { withStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Badge from '@material-ui/core/Badge';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Radio from '@material-ui/core/Radio';
-import IconButton from '@material-ui/core/IconButton';
-import RefreshIcon from '@material-ui/icons/Refresh';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import HighlightOff from '@material-ui/icons/HighlightOff';
-import SortableTableHeader from '../SortableTableHeader';
-import TableToolbar from '../TableToolbar';
-import TablePaginationFooter from '../TablePaginationFooter';
-import TableBodySkeleton from '../TableBodySkeleton';
-import DynamicTableBody from '../DynamicTableBody';
-import ApprovalStatusIcon from '../ApprovalStatusIcon';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { LIST_ELEMENTS_PER_PAGE, LIST_ELEMENTS_TYPE } from '../../constants/api';
-import { LIST_ELEMENT_ATTRIBUTE, APPROVAL_STATUS } from '../../constants/listElements';
-import { getSearchFilter, getHistoryFilter, getToBeReviewedFilter } from '../../utils/apiUtils';
+import { APPROVAL_STATUS, LIST_ELEMENT_ATTRIBUTE } from '../../constants/listElements';
+import { getHistoryFilter, getSearchFilter, getToBeReviewedFilter } from '../../utils/apiUtils';
+import ApprovalStatusIcon from '../ApprovalStatusIcon';
+import DynamicTableBody from '../DynamicTableBody';
+import SortableTableHeader from '../SortableTableHeader';
+import TableBodySkeleton from '../TableBodySkeleton';
+import TablePaginationFooter from '../TablePaginationFooter';
+import TableToolbar from '../TableToolbar';
 
 const tableStyles = theme => ({
   paper: {
@@ -109,15 +109,7 @@ class RevisionTable extends React.Component {
   }
 
   render() {
-    const {
-      classes,
-      tableData,
-      elementType,
-      itemsCount,
-      isLoading,
-      latestUpdateTimestamp,
-      displayError
-    } = this.props;
+    const { classes, tableData, elementType, itemsCount, isLoading, latestUpdateTimestamp, displayError } = this.props;
     const reviewMode = this.isReviewMode();
 
     return (
@@ -213,9 +205,7 @@ class RevisionTable extends React.Component {
                 <HighlightOff className={classes.inactiveIcon} color="error" />
               )
             ) : this.state.failedReviewItems[elementId] != null ? (
-              <IconButton
-                onClick={() => this.onItemReviewRequest(elementId, this.state.failedReviewItems[elementId])}
-              >
+              <IconButton onClick={() => this.onItemReviewRequest(elementId, this.state.failedReviewItems[elementId])}>
                 <Badge classes={{ badge: classes.errorBadge }} badgeContent="!" color="error">
                   <RefreshIcon color="action" />
                 </Badge>
@@ -331,8 +321,7 @@ class RevisionTable extends React.Component {
         reviewInProgressItems: reviewInProgressItemsUpdated,
         successfullyReviewedItems: successfullyReviewedItemsUpdated
       });
-    }
-    else {
+    } else {
       const failedReviewItemsUpdated = { ...this.state.failedReviewItems };
       failedReviewItemsUpdated[elementId] = approvalStatus;
       this.setState({
@@ -346,8 +335,7 @@ class RevisionTable extends React.Component {
     if (newQuery !== '') {
       this.setState({ filter: getSearchFilter(newQuery) });
       this.props.onSearchQueryChange(newQuery);
-    }
-    else {
+    } else {
       this.onFilterChange(getHistoryFilter());
     }
   };

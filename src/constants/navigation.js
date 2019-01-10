@@ -57,7 +57,7 @@ export const NAVIGATION_HIERARCHY = [
 ];
 
 /**
- * Gets the default route path for the specified user role
+ * Gets the default route path for the specified user role.
  */
 export function getRouteForUser(userRoleId, index = 0) {
   const section = NAVIGATION_HIERARCHY.find(section => section.value === userRoleId);

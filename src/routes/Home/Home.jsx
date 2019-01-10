@@ -1,12 +1,5 @@
 /* eslint-disable array-callback-return */
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  withStyles
-} from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, withStyles } from '@material-ui/core';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
@@ -56,23 +49,18 @@ class Home extends Component {
       <>
         {!this.props.user.infoObtained ? (
           this.props.user.serverError ? (
-            <Dialog
-              classes={{ paper: this.props.classes.errorDialog }}
-              disableBackdropClick
-              disableEscapeKeyDown
-              open
-            >
+            <Dialog classes={{ paper: this.props.classes.errorDialog }} disableBackdropClick disableEscapeKeyDown open>
               <DialogContent>
                 <DialogContentText className={this.props.classes.errorDialogText}>
-                  Non è stato possibile ottenere i dati relativi al tuo utente. Riprova 
-                  o contatta l'amministratore se il problema persiste.
+                  Non è stato possibile ottenere i dati relativi al tuo utente. Riprova o contatta l'amministratore se
+                  il problema persiste.
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
                 <Button
-                    className={this.props.classes.errorDialogText}
-                    onClick={() => this.props.requestCurrentUserInfo(this.props.accessToken)}
-                  >
+                  className={this.props.classes.errorDialogText}
+                  onClick={() => this.props.requestCurrentUserInfo(this.props.accessToken)}
+                >
                   Riprova
                 </Button>
                 <Button
@@ -101,15 +89,9 @@ class Home extends Component {
         )}
 
         {this.props.isSessionExpired && (
-          <Dialog
-            disableBackdropClick
-            disableEscapeKeyDown
-            open
-          >
+          <Dialog disableBackdropClick disableEscapeKeyDown open>
             <DialogContent>
-              <DialogContentText>
-                La tua sessione è scaduta. Effettua nuovamente il login.
-              </DialogContentText>
+              <DialogContentText>La tua sessione è scaduta. Effettua nuovamente il login.</DialogContentText>
             </DialogContent>
             <DialogActions>
               <Button
@@ -140,9 +122,7 @@ class Home extends Component {
             return (
               <Route
                 key={index}
-                path={`${match.url}${section.routePath}${
-                  section.tabs.length > 0 ? ROUTE_PARAM.TAB_INDEX : ''
-                }`}
+                path={`${match.url}${section.routePath}${section.tabs.length > 0 ? ROUTE_PARAM.TAB_INDEX : ''}`}
                 component={section.component}
               />
             );
@@ -162,10 +142,13 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({
-    performLogout: performLogoutAction,
-    requestCurrentUserInfo: requestCurrentUserInfoAction
-  }, dispatch);
+  return bindActionCreators(
+    {
+      performLogout: performLogoutAction,
+      requestCurrentUserInfo: requestCurrentUserInfoAction
+    },
+    dispatch
+  );
 };
 
 export default withStyles(homeStyles)(

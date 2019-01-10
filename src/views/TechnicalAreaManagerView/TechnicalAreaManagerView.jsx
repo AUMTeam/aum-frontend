@@ -1,7 +1,10 @@
+import Grid from '@material-ui/core/Grid';
+import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { withStyles } from '@material-ui/core/styles';
+import RevisionTable from '../../components/RevisionTable';
+import { LIST_ELEMENTS_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import {
   retrieveCommitsListPageAction,
@@ -10,9 +13,6 @@ import {
 } from '../../redux/actions/commits';
 import { performNewSearchAction, reviewItemAction } from '../../redux/actions/lists';
 import { viewStyles } from '../styles';
-import RevisionTable from '../../components/RevisionTable';
-import Grid from '@material-ui/core/Grid';
-import { LIST_ELEMENTS_TYPE } from '../../constants/api';
 
 class TechnicalAreaManagerView extends React.Component {
   constructor(props) {

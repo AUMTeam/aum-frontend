@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import Hidden from '@material-ui/core/Hidden';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-import Hidden from '@material-ui/core/Hidden';
 import ErrorOutline from '@material-ui/icons/ErrorOutline';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 const verticallyAlignedContentStyle = {
   display: 'flex',
@@ -21,14 +21,7 @@ const verticallyAlignedContentStyle = {
  */
 export default class DynamicTableBody extends React.Component {
   render() {
-    const {
-      tableData,
-      tableColumns,
-      displayError,
-      totalItemsCount,
-      pageNumber,
-      renderCellContent
-    } = this.props;
+    const { tableData, tableColumns, displayError, totalItemsCount, pageNumber, renderCellContent } = this.props;
     return (
       <TableBody>
         {displayError ? (

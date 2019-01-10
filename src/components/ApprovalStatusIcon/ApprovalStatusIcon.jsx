@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import HighlightOff from '@material-ui/icons/HighlightOff';
 import Schedule from '@material-ui/icons/Schedule';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { APPROVAL_STATUS } from '../../constants/listElements';
-import { withStyles } from '@material-ui/core';
 
 const approvedIconStyle = theme => ({
   icon: { color: theme.palette.approved }

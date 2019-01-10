@@ -5,15 +5,15 @@ import Table from '@material-ui/core/Table';
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import SortableTableHeader from '../SortableTableHeader';
-import TableToolbar from '../TableToolbar';
-import TablePaginationFooter from '../TablePaginationFooter';
-import TableBodySkeleton from '../TableBodySkeleton';
-import DynamicTableBody from '../DynamicTableBody';
-import ApprovalStatusIcon from '../ApprovalStatusIcon';
 import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
 import { LIST_ELEMENT_ATTRIBUTE } from '../../constants/listElements';
-import { getSearchFilter } from '../../utils/apiUtils'
+import { getSearchFilter } from '../../utils/apiUtils';
+import ApprovalStatusIcon from '../ApprovalStatusIcon';
+import DynamicTableBody from '../DynamicTableBody';
+import SortableTableHeader from '../SortableTableHeader';
+import TableBodySkeleton from '../TableBodySkeleton';
+import TablePaginationFooter from '../TablePaginationFooter';
+import TableToolbar from '../TableToolbar';
 
 const styles = {
   paper: {
@@ -130,7 +130,7 @@ class ProgrammerTable extends Component {
       case LIST_ELEMENT_ATTRIBUTE.AUTHOR:
         return value.name;
       case LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS:
-        return <ApprovalStatusIcon status={+value} />
+        return <ApprovalStatusIcon status={+value} />;
       case LIST_ELEMENT_ATTRIBUTE.TIMESTAMP:
         return new Date(value * 1000).toLocaleString('it-it');
       default:

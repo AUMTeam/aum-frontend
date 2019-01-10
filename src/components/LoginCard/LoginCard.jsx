@@ -44,7 +44,6 @@ class LoginCard extends Component {
     return (
       <Card className={classes.card} onKeyDown={this.onEnterKeyClicked}>
         <Grid className={classes.root} container spacing={24}>
-        
           <Grid item xs={12}>
             <Grid container justify="flex-start" alignContent="center">
               <Grid item xs={12}>
@@ -106,7 +105,6 @@ class LoginCard extends Component {
               </Grid>
             </Grid>
           </Grid>
-
         </Grid>
       </Card>
     );
@@ -139,7 +137,7 @@ class LoginCard extends Component {
   /**
    * Triggers login action when user presses enter in one of the input fields
    */
-  onEnterKeyClicked = (event) => {
+  onEnterKeyClicked = event => {
     if (event.key === 'Enter') {
       this.onLoginButtonClicked();
     }
