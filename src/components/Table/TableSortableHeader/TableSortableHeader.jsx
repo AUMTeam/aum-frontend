@@ -13,7 +13,7 @@ import React from 'react';
  * { label: string, key: string, displayOnMobile: bool, alignOption?: string, notSortable?: bool }.
  * This allows us to display only certain columns on mobile devices.
  */
-export default class SortableTableHeader extends React.PureComponent {
+export default class TableSortableHeader extends React.PureComponent {
   render() {
     const { tableColumns, sortingCriteria, onSortingUpdate } = this.props;
     return (
@@ -48,7 +48,7 @@ export default class SortableTableHeader extends React.PureComponent {
   }
 }
 
-SortableTableHeader.propTypes = {
+TableSortableHeader.propTypes = {
   tableColumns: PropTypes.array.isRequired,
   sortingCriteria: PropTypes.object.isRequired,
   onSortingUpdate: PropTypes.func.isRequired

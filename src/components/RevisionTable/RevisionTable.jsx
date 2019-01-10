@@ -17,11 +17,11 @@ import { LIST_ELEMENTS_PER_PAGE, LIST_ELEMENTS_TYPE } from '../../constants/api'
 import { APPROVAL_STATUS, LIST_ELEMENT_ATTRIBUTE } from '../../constants/listElements';
 import { getHistoryFilter, getSearchFilter, getToBeReviewedFilter } from '../../utils/apiUtils';
 import ApprovalStatusIcon from '../ApprovalStatusIcon';
-import DynamicTableBody from '../DynamicTableBody';
-import SortableTableHeader from '../SortableTableHeader';
-import TableBodySkeleton from '../TableBodySkeleton';
-import TablePaginationFooter from '../TablePaginationFooter';
-import TableToolbar from '../TableToolbar';
+import TableDynamicBody from '../Table/TableDynamicBody';
+import TableSortableHeader from '../Table/TableSortableHeader';
+import TableBodySkeleton from '../Table/TableBodySkeleton';
+import TablePaginationFooter from '../Table/TablePaginationFooter';
+import TableToolbar from '../Table/TableToolbar';
 
 const tableStyles = theme => ({
   paper: {
@@ -129,7 +129,7 @@ class RevisionTable extends React.Component {
           renderCustomContent={this.renderToolbarRadioButtons}
         />
         <Table>
-          <SortableTableHeader
+          <TableSortableHeader
             tableColumns={reviewMode ? reviewTableColumns : historyTableColumns}
             sortingCriteria={this.state.sorting}
             onSortingUpdate={this.onSortingUpdate}
@@ -141,7 +141,7 @@ class RevisionTable extends React.Component {
               itemsPerPage={LIST_ELEMENTS_PER_PAGE}
             />
           ) : (
-            <DynamicTableBody
+            <TableDynamicBody
               tableColumns={reviewMode ? reviewTableColumns : historyTableColumns}
               tableData={tableData}
               totalItemsCount={itemsCount}

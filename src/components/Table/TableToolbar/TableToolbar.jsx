@@ -104,24 +104,29 @@ class TableToolbar extends React.Component {
             )}
           </Grid>
 
-          {/* Render custom supplied content inside a grid item */}
-          {renderCustomContent != null && <Grid item>{renderCustomContent()}</Grid>}
-
           {/* Search bar */}
           <Grid item>
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <InputBase
-                placeholder="Cerca..."
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput
-                }}
-                onChange={event => onSearchQueryChange(event.target.value)}
-              />
-            </div>
+            <Grid container direction="row" justify="space-between" alignItems="center">
+              <Grid item>
+                {/* Render custom supplied content inside a grid item */}
+                {renderCustomContent != null && <Grid item>{renderCustomContent()}</Grid>}
+              </Grid>
+              <Grid item>
+                <div className={classes.search}>
+                  <div className={classes.searchIcon}>
+                    <SearchIcon />
+                  </div>
+                  <InputBase
+                    placeholder="Cerca..."
+                    classes={{
+                      root: classes.inputRoot,
+                      input: classes.inputInput
+                    }}
+                    onChange={event => onSearchQueryChange(event.target.value)}
+                  />
+                </div>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Toolbar>

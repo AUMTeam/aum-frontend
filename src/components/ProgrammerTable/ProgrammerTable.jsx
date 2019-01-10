@@ -9,11 +9,11 @@ import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
 import { LIST_ELEMENT_ATTRIBUTE } from '../../constants/listElements';
 import { getSearchFilter } from '../../utils/apiUtils';
 import ApprovalStatusIcon from '../ApprovalStatusIcon';
-import DynamicTableBody from '../DynamicTableBody';
-import SortableTableHeader from '../SortableTableHeader';
-import TableBodySkeleton from '../TableBodySkeleton';
-import TablePaginationFooter from '../TablePaginationFooter';
-import TableToolbar from '../TableToolbar';
+import TableDynamicBody from '../Table/TableDynamicBody';
+import TableSortableHeader from '../Table/TableSortableHeader';
+import TableBodySkeleton from '../Table/TableBodySkeleton';
+import TablePaginationFooter from '../Table/TablePaginationFooter';
+import TableToolbar from '../Table/TableToolbar';
 
 const styles = {
   paper: {
@@ -88,7 +88,7 @@ class ProgrammerTable extends Component {
           onSearchQueryChange={this.onSearchQueryChange}
         />
         <Table>
-          <SortableTableHeader
+          <TableSortableHeader
             tableColumns={tableColumns}
             sortingCriteria={this.state.sorting}
             onSortingUpdate={this.onSortingUpdate}
@@ -100,7 +100,7 @@ class ProgrammerTable extends Component {
               itemsPerPage={LIST_ELEMENTS_PER_PAGE}
             />
           ) : (
-            <DynamicTableBody
+            <TableDynamicBody
               tableColumns={tableColumns}
               tableData={tableData}
               totalItemsCount={itemsCount}

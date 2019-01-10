@@ -19,7 +19,7 @@ const verticallyAlignedContentStyle = {
  * This component accepts also a function (renderCellContent) which defines how the values of the specific columns
  * must be rendered. Typically is a switch-case which always return a JSX snippet (in other words a component).
  */
-export default class DynamicTableBody extends React.Component {
+export default class TableDynamicBody extends React.Component {
   render() {
     const { tableData, tableColumns, displayError, totalItemsCount, pageNumber, renderCellContent } = this.props;
     return (
@@ -56,7 +56,7 @@ export default class DynamicTableBody extends React.Component {
   }
 }
 
-DynamicTableBody.propTypes = {
+TableDynamicBody.propTypes = {
   tableColumns: PropTypes.array.isRequired,
   tableData: PropTypes.array.isRequired,
   totalItemsCount: PropTypes.number.isRequired,
