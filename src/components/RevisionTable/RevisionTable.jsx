@@ -39,8 +39,8 @@ const tableStyles = theme => ({
     backgroundColor: theme.palette.error.main
   },
   errorBadge: {
-    width: '18px',
-    height: '18px'
+    width: '16px',
+    height: '16px'
   }
 });
 
@@ -310,7 +310,6 @@ class RevisionTable extends React.Component {
    * Callback passed to the function which performs the approval/rejection request
    * Updates state to display error or done icon instead of buttons
    */
-
   onItemReviewCompleted = (elementId, approvalStatus, success) => {
     const reviewInProgressItemsUpdated = [...this.state.reviewInProgressItems];
     reviewInProgressItemsUpdated.splice(reviewInProgressItemsUpdated.indexOf(elementId), 1);

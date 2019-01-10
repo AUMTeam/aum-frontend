@@ -17,6 +17,7 @@ import {
 import { viewStyles } from '../styles';
 import { CommitsSubView } from './CommitsSubView';
 import { SendRequestsSubView } from './SendRequestsSubView';
+import { NAVIGATION_HIERARCHY } from '../../constants/navigation';
 
 /**
  * @class
@@ -25,6 +26,10 @@ import { SendRequestsSubView } from './SendRequestsSubView';
  */
 class ProgrammerView extends Component {
   render() {
+    return <>{this.renderSpecificSubView()}</>;
+  }
+
+  renderSpecificSubView = () => {
     const {
       classes,
       commitsData,
@@ -34,9 +39,9 @@ class ProgrammerView extends Component {
       performNewSearch
     } = this.props;
 
-    return (
-      <>
-        {this.props.match.params.value === '0' && (
+    switch (this.props.match.params.value) {
+      case NAVIGATION_HIERARCHY[0].tabs[0].value:
+        return (
           <CommitsSubView
             classes={classes}
             startUpdateChecking={this.props.startCommitsListUpdatesAutoChecking}
@@ -49,9 +54,9 @@ class ProgrammerView extends Component {
               performNewSearch(retrieveCommitsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]), searchQuery);
             }}
           />
-        )}
-
-        {this.props.match.params.value === '1' && (
+        );
+      case NAVIGATION_HIERARCHY[0].tabs[1].value:
+        return (
           <SendRequestsSubView
             classes={classes}
             startUpdateChecking={this.props.startSendRequestsListUpdatesAutoChecking}
@@ -72,10 +77,9 @@ class ProgrammerView extends Component {
               );
             }}
           />
-        )}
-      </>
-    );
-  }
+        );
+    }
+  };
 }
 
 const mapStateToProps = state => {
