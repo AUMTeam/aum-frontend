@@ -6,6 +6,7 @@ import { Route, Switch } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import LogoLoader from '../../components/LogoLoader';
 import Navigation from '../../components/Navigation';
+import withErrorBoundary from '../../components/WithErrorBoundary';
 import { DESKTOP_DRAWER_WIDTH, NAVIGATION_HIERARCHY } from '../../constants/navigation';
 import { ROUTE_PARAM } from '../../constants/routes';
 import { performLogoutAction } from '../../redux/actions/auth';
@@ -116,18 +117,18 @@ class Home extends Component {
     const { user, match } = this.props;
     return (
       <Switch>
-        {/* Renders the specific routes for the different views */}
-        {NAVIGATION_HIERARCHY.map((section, index) => {
-          if (user.roles.includes(section.value)) {
-            return (
-              <Route
-                key={index}
-                path={`${match.url}${section.routePath}${section.tabs.length > 0 ? ROUTE_PARAM.TAB_INDEX : ''}`}
-                component={section.component}
-              />
-            );
-          }
-        })}
+          {/* Renders the specific routes for the different views */}
+          {NAVIGATION_HIERARCHY.map((section, index) => {
+            if (user.roles.includes(section.value)) {
+              return (
+                <Route
+                  key={index}
+                  path={`${match.url}${section.routePath}${section.tabs.length > 0 ? ROUTE_PARAM.TAB_INDEX : ''}`}
+                  component={withErrorBoundary(section.component)}
+                />
+              );
+            }
+          })}
       </Switch>
     );
   }

@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 import { withStyles } from '@material-ui/core/styles';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';

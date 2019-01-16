@@ -6,6 +6,7 @@ export default class ClientView extends Component {
   }
 
   render() {
+    throw new Error("Errore di test.");
     return <></>;
   }
 }
