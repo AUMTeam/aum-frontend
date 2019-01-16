@@ -15,6 +15,10 @@ const errorIconStyle = {
   margin: 'auto'
 };
 
+function getComponentName(component) {
+  return component.displayName || component.name || '[anonymous]';
+}
+
 /**
  * Higher-order component which wraps a component in an error boundary in order to
  * catch exceptions during rendering and report the error to the user.
@@ -34,12 +38,15 @@ export default function withErrorBoundary(Component) {
       };
     }
 
+    // Component name shown in DevTools and debug stack traces
+    static displayName = `WithErrorBoundary(${getComponentName(Component)})`;
+
     static getDerivedStateFromError(error) {
       return { errorReceived: true, error };
     }
 
     componentDidCatch(error, info) {
-      console.error(`${error.name} during ${Component.name} rendering, stack trace:`, info.componentStack);
+      console.error(`${error.name} during ${getComponentName(Component)} rendering, stack trace:`, info.componentStack);
     }
 
     render() {
@@ -58,7 +65,7 @@ export default function withErrorBoundary(Component) {
           <Typography style={{ paddingLeft: '15%' }} variant="body2">
             <b>Tipo dell'errore:</b> {error.name}
             <br />
-            <b>Componente in cui è stato catturato:</b> {Component.name}
+            <b>Componente in cui è stato catturato:</b> {getComponentName(Component)}
             <br />
             <b>Messaggio:</b> {error.message}
             <br />
