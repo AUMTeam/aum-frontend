@@ -20,6 +20,21 @@ function getComponentName(component) {
 }
 
 /**
+ * Returns the name of the component at the top most position of the React stack trace
+ * (which is the one that raised the error).
+ * A typical React component looks like that:
+ *   in COMPONENT (at file.jsx:5)
+ *   in COMPONENT2 (at file2.jsx:45)
+ *   etc...
+ */
+function getTopMostStackEntryComponent(componentStack) {
+  // We start looking for the first line wrap after the first character since stack traces start with a '/n'
+  const topMostEntry = componentStack.slice(0, componentStack.indexOf('\n', 1)).trim();
+  // At this point topMostEntry contains a string like "in COMPONENT (at FILE:LINE)"
+  return topMostEntry.split(' ')[1];
+}
+
+/**
  * Higher-order component which wraps a component in an error boundary in order to
  * catch exceptions during rendering and report the error to the user.
  * Docs about these topics:
@@ -34,23 +49,24 @@ export default function withErrorBoundary(Component) {
 
       this.state = {
         errorReceived: false,
-        error: null
+        error: null,
+        faultyComponentName: ''   // name of the component that raised the error
       };
     }
 
-    // Component name shown in DevTools and debug stack traces
+    // Component name shown in DevTools and stack traces
     static displayName = `WithErrorBoundary(${getComponentName(Component)})`;
 
     static getDerivedStateFromError(error) {
       return { errorReceived: true, error };
     }
 
-    componentDidCatch(error, info) {
-      console.error(`${error.name} during ${getComponentName(Component)} rendering, stack trace:`, info.componentStack);
+    componentDidCatch(_, info) {
+      this.setState({ faultyComponentName: getTopMostStackEntryComponent(info.componentStack) });
     }
 
     render() {
-      const { errorReceived, error } = this.state;
+      const { errorReceived, error, faultyComponentName } = this.state;
       return errorReceived ? (
         <div style={errorBoxStyle}>
           <ErrorOutline color="error" style={errorIconStyle} />
@@ -63,9 +79,11 @@ export default function withErrorBoundary(Component) {
             Segnalaci il problema riportando le informazioni sottostanti:
           </Typography>
           <Typography style={{ paddingLeft: '15%' }} variant="body2">
-            <b>Tipo dell'errore:</b> {error.name}
+            <b>Route corrente:</b> {window.location.hash}
             <br />
-            <b>Componente in cui è stato catturato:</b> {getComponentName(Component)}
+            <b>Componente in cui è avvenuto l'errore:</b> {faultyComponentName}
+            <br />
+            <b>Tipo dell'errore:</b> {error.name}
             <br />
             <b>Messaggio:</b> {error.message}
             <br />
