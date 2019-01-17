@@ -340,6 +340,7 @@ class RevisionTable extends React.Component {
   };
 }
 
+RevisionTable.displayName = 'RevisionTable';
 RevisionTable.propTypes = {
   classes: PropTypes.object.isRequired,
   tableData: PropTypes.array.isRequired,

@@ -46,28 +46,33 @@ class Home extends Component {
   }
 
   render() {
+    const {
+      classes,
+      accessToken,
+      history,
+      match,
+      user,
+      performLogout,
+      isSessionExpired,
+      requestCurrentUserInfo
+    } = this.props;
+    
     return (
       <>
-        {!this.props.user.infoObtained ? (
-          this.props.user.serverError ? (
-            <Dialog classes={{ paper: this.props.classes.errorDialog }} disableBackdropClick disableEscapeKeyDown open>
+        {!user.infoObtained ? (
+          user.serverError ? (
+            <Dialog classes={{ paper: classes.errorDialog }} disableBackdropClick disableEscapeKeyDown open>
               <DialogContent>
-                <DialogContentText className={this.props.classes.errorDialogText}>
+                <DialogContentText className={classes.errorDialogText}>
                   Non è stato possibile ottenere i dati relativi al tuo utente. Riprova o contatta l'amministratore se
                   il problema persiste.
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
-                <Button
-                  className={this.props.classes.errorDialogText}
-                  onClick={() => this.props.requestCurrentUserInfo(this.props.accessToken)}
-                >
+                <Button className={classes.errorDialogText} onClick={() => requestCurrentUserInfo(accessToken)}>
                   Riprova
                 </Button>
-                <Button
-                  className={this.props.classes.errorDialogText}
-                  onClick={() => this.props.performLogout(this.props.accessToken)}
-                >
+                <Button className={classes.errorDialogText} onClick={() => performLogout(accessToken)}>
                   Logout
                 </Button>
               </DialogActions>
@@ -79,26 +84,21 @@ class Home extends Component {
         ) : (
           // Displayed only when user data are obtained successfully
           <div>
-            <Navigation
-              match={this.props.match}
-              history={this.props.history}
-              user={this.props.user}
-              onLogout={() => this.props.performLogout(this.props.accessToken)}
-            />
-            <main className={this.props.classes.content}>{this.renderContentSubRoutes()}</main>
+            <Navigation match={match} history={history} user={user} onLogout={() => performLogout(accessToken)} />
+            <main className={classes.content}>{this.renderContentSubRoutes()}</main>
           </div>
         )}
 
-        {this.props.isSessionExpired && (
+        {isSessionExpired && (
           <Dialog disableBackdropClick disableEscapeKeyDown open>
             <DialogContent>
               <DialogContentText>La tua sessione è scaduta. Effettua nuovamente il login.</DialogContentText>
             </DialogContent>
             <DialogActions>
               <Button
-                className={this.props.classes.dialogButton}
+                className={classes.dialogButton}
                 // In this case, token is not passed to the action since logout notification to server isn't needed
-                onClick={() => this.props.performLogout()}
+                onClick={() => performLogout()}
               >
                 Vai alla pagina di login
               </Button>
@@ -117,22 +117,24 @@ class Home extends Component {
     const { user, match } = this.props;
     return (
       <Switch>
-          {/* Renders the specific routes for the different views */}
-          {NAVIGATION_HIERARCHY.map((section, index) => {
-            if (user.roles.includes(section.value)) {
-              return (
-                <Route
-                  key={index}
-                  path={`${match.url}${section.routePath}${section.tabs.length > 0 ? ROUTE_PARAM.TAB_INDEX : ''}`}
-                  component={withErrorBoundary(section.component)}
-                />
-              );
-            }
-          })}
+        {/* Renders the specific routes for the different views */}
+        {NAVIGATION_HIERARCHY.map((section, index) => {
+          if (user.roles.includes(section.value)) {
+            return (
+              <Route
+                key={index}
+                path={`${match.url}${section.routePath}${section.tabs.length > 0 ? ROUTE_PARAM.TAB_INDEX : ''}`}
+                component={withErrorBoundary(section.component)}
+              />
+            );
+          }
+        })}
       </Switch>
     );
   }
 }
+
+Home.displayName = 'Home';
 
 const mapStateToProps = state => {
   return {

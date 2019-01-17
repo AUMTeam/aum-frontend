@@ -209,6 +209,7 @@ class Navigation extends Component {
   };
 }
 
+Navigation.displayName = 'Navigation';
 Navigation.propTypes = {
   classes: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,

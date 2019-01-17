@@ -29,6 +29,7 @@ export default class TableBodySkeleton extends React.PureComponent {
   }
 }
 
+TableBodySkeleton.displayName = 'TableBodySkeleton';
 TableBodySkeleton.propTypes = {
   columnsCount: PropTypes.number.isRequired,
   itemsPerPage: PropTypes.number.isRequired

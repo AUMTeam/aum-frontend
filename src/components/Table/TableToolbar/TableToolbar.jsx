@@ -134,6 +134,7 @@ class TableToolbar extends React.Component {
   }
 }
 
+TableToolbar.displayName = 'TableToolbar';
 TableToolbar.propTypes = {
   toolbarTitle: PropTypes.string.isRequired,
   showAvailableUpdatesBadge: PropTypes.bool.isRequired,

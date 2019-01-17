@@ -25,6 +25,7 @@ class ApprovalStatusIcon extends React.PureComponent {
   }
 }
 
+ApprovalStatusIcon.displayName = 'ApprovalStatusIcon';
 ApprovalStatusIcon.propTypes = {
   status: PropTypes.oneOf([APPROVAL_STATUS.APPROVED, APPROVAL_STATUS.PENDING, APPROVAL_STATUS.REJECTED]).isRequired
 };

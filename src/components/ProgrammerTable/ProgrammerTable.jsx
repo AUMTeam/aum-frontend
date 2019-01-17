@@ -175,6 +175,7 @@ class ProgrammerTable extends Component {
   };
 }
 
+ProgrammerTable.displayName = 'ProgrammerTable';
 ProgrammerTable.propTypes = {
   classes: PropTypes.object.isRequired,
   tableToolbarTitle: PropTypes.string.isRequired,

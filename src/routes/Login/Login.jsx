@@ -5,7 +5,6 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -176,9 +175,7 @@ class Login extends Component {
   };
 }
 
-Login.propTypes = {
-  classes: PropTypes.object.isRequired
-};
+Login.displayName = 'Login';
 
 const mapStateToProps = state => {
   return {

@@ -56,6 +56,7 @@ export default class TableDynamicBody extends React.Component {
   }
 }
 
+TableDynamicBody.displayName = 'TableDynamicBody';
 TableDynamicBody.propTypes = {
   tableColumns: PropTypes.array.isRequired,
   tableData: PropTypes.array.isRequired,
