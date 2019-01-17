@@ -3,6 +3,8 @@ import { withStyles } from '@material-ui/core/styles';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import withErrorBoundary from '../../components/WithErrorBoundary';
+import { NAVIGATION_HIERARCHY } from '../../constants/navigation';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import {
   retrieveCommitsListPageAction,
@@ -18,7 +20,6 @@ import {
 import { viewStyles } from '../styles';
 import { CommitsSubView } from './CommitsSubView';
 import { SendRequestsSubView } from './SendRequestsSubView';
-import { NAVIGATION_HIERARCHY } from '../../constants/navigation';
 
 /**
  * @class
@@ -27,7 +28,7 @@ import { NAVIGATION_HIERARCHY } from '../../constants/navigation';
  */
 class ProgrammerView extends Component {
   render() {
-    return <>{this.renderSpecificSubView()}</>;
+    return this.renderSpecificSubView();
   }
 
   renderSpecificSubView = () => {
@@ -105,9 +106,11 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default withStyles(viewStyles)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ProgrammerView)
+export default withErrorBoundary(
+  withStyles(viewStyles)(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(ProgrammerView)
+  )
 );

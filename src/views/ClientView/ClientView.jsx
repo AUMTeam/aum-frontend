@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import withErrorBoundary from '../../components/WithErrorBoundary';
 
-export default class ClientView extends Component {
+class ClientView extends Component {
   constructor(props) {
     super(props);
   }
@@ -10,3 +11,5 @@ export default class ClientView extends Component {
     return <></>;
   }
 }
+
+export default withErrorBoundary(ClientView);

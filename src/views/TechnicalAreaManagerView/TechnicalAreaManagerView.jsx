@@ -4,6 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import RevisionTable from '../../components/RevisionTable';
+import withErrorBoundary from '../../components/WithErrorBoundary';
 import { LIST_ELEMENTS_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import {
@@ -82,9 +83,11 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default withStyles(viewStyles)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(TechnicalAreaManagerView)
+export default withErrorBoundary(
+  withStyles(viewStyles)(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(TechnicalAreaManagerView)
+  )
 );
