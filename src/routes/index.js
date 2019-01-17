@@ -116,11 +116,9 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default withErrorBoundary(
-  withStyles(styles)(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps
-    )(Routes)
-  )
+export default withStyles(styles)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Routes)
 );
