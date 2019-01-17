@@ -1,6 +1,6 @@
 import Typography from '@material-ui/core/Typography';
-import ErrorOutline from '@material-ui/icons/ErrorOutline';
 import React from 'react';
+import sad_face_grey from '../../assets/sad_face_grey.png';
 
 const errorBoxStyle = {
   maxWidth: '700px',
@@ -9,8 +9,8 @@ const errorBoxStyle = {
 };
 
 const errorIconStyle = {
-  fontSize: '180px',
-  paddingBottom: '8px',
+  width: '200px',
+  paddingBottom: '24px',
   display: 'block',
   margin: 'auto'
 };
@@ -69,7 +69,7 @@ export default function withErrorBoundary(Component) {
       const { errorReceived, error, faultyComponentName } = this.state;
       return errorReceived ? (
         <div style={errorBoxStyle}>
-          <ErrorOutline color="error" style={errorIconStyle} />
+          <img alt="Sad face" src={sad_face_grey} style={errorIconStyle} />
           <Typography align="center" variant="h2" paragraph>
             Oops!
           </Typography>
