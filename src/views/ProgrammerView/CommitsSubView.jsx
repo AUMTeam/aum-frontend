@@ -41,6 +41,7 @@ export class CommitsSubView extends Component {
   }
 }
 
+CommitsSubView.displayName = 'CommitsSubView';
 CommitsSubView.propTypes = {
   classes: PropTypes.object.isRequired,
   startUpdateChecking: PropTypes.func.isRequired,

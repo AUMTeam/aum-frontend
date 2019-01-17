@@ -12,4 +12,6 @@ class ClientView extends Component {
   }
 }
 
+ClientView.displayName = 'ClientView';
+
 export default withErrorBoundary(ClientView);

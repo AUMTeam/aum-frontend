@@ -41,6 +41,7 @@ export class SendRequestsSubView extends Component {
   }
 }
 
+SendRequestsSubView.displayName = 'SendRequestsSubView';
 SendRequestsSubView.propTypes = {
   classes: PropTypes.object.isRequired,
   startUpdateChecking: PropTypes.func.isRequired,

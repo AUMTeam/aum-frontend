@@ -64,6 +64,8 @@ class TechnicalAreaManagerView extends React.Component {
   }
 }
 
+TechnicalAreaManagerView.displayName = 'TechnicalAreaManagerView';
+
 const mapStateToProps = state => {
   return {
     commitsData: state[USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]].commits

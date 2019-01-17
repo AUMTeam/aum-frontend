@@ -65,6 +65,8 @@ class RevisionOfficeManagerView extends React.Component {
   }
 }
 
+RevisionOfficeManagerView.displayName = 'RevisionOfficeManagerView';
+
 const mapStateToProps = state => {
   return {
     sendRequestsData: state[USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]].sendRequests

@@ -84,6 +84,8 @@ class ProgrammerView extends Component {
   };
 }
 
+ProgrammerView.displayName = 'ProgrammerView';
+
 const mapStateToProps = state => {
   return {
     commitsData: state.programmer.commits,
