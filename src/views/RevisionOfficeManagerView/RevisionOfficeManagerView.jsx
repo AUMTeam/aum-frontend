@@ -16,10 +16,8 @@ import {
 import { viewStyles } from '../styles';
 
 class RevisionOfficeManagerView extends React.Component {
-  constructor(props) {
-    super(props);
-
-    props.startSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]);
+  componentDidMount() {
+    this.props.startSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]);
   }
 
   componentWillUnmount() {

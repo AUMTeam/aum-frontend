@@ -16,10 +16,8 @@ import { performNewSearchAction, reviewItemAction } from '../../redux/actions/li
 import { viewStyles } from '../styles';
 
 class TechnicalAreaManagerView extends React.Component {
-  constructor(props) {
-    super(props);
-
-    props.startCommitsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]);
+  componentDidMount() {
+    this.props.startCommitsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]);
   }
 
   componentWillUnmount() {

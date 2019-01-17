@@ -9,9 +9,7 @@ import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
  * Renders the content of the commits tab in ProgrammerView
  */
 export class CommitsSubView extends Component {
-  constructor(props) {
-    super(props);
-
+  componentDidMount() {
     this.props.startUpdateChecking(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
   }
 
