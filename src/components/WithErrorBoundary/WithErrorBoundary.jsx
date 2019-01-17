@@ -50,7 +50,7 @@ export default function withErrorBoundary(Component) {
       this.state = {
         errorReceived: false,
         error: null,
-        faultyComponentName: ''   // name of the component that raised the error
+        faultyComponentName: '' // name of the component that raised the error
       };
     }
 
@@ -61,8 +61,13 @@ export default function withErrorBoundary(Component) {
       return { errorReceived: true, error };
     }
 
-    componentDidCatch(_, info) {
-      this.setState({ faultyComponentName: getTopMostStackEntryComponent(info.componentStack) });
+    componentDidCatch(error, info) {
+      const faultyComponentName = getTopMostStackEntryComponent(info.componentStack);
+      console.error(
+        `${error.name} occurred during ${faultyComponentName} rendering, stack trace:`,
+        info.componentStack
+      );
+      this.setState({ faultyComponentName });
     }
 
     render() {
