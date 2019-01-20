@@ -105,7 +105,7 @@ function* notifyLogoutToServerAsync(accessToken) {
     accessToken
   );
 
-  logoutNotificationTask.done.then(response => {
+  logoutNotificationTask.toPromise().then(response => {
     if (response == null)
       console.error('Error during logout notification request to server');
     else if (response.ok)
