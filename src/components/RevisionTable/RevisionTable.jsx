@@ -51,6 +51,7 @@ const historyTableColumns = [
   { label: 'Descrizione', key: LIST_ELEMENT_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
   { label: 'Data creazione', key: LIST_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
   { label: 'Autore', key: LIST_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
+  { label: 'Data revisione', key: LIST_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP, displayOnMobile: false },
   { label: 'Approvato', key: LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS, displayOnMobile: true }
 ];
 
@@ -193,6 +194,7 @@ class RevisionTable extends React.Component {
         return value.name;
       case LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS:
         return <ApprovalStatusIcon status={+value} />;
+      case LIST_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP:
       case LIST_ELEMENT_ATTRIBUTE.TIMESTAMP:
         return new Date(value * 1000).toLocaleString('it-it');
       case REVIEW_BUTTONS_COLUMN:
