@@ -1,9 +1,9 @@
-import { delay } from 'redux-saga';
 import {
   actionChannel,
   cancel,
   cancelled,
-  //debounce,
+  debounce,
+  delay,
   fork,
   put,
   select,
@@ -11,7 +11,7 @@ import {
   takeEvery,
   takeLatest
 } from 'redux-saga/effects';
-import { LIST_AUTO_UPDATE_INTERVAL, LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
+import { LIST_AUTO_UPDATE_INTERVAL_MS, LIST_ELEMENTS_PER_PAGE, SEARCH_DEBOUNCE_DELAY_MS } from '../../constants/api';
 import { getListRequestPath } from '../../utils/apiUtils';
 import { LIST_ACTION_TYPE } from '../actions/lists';
 import { makeRequestAndReportErrors } from './api';
@@ -190,14 +190,14 @@ function* updateCheckingTasksManager() {
 
 /**
  * Performs automatic update checking for the list
- * every LIST_AUTO_UPDATE_INTERVAL milliseconds
+ * every LIST_AUTO_UPDATE_INTERVAL_MS milliseconds
  * @param {*} action Action of type START_AUTO_CHECKING
  */
 function* runListUpdateChecker(action) {
   try {
     console.log(`Auto update checking started for ${action.userRoleString}.${action.elementType}`);
     while (true) {
-      yield delay(LIST_AUTO_UPDATE_INTERVAL);
+      yield delay(LIST_AUTO_UPDATE_INTERVAL_MS);
       // Avoid checking for updates when the state of the list is not yet initialized
       // or when retrieveListPage() is running
       if (
@@ -224,7 +224,7 @@ function* runListUpdateChecker(action) {
 export const listSagas = [
   updateCheckingTasksManager(),
   takeLatest(LIST_ACTION_TYPE.PAGE_REQUEST, retrieveListPage),
-  takeLatest(LIST_ACTION_TYPE.SEARCH_QUERY_CHANGED, retrieveListPage), // TODO debounce with saga v1
+  debounce(SEARCH_DEBOUNCE_DELAY_MS, LIST_ACTION_TYPE.SEARCH_QUERY_CHANGED, retrieveListPage),
   takeEvery(LIST_ACTION_TYPE.ELEMENT_REVIEW_REQUEST, reviewListElement),
   // reports errors in review requests
   takeEvery(LIST_ACTION_TYPE.ELEMENT_REVIEW_FAILED, action =>
