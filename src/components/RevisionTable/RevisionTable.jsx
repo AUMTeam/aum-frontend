@@ -196,7 +196,10 @@ class RevisionTable extends React.Component {
         return <ApprovalStatusIcon status={+value} />;
       case LIST_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP:
       case LIST_ELEMENT_ATTRIBUTE.TIMESTAMP:
-        return new Date(value * 1000).toLocaleString('it-it');
+        if (!value)
+          return '—';
+        else
+          return new Date(value * 1000).toLocaleString('it-it');
       case REVIEW_BUTTONS_COLUMN:
         return (
           <>
