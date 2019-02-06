@@ -48,6 +48,7 @@ export default class TableSortableHeader extends React.PureComponent {
   }
 }
 
+TableSortableHeader.displayName = 'TableSortableHeader';
 TableSortableHeader.propTypes = {
   tableColumns: PropTypes.array.isRequired,
   sortingCriteria: PropTypes.object.isRequired,

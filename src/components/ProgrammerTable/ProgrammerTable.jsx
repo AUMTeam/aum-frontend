@@ -26,8 +26,9 @@ const styles = {
 const tableColumns = [
   { label: 'ID', key: LIST_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
   { label: 'Descrizione', key: LIST_ELEMENT_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
-  { label: 'Data', key: LIST_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
+  { label: 'Data creazione', key: LIST_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
   { label: 'Autore', key: LIST_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
+  { label: 'Data revisione', key: LIST_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP, displayOnMobile: false },
   { label: 'Approvato', key: LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS, displayOnMobile: true }
 ];
 
@@ -131,8 +132,12 @@ class ProgrammerTable extends Component {
         return value.name;
       case LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS:
         return <ApprovalStatusIcon status={+value} />;
+      case LIST_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP:
       case LIST_ELEMENT_ATTRIBUTE.TIMESTAMP:
-        return new Date(value * 1000).toLocaleString('it-it');
+        if (!value)
+          return '—';
+        else
+          return new Date(value * 1000).toLocaleString('it-it');
       default:
         return value;
     }
@@ -175,6 +180,7 @@ class ProgrammerTable extends Component {
   };
 }
 
+ProgrammerTable.displayName = 'ProgrammerTable';
 ProgrammerTable.propTypes = {
   classes: PropTypes.object.isRequired,
   tableToolbarTitle: PropTypes.string.isRequired,

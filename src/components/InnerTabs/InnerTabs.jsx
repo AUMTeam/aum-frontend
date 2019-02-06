@@ -31,6 +31,7 @@ class InnerTabs extends Component {
   };
 }
 
+InnerTabs.displayName = 'InnerTabs';
 InnerTabs.propTypes = {
   prevUrl: PropTypes.string.isRequired,
   tabs: PropTypes.array.isRequired

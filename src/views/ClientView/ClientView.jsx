@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
+import withErrorBoundary from '../../components/WithErrorBoundary';
 
-export default class ClientView extends Component {
-  constructor(props) {
-    super(props);
-  }
-
+class ClientView extends Component {
   render() {
+    throw new Error("Errore di test.");
     return <></>;
   }
 }
+
+ClientView.displayName = 'ClientView';
+
+export default withErrorBoundary(ClientView);

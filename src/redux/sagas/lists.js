@@ -1,6 +1,17 @@
-import { delay } from 'redux-saga';
-import { cancel, cancelled, fork, put, select, take, takeLatest, takeEvery, /* debounce */ } from 'redux-saga/effects';
-import { LIST_AUTO_UPDATE_INTERVAL, LIST_ELEMENTS_PER_PAGE, SEARCH_DEBOUNCE_DELAY_MS } from '../../constants/api';
+import {
+  actionChannel,
+  cancel,
+  cancelled,
+  debounce,
+  delay,
+  fork,
+  put,
+  select,
+  take,
+  takeEvery,
+  takeLatest
+} from 'redux-saga/effects';
+import { LIST_AUTO_UPDATE_INTERVAL_MS, LIST_ELEMENTS_PER_PAGE, SEARCH_DEBOUNCE_DELAY_MS } from '../../constants/api';
 import { getListRequestPath } from '../../utils/apiUtils';
 import { LIST_ACTION_TYPE } from '../actions/lists';
 import { makeRequestAndReportErrors } from './api';
@@ -46,10 +57,13 @@ function* retrieveListPage(action) {
       {
         page: action.pageNumber,
         limit: LIST_ELEMENTS_PER_PAGE,
-        sort: action.sortingCriteria.columnKey == null ? {} : {
-          parameter: action.sortingCriteria.columnKey,
-          order: action.sortingCriteria.direction
-        },
+        sort:
+          action.sortingCriteria.columnKey == null
+            ? {}
+            : {
+                parameter: action.sortingCriteria.columnKey,
+                order: action.sortingCriteria.direction
+              },
         filter: action.filter
       },
       yield select(state => state.auth.accessToken)
@@ -104,6 +118,7 @@ function* checkForListUpdates(latestUpdateTimestamp, action) {
         elementType: action.elementType,
         latestUpdateTimestamp: updateResponseData.latest_update_timestamp
       });
+    // prettier-ignore
     else
       console.log(`No ${action.elementType} list updates found`);
   }
@@ -133,7 +148,6 @@ function* reviewListElement(action) {
   // Error callback is called by the saga triggered by ELEMENT_REVIEW_FAILED action (see below)
 }
 
-
 // Contains the auto update checking tasks corresponding to the lists of the specified element type and view,
 // so that they can be started and stopped from different functions (see below).
 // Keys are in the form `${userRoleString}.${elementType}`.
@@ -141,19 +155,55 @@ function* reviewListElement(action) {
 const autoUpdateTasks = {};
 
 /**
+ * Dispatches and stops update checking tasks according to the actions dispatched.
+ * Uses a channel to watch for actions START_AUTO_CHECKING and STOP_AUTO_CHECKING: in this way
+ * incoming actions can be enqueued in a buffer while the saga handles the current one (nullifies
+ * the chance of losing an action, which is very unlikely without a buffer anyway).
+ */
+function* updateCheckingTasksManager() {
+  const actionsChannel = yield actionChannel([
+    LIST_ACTION_TYPE.START_AUTO_CHECKING,
+    LIST_ACTION_TYPE.STOP_AUTO_CHECKING
+  ]);
+
+  // prettier-ignore
+  while (true) {
+    const action = yield take(actionsChannel);
+    const taskKey = `${action.userRoleString}.${action.elementType}`;
+
+    if (action.type === LIST_ACTION_TYPE.START_AUTO_CHECKING) {
+      if (autoUpdateTasks[taskKey] == null)
+        autoUpdateTasks[taskKey] = yield fork(() => runListUpdateChecker(action));
+      else
+        console.error(`There is another update checking task running for ${taskKey}`);
+    }
+    else if (action.type === LIST_ACTION_TYPE.STOP_AUTO_CHECKING) {
+      if (autoUpdateTasks[taskKey] != null) {
+        yield cancel(autoUpdateTasks[taskKey]);
+        autoUpdateTasks[taskKey] = null;
+      }
+      else
+        console.error('Tried to stop an unexisting update checking task.');
+    }
+  }
+}
+
+/**
  * Performs automatic update checking for the list
- * every LIST_AUTO_UPDATE_INTERVAL milliseconds
+ * every LIST_AUTO_UPDATE_INTERVAL_MS milliseconds
  * @param {*} action Action of type START_AUTO_CHECKING
  */
 function* runListUpdateChecker(action) {
   try {
     console.log(`Auto update checking started for ${action.userRoleString}.${action.elementType}`);
     while (true) {
-      yield delay(LIST_AUTO_UPDATE_INTERVAL);
+      yield delay(LIST_AUTO_UPDATE_INTERVAL_MS);
       // Avoid checking for updates when the state of the list is not yet initialized
       // or when retrieveListPage() is running
-      if ((yield select(state => state[action.userRoleString][action.elementType] != null)) &&
-          (yield select(state => !state[action.userRoleString][action.elementType].isLoadingList))) {
+      if (
+        (yield select(state => state[action.userRoleString][action.elementType] != null)) &&
+        (yield select(state => !state[action.userRoleString][action.elementType].isLoadingList))
+      ) {
         console.log(`Checking for ${action.userRoleString}.${action.elementType} updates...`);
         yield checkForListUpdates(
           yield select(state => state[action.userRoleString][action.elementType].latestUpdateTimestamp),
@@ -165,40 +215,16 @@ function* runListUpdateChecker(action) {
   finally {
     if (yield cancelled())
       console.log(`Auto update checking stopped for ${action.userRoleString}.${action.elementType}`);
+    // prettier-ignore
     else
       console.error(`Unexpected error during ${action.userRoleString}.${action.elementType} auto updating task`);
   }
 }
 
-function* updateCheckingTasksRunner() {
-  while (true) {
-    const action = yield take(LIST_ACTION_TYPE.START_AUTO_CHECKING);
-    if (autoUpdateTasks[`${action.userRoleString}.${action.elementType}`] == null)
-      autoUpdateTasks[`${action.userRoleString}.${action.elementType}`] = yield fork(() =>
-        runListUpdateChecker(action)
-      );
-    else
-      console.error(`There is another update checking task running for ${action.userRoleString}.${action.elementType}`);
-  }
-}
-
-function* updateCheckingTasksStopper() {
-  while (true) {
-    const action = yield take(LIST_ACTION_TYPE.STOP_AUTO_CHECKING);
-    if (autoUpdateTasks[`${action.userRoleString}.${action.elementType}`] != null) {
-      yield cancel(autoUpdateTasks[`${action.userRoleString}.${action.elementType}`]);
-      autoUpdateTasks[`${action.userRoleString}.${action.elementType}`] = null;
-    }
-    else
-      console.error('Tried to stop an unexisting update checking task.');
-  }
-}
-
 export const listSagas = [
-  updateCheckingTasksRunner(),
-  updateCheckingTasksStopper(),
+  updateCheckingTasksManager(),
   takeLatest(LIST_ACTION_TYPE.PAGE_REQUEST, retrieveListPage),
-  takeLatest(LIST_ACTION_TYPE.SEARCH_QUERY_CHANGED, retrieveListPage), // TODO debounce with saga v1
+  debounce(SEARCH_DEBOUNCE_DELAY_MS, LIST_ACTION_TYPE.SEARCH_QUERY_CHANGED, retrieveListPage),
   takeEvery(LIST_ACTION_TYPE.ELEMENT_REVIEW_REQUEST, reviewListElement),
   // reports errors in review requests
   takeEvery(LIST_ACTION_TYPE.ELEMENT_REVIEW_FAILED, action =>

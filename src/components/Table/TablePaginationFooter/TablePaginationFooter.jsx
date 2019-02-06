@@ -30,6 +30,7 @@ export default class TablePaginationFooter extends React.PureComponent {
   displayedRowsLabel = ({ from, to, count }) => `${from}-${to} di ${count} elementi totali`;
 }
 
+TablePaginationFooter.displayName = 'TablePaginationFooter';
 TablePaginationFooter.propTypes = {
   itemsCount: PropTypes.number.isRequired,
   itemsPerPage: PropTypes.number.isRequired,

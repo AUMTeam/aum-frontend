@@ -46,6 +46,7 @@ class LogoLoader extends Component {
   }
 }
 
+LogoLoader.displayName = 'LogoLoader';
 LogoLoader.propTypes = {
   classes: PropTypes.object.isRequired
 };

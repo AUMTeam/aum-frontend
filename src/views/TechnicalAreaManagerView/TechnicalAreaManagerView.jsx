@@ -4,6 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import RevisionTable from '../../components/RevisionTable';
+import withErrorBoundary from '../../components/WithErrorBoundary';
 import { LIST_ELEMENTS_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import {
@@ -15,10 +16,8 @@ import { performNewSearchAction, reviewItemAction } from '../../redux/actions/li
 import { viewStyles } from '../styles';
 
 class TechnicalAreaManagerView extends React.Component {
-  constructor(props) {
-    super(props);
-
-    props.startCommitsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]);
+  componentDidMount() {
+    this.props.startCommitsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]);
   }
 
   componentWillUnmount() {
@@ -63,6 +62,8 @@ class TechnicalAreaManagerView extends React.Component {
   }
 }
 
+TechnicalAreaManagerView.displayName = 'TechnicalAreaManagerView';
+
 const mapStateToProps = state => {
   return {
     commitsData: state[USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]].commits
@@ -82,9 +83,11 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default withStyles(viewStyles)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(TechnicalAreaManagerView)
+export default withErrorBoundary(
+  withStyles(viewStyles)(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(TechnicalAreaManagerView)
+  )
 );

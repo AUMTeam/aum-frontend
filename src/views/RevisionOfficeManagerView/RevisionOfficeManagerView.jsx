@@ -4,6 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import RevisionTable from '../../components/RevisionTable';
+import withErrorBoundary from '../../components/WithErrorBoundary';
 import { LIST_ELEMENTS_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import { performNewSearchAction, reviewItemAction } from '../../redux/actions/lists';
@@ -15,10 +16,8 @@ import {
 import { viewStyles } from '../styles';
 
 class RevisionOfficeManagerView extends React.Component {
-  constructor(props) {
-    super(props);
-
-    props.startSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]);
+  componentDidMount() {
+    this.props.startSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]);
   }
 
   componentWillUnmount() {
@@ -64,6 +63,8 @@ class RevisionOfficeManagerView extends React.Component {
   }
 }
 
+RevisionOfficeManagerView.displayName = 'RevisionOfficeManagerView';
+
 const mapStateToProps = state => {
   return {
     sendRequestsData: state[USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]].sendRequests
@@ -83,9 +84,11 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default withStyles(viewStyles)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(RevisionOfficeManagerView)
+export default withErrorBoundary(
+  withStyles(viewStyles)(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(RevisionOfficeManagerView)
+  )
 );

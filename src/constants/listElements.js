@@ -5,6 +5,7 @@ export const LIST_ELEMENT_ATTRIBUTE = {
   ID: 'id',
   DESCRIPTION: 'description',
   TIMESTAMP: 'timestamp',
+  UPDATE_TIMESTAMP: 'update_timestamp',
   AUTHOR: 'author',
   APPROVAL_STATUS: 'approval_status'
 };

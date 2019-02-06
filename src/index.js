@@ -1,12 +1,13 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import { SnackbarProvider } from 'notistack';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import withErrorBoundary from './components/WithErrorBoundary';
+import { API_ENDPOINT_URL, changeEndpointUrl } from './constants/api';
 import EnhancedStoreProvider from './redux/configureStore';
 import Routes from './routes';
 import * as serviceWorker from './serviceWorker';
 import { configureTheme } from './theme/configureTheme';
-import { changeEndpointUrl, API_ENDPOINT_URL } from './constants/api';
 
 /**
  * @file
@@ -20,23 +21,25 @@ const theme = createMuiTheme(configureTheme());
 /**
  * Root component of the web-app
  */
-const App = () => (
-  <MuiThemeProvider theme={theme}>
-    <SnackbarProvider
-      maxSnack={4}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center'
-      }}
-    >
-      <EnhancedStoreProvider>
-        <Routes />
-      </EnhancedStoreProvider>
-    </SnackbarProvider>
-  </MuiThemeProvider>
-);
+const RootComponent = withErrorBoundary(function App() {
+  return (
+    <MuiThemeProvider theme={theme}>
+      <SnackbarProvider
+        maxSnack={3}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center'
+        }}
+      >
+        <EnhancedStoreProvider>
+          <Routes />
+        </EnhancedStoreProvider>
+      </SnackbarProvider>
+    </MuiThemeProvider>
+  );
+});
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<RootComponent />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
@@ -49,8 +52,7 @@ if (process.env.NODE_ENV === 'development') {
     if (event.ctrlKey && event.key === 'e') {
       event.preventDefault();
       const newApiAddress = prompt("Inserisci il nuovo indirizzo dell'API endpoint:", API_ENDPOINT_URL);
-      if (newApiAddress != null)
-        changeEndpointUrl(newApiAddress);
+      if (newApiAddress != null) changeEndpointUrl(newApiAddress);
     }
   };
 }

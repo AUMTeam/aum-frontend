@@ -9,9 +9,7 @@ import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
  * Renders the content of the send requests tab in ProgrammerView
  */
 export class SendRequestsSubView extends Component {
-  constructor(props) {
-    super(props);
-
+  componentDidMount() {
     this.props.startUpdateChecking(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
   }
 
@@ -43,6 +41,7 @@ export class SendRequestsSubView extends Component {
   }
 }
 
+SendRequestsSubView.displayName = 'SendRequestsSubView';
 SendRequestsSubView.propTypes = {
   classes: PropTypes.object.isRequired,
   startUpdateChecking: PropTypes.func.isRequired,

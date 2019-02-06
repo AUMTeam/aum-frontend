@@ -24,9 +24,7 @@ const styles = theme => ({
  * Renders the content of the commits tab in ProgrammerView
  */
 class CommitsSubView extends Component {
-  constructor(props) {
-    super(props);
-
+  componentDidMount() {
     this.props.startUpdateChecking(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
   }
 
@@ -64,6 +62,7 @@ class CommitsSubView extends Component {
   }
 }
 
+CommitsSubView.displayName = 'CommitsSubView';
 CommitsSubView.propTypes = {
   classes: PropTypes.object.isRequired,
   startUpdateChecking: PropTypes.func.isRequired,

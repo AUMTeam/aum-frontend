@@ -1,13 +1,23 @@
-import { Button, Snackbar, SnackbarContent, withTheme } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, withStyles } from '@material-ui/core';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import LogoLoader from '../components/LogoLoader';
+import { TOKEN_LOCALSTORAGE_KEY } from '../constants/api';
 import { ROUTE } from '../constants/routes';
 import { requestLocalTokenValidationIfPresentAction } from '../redux/actions/auth';
 import Home from './Home';
 import Login from './Login';
+
+const styles = theme => ({
+  errorDialog: {
+    backgroundColor: theme.palette.error.dark
+  },
+  errorDialogText: {
+    color: 'white'
+  }
+});
 
 /**
  * Custom made routing component that, based on a condition,
@@ -31,32 +41,33 @@ class Routes extends Component {
   constructor(props) {
     super(props);
 
-    this.props.requestLocalTokenValidationIfPresent(localStorage.getItem('token'));
+    this.props.requestLocalTokenValidationIfPresent(localStorage.getItem(TOKEN_LOCALSTORAGE_KEY));
   }
 
   render() {
+    const { isValidatingToken, accessToken, classes, globalError } = this.props;
     return (
       <>
-        {this.props.isValidatingToken ? (
+        {isValidatingToken ? (
           <LogoLoader />
         ) : (
           <HashRouter>
             <Switch>
               <AuthRoute
-                condition={() => this.props.accessToken != null}
+                condition={() => accessToken != null}
                 exact
                 path={ROUTE.ROOT}
                 component={Home}
                 redirectPath={ROUTE.LOGIN}
               />
               <AuthRoute
-                condition={() => this.props.accessToken == null}
+                condition={() => accessToken == null}
                 path={ROUTE.LOGIN}
                 component={Login}
                 redirectPath={ROUTE.HOME}
               />
               <AuthRoute
-                condition={() => this.props.accessToken != null}
+                condition={() => accessToken != null}
                 path={ROUTE.HOME}
                 component={Home}
                 redirectPath={ROUTE.LOGIN}
@@ -65,28 +76,30 @@ class Routes extends Component {
           </HashRouter>
         )}
 
-        {/*
-            Display a snackbar which allows the user to reload the page if there's a global uncaught error in Saga
-            TODO: This will become an error screen that will prevent the app to be usable
-          */}
-        {this.props.globalError && (
-          <Snackbar open>
-            <SnackbarContent
-              style={{ backgroundColor: this.props.theme.palette.error.main }}
-              message="Abbiamo rilevato un errore inatteso nell'applicazione che ha portato ad una perdita di funzionalità. Per ripristinarla, ricaricare la pagina."
-              anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
-              action={[
-                <Button style={{ color: '#ffffff' }} size="small" onClick={() => window.location.reload()}>
-                  Ricarica
-                </Button>
-              ]}
-            />
-          </Snackbar>
+        {/* Display a dialog which forces the user to reload the page if there's a global uncaught error in Saga */}
+        {globalError && (
+          <Dialog classes={{ paper: classes.errorDialog }} disableBackdropClick disableEscapeKeyDown open>
+            <DialogContent>
+              <DialogContentText className={classes.errorDialogText}>
+                Si è verificato un errore irreversibile nella back-logic dell'applicazione. Per tornare ad utilizzarla,
+                ricarica la pagina.
+                <br />
+                Se sei uno sviluppatore, consulta la console di debug per ulteriori dettagli.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button className={classes.errorDialogText} onClick={() => window.location.reload()}>
+                Ricarica
+              </Button>
+            </DialogActions>
+          </Dialog>
         )}
       </>
     );
   }
 }
+
+Routes.displayName = 'Routes';
 
 const mapStateToProps = state => {
   return {
@@ -105,7 +118,7 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default withTheme()(
+export default withStyles(styles)(
   connect(
     mapStateToProps,
     mapDispatchToProps
