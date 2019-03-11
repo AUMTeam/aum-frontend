@@ -28,10 +28,10 @@ import { SendRequestsSubView } from './SendRequestsSubView';
  */
 class ProgrammerView extends Component {
   render() {
-    return this.renderSpecificSubView();
+    return this.renderSpecificTable();
   }
 
-  renderSpecificSubView = () => {
+  renderSpecificTable = () => {
     const {
       classes,
       commitsData,

@@ -49,8 +49,20 @@ class ProgrammerTable extends Component {
       },
       filter: {}
     };
+  }
 
-    props.loadPage(0, this.state.sorting, this.state.filter);
+  // Load the first page when table is created
+  componentDidMount() {
+    this.props.loadPage(0, this.state.sorting, this.state.filter);
+  }
+
+  /**
+   * This allows us to reuse the same table instance between different tabs that display different types of elements,
+   * without having to wrap the table in a sub-component or use a key to force React to re-instantiate it.
+   */
+  componentDidUpdate(prevProps) {
+    if (this.props.elementType !== prevProps.elementType)
+      this.props.loadPage(0, this.state.sorting, this.state.filter);
   }
 
   /**
