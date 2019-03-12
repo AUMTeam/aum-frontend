@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
@@ -33,82 +34,89 @@ class TechnicalAreaManagerView extends React.Component {
   }
 
   render() {
-    const {
-      classes,
-      commitsData,
-      retrieveCommitsListPage,
-      sendRequestsData,
-      retrieveSendRequestsListPage,
-      performNewSearch,
-      reviewItem,
-      match
-    } = this.props;
-    
     return (
-      <Grid container className={classes.grid}>
+      <Grid container className={this.props.classes.grid}>
         <Grid item xs={12}>
           <Grid container justify="center">
-
-            {/* Render table according to selected tab */}
-            {match.params.value === NAVIGATION_HIERARCHY[1].tabs[0].value ? (
-              <RevisionTable
-                tableData={commitsData.listPages}
-                elementType={LIST_ELEMENTS_TYPE.COMMITS}
-                itemsCount={commitsData.totalItemsCount}
-                isLoading={commitsData.isLoadingList}
-                latestUpdateTimestamp={commitsData.latestUpdateTimestamp}
-                displayError={commitsData.errorWhileFetchingData}
-                loadPage={(pageNumber, sortingCriteria, filter) => {
-                  retrieveCommitsListPage(
-                    USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER],
-                    pageNumber,
-                    sortingCriteria,
-                    filter
-                  );
-                }}
-                onSearchQueryChange={searchQuery => {
-                  performNewSearch(
-                    retrieveCommitsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]),
-                    searchQuery
-                  );
-                }}
-                onItemReview={(elementId, approvalStatus, callback) =>
-                  reviewItem(LIST_ELEMENTS_TYPE.COMMITS, elementId, approvalStatus, callback)
-                }
-              />
-            ) : match.params.value === NAVIGATION_HIERARCHY[1].tabs[1].value ? (
-              <RevisionTable
-                tableData={sendRequestsData.listPages}
-                elementType={LIST_ELEMENTS_TYPE.SEND_REQUESTS}
-                itemsCount={sendRequestsData.totalItemsCount}
-                isLoading={sendRequestsData.isLoadingList}
-                latestUpdateTimestamp={sendRequestsData.latestUpdateTimestamp}
-                displayError={sendRequestsData.errorWhileFetchingData}
-                loadPage={(pageNumber, sortingCriteria, filter) => {
-                  retrieveSendRequestsListPage(
-                    USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER],
-                    pageNumber,
-                    sortingCriteria,
-                    filter
-                  );
-                }}
-                onSearchQueryChange={searchQuery => {
-                  performNewSearch(
-                    retrieveSendRequestsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]),
-                    searchQuery
-                  );
-                }}
-                onItemReview={(elementId, approvalStatus, callback) =>
-                  reviewItem(LIST_ELEMENTS_TYPE.SEND_REQUESTS, elementId, approvalStatus, callback)
-                }
-              />
-            ) : null}
-
+            {this.renderSpecificTable()}
           </Grid>
         </Grid>
       </Grid>
     );
   }
+
+  renderSpecificTable = () => {
+    const {
+      match,
+      commitsData,
+      sendRequestsData,
+      retrieveCommitsListPage,
+      retrieveSendRequestsListPage,
+      performNewSearch,
+      reviewItem
+    } = this.props;
+
+    switch (match.params.value) {
+      case NAVIGATION_HIERARCHY[1].tabs[0].value:
+        return (
+          <RevisionTable
+            key={0}
+            tableData={commitsData.listPages}
+            elementType={LIST_ELEMENTS_TYPE.COMMITS}
+            itemsCount={commitsData.totalItemsCount}
+            isLoading={commitsData.isLoadingList}
+            latestUpdateTimestamp={commitsData.latestUpdateTimestamp}
+            displayError={commitsData.errorWhileFetchingData}
+            loadPage={(pageNumber, sortingCriteria, filter) => {
+              retrieveCommitsListPage(
+                USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER],
+                pageNumber,
+                sortingCriteria,
+                filter
+              );
+            }}
+            onSearchQueryChange={searchQuery => {
+              performNewSearch(
+                retrieveCommitsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]),
+                searchQuery
+              );
+            }}
+            onItemReview={(elementId, approvalStatus, callback) =>
+              reviewItem(LIST_ELEMENTS_TYPE.COMMITS, elementId, approvalStatus, callback)
+            }
+          />
+        );
+      case NAVIGATION_HIERARCHY[1].tabs[1].value:
+        return (
+          <RevisionTable
+            key={1}
+            tableData={sendRequestsData.listPages}
+            elementType={LIST_ELEMENTS_TYPE.SEND_REQUESTS}
+            itemsCount={sendRequestsData.totalItemsCount}
+            isLoading={sendRequestsData.isLoadingList}
+            latestUpdateTimestamp={sendRequestsData.latestUpdateTimestamp}
+            displayError={sendRequestsData.errorWhileFetchingData}
+            loadPage={(pageNumber, sortingCriteria, filter) => {
+              retrieveSendRequestsListPage(
+                USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER],
+                pageNumber,
+                sortingCriteria,
+                filter
+              );
+            }}
+            onSearchQueryChange={searchQuery => {
+              performNewSearch(
+                retrieveSendRequestsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]),
+                searchQuery
+              );
+            }}
+            onItemReview={(elementId, approvalStatus, callback) =>
+              reviewItem(LIST_ELEMENTS_TYPE.SEND_REQUESTS, elementId, approvalStatus, callback)
+            }
+          />
+        );
+    }
+  };
 }
 
 TechnicalAreaManagerView.displayName = 'TechnicalAreaManagerView';

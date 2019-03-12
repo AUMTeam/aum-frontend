@@ -1,10 +1,12 @@
 /* eslint-disable default-case */
+import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorBoundary from '../../components/WithErrorBoundary';
 import { NAVIGATION_HIERARCHY } from '../../constants/navigation';
+import { LIST_ELEMENTS_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import {
   retrieveCommitsListPageAction,
@@ -18,8 +20,7 @@ import {
   stopSendRequestsListUpdatesAutoCheckingAction
 } from '../../redux/actions/sendRequests';
 import { viewStyles } from '../styles';
-import { CommitsSubView } from './CommitsSubView';
-import { SendRequestsSubView } from './SendRequestsSubView';
+import ProgrammerTable from '../../components/ProgrammerTable';
 
 /**
  * @class
@@ -27,13 +28,31 @@ import { SendRequestsSubView } from './SendRequestsSubView';
  * components of the programmer view according to the selected tab
  */
 class ProgrammerView extends Component {
+  componentDidMount() {
+    this.props.startCommitsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
+    this.props.startSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
+  }
+
+  componentWillUnmount() {
+    this.props.stopCommitsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
+    this.props.stopSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
+  }
+
   render() {
-    return this.renderSpecificTable();
+    return (
+      <Grid container className={this.props.classes.grid}>
+        <Grid item xs={12}>
+          <Grid container justify="center">
+            {this.renderSpecificTable()}
+          </Grid>
+        </Grid>
+      </Grid>
+    );
   }
 
   renderSpecificTable = () => {
     const {
-      classes,
+      match,
       commitsData,
       sendRequestsData,
       retrieveCommitsListPage,
@@ -41,30 +60,35 @@ class ProgrammerView extends Component {
       performNewSearch
     } = this.props;
 
-    switch (this.props.match.params.value) {
+    switch (match.params.value) {
       case NAVIGATION_HIERARCHY[0].tabs[0].value:
         return (
-          <CommitsSubView
-            classes={classes}
-            startUpdateChecking={this.props.startCommitsListUpdatesAutoChecking}
-            stopUpdateChecking={this.props.stopCommitsListUpdatesAutoChecking}
-            commitsData={commitsData}
-            onTablePageLoad={(pageNumber, sortingCriteria, filter) => {
+          <ProgrammerTable
+            key={0}
+            tableToolbarTitle="Lista richieste di commit"
+            tableData={commitsData.listPages}
+            elementType={LIST_ELEMENTS_TYPE.COMMITS}
+            itemsCount={commitsData.totalItemsCount}
+            loadPage={(pageNumber, sortingCriteria, filter) => {
               retrieveCommitsListPage(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER], pageNumber, sortingCriteria, filter);
             }}
             onSearchQueryChanged={searchQuery => {
               performNewSearch(retrieveCommitsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]), searchQuery);
             }}
+            isLoading={commitsData.isLoadingList}
+            latestUpdateTimestamp={commitsData.latestUpdateTimestamp}
+            displayError={commitsData.errorWhileFetchingData}
           />
         );
       case NAVIGATION_HIERARCHY[0].tabs[1].value:
         return (
-          <SendRequestsSubView
-            classes={classes}
-            startUpdateChecking={this.props.startSendRequestsListUpdatesAutoChecking}
-            stopUpdateChecking={this.props.stopSendRequestsListUpdatesAutoChecking}
-            sendRequestsData={sendRequestsData}
-            onTablePageLoad={(pageNumber, sortingCriteria, filter) => {
+          <ProgrammerTable
+            key={1}
+            tableToolbarTitle="Lista richieste di invio"
+            tableData={sendRequestsData.listPages}
+            elementType={LIST_ELEMENTS_TYPE.SEND_REQUESTS}
+            itemsCount={sendRequestsData.totalItemsCount}
+            loadPage={(pageNumber, sortingCriteria, filter) => {
               retrieveSendRequestsListPage(
                 USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER],
                 pageNumber,
@@ -72,12 +96,15 @@ class ProgrammerView extends Component {
                 filter
               );
             }}
+            isLoading={sendRequestsData.isLoadingList}
             onSearchQueryChanged={searchQuery => {
               performNewSearch(
                 retrieveSendRequestsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]),
                 searchQuery
               );
             }}
+            latestUpdateTimestamp={sendRequestsData.latestUpdateTimestamp}
+            displayError={sendRequestsData.errorWhileFetchingData}
           />
         );
     }

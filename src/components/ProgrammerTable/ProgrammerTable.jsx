@@ -5,7 +5,7 @@ import Table from '@material-ui/core/Table';
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
+import { LIST_ELEMENTS_PER_PAGE, LIST_ELEMENTS_TYPE } from '../../constants/api';
 import { LIST_ELEMENT_ATTRIBUTE } from '../../constants/listElements';
 import { getSearchFilter } from '../../utils/apiUtils';
 import ApprovalStatusIcon from '../ApprovalStatusIcon';
@@ -54,15 +54,6 @@ class ProgrammerTable extends Component {
   // Load the first page when table is created
   componentDidMount() {
     this.props.loadPage(0, this.state.sorting, this.state.filter);
-  }
-
-  /**
-   * This allows us to reuse the same table instance between different tabs that display different types of elements,
-   * without having to wrap the table in a sub-component or use a key to force React to re-instantiate it.
-   */
-  componentDidUpdate(prevProps) {
-    if (this.props.elementType !== prevProps.elementType)
-      this.props.loadPage(0, this.state.sorting, this.state.filter);
   }
 
   /**
@@ -197,6 +188,7 @@ ProgrammerTable.propTypes = {
   classes: PropTypes.object.isRequired,
   tableToolbarTitle: PropTypes.string.isRequired,
   tableData: PropTypes.array.isRequired,
+  elementType: PropTypes.oneOf([LIST_ELEMENTS_TYPE.COMMITS, LIST_ELEMENTS_TYPE.SEND_REQUESTS]), // may be needed in the future
   itemsCount: PropTypes.number.isRequired,
   loadPage: PropTypes.func.isRequired,
   onSearchQueryChanged: PropTypes.func.isRequired,
