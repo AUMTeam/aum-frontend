@@ -152,6 +152,7 @@ class RevisionTable extends React.Component {
               displayError={displayError}
               pageNumber={this.state.currentPage}
               renderCellContent={this.renderCellContent}
+              loadCurrentPage={this.loadCurrentPage}
             />
           )}
 

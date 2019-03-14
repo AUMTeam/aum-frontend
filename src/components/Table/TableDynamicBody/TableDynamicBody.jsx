@@ -3,6 +3,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import ErrorOutline from '@material-ui/icons/ErrorOutline';
+import Link from '@material-ui/core/Link';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -21,14 +22,15 @@ const verticallyAlignedContentStyle = {
  */
 export default class TableDynamicBody extends React.Component {
   render() {
-    const { tableData, tableColumns, displayError, totalItemsCount, pageNumber, renderCellContent } = this.props;
+    const { tableData, tableColumns, displayError, totalItemsCount, pageNumber, renderCellContent, loadCurrentPage } = this.props;
     return (
       <TableBody>
         {displayError ? (
           <TableRow>
             <TableCell colSpan={tableColumns.length}>
               <div style={verticallyAlignedContentStyle}>
-                <ErrorOutline color="action" /> &ensp; Impossibile ottenere i dati.
+                <ErrorOutline color="action" /> &ensp; Impossibile ottenere i dati. 
+                <Link onClick={loadCurrentPage}>Riprova.</Link>
               </div>
             </TableCell>
           </TableRow>
@@ -63,5 +65,6 @@ TableDynamicBody.propTypes = {
   totalItemsCount: PropTypes.number.isRequired,
   displayError: PropTypes.bool.isRequired,
   pageNumber: PropTypes.number.isRequired,
-  renderCellContent: PropTypes.func.isRequired
+  renderCellContent: PropTypes.func.isRequired,
+  loadCurrentPage: PropTypes.func.isRequired
 };

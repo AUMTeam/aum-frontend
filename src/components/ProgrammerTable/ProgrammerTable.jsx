@@ -111,6 +111,7 @@ class ProgrammerTable extends Component {
               displayError={displayError}
               pageNumber={this.state.currentPage}
               renderCellContent={this.renderCellContent}
+              loadCurrentPage={this.loadCurrentPage}
             />
           )}
 
