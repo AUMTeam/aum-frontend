@@ -1,9 +1,9 @@
+import Button from '@material-ui/core/Button';
 import Hidden from '@material-ui/core/Hidden';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import ErrorOutline from '@material-ui/icons/ErrorOutline';
-import Link from '@material-ui/core/Link';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -29,8 +29,8 @@ export default class TableDynamicBody extends React.Component {
           <TableRow>
             <TableCell colSpan={tableColumns.length}>
               <div style={verticallyAlignedContentStyle}>
-                <ErrorOutline color="action" /> &ensp; Impossibile ottenere i dati. 
-                <Link onClick={loadCurrentPage}>Riprova.</Link>
+                <ErrorOutline color="action" /> &ensp; Impossibile ottenere i dati.&ensp;
+                <Button size="small" onClick={loadCurrentPage} color="primary">Riprova</Button>
               </div>
             </TableCell>
           </TableRow>
