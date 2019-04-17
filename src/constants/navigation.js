@@ -21,11 +21,11 @@ export const NAVIGATION_HIERARCHY = [
     drawerIcon: <CodeIcon />,
     tabs: [
       {
-        value: "0",
-        label: 'Commit'
+        value: '0',
+        label: 'Richieste di commit'
       },
       {
-        value: "1",
+        value: '1',
         label: 'Richieste di invio'
       }
     ]
@@ -36,7 +36,16 @@ export const NAVIGATION_HIERARCHY = [
     label: 'Referente area tecnica',
     component: TechnicalAreaManagerView,
     drawerIcon: <RecordVoiceOverIcon />,
-    tabs: []
+    tabs: [
+      {
+        value: '0',
+        label: 'Richieste di commit'
+      },
+      {
+        value: '1',
+        label: 'Richieste di invio'
+      }
+    ]
   },
   {
     value: USER_TYPE_ID.REVISION_OFFICE_MANAGER,

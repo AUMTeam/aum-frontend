@@ -95,8 +95,11 @@ class RevisionTable extends React.Component {
       successfullyReviewedItems: {},
       failedReviewItems: {}
     };
+  }
 
-    props.loadPage(0, this.state.sorting, this.state.filter);
+  // Load the first page when table is created
+  componentDidMount() {
+    this.props.loadPage(0, this.state.sorting, this.state.filter);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -149,6 +152,7 @@ class RevisionTable extends React.Component {
               displayError={displayError}
               pageNumber={this.state.currentPage}
               renderCellContent={this.renderCellContent}
+              loadCurrentPage={this.loadCurrentPage}
             />
           )}
 

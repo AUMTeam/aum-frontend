@@ -15,7 +15,7 @@ export function createNotistackMiddleware(enqueueSnackbar) {
       case LIST_ACTION_TYPE.UPDATE_CHECKING_ERROR:
         enqueueSnackbar(
           'Impossibile controllare gli aggiornamenti per la lista. Controlla la tua connessione.',
-          { variant: 'error', autoHideDuration: 5000 }
+          { variant: 'error', autoHideDuration: 5000, preventDuplicate: true }
         );
         break;
       case LIST_ACTION_TYPE.ELEMENT_REVIEW_FAILED:

@@ -8,11 +8,10 @@ const stateShapes = {
     [LIST_ELEMENTS_TYPE.SEND_REQUESTS]: undefined
   },
   [USER_TYPE_ID.TECHNICAL_AREA_MANAGER]: {
-    [LIST_ELEMENTS_TYPE.COMMITS]: undefined
-  },
-  [USER_TYPE_ID.REVISION_OFFICE_MANAGER]: {
+    [LIST_ELEMENTS_TYPE.COMMITS]: undefined,
     [LIST_ELEMENTS_TYPE.SEND_REQUESTS]: undefined
-  }
+  },
+  [USER_TYPE_ID.REVISION_OFFICE_MANAGER]: {}
 };
 
 /**
