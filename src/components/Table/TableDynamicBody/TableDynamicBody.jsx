@@ -6,11 +6,14 @@ import TableRow from '@material-ui/core/TableRow';
 import ErrorOutline from '@material-ui/icons/ErrorOutline';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { LIST_ELEMENTS_PER_PAGE } from '../../../constants/api';
 
 const verticallyAlignedContentStyle = {
   display: 'flex',
   alignItems: 'center'
 };
+
+const PLACEHOLDER_VALUE = '—';
 
 /**
  * @class
@@ -22,15 +25,41 @@ const verticallyAlignedContentStyle = {
  */
 export default class TableDynamicBody extends React.Component {
   render() {
-    const { tableData, tableColumns, displayError, totalItemsCount, pageNumber, renderCellContent, loadCurrentPage } = this.props;
+    const {
+      tableData,
+      tableColumns,
+      displayError,
+      totalItemsCount,
+      pageNumber,
+      renderCellContent,
+      loadCurrentPage,
+      isLoading
+    } = this.props;
+
     return (
       <TableBody>
-        {displayError ? (
+        {isLoading ? (
+          React.Children.map(Array(LIST_ELEMENTS_PER_PAGE), () => {
+            return (
+              <TableRow>
+                {tableColumns.map((column, index) => (
+                  <Hidden key={index} smDown={!column.displayOnMobile}>
+                    <TableCell align={column.alignOption != null ? column.alignOption : undefined} padding="dense">
+                      {PLACEHOLDER_VALUE}
+                    </TableCell>
+                  </Hidden>
+                ))}
+              </TableRow>
+            );
+          })
+        ) : displayError ? (
           <TableRow>
             <TableCell colSpan={tableColumns.length}>
               <div style={verticallyAlignedContentStyle}>
                 <ErrorOutline color="action" /> &ensp; Impossibile ottenere i dati.&ensp;
-                <Button size="small" onClick={loadCurrentPage} color="primary">Riprova</Button>
+                <Button size="small" onClick={loadCurrentPage} color="primary">
+                  Riprova
+                </Button>
               </div>
             </TableCell>
           </TableRow>
@@ -64,6 +93,7 @@ TableDynamicBody.propTypes = {
   tableData: PropTypes.array.isRequired,
   totalItemsCount: PropTypes.number.isRequired,
   displayError: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
   pageNumber: PropTypes.number.isRequired,
   renderCellContent: PropTypes.func.isRequired,
   loadCurrentPage: PropTypes.func.isRequired

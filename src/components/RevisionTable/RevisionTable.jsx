@@ -7,7 +7,6 @@ import Paper from '@material-ui/core/Paper';
 import Radio from '@material-ui/core/Radio';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
-import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import HighlightOff from '@material-ui/icons/HighlightOff';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -19,7 +18,6 @@ import { getHistoryFilter, getSearchFilter, getToBeReviewedFilter } from '../../
 import ApprovalStatusIcon from '../ApprovalStatusIcon';
 import TableDynamicBody from '../Table/TableDynamicBody';
 import TableSortableHeader from '../Table/TableSortableHeader';
-import TableBodySkeleton from '../Table/TableBodySkeleton';
 import TablePaginationFooter from '../Table/TablePaginationFooter';
 import TableToolbar from '../Table/TableToolbar';
 
@@ -139,22 +137,16 @@ class RevisionTable extends React.Component {
             onSortingUpdate={this.onSortingUpdate}
           />
 
-          {isLoading ? (
-            <TableBodySkeleton
-              columnsCount={this.currentlyShowingColumnsCount(reviewMode)}
-              itemsPerPage={LIST_ELEMENTS_PER_PAGE}
-            />
-          ) : (
-            <TableDynamicBody
-              tableColumns={reviewMode ? reviewTableColumns : historyTableColumns}
-              tableData={tableData}
-              totalItemsCount={itemsCount}
-              displayError={displayError}
-              pageNumber={this.state.currentPage}
-              renderCellContent={this.renderCellContent}
-              loadCurrentPage={this.loadCurrentPage}
-            />
-          )}
+          <TableDynamicBody
+            tableColumns={reviewMode ? reviewTableColumns : historyTableColumns}
+            tableData={tableData}
+            totalItemsCount={itemsCount}
+            displayError={displayError}
+            isLoading={isLoading}
+            pageNumber={this.state.currentPage}
+            renderCellContent={this.renderCellContent}
+            loadCurrentPage={this.loadCurrentPage}
+          />
 
           <TablePaginationFooter
             itemsCount={itemsCount}
@@ -249,23 +241,6 @@ class RevisionTable extends React.Component {
   // Used to determine if the search field is filled
   isSearchingTerm = () => {
     return this.state.filter.attribute === getSearchFilter('test').attribute;
-  };
-
-  // Returns the count of the effectively shown columns depending on screen size
-  // prettier-ignore
-  currentlyShowingColumnsCount = (reviewMode) => {
-    const actualTableColumns = reviewMode ? reviewTableColumns : historyTableColumns;
-
-    let columnCount = 0;
-    actualTableColumns.map(column => {
-      if (isWidthDown('sm', this.props.width)) {
-        if (column.displayOnMobile)
-          columnCount++;
-      }
-      else
-        columnCount++;
-    });
-    return columnCount;    
   };
 
   loadCurrentPage = () => {
@@ -363,4 +338,4 @@ RevisionTable.propTypes = {
   displayError: PropTypes.bool.isRequired
 };
 
-export default withWidth({ noSSR: true })(withStyles(tableStyles)(RevisionTable));
+export default withStyles(tableStyles)(RevisionTable);
