@@ -10,8 +10,5 @@ export const viewStyles = theme => ({
     [theme.breakpoints.up('sm')]: {
       padding: 16
     }
-  },
-  errorSnackbar: {
-    backgroundColor: theme.palette.error.main
   }
 });
