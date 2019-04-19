@@ -84,6 +84,7 @@ class TechnicalAreaManagerView extends React.Component {
             onItemReview={(elementId, approvalStatus, callback) =>
               reviewItem(LIST_ELEMENTS_TYPE.COMMITS, elementId, approvalStatus, callback)
             }
+            onElementClick={(elementId) => console.log(`Elemento ${elementId} cliccato!`)}
           />
         );
       case NAVIGATION_HIERARCHY[1].tabs[1].value:
@@ -113,6 +114,7 @@ class TechnicalAreaManagerView extends React.Component {
             onItemReview={(elementId, approvalStatus, callback) =>
               reviewItem(LIST_ELEMENTS_TYPE.SEND_REQUESTS, elementId, approvalStatus, callback)
             }
+            onElementClick={(elementId) => console.log(`Elemento ${elementId} cliccato!`)}
           />
         );
     }

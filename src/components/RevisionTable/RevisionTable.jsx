@@ -111,7 +111,16 @@ class RevisionTable extends React.Component {
   }
 
   render() {
-    const { classes, tableData, elementType, itemsCount, isLoading, latestUpdateTimestamp, displayError } = this.props;
+    const {
+      classes,
+      tableData,
+      elementType,
+      itemsCount,
+      isLoading,
+      latestUpdateTimestamp,
+      displayError,
+      onElementClick
+    } = this.props;
     const reviewMode = this.isReviewMode();
 
     return (
@@ -146,6 +155,7 @@ class RevisionTable extends React.Component {
             pageNumber={this.state.currentPage}
             renderCellContent={this.renderCellContent}
             loadCurrentPage={this.loadCurrentPage}
+            onElementClick={onElementClick}
           />
 
           <TablePaginationFooter
@@ -182,6 +192,7 @@ class RevisionTable extends React.Component {
     );
   };
 
+  // prettier-ignore
   renderCellContent = (columnKey, value, elementId) => {
     const { classes } = this.props;
 
@@ -240,7 +251,7 @@ class RevisionTable extends React.Component {
 
   // Used to determine if the search field is filled
   isSearchingTerm = () => {
-    return this.state.filter.attribute === getSearchFilter('test').attribute;
+    return this.state.filter.attribute === getSearchFilter().attribute;
   };
 
   loadCurrentPage = () => {
@@ -335,7 +346,8 @@ RevisionTable.propTypes = {
   onItemReview: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   latestUpdateTimestamp: PropTypes.number.isRequired,
-  displayError: PropTypes.bool.isRequired
+  displayError: PropTypes.bool.isRequired,
+  onElementClick: PropTypes.func.isRequired
 };
 
 export default withStyles(tableStyles)(RevisionTable);

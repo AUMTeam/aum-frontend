@@ -73,7 +73,8 @@ class ProgrammerTable extends Component {
       tableData,
       latestUpdateTimestamp,
       itemsCount,
-      displayError
+      displayError,
+      onElementClick
     } = this.props;
 
     return (
@@ -105,6 +106,7 @@ class ProgrammerTable extends Component {
             pageNumber={this.state.currentPage}
             renderCellContent={this.renderCellContent}
             loadCurrentPage={this.loadCurrentPage}
+            onElementClick={onElementClick}
           />
 
           <TablePaginationFooter
@@ -171,7 +173,8 @@ ProgrammerTable.propTypes = {
   onSearchQueryChanged: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   latestUpdateTimestamp: PropTypes.number.isRequired,
-  displayError: PropTypes.bool.isRequired
+  displayError: PropTypes.bool.isRequired,
+  onElementClick: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(ProgrammerTable);

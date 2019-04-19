@@ -78,6 +78,7 @@ class ProgrammerView extends Component {
             isLoading={commitsData.isLoadingList}
             latestUpdateTimestamp={commitsData.latestUpdateTimestamp}
             displayError={commitsData.errorWhileFetchingData}
+            onElementClick={(elementId) => console.log(`Elemento ${elementId} cliccato!`)}
           />
         );
       case NAVIGATION_HIERARCHY[0].tabs[1].value:
@@ -105,6 +106,7 @@ class ProgrammerView extends Component {
             }}
             latestUpdateTimestamp={sendRequestsData.latestUpdateTimestamp}
             displayError={sendRequestsData.errorWhileFetchingData}
+            onElementClick={(elementId) => console.log(`Elemento ${elementId} cliccato!`)}
           />
         );
     }

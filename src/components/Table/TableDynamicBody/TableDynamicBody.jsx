@@ -13,6 +13,10 @@ const verticallyAlignedContentStyle = {
   alignItems: 'center'
 };
 
+const handCursorStyle = {
+  cursor: 'pointer'
+};
+
 const PLACEHOLDER_VALUE = '—';
 
 /**
@@ -33,7 +37,8 @@ export default class TableDynamicBody extends React.Component {
       pageNumber,
       renderCellContent,
       loadCurrentPage,
-      isLoading
+      isLoading,
+      onElementClick
     } = this.props;
 
     return (
@@ -70,7 +75,12 @@ export default class TableDynamicBody extends React.Component {
         ) : (
           tableData[pageNumber].data.map(rowValue => {
             return (
-              <TableRow hover key={rowValue.id}>
+              <TableRow
+                style={onElementClick != null ? handCursorStyle : undefined}
+                hover={onElementClick != null}
+                onClick={onElementClick != null ? () => onElementClick(rowValue.id) : undefined}
+                key={rowValue.id}
+              >
                 {tableColumns.map((column, index) => (
                   <Hidden key={index} smDown={!column.displayOnMobile}>
                     <TableCell align={column.alignOption != null ? column.alignOption : undefined} padding="dense">
@@ -96,5 +106,6 @@ TableDynamicBody.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   pageNumber: PropTypes.number.isRequired,
   renderCellContent: PropTypes.func.isRequired,
-  loadCurrentPage: PropTypes.func.isRequired
+  loadCurrentPage: PropTypes.func.isRequired,
+  onElementClick: PropTypes.func
 };
