@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { auth } from './auth';
 import { globalError } from './globalError';
-import { generateViewReducers } from './views';
+import { generateViewListsReducers } from './viewLists';
 import { user } from './user';
 import { USER_TYPE_ID } from '../../constants/user';
 
@@ -13,27 +13,33 @@ import { USER_TYPE_ID } from '../../constants/user';
  * We can sum up the hierarchy as follows:
  * |-- auth
  * |-- user
- * |-- programmer
- * |   |-- commits
- * |   |-- sendRequests
- * |-- technicalAreaManager
- * |   |-- commits
- * |-- revisionOfficeManager
- * |   |-- sendRequests
- * |-- client
- * |   |-- ??? (TBD)
+ * |-- lists
+ * |   |-- programmer
+ * |   |   |-- commits
+ * |   |   |-- sendRequests
+ * |   |-- technicalAreaManager
+ * |   |   |-- commits
+ * |   |-- revisionOfficeManager
+ * |   |   |-- sendRequests
+ * |   |-- client
+ * |       |-- sendRequests (TBD)
+ * |-- ui
+ * |   |-- technicalAreaManager
+ * |   |-- revisionOfficeManager
  * |-- globalError
- * User view-specific reducers are generated dynamically (see views.js for details).
+ * Lists reducers are generated dynamically (see viewLists.js for details).
  */
 
 const reducers = combineReducers({
   auth,
   user,
-  ...generateViewReducers([
-    USER_TYPE_ID.PROGRAMMER,
-    USER_TYPE_ID.TECHNICAL_AREA_MANAGER,
-    USER_TYPE_ID.REVISION_OFFICE_MANAGER
-  ]),
+  lists: combineReducers(
+    generateViewListsReducers([
+      USER_TYPE_ID.PROGRAMMER,
+      USER_TYPE_ID.TECHNICAL_AREA_MANAGER,
+      USER_TYPE_ID.REVISION_OFFICE_MANAGER
+    ])
+  ),
   globalError
 });
 

@@ -5,7 +5,7 @@ const initialState = {
   /*
     listPages will contain objects with the following shape:
     {
-      data: [],             -- the list of commits for the page
+      data: [],             -- the list of elements for the page
       sorting: {},          -- the sorting criteria of the page
       filter: {},           -- the filtering options of the page (used to display data with certain conditions)
       updateTimestamp: 0    -- the value of state.latestUpdateTimestamp when the page was retrieved
@@ -19,7 +19,10 @@ const initialState = {
   errorWhileFetchingData: false
 };
 
-export function listReducer(state = initialState, action) {
+/**
+ * Reducer used for the lists present in the app, regardless of the type of their elements
+ */
+export function commonListReducer(state = initialState, action) {
   switch (action.type) {
     case LIST_ACTION_TYPE.SEARCH_QUERY_CHANGED:
     case LIST_ACTION_TYPE.PAGE_REQUEST:

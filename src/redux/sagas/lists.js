@@ -25,15 +25,15 @@ import { makeRequestAndReportErrors } from './api';
  */
 function* retrieveListPage(action) {
   yield checkForListUpdates(
-    yield select(state => state[action.userRoleString][action.elementType].latestUpdateTimestamp),
+    yield select(state => state.lists[action.userRoleString][action.elementType].latestUpdateTimestamp),
     action
   );
 
-  const listPages = yield select(state => state[action.userRoleString][action.elementType].listPages);
+  const listPages = yield select(state => state.lists[action.userRoleString][action.elementType].listPages);
   const requestedPageAlreadyFetched = action.pageNumber in listPages;
   if (requestedPageAlreadyFetched) {
     const latestUpdateTimestamp = yield select(
-      state => state[action.userRoleString][action.elementType].latestUpdateTimestamp
+      state => state.lists[action.userRoleString][action.elementType].latestUpdateTimestamp
     );
     var requestedPageNotUpdated = listPages[action.pageNumber].updateTimestamp < latestUpdateTimestamp;
     var sortingCriteriaDifferent =
@@ -201,12 +201,12 @@ function* runListUpdateChecker(action) {
       // Avoid checking for updates when the state of the list is not yet initialized
       // or when retrieveListPage() is running
       if (
-        (yield select(state => state[action.userRoleString][action.elementType] != null)) &&
-        (yield select(state => !state[action.userRoleString][action.elementType].isLoadingList))
+        (yield select(state => state.lists[action.userRoleString][action.elementType] != null)) &&
+        (yield select(state => !state.lists[action.userRoleString][action.elementType].isLoadingList))
       ) {
         console.log(`Checking for ${action.userRoleString}.${action.elementType} updates...`);
         yield checkForListUpdates(
-          yield select(state => state[action.userRoleString][action.elementType].latestUpdateTimestamp),
+          yield select(state => state.lists[action.userRoleString][action.elementType].latestUpdateTimestamp),
           action
         );
       }

@@ -67,7 +67,7 @@ CommitsRevisionSubView.displayName = 'CommitsRevisionSubView';
 
 const mapStateToProps = state => {
   return {
-    commitsData: state[USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]].commits
+    commitsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]].commits
   };
 };
 

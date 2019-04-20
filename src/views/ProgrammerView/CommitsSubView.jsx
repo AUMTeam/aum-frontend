@@ -57,7 +57,7 @@ CommitsSubView.displayName = 'CommitsSubView';
 
 const mapStateToProps = state => {
   return {
-    commitsData: state[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].commits
+    commitsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].commits
   };
 };
 

@@ -67,7 +67,7 @@ SendRequestsRevisionSubView.displayName = 'SendRequestsRevisionSubView';
 
 const mapStateToProps = state => {
   return {
-    sendRequestsData: state[USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]].sendRequests
+    sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]].sendRequests
   };
 };
 
