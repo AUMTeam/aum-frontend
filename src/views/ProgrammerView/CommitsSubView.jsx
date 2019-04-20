@@ -11,7 +11,7 @@ import {
   startCommitsListUpdatesAutoCheckingAction,
   stopCommitsListUpdatesAutoCheckingAction
 } from '../../redux/actions/commits';
-import { performNewSearchAction } from '../../redux/actions/lists';
+import { performNewSearchAction } from '../../redux/actions/commonList';
 import { viewStyles } from '../styles';
 
 class CommitsSubView extends Component {

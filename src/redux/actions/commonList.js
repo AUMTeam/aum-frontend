@@ -1,4 +1,5 @@
 import { getSearchFilter } from '../../utils/apiUtils';
+import { TECHNICAL_AREA_MANAGER_ACTION_TYPE } from './views/technicalAreaManager';
 
 export const LIST_ACTION_TYPE = {
   // Dispatched when a page of the list needs to be loaded
@@ -29,16 +30,8 @@ export const LIST_ACTION_TYPE = {
   // Dispatched when the search query is changed
   SEARCH_QUERY_CHANGED: 'SEARCH_QUERY_CHANGED',
 
-  // These two actions are ignored by reducers, since they're used only to trigger saga functions
-  // which perform item approval/rejection API requests
-  ELEMENT_REVIEW_REQUEST: 'ELEMENT_REVIEW_REQUEST',
-  ELEMENT_REVIEW_FAILED: 'ELEMENT_REVIEW_FAILED',
-
   // TBD
   SHOW_ELEMENT_DETAILS: 'SHOW_ELEMENT_DETAILS',
-
-  // TBD
-  ADD_ELEMENT: 'ADD_ELEMENT'
 };
 
 /**
@@ -61,7 +54,7 @@ export function performNewSearchAction(pageRequestAction, searchQuery) {
 
 export function reviewItemAction(elementType, elementId, approvalStatus, callback) {
   return {
-    type: LIST_ACTION_TYPE.ELEMENT_REVIEW_REQUEST,
+    type: TECHNICAL_AREA_MANAGER_ACTION_TYPE.REVIEW_ITEM_REQUEST,
     elementType,
     elementId,
     approvalStatus,

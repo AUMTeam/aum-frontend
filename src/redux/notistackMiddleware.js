@@ -1,5 +1,5 @@
 /* eslint-disable default-case */
-import { LIST_ACTION_TYPE } from './actions/lists';
+import { LIST_ACTION_TYPE } from './actions/commonList';
 import { LIST_ELEMENTS_TYPE } from '../constants/api';
 import { AUTH_ACTION_TYPE } from './actions/auth';
 

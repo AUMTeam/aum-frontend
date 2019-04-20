@@ -1,5 +1,5 @@
 import { LIST_ELEMENTS_PER_PAGE, LIST_ELEMENTS_TYPE } from '../../constants/api';
-import { LIST_ACTION_TYPE } from './lists';
+import { LIST_ACTION_TYPE } from './commonList';
 
 export function retrieveSendRequestsListPageAction(
   userRoleString,

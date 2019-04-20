@@ -13,8 +13,9 @@ import {
 } from 'redux-saga/effects';
 import { LIST_AUTO_UPDATE_INTERVAL_MS, LIST_ELEMENTS_PER_PAGE, SEARCH_DEBOUNCE_DELAY_MS } from '../../constants/api';
 import { getListRequestPath } from '../../utils/apiUtils';
-import { LIST_ACTION_TYPE } from '../actions/lists';
+import { LIST_ACTION_TYPE } from '../actions/commonList';
 import { makeRequestAndReportErrors } from './api';
+import { TECHNICAL_AREA_MANAGER_ACTION_TYPE } from '../actions/views/technicalAreaManager';
 
 /**
  * Called every time the user changes the page of the commits table or the latter is recreated
@@ -81,8 +82,7 @@ function* retrieveListPage(action) {
         filter: action.filter
       });
     }
-  }
-  else {
+  } else {
     yield put({
       type: LIST_ACTION_TYPE.NO_RETRIEVAL_NEEDED,
       elementType: action.elementType,
@@ -133,7 +133,7 @@ function* checkForListUpdates(latestUpdateTimestamp, action) {
 function* reviewListElement(action) {
   const reviewResponseData = yield makeRequestAndReportErrors(
     getListRequestPath(action.elementType, 'approve'),
-    { ...action, type: LIST_ACTION_TYPE.ELEMENT_REVIEW_FAILED },
+    { ...action, type: TECHNICAL_AREA_MANAGER_ACTION_TYPE.REVIEW_ITEM_FAILED },
     {
       id: action.elementId,
       approve_flag: action.approvalStatus
@@ -143,9 +143,11 @@ function* reviewListElement(action) {
 
   if (reviewResponseData != null) {
     console.log(`Element ${action.elementId} reviewed successfully`);
-    action.callback(action.elementId, action.approvalStatus, true);
+    yield put({
+      ...action,
+      type: TECHNICAL_AREA_MANAGER_ACTION_TYPE.REVIEW_ITEM_SUCCESSFUL
+    });
   }
-  // Error callback is called by the saga triggered by ELEMENT_REVIEW_FAILED action (see below)
 }
 
 // Contains the auto update checking tasks corresponding to the lists of the specified element type and view,
@@ -211,8 +213,7 @@ function* runListUpdateChecker(action) {
         );
       }
     }
-  }
-  finally {
+  } finally {
     if (yield cancelled())
       console.log(`Auto update checking stopped for ${action.userRoleString}.${action.elementType}`);
     // prettier-ignore
@@ -225,9 +226,5 @@ export const listSagas = [
   updateCheckingTasksManager(),
   takeLatest(LIST_ACTION_TYPE.PAGE_REQUEST, retrieveListPage),
   debounce(SEARCH_DEBOUNCE_DELAY_MS, LIST_ACTION_TYPE.SEARCH_QUERY_CHANGED, retrieveListPage),
-  takeEvery(LIST_ACTION_TYPE.ELEMENT_REVIEW_REQUEST, reviewListElement),
-  // reports errors in review requests
-  takeEvery(LIST_ACTION_TYPE.ELEMENT_REVIEW_FAILED, action =>
-    action.callback(action.elementId, action.approvalStatus, false)
-  )
+  takeEvery(TECHNICAL_AREA_MANAGER_ACTION_TYPE.REVIEW_ITEM_REQUEST, reviewListElement)
 ];

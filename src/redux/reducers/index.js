@@ -4,6 +4,7 @@ import { globalError } from './globalError';
 import { generateViewListsReducers } from './viewLists';
 import { user } from './user';
 import { USER_TYPE_ID } from '../../constants/user';
+import { technicalAreaManager } from './views/technicalAreaManager';
 
 /**
  * @file
@@ -23,7 +24,7 @@ import { USER_TYPE_ID } from '../../constants/user';
  * |   |   |-- sendRequests
  * |   |-- client
  * |       |-- sendRequests (TBD)
- * |-- ui
+ * |-- views
  * |   |-- technicalAreaManager
  * |   |-- revisionOfficeManager
  * |-- globalError
@@ -40,6 +41,9 @@ const reducers = combineReducers({
       USER_TYPE_ID.REVISION_OFFICE_MANAGER
     ])
   ),
+  views: combineReducers({
+    technicalAreaManager
+  }),
   globalError
 });
 

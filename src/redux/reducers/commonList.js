@@ -1,5 +1,5 @@
 import { AUTH_ACTION_TYPE } from '../actions/auth';
-import { LIST_ACTION_TYPE } from '../actions/lists';
+import { LIST_ACTION_TYPE } from '../actions/commonList';
 
 const initialState = {
   /*

@@ -11,7 +11,7 @@ import {
   startCommitsListUpdatesAutoCheckingAction,
   stopCommitsListUpdatesAutoCheckingAction
 } from '../../redux/actions/commits';
-import { performNewSearchAction, reviewItemAction } from '../../redux/actions/lists';
+import { performNewSearchAction, reviewItemAction } from '../../redux/actions/commonList';
 import { viewStyles } from '../styles';
 
 class CommitsRevisionSubView extends React.Component {
@@ -24,7 +24,7 @@ class CommitsRevisionSubView extends React.Component {
   }
 
   render() {
-    const { commitsData, retrieveCommitsListPage, performNewSearch, reviewItem } = this.props;
+    const { commitsData, retrieveCommitsListPage, performNewSearch, reviewItem, viewState } = this.props;
 
     return (
       <Grid container className={this.props.classes.grid}>
@@ -51,10 +51,13 @@ class CommitsRevisionSubView extends React.Component {
                   searchQuery
                 );
               }}
-              onItemReview={(elementId, approvalStatus, callback) =>
-                reviewItem(LIST_ELEMENTS_TYPE.COMMITS, elementId, approvalStatus, callback)
+              onItemReview={(elementId, approvalStatus) =>
+                reviewItem(LIST_ELEMENTS_TYPE.COMMITS, elementId, approvalStatus)
               }
               onElementClick={elementId => console.log(`Elemento ${elementId} cliccato!`)}
+              reviewInProgressItems={viewState.reviewInProgress}
+              successfullyReviewedItems={viewState.successfullyReviewed}
+              failedReviewItems={viewState.reviewFailed}
             />
           </Grid>
         </Grid>
@@ -67,7 +70,8 @@ CommitsRevisionSubView.displayName = 'CommitsRevisionSubView';
 
 const mapStateToProps = state => {
   return {
-    commitsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]].commits
+    commitsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]].commits,
+    viewState: state.views[USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]].commits
   };
 };
 

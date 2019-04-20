@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import RevisionTable from '../../components/RevisionTable';
 import { LIST_ELEMENTS_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
-import { performNewSearchAction, reviewItemAction } from '../../redux/actions/lists';
+import { performNewSearchAction, reviewItemAction } from '../../redux/actions/commonList';
 import {
   retrieveSendRequestsListPageAction,
   startSendRequestsListUpdatesAutoCheckingAction,
@@ -24,7 +24,7 @@ class SendRequestsRevisionSubView extends React.Component {
   }
 
   render() {
-    const { sendRequestsData, retrieveSendRequestsListPage, performNewSearch, reviewItem } = this.props;
+    const { sendRequestsData, retrieveSendRequestsListPage, performNewSearch, reviewItem, viewState } = this.props;
 
     return (
       <Grid container className={this.props.classes.grid}>
@@ -51,10 +51,13 @@ class SendRequestsRevisionSubView extends React.Component {
                   searchQuery
                 );
               }}
-              onItemReview={(elementId, approvalStatus, callback) =>
-                reviewItem(LIST_ELEMENTS_TYPE.SEND_REQUESTS, elementId, approvalStatus, callback)
+              onItemReview={(elementId, approvalStatus) =>
+                reviewItem(LIST_ELEMENTS_TYPE.SEND_REQUESTS, elementId, approvalStatus)
               }
               onElementClick={elementId => console.log(`Elemento ${elementId} cliccato!`)}
+              reviewInProgressItems={viewState.reviewInProgress}
+              successfullyReviewedItems={viewState.successfullyReviewed}
+              failedReviewItems={viewState.reviewFailed}
             />
           </Grid>
         </Grid>
@@ -67,7 +70,8 @@ SendRequestsRevisionSubView.displayName = 'SendRequestsRevisionSubView';
 
 const mapStateToProps = state => {
   return {
-    sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]].sendRequests
+    sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]].sendRequests,
+    viewState: state.views[USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]].sendRequests
   };
 };
 

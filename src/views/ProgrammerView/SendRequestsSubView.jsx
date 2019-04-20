@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import ProgrammerTable from '../../components/ProgrammerTable';
 import { LIST_ELEMENTS_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
-import { performNewSearchAction } from '../../redux/actions/lists';
+import { performNewSearchAction } from '../../redux/actions/commonList';
 import {
   retrieveSendRequestsListPageAction,
   startSendRequestsListUpdatesAutoCheckingAction,
