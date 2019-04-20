@@ -8,14 +8,12 @@ import {
   put,
   select,
   take,
-  takeEvery,
   takeLatest
 } from 'redux-saga/effects';
 import { LIST_AUTO_UPDATE_INTERVAL_MS, LIST_ELEMENTS_PER_PAGE, SEARCH_DEBOUNCE_DELAY_MS } from '../../constants/api';
 import { getListRequestPath } from '../../utils/apiUtils';
 import { LIST_ACTION_TYPE } from '../actions/commonList';
 import { makeRequestAndReportErrors } from './api';
-import { TECHNICAL_AREA_MANAGER_ACTION_TYPE } from '../actions/views/technicalAreaManager';
 
 /**
  * Called every time the user changes the page of the commits table or the latter is recreated
@@ -124,32 +122,6 @@ function* checkForListUpdates(latestUpdateTimestamp, action) {
   }
 }
 
-/**
- * Performs approval of rejection of the commit/send request passed through the action.
- * The outcome of this operation isn't notified with the dispatch of an action, rather with
- * the execution of a callback whose signature is (elementId, success: bool)
- * @param {*} action action of type ELEMENT_REVIEW_REQUEST
- */
-function* reviewListElement(action) {
-  const reviewResponseData = yield makeRequestAndReportErrors(
-    getListRequestPath(action.elementType, 'approve'),
-    { ...action, type: TECHNICAL_AREA_MANAGER_ACTION_TYPE.REVIEW_ITEM_FAILED },
-    {
-      id: action.elementId,
-      approve_flag: action.approvalStatus
-    },
-    yield select(state => state.auth.accessToken)
-  );
-
-  if (reviewResponseData != null) {
-    console.log(`Element ${action.elementId} reviewed successfully`);
-    yield put({
-      ...action,
-      type: TECHNICAL_AREA_MANAGER_ACTION_TYPE.REVIEW_ITEM_SUCCESSFUL
-    });
-  }
-}
-
 // Contains the auto update checking tasks corresponding to the lists of the specified element type and view,
 // so that they can be started and stopped from different functions (see below).
 // Keys are in the form `${userRoleString}.${elementType}`.
@@ -226,5 +198,4 @@ export const listSagas = [
   updateCheckingTasksManager(),
   takeLatest(LIST_ACTION_TYPE.PAGE_REQUEST, retrieveListPage),
   debounce(SEARCH_DEBOUNCE_DELAY_MS, LIST_ACTION_TYPE.SEARCH_QUERY_CHANGED, retrieveListPage),
-  takeEvery(TECHNICAL_AREA_MANAGER_ACTION_TYPE.REVIEW_ITEM_REQUEST, reviewListElement)
 ];

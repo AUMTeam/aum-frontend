@@ -4,3 +4,12 @@ export const TECHNICAL_AREA_MANAGER_ACTION_TYPE = {
   REVIEW_ITEM_SUCCESSFUL: 'TECH_AREA_REVIEW_ITEM_SUCCESSFUL',
   RESET_UI: 'TECH_AREA_RESET_UI'
 };
+
+export function reviewItemAction(elementType, elementId, approvalStatus) {
+  return {
+    type: TECHNICAL_AREA_MANAGER_ACTION_TYPE.REVIEW_ITEM_REQUEST,
+    elementType,
+    elementId,
+    approvalStatus
+  };
+}

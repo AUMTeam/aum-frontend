@@ -11,7 +11,8 @@ import {
   startCommitsListUpdatesAutoCheckingAction,
   stopCommitsListUpdatesAutoCheckingAction
 } from '../../redux/actions/commits';
-import { performNewSearchAction, reviewItemAction } from '../../redux/actions/commonList';
+import { performNewSearchAction } from '../../redux/actions/commonList';
+import { reviewItemAction } from '../../redux/actions/views/technicalAreaManager';
 import { viewStyles } from '../styles';
 
 class CommitsRevisionSubView extends React.Component {

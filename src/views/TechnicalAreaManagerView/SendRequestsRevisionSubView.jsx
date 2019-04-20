@@ -6,7 +6,8 @@ import { bindActionCreators } from 'redux';
 import RevisionTable from '../../components/RevisionTable';
 import { LIST_ELEMENTS_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
-import { performNewSearchAction, reviewItemAction } from '../../redux/actions/commonList';
+import { performNewSearchAction } from '../../redux/actions/commonList';
+import { reviewItemAction } from '../../redux/actions/views/technicalAreaManager';
 import {
   retrieveSendRequestsListPageAction,
   startSendRequestsListUpdatesAutoCheckingAction,
