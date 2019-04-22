@@ -18,19 +18,23 @@ export function isSearchFilter(filter) {
   return filter.attribute === getSearchFilterOrDefault('Test query').attribute;
 }
 
+export function getEmptySortingCriteria() {
+  return {
+    columnKey: null,
+    direction: 'desc'
+  };
+}
+
 /**
- * Gets the filter object used to display items which have been already reviewed
+ * Used in RevisionTable
  */
-export function getHistoryFilter() {
+export function getAlreadyReviewedFilter() {
   return {
     attribute: LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS,
     valueDifferentFrom: APPROVAL_STATUS.PENDING
   };
 }
 
-/**
- * Gets the filter object used to display items which needs to be reviewed
- */
 export function getToBeReviewedFilter() {
   return {
     attribute: LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS,
@@ -38,9 +42,13 @@ export function getToBeReviewedFilter() {
   };
 }
 
-export function getEmptySortingCriteria() {
-  return {
-    columnKey: null,
-    direction: 'desc'
-  };
+/**
+ * Used in DeliveryTable
+ */
+export function getToBeDeliveredFilter() {
+  return {}; // TODO
+}
+
+export function getAlreadyDeliveredFilter() {
+  return {}; // TODO
 }
