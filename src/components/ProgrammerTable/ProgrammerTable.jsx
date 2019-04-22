@@ -167,7 +167,6 @@ ProgrammerTable.propTypes = {
   classes: PropTypes.object.isRequired,
   tableToolbarTitle: PropTypes.string.isRequired,
   tableData: PropTypes.array.isRequired,
-  elementType: PropTypes.oneOf([LIST_ELEMENTS_TYPE.COMMITS, LIST_ELEMENTS_TYPE.SEND_REQUESTS]), // currently unused, may be needed in the future
   itemsCount: PropTypes.number.isRequired,
   loadPage: PropTypes.func.isRequired,
   onSearchQueryChanged: PropTypes.func.isRequired,

@@ -7,8 +7,6 @@ import Paper from '@material-ui/core/Paper';
 import Radio from '@material-ui/core/Radio';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
-import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
-import HighlightOff from '@material-ui/icons/HighlightOff';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -21,26 +19,17 @@ import TableSortableHeader from '../Table/TableSortableHeader';
 import TablePaginationFooter from '../Table/TablePaginationFooter';
 import TableToolbar from '../Table/TableToolbar';
 
-const tableStyles = theme => ({
+const tableStyles = {
   paper: {
     flexGrow: 1,
     width: '100%',
     overflowX: 'auto'
   },
-  approvedIcon: {
-    color: theme.palette.approved
-  },
-  inactiveIcon: {
-    filter: 'opacity(60%)'
-  },
-  errorSnackbar: {
-    backgroundColor: theme.palette.error.main
-  },
   errorBadge: {
     width: '16px',
     height: '16px'
   }
-});
+};
 
 const REVIEW_BUTTONS_COLUMN = 'REVIEW_BUTTONS_COLUMN';
 
@@ -94,7 +83,7 @@ class RevisionTable extends React.Component {
     this.props.loadPage(0, this.state.sorting, this.state.filter);
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps) {
     return (
       this.props.isLoading !== nextProps.isLoading ||
       this.props.latestUpdateTimestamp !== nextProps.latestUpdateTimestamp ||
@@ -187,7 +176,7 @@ class RevisionTable extends React.Component {
   };
 
   renderCellContent = (columnKey, value, elementId) => {
-    const { classes, onItemReview } = this.props;
+    const { classes, onItemReview, successfullyReviewedItems, reviewInProgressItems, failedReviewItems } = this.props;
 
     switch (columnKey) {
       case LIST_ELEMENT_ATTRIBUTE.AUTHOR:
@@ -200,13 +189,9 @@ class RevisionTable extends React.Component {
       case REVIEW_BUTTONS_COLUMN:
         return (
           <>
-            {this.props.successfullyReviewedItems[elementId] != null ? (
-              this.props.successfullyReviewedItems[elementId] === APPROVAL_STATUS.APPROVED ? (
-                <CheckCircleOutline className={`${classes.approvedIcon} ${classes.inactiveIcon}`} />
-              ) : (
-                <HighlightOff className={classes.inactiveIcon} color="error" />
-              )
-            ) : this.props.failedReviewItems[elementId] != null ? (
+            {successfullyReviewedItems[elementId] != null ? (
+              <ApprovalStatusIcon status={successfullyReviewedItems[elementId]} opacity={60} />
+            ) : failedReviewItems[elementId] != null ? (
               <IconButton
                 onClick={event => {
                   onItemReview(elementId, this.props.failedReviewItems[elementId]);
@@ -217,7 +202,7 @@ class RevisionTable extends React.Component {
                   <RefreshIcon color="action" />
                 </Badge>
               </IconButton>
-            ) : this.props.reviewInProgressItems.includes(elementId) ? (
+            ) : reviewInProgressItems.includes(elementId) ? (
               <CircularProgress size={24} />
             ) : (
               <>
@@ -227,7 +212,7 @@ class RevisionTable extends React.Component {
                     event.stopPropagation();
                   }}
                 >
-                  <HighlightOff color="error" />
+                  <ApprovalStatusIcon status={APPROVAL_STATUS.REJECTED} />
                 </IconButton>
                 <IconButton
                   onClick={event => {
@@ -235,7 +220,7 @@ class RevisionTable extends React.Component {
                     event.stopPropagation();
                   }}
                 >
-                  <CheckCircleOutline className={classes.approvedIcon} />
+                  <ApprovalStatusIcon status={APPROVAL_STATUS.APPROVED} />
                 </IconButton>
               </>
             )}
