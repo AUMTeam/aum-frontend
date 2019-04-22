@@ -4,9 +4,9 @@ import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { LIST_ELEMENTS_PER_PAGE, LIST_ELEMENTS_TYPE } from '../../constants/api';
+import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
 import { LIST_ELEMENT_ATTRIBUTE } from '../../constants/listElements';
-import { getSearchFilter } from '../../utils/apiUtils';
+import { getSearchFilterOrDefault, getEmptySortingCriteria } from '../../utils/tableUtils';
 import ApprovalStatusIcon from '../ApprovalStatusIcon';
 import TableDynamicBody from '../Table/TableDynamicBody';
 import TableSortableHeader from '../Table/TableSortableHeader';
@@ -41,10 +41,7 @@ class ProgrammerTable extends Component {
 
     this.state = {
       currentPage: 0,
-      sorting: {
-        columnKey: null,
-        direction: 'desc'
-      },
+      sorting: getEmptySortingCriteria(),
       filter: {}
     };
   }
@@ -153,7 +150,7 @@ class ProgrammerTable extends Component {
   };
 
   onSearchQueryChange = newQuery => {
-    this.setState({ filter: getSearchFilter(newQuery) });
+    this.setState({ filter: getSearchFilterOrDefault(newQuery), currentPage: 0 });
     this.props.onSearchQueryChanged(newQuery);
   };
 

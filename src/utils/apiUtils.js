@@ -4,7 +4,6 @@
  * This file contains helper functions used for API requests.
  */
 import { API_ENDPOINT_URL, REQUEST_TIMEOUT_MS, TOKEN_LOCALSTORAGE_KEY, LIST_ELEMENTS_TYPE } from '../constants/api';
-import { LIST_ELEMENT_ATTRIBUTE, APPROVAL_STATUS } from '../constants/listElements';
 
 /**
  * Returns a promise that is rejected after the specified timeout
@@ -81,42 +80,6 @@ export function getListRequestPath(elementType, requestType)
       break;
   }
   return requestPath + `/${requestType}`;
-}
-
-/**
- * Gets the filter object corresponding to the given search term.
- * The filter logic is common so we can change the behavior globally without any inconsistencies.
- * When called without parameters, a stub search filter is returned (used for comparisons).
- * @param {*} searchQuery the searched term
- */
-export function getSearchFilter(searchQuery = 'TEST') {
-  if (searchQuery != null && searchQuery !== '')
-    return {
-      attribute: LIST_ELEMENT_ATTRIBUTE.DESCRIPTION,
-      valueMatches: searchQuery
-    }
-  else
-    return {};
-}
-
-/**
- * Gets the filter object used to display items which have been already reviewed
- */
-export function getHistoryFilter() {
-  return {
-    attribute: LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS,
-    valueDifferentFrom: APPROVAL_STATUS.PENDING
-  };
-}
-
-/**
- * Gets the filter object used to display items which needs to be reviewed
- */
-export function getToBeReviewedFilter() {
-  return {
-    attribute: LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS,
-    valueMatches: APPROVAL_STATUS.PENDING
-  };
 }
 
 export function saveAccessTokenToLocalStorage(accessToken) {

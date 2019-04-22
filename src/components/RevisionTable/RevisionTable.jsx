@@ -12,7 +12,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { LIST_ELEMENTS_PER_PAGE, LIST_ELEMENTS_TYPE } from '../../constants/api';
 import { APPROVAL_STATUS, LIST_ELEMENT_ATTRIBUTE } from '../../constants/listElements';
-import { getHistoryFilter, getSearchFilter, getToBeReviewedFilter } from '../../utils/apiUtils';
+import {
+  getHistoryFilter,
+  getSearchFilterOrDefault,
+  getToBeReviewedFilter,
+  getEmptySortingCriteria,
+  isSearchFilter
+} from '../../utils/tableUtils';
 import ApprovalStatusIcon from '../ApprovalStatusIcon';
 import TableDynamicBody from '../Table/TableDynamicBody';
 import TableSortableHeader from '../Table/TableSortableHeader';
@@ -70,10 +76,7 @@ class RevisionTable extends React.Component {
 
     this.state = {
       currentPage: 0,
-      sorting: {
-        columnKey: null,
-        direction: 'desc'
-      },
+      sorting: getEmptySortingCriteria(),
       filter: getToBeReviewedFilter()
     };
   }
@@ -119,7 +122,9 @@ class RevisionTable extends React.Component {
             latestUpdateTimestamp > tableData[this.state.currentPage].updateTimestamp
           }
           loadCurrentPage={this.loadCurrentPage}
-          onSearchQueryChange={this.onSearchQueryChange}
+          onSearchQueryChange={newQuery =>
+            this.onFilterChange(getSearchFilterOrDefault(newQuery, getHistoryFilter()))
+          }
           renderCustomContent={this.renderToolbarRadioButtons}
         />
         <Table>
@@ -154,7 +159,7 @@ class RevisionTable extends React.Component {
 
   renderToolbarRadioButtons = () => {
     const reviewMode = this.isReviewMode();
-    const isSearching = this.isSearchingTerm();
+    const isSearching = isSearchFilter(this.state.filter);
     return (
       <>
         <FormControlLabel
@@ -239,11 +244,6 @@ class RevisionTable extends React.Component {
     );
   };
 
-  // Used to determine if the search field is filled
-  isSearchingTerm = () => {
-    return this.state.filter.attribute === getSearchFilter().attribute;
-  };
-
   loadCurrentPage = () => {
     this.props.loadPage(this.state.currentPage, this.state.sorting, this.state.filter);
   };
@@ -264,18 +264,13 @@ class RevisionTable extends React.Component {
    * when a review request fails and the user selects "history" and then goes back to review mode,
    * error icon will be displayed again on the items whose review request failed
    */
+  // prettier-ignore
   onFilterChange = newFilter => {
-    this.setState({ filter: newFilter });
-    this.props.loadPage(0, this.state.sorting, newFilter);
-  };
-
-  onSearchQueryChange = newQuery => {
-    if (newQuery !== '') {
-      this.setState({ filter: getSearchFilter(newQuery) });
-      this.props.onSearchQueryChange(newQuery);
-    } else {
-      this.onFilterChange(getHistoryFilter());
-    }
+    this.setState({ filter: newFilter, currentPage: 0 });
+    if (isSearchFilter(newFilter))
+      this.props.onSearchQueryChange(newFilter.valueMatches);
+    else
+      this.props.loadPage(0, this.state.sorting, newFilter);
   };
 }
 
