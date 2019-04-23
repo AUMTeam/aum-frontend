@@ -1,25 +1,15 @@
 /* eslint-disable array-callback-return */
-import Paper from '@material-ui/core/Paper';
-import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
 import { LIST_ELEMENT_ATTRIBUTE } from '../../constants/listElements';
-import { getSearchFilterOrDefault, getEmptySortingCriteria } from '../../utils/tableUtils';
-import ApprovalStatusIcon from '../ApprovalStatusIcon';
+import { getSearchFilterOrDefault, renderCellContentCommon } from '../../utils/tableUtils';
 import TableDynamicBody from '../Table/TableDynamicBody';
 import TableSortableHeader from '../Table/TableSortableHeader';
 import TablePaginationFooter from '../Table/TablePaginationFooter';
 import TableToolbar from '../Table/TableToolbar';
-
-const styles = {
-  paper: {
-    flexGrow: 1,
-    width: '100%',
-    overflowX: 'auto'
-  }
-};
+import withTableFunctionality from '../Table/WithTableFunctionality';
 
 const tableColumns = [
   { label: 'ID', key: LIST_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
@@ -30,27 +20,7 @@ const tableColumns = [
   { label: 'Approvato', key: LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS, displayOnMobile: true }
 ];
 
-/**
- * @class
- * This class is responsible for displaying a responsive table
- * with generic data passed as props
- */
 class ProgrammerTable extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentPage: 0,
-      sorting: getEmptySortingCriteria(),
-      filter: {}
-    };
-  }
-
-  // Load the first page when table is created
-  componentDidMount() {
-    this.props.loadPage(0, this.state.sorting, this.state.filter);
-  }
-
   /**
    * Guarantees that the component is re-rendered only when its loading state changes
    * or when there are new updates (displays the badge)
@@ -64,34 +34,39 @@ class ProgrammerTable extends Component {
 
   render() {
     const {
-      classes,
       isLoading,
       tableToolbarTitle,
       tableData,
       latestUpdateTimestamp,
       itemsCount,
       displayError,
-      onElementClick
+      onElementClick,
+      loadCurrentPage,
+      onPageChange,
+      onSortingChange,
+      onFilterChange,
+      pageNumber,
+      sorting
     } = this.props;
 
     return (
-      <Paper className={classes.paper}>
+      <>
         <TableToolbar
           toolbarTitle={tableToolbarTitle}
           showAvailableUpdatesBadge={
             !isLoading &&
             tableData.length > 0 &&
-            tableData[this.state.currentPage] != null &&
-            latestUpdateTimestamp > tableData[this.state.currentPage].updateTimestamp
+            tableData[pageNumber] != null &&
+            latestUpdateTimestamp > tableData[pageNumber].updateTimestamp
           }
-          loadCurrentPage={this.loadCurrentPage}
-          onSearchQueryChange={this.onSearchQueryChange}
+          loadCurrentPage={loadCurrentPage}
+          onSearchQueryChange={newQuery => onFilterChange(getSearchFilterOrDefault(newQuery))}
         />
         <Table>
           <TableSortableHeader
             tableColumns={tableColumns}
-            sortingCriteria={this.state.sorting}
-            onSortingUpdate={this.onSortingUpdate}
+            sortingCriteria={sorting}
+            onSortingUpdate={onSortingChange}
           />
 
           <TableDynamicBody
@@ -100,77 +75,44 @@ class ProgrammerTable extends Component {
             totalItemsCount={itemsCount}
             displayError={displayError}
             isLoading={isLoading}
-            pageNumber={this.state.currentPage}
-            renderCellContent={this.renderCellContent}
-            loadCurrentPage={this.loadCurrentPage}
+            pageNumber={pageNumber}
+            renderCellContent={renderCellContentCommon}
+            loadCurrentPage={loadCurrentPage}
             onElementClick={onElementClick}
           />
 
           <TablePaginationFooter
             itemsCount={itemsCount}
             itemsPerPage={LIST_ELEMENTS_PER_PAGE}
-            currentPage={this.state.currentPage}
-            onPageChange={this.onPageChange}
+            currentPage={pageNumber}
+            onPageChange={onPageChange}
           />
         </Table>
-      </Paper>
+      </>
     );
   }
-
-  /**
-   * Renders the content of a cell accordingly to its column
-   * Needed for those columns which display icons or format values in some way
-   */
-  // prettier-ignore
-  renderCellContent(columnKey, value) {
-    switch (columnKey) {
-      case LIST_ELEMENT_ATTRIBUTE.AUTHOR:
-        return value.name;
-      case LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS:
-        return <ApprovalStatusIcon status={+value} />; 
-      case LIST_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP:
-      case LIST_ELEMENT_ATTRIBUTE.TIMESTAMP:
-        if (!value)
-          return '—';
-        else
-          return new Date(value * 1000).toLocaleString('it-it');
-      default:
-        return value;
-    }
-  }
-
-  onPageChange = nextPage => {
-    this.setState({ currentPage: nextPage });
-    this.props.loadPage(nextPage, this.state.sorting, this.state.filter);
-  };
-
-  onSortingUpdate = updatedSorting => {
-    this.setState({ sorting: updatedSorting });
-    this.props.loadPage(this.state.currentPage, updatedSorting, this.state.filter);
-  };
-
-  onSearchQueryChange = newQuery => {
-    this.setState({ filter: getSearchFilterOrDefault(newQuery), currentPage: 0 });
-    this.props.onSearchQueryChanged(newQuery);
-  };
-
-  loadCurrentPage = () => {
-    this.props.loadPage(this.state.currentPage, this.state.sorting, this.state.filter);
-  };
 }
 
 ProgrammerTable.displayName = 'ProgrammerTable';
 ProgrammerTable.propTypes = {
-  classes: PropTypes.object.isRequired,
   tableToolbarTitle: PropTypes.string.isRequired,
   tableData: PropTypes.array.isRequired,
   itemsCount: PropTypes.number.isRequired,
   loadPage: PropTypes.func.isRequired,
-  onSearchQueryChanged: PropTypes.func.isRequired,
+  onSearchQueryChange: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   latestUpdateTimestamp: PropTypes.number.isRequired,
   displayError: PropTypes.bool.isRequired,
-  onElementClick: PropTypes.func.isRequired
+  onElementClick: PropTypes.func.isRequired,
+
+  // injected by withTableFunctionality
+  pageNumber: PropTypes.number.isRequired,
+  sorting: PropTypes.object.isRequired,
+  filter: PropTypes.object.isRequired,
+  loadCurrentPage: PropTypes.func.isRequired,
+  onPageChange: PropTypes.func.isRequired,
+  onSortingChange: PropTypes.func.isRequired,
+  onFilterChange: PropTypes.func.isRequired
 };
 
-export default withStyles(styles)(ProgrammerTable);
+export default withTableFunctionality(ProgrammerTable);

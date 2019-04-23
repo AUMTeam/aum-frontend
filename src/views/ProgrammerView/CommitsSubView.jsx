@@ -1,4 +1,5 @@
 import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -24,28 +25,38 @@ class CommitsSubView extends Component {
   }
 
   render() {
-    const { commitsData, retrieveCommitsListPage, performNewSearch } = this.props;
+    const { classes, commitsData, retrieveCommitsListPage, performNewSearch } = this.props;
 
     return (
-      <Grid container className={this.props.classes.grid}>
+      <Grid container className={classes.grid}>
         <Grid item xs={12}>
           <Grid container justify="center">
-            <ProgrammerTable
-              tableToolbarTitle="Lista richieste di commit"
-              tableData={commitsData.listPages}
-              elementType={LIST_ELEMENTS_TYPE.COMMITS}
-              itemsCount={commitsData.totalItemsCount}
-              loadPage={(pageNumber, sortingCriteria, filter) => {
-                retrieveCommitsListPage(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER], pageNumber, sortingCriteria, filter);
-              }}
-              onSearchQueryChanged={searchQuery => {
-                performNewSearch(retrieveCommitsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]), searchQuery);
-              }}
-              isLoading={commitsData.isLoadingList}
-              latestUpdateTimestamp={commitsData.latestUpdateTimestamp}
-              displayError={commitsData.errorWhileFetchingData}
-              onElementClick={elementId => console.log(`Elemento ${elementId} cliccato!`)}
-            />
+            <Paper className={classes.paper}>
+              <ProgrammerTable
+                tableToolbarTitle="Lista richieste di commit"
+                tableData={commitsData.listPages}
+                elementType={LIST_ELEMENTS_TYPE.COMMITS}
+                itemsCount={commitsData.totalItemsCount}
+                loadPage={(pageNumber, sortingCriteria, filter) => {
+                  retrieveCommitsListPage(
+                    USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER],
+                    pageNumber,
+                    sortingCriteria,
+                    filter
+                  );
+                }}
+                onSearchQueryChange={searchQuery => {
+                  performNewSearch(
+                    retrieveCommitsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]),
+                    searchQuery
+                  );
+                }}
+                isLoading={commitsData.isLoadingList}
+                latestUpdateTimestamp={commitsData.latestUpdateTimestamp}
+                displayError={commitsData.errorWhileFetchingData}
+                onElementClick={elementId => console.log(`Elemento ${elementId} cliccato!`)}
+              />
+            </Paper>
           </Grid>
         </Grid>
       </Grid>

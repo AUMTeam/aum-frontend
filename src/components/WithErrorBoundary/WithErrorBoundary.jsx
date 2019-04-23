@@ -1,6 +1,7 @@
 import Typography from '@material-ui/core/Typography';
 import React from 'react';
 import sad_face_grey from '../../assets/sad_face_grey.png';
+import { getReactComponentName } from '../../utils/componentUtils';
 
 const errorBoxStyle = {
   maxWidth: '700px',
@@ -14,10 +15,6 @@ const errorIconStyle = {
   display: 'block',
   margin: 'auto'
 };
-
-function getComponentName(component) {
-  return component.displayName || component.name || '[anonymous]';
-}
 
 /**
  * Returns the name of the component at the top most position of the React stack trace
@@ -55,7 +52,7 @@ export default function withErrorBoundary(Component) {
     }
 
     // Component name shown in DevTools and stack traces
-    static displayName = `WithErrorBoundary(${getComponentName(Component)})`;
+    static displayName = `WithErrorBoundary(${getReactComponentName(Component)})`;
 
     static getDerivedStateFromError(error) {
       return { errorReceived: true, error };
@@ -83,7 +80,7 @@ export default function withErrorBoundary(Component) {
             <br />
             Segnalaci il problema riportando le informazioni sottostanti:
           </Typography>
-          <Typography style={{ paddingLeft: '15%' }} variant="body2">
+          <Typography style={{ paddingLeft: '20%' }} variant="body2">
             <b>Route corrente:</b> {window.location.hash}
             <br />
             <b>Componente in cui è avvenuto l'errore:</b> {faultyComponentName}

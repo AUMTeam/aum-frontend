@@ -10,5 +10,10 @@ export const viewStyles = theme => ({
     [theme.breakpoints.up('sm')]: {
       padding: 16
     }
+  },
+  paper: {
+    flexGrow: 1,
+    width: '100%',
+    overflowX: 'auto'
   }
 });

@@ -3,7 +3,6 @@ import Badge from '@material-ui/core/Badge';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import IconButton from '@material-ui/core/IconButton';
-import Paper from '@material-ui/core/Paper';
 import Radio from '@material-ui/core/Radio';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -16,21 +15,17 @@ import {
   getAlreadyReviewedFilter,
   getSearchFilterOrDefault,
   getToBeReviewedFilter,
-  getEmptySortingCriteria,
-  isSearchFilter
+  isSearchFilter,
+  renderCellContentCommon
 } from '../../utils/tableUtils';
 import ApprovalStatusIcon from '../ApprovalStatusIcon';
 import TableDynamicBody from '../Table/TableDynamicBody';
 import TableSortableHeader from '../Table/TableSortableHeader';
 import TablePaginationFooter from '../Table/TablePaginationFooter';
 import TableToolbar from '../Table/TableToolbar';
+import withTableFunctionality from '../Table/WithTableFunctionality';
 
 const tableStyles = {
-  paper: {
-    flexGrow: 1,
-    width: '100%',
-    overflowX: 'auto'
-  },
   errorBadge: {
     width: '16px',
     height: '16px'
@@ -71,21 +66,6 @@ const reviewTableColumns = [
  * Search functionality acts regardless of the selected mode (in fact, radio buttons are disabled during search).
  */
 class RevisionTable extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentPage: 0,
-      sorting: getEmptySortingCriteria(),
-      filter: getToBeReviewedFilter()
-    };
-  }
-
-  // Load the first page when table is created
-  componentDidMount() {
-    this.props.loadPage(0, this.state.sorting, this.state.filter);
-  }
-
   shouldComponentUpdate(nextProps) {
     return (
       this.props.isLoading !== nextProps.isLoading ||
@@ -98,19 +78,24 @@ class RevisionTable extends React.Component {
 
   render() {
     const {
-      classes,
       tableData,
       elementType,
       itemsCount,
       isLoading,
       latestUpdateTimestamp,
       displayError,
-      onElementClick
+      onElementClick,
+      loadCurrentPage,
+      onPageChange,
+      onSortingChange,
+      onFilterChange,
+      pageNumber,
+      sorting
     } = this.props;
     const reviewMode = this.isReviewMode();
 
     return (
-      <Paper className={classes.paper}>
+      <>
         <TableToolbar
           toolbarTitle={
             elementType === LIST_ELEMENTS_TYPE.COMMITS ? 'Revisione commit' : 'Revisione richieste di invio'
@@ -118,20 +103,20 @@ class RevisionTable extends React.Component {
           showAvailableUpdatesBadge={
             !isLoading &&
             tableData.length > 0 &&
-            tableData[this.state.currentPage] != null &&
-            latestUpdateTimestamp > tableData[this.state.currentPage].updateTimestamp
+            tableData[pageNumber] != null &&
+            latestUpdateTimestamp > tableData[pageNumber].updateTimestamp
           }
-          loadCurrentPage={this.loadCurrentPage}
+          loadCurrentPage={loadCurrentPage}
           onSearchQueryChange={newQuery =>
-            this.onFilterChange(getSearchFilterOrDefault(newQuery, getAlreadyReviewedFilter()))
+            onFilterChange(getSearchFilterOrDefault(newQuery, getAlreadyReviewedFilter()))
           }
           renderCustomContent={this.renderToolbarRadioButtons}
         />
         <Table>
           <TableSortableHeader
             tableColumns={reviewMode ? reviewTableColumns : historyTableColumns}
-            sortingCriteria={this.state.sorting}
-            onSortingUpdate={this.onSortingUpdate}
+            sortingCriteria={sorting}
+            onSortingUpdate={onSortingChange}
           />
 
           <TableDynamicBody
@@ -140,26 +125,26 @@ class RevisionTable extends React.Component {
             totalItemsCount={itemsCount}
             displayError={displayError}
             isLoading={isLoading}
-            pageNumber={this.state.currentPage}
+            pageNumber={pageNumber}
             renderCellContent={this.renderCellContent}
-            loadCurrentPage={this.loadCurrentPage}
+            loadCurrentPage={loadCurrentPage}
             onElementClick={onElementClick}
           />
 
           <TablePaginationFooter
             itemsCount={itemsCount}
             itemsPerPage={LIST_ELEMENTS_PER_PAGE}
-            currentPage={this.state.currentPage}
-            onPageChange={this.onPageChange}
+            currentPage={pageNumber}
+            onPageChange={onPageChange}
           />
         </Table>
-      </Paper>
+      </>
     );
   }
 
   renderToolbarRadioButtons = () => {
     const reviewMode = this.isReviewMode();
-    const isSearching = isSearchFilter(this.state.filter);
+    const isSearching = isSearchFilter(this.props.filter);
     return (
       <>
         <FormControlLabel
@@ -167,14 +152,14 @@ class RevisionTable extends React.Component {
           checked={!reviewMode && !isSearching}
           control={<Radio color="primary" />}
           label="Già revisionati"
-          onChange={() => this.onFilterChange(getAlreadyReviewedFilter())}
+          onChange={() => this.props.onFilterChange(getAlreadyReviewedFilter())}
         />
         <FormControlLabel
           disabled={isSearching}
           checked={reviewMode && !isSearching}
           control={<Radio color="primary" />}
           label="Da revisionare"
-          onChange={() => this.onFilterChange(getToBeReviewedFilter())}
+          onChange={() => this.props.onFilterChange(getToBeReviewedFilter())}
         />
       </>
     );
@@ -184,13 +169,6 @@ class RevisionTable extends React.Component {
     const { classes, onItemReview, successfullyReviewedItems, reviewInProgressItems, failedReviewItems } = this.props;
 
     switch (columnKey) {
-      case LIST_ELEMENT_ATTRIBUTE.AUTHOR:
-        return value.name;
-      case LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS:
-        return <ApprovalStatusIcon status={+value} />;
-      case LIST_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP:
-      case LIST_ELEMENT_ATTRIBUTE.TIMESTAMP:
-        return value ? new Date(value * 1000).toLocaleString('it-it') : '—';
       case REVIEW_BUTTONS_COLUMN:
         return (
           <>
@@ -232,39 +210,16 @@ class RevisionTable extends React.Component {
           </>
         );
       default:
-        return value;
+        return renderCellContentCommon(columnKey, value, elementId);
     }
   };
 
   // Used to determine if review buttons should be displayed
   isReviewMode = () => {
     return (
-      this.state.filter.attribute === getToBeReviewedFilter().attribute &&
-      this.state.filter.valueMatches === getToBeReviewedFilter().valueMatches
+      this.props.filter.attribute === getToBeReviewedFilter().attribute &&
+      this.props.filter.valueMatches === getToBeReviewedFilter().valueMatches
     );
-  };
-
-  loadCurrentPage = () => {
-    this.props.loadPage(this.state.currentPage, this.state.sorting, this.state.filter);
-  };
-
-  onPageChange = nextPage => {
-    this.setState({ currentPage: nextPage });
-    this.props.loadPage(nextPage, this.state.sorting, this.state.filter);
-  };
-
-  onSortingUpdate = updatedSorting => {
-    this.setState({ sorting: updatedSorting });
-    this.props.loadPage(this.state.currentPage, updatedSorting, this.state.filter);
-  };
-
-  // prettier-ignore
-  onFilterChange = newFilter => {
-    this.setState({ filter: newFilter, currentPage: 0 });
-    if (isSearchFilter(newFilter))
-      this.props.onSearchQueryChange(newFilter.valueMatches);
-    else
-      this.props.loadPage(0, this.state.sorting, newFilter);
   };
 }
 
@@ -284,7 +239,16 @@ RevisionTable.propTypes = {
 
   reviewInProgressItems: PropTypes.array.isRequired,
   successfullyReviewedItems: PropTypes.object.isRequired,
-  failedReviewItems: PropTypes.object.isRequired
+  failedReviewItems: PropTypes.object.isRequired,
+
+  // injected by withTableFunctionality
+  pageNumber: PropTypes.number.isRequired,
+  sorting: PropTypes.object.isRequired,
+  filter: PropTypes.object.isRequired,
+  loadCurrentPage: PropTypes.func.isRequired,
+  onPageChange: PropTypes.func.isRequired,
+  onSortingChange: PropTypes.func.isRequired,
+  onFilterChange: PropTypes.func.isRequired
 };
 
-export default withStyles(tableStyles)(RevisionTable);
+export default withTableFunctionality(withStyles(tableStyles)(RevisionTable), getToBeReviewedFilter());

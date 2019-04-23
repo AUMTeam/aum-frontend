@@ -1,4 +1,5 @@
 import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -25,41 +26,43 @@ class CommitsRevisionSubView extends React.Component {
   }
 
   render() {
-    const { commitsData, retrieveCommitsListPage, performNewSearch, reviewItem, viewState } = this.props;
+    const { classes, commitsData, retrieveCommitsListPage, performNewSearch, reviewItem, viewState } = this.props;
 
     return (
-      <Grid container className={this.props.classes.grid}>
+      <Grid container className={classes.grid}>
         <Grid item xs={12}>
           <Grid container justify="center">
-            <RevisionTable
-              tableData={commitsData.listPages}
-              elementType={LIST_ELEMENTS_TYPE.COMMITS}
-              itemsCount={commitsData.totalItemsCount}
-              isLoading={commitsData.isLoadingList}
-              latestUpdateTimestamp={commitsData.latestUpdateTimestamp}
-              displayError={commitsData.errorWhileFetchingData}
-              loadPage={(pageNumber, sortingCriteria, filter) => {
-                retrieveCommitsListPage(
-                  USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER],
-                  pageNumber,
-                  sortingCriteria,
-                  filter
-                );
-              }}
-              onSearchQueryChange={searchQuery => {
-                performNewSearch(
-                  retrieveCommitsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]),
-                  searchQuery
-                );
-              }}
-              onItemReview={(elementId, approvalStatus) =>
-                reviewItem(LIST_ELEMENTS_TYPE.COMMITS, elementId, approvalStatus)
-              }
-              onElementClick={elementId => console.log(`Elemento ${elementId} cliccato!`)}
-              reviewInProgressItems={viewState.reviewInProgress}
-              successfullyReviewedItems={viewState.successfullyReviewed}
-              failedReviewItems={viewState.reviewFailed}
-            />
+            <Paper className={classes.paper}>
+              <RevisionTable
+                tableData={commitsData.listPages}
+                elementType={LIST_ELEMENTS_TYPE.COMMITS}
+                itemsCount={commitsData.totalItemsCount}
+                isLoading={commitsData.isLoadingList}
+                latestUpdateTimestamp={commitsData.latestUpdateTimestamp}
+                displayError={commitsData.errorWhileFetchingData}
+                loadPage={(pageNumber, sortingCriteria, filter) => {
+                  retrieveCommitsListPage(
+                    USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER],
+                    pageNumber,
+                    sortingCriteria,
+                    filter
+                  );
+                }}
+                onSearchQueryChange={searchQuery => {
+                  performNewSearch(
+                    retrieveCommitsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]),
+                    searchQuery
+                  );
+                }}
+                onItemReview={(elementId, approvalStatus) =>
+                  reviewItem(LIST_ELEMENTS_TYPE.COMMITS, elementId, approvalStatus)
+                }
+                onElementClick={elementId => console.log(`Elemento ${elementId} cliccato!`)}
+                reviewInProgressItems={viewState.reviewInProgress}
+                successfullyReviewedItems={viewState.successfullyReviewed}
+                failedReviewItems={viewState.reviewFailed}
+              />
+            </Paper>
           </Grid>
         </Grid>
       </Grid>

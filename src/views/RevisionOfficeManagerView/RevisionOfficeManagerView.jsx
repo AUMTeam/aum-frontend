@@ -1,18 +1,21 @@
 import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import DeliveryTable from '../../components/DeliveryTable/DeliveryTable';
 import withErrorBoundary from '../../components/WithErrorBoundary';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
+import { performNewSearchAction } from '../../redux/actions/commonList';
 import {
   retrieveSendRequestsListPageAction,
   startSendRequestsListUpdatesAutoCheckingAction,
   stopSendRequestsListUpdatesAutoCheckingAction
 } from '../../redux/actions/sendRequests';
-import { performNewSearchAction } from '../../redux/actions/commonList';
 import { viewStyles } from '../styles';
-import DeliveryTable from '../../components/DeliveryTable/DeliveryTable';
+
+const EMPTY_ARRAY = [];
 
 class RevisionOfficeManagerView extends React.Component {
   componentDidMount() {
@@ -30,31 +33,32 @@ class RevisionOfficeManagerView extends React.Component {
       <Grid container className={classes.grid}>
         <Grid item xs={12}>
           <Grid container justify="center">
-            <DeliveryTable
-              tableData={sendRequestsData.listPages}
-              itemsCount={sendRequestsData.totalItemsCount}
-              isLoading={sendRequestsData.isLoadingList}
-              latestUpdateTimestamp={sendRequestsData.latestUpdateTimestamp}
-              displayError={sendRequestsData.errorWhileFetchingData}
-              loadPage={(pageNumber, sortingCriteria, filter) => {
-                retrieveSendRequestsListPage(
-                  USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER],
-                  pageNumber,
-                  sortingCriteria,
-                  filter
-                );
-              }}
-              onSearchQueryChange={searchQuery => {
-                performNewSearch(
-                  retrieveSendRequestsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]),
-                  searchQuery
-                );
-              }}
-              onElementDelivery={elementId => console.log(`To be implemented: Invio dell'elemento ${elementId}`)}
-              onElementClick={elementId => console.log(`Elemento ${elementId} cliccato!`)}
-              successfullyDeliveredElements={[]}
-            />
-            />
+            <Paper className={classes.paper}>
+              <DeliveryTable
+                tableData={sendRequestsData.listPages}
+                itemsCount={sendRequestsData.totalItemsCount}
+                isLoading={sendRequestsData.isLoadingList}
+                latestUpdateTimestamp={sendRequestsData.latestUpdateTimestamp}
+                displayError={sendRequestsData.errorWhileFetchingData}
+                loadPage={(pageNumber, sortingCriteria, filter) => {
+                  retrieveSendRequestsListPage(
+                    USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER],
+                    pageNumber,
+                    sortingCriteria,
+                    filter
+                  );
+                }}
+                onSearchQueryChange={searchQuery => {
+                  performNewSearch(
+                    retrieveSendRequestsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]),
+                    searchQuery
+                  );
+                }}
+                onElementDelivery={elementId => console.log(`To be implemented: Invio dell'elemento ${elementId}`)}
+                onElementClick={elementId => console.log(`Elemento ${elementId} cliccato!`)}
+                successfullyDeliveredElements={EMPTY_ARRAY}
+              />
+            </Paper>
           </Grid>
         </Grid>
       </Grid>
@@ -66,7 +70,7 @@ RevisionOfficeManagerView.displayName = 'RevisionOfficeManagerView';
 
 const mapStateToProps = state => {
   return {
-    sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]].sendRequests,
+    sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]].sendRequests
     //viewState: state.views[USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]].sendRequests
   };
 };
