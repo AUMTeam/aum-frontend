@@ -2,7 +2,6 @@ import {
   actionChannel,
   cancel,
   cancelled,
-  debounce,
   delay,
   fork,
   put,
@@ -14,6 +13,7 @@ import { LIST_AUTO_UPDATE_INTERVAL_MS, LIST_ELEMENTS_PER_PAGE, SEARCH_DEBOUNCE_D
 import { getListRequestPath } from '../../utils/apiUtils';
 import { LIST_ACTION_TYPE } from '../actions/commonList';
 import { makeRequestAndReportErrors } from './api';
+import { strictDebounce } from './utils';
 
 /**
  * Called every time the user changes the page of the commits table or the latter is recreated
@@ -197,5 +197,5 @@ function* runListUpdateChecker(action) {
 export const listSagas = [
   updateCheckingTasksManager(),
   takeLatest(LIST_ACTION_TYPE.PAGE_REQUEST, retrieveListPage),
-  debounce(SEARCH_DEBOUNCE_DELAY_MS, LIST_ACTION_TYPE.SEARCH_QUERY_CHANGED, retrieveListPage),
+  strictDebounce(SEARCH_DEBOUNCE_DELAY_MS, LIST_ACTION_TYPE.SEARCH_QUERY_CHANGED, retrieveListPage),
 ];
