@@ -14,8 +14,7 @@ import {
   stopSendRequestsListUpdatesAutoCheckingAction
 } from '../../redux/actions/sendRequests';
 import { viewStyles } from '../styles';
-
-const EMPTY_ARRAY = [];
+import { REVISION_OFFICE_MANAGER_ACTION_TYPE } from '../../redux/actions/views/revisionOfficeManager';
 
 class RevisionOfficeManagerView extends React.Component {
   componentDidMount() {
@@ -24,10 +23,11 @@ class RevisionOfficeManagerView extends React.Component {
 
   componentWillUnmount() {
     this.props.stopSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]);
+    this.props.resetUI();
   }
 
   render() {
-    const { classes, sendRequestsData, retrieveSendRequestsListPage, performNewSearch } = this.props;
+    const { classes, sendRequestsData, retrieveSendRequestsListPage, performNewSearch, viewState } = this.props;
 
     return (
       <Grid container className={classes.grid}>
@@ -56,7 +56,7 @@ class RevisionOfficeManagerView extends React.Component {
                 }}
                 onElementDelivery={elementId => console.log(`To be implemented: Invio dell'elemento ${elementId}`)}
                 onElementClick={elementId => console.log(`Elemento ${elementId} cliccato!`)}
-                successfullyDeliveredElements={EMPTY_ARRAY}
+                successfullyDeliveredElements={viewState.successfullyDeliveredElements}
               />
             </Paper>
           </Grid>
@@ -70,8 +70,8 @@ RevisionOfficeManagerView.displayName = 'RevisionOfficeManagerView';
 
 const mapStateToProps = state => {
   return {
-    sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]].sendRequests
-    //viewState: state.views[USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]].sendRequests
+    sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]].sendRequests,
+    viewState: state.views[USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]]
   };
 };
 
@@ -81,7 +81,8 @@ const mapDispatchToProps = dispatch => {
       retrieveSendRequestsListPage: retrieveSendRequestsListPageAction,
       startSendRequestsListUpdatesAutoChecking: startSendRequestsListUpdatesAutoCheckingAction,
       stopSendRequestsListUpdatesAutoChecking: stopSendRequestsListUpdatesAutoCheckingAction,
-      performNewSearch: performNewSearchAction
+      performNewSearch: performNewSearchAction,
+      resetUI: () => ({ type: REVISION_OFFICE_MANAGER_ACTION_TYPE.RESET_UI }),
     },
     dispatch
   );

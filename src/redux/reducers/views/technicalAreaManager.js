@@ -1,28 +1,30 @@
 import { TECHNICAL_AREA_MANAGER_ACTION_TYPE } from '../../actions/views/technicalAreaManager';
 import { LIST_ELEMENTS_TYPE } from '../../../constants/api';
 
-const initialState = {
-  reviewInProgress: [],
+const initialSubState = {
+  reviewInProgress: [], // contains the IDs of the items whose review is in progress
+  /* The following objects are used as a map: the key is the element ID,
+    whereas the value is the approval flag chosen by user (approved (1) or rejected(-1)) */
   successfullyReviewed: {},
   reviewFailed: {}
 };
 
-const viewState = {
-  [LIST_ELEMENTS_TYPE.COMMITS]: { ...initialState },
-  [LIST_ELEMENTS_TYPE.SEND_REQUESTS]: { ...initialState }
+const initialViewState = {
+  [LIST_ELEMENTS_TYPE.COMMITS]: { ...initialSubState },
+  [LIST_ELEMENTS_TYPE.SEND_REQUESTS]: { ...initialSubState }
 };
 
 // prettier-ignore
-export function technicalAreaManager(state = viewState, action) {
+export function technicalAreaManagerViewReducer(state = initialViewState, action) {
   if (action.elementType != null)
     return { ...state, [action.elementType]: elementsReducer(state[action.elementType], action) };
   else if (action.type === TECHNICAL_AREA_MANAGER_ACTION_TYPE.RESET_UI)
-    return viewState;
+    return initialViewState;
   else
     return state;
 }
 
-function elementsReducer(state = initialState, action) {
+function elementsReducer(state = initialSubState, action) {
   switch (action.type) {
     case TECHNICAL_AREA_MANAGER_ACTION_TYPE.REVIEW_ITEM_REQUEST:
       const newState = {
