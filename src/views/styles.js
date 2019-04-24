@@ -3,6 +3,14 @@
  * This file holds JSS styles used in all views
  */
 
+const programmerViewStyles = {
+  fab: {
+    right: 16,
+    bottom: 16,
+    position: 'fixed'
+  }
+}
+
 export const viewStyles = theme => ({
   root: {
     width: '100%',
@@ -21,5 +29,6 @@ export const viewStyles = theme => ({
     flexGrow: 1,
     width: '100%',
     overflowX: 'auto'
-  }
+  },
+  ...programmerViewStyles
 });

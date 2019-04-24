@@ -1,6 +1,7 @@
 import React from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
+import { withStyles } from '@material-ui/core';
 
 /**
  * Dialog that resizes dynamically to fit screen size up to medium breakpoint (960px).
