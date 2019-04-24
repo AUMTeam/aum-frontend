@@ -1,4 +1,4 @@
-import { getSearchFilter } from '../../utils/apiUtils';
+import { getSearchFilterOrDefault } from '../../utils/tableUtils';
 
 export const LIST_ACTION_TYPE = {
   // Dispatched when a page of the list needs to be loaded
@@ -47,6 +47,6 @@ export function performNewSearchAction(pageRequestAction, searchQuery) {
     pageNumber: 0,
     limit: pageRequestAction.limit,
     sortingCriteria: pageRequestAction.sortingCriteria,
-    filter: getSearchFilter(searchQuery)
+    filter: getSearchFilterOrDefault(searchQuery)
   };
 }

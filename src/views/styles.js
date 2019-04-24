@@ -16,5 +16,10 @@ export const viewStyles = theme => ({
       paddingLeft: 16,
       paddingRight: 16
     }
+  },
+  paper: {
+    flexGrow: 1,
+    width: '100%',
+    overflowX: 'auto'
   }
 });

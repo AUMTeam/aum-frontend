@@ -4,7 +4,8 @@ import { globalError } from './globalError';
 import { generateViewListsReducers } from './viewLists';
 import { user } from './user';
 import { USER_TYPE_ID } from '../../constants/user';
-import { technicalAreaManager } from './views/technicalAreaManager';
+import { technicalAreaManagerViewReducer } from './views/technicalAreaManager';
+import { revisionOfficeManagerViewReducer } from './views/revisionOfficeManager';
 
 /**
  * @file
@@ -42,7 +43,8 @@ const reducers = combineReducers({
     ])
   ),
   views: combineReducers({
-    technicalAreaManager
+    technicalAreaManager: technicalAreaManagerViewReducer,
+    revisionOfficeManager: revisionOfficeManagerViewReducer
   }),
   globalError
 });

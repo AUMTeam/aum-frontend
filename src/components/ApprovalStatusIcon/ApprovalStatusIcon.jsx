@@ -12,13 +12,18 @@ const approvedIconStyle = theme => ({
 
 class ApprovalStatusIcon extends React.PureComponent {
   render() {
-    switch (this.props.status) {
+    const { classes, status, opacity } = this.props;
+    const opacityStyle = opacity != null ? {
+      filter: `opacity(${opacity}%)`
+    } : undefined;
+
+    switch (status) {
       case APPROVAL_STATUS.APPROVED:
-        return <CheckCircleOutline className={this.props.classes.icon} />;
+        return <CheckCircleOutline className={classes.icon} style={opacityStyle} />;
       case APPROVAL_STATUS.PENDING:
-        return <Schedule color="action" />;
+        return <Schedule color="action" style={opacityStyle} />;
       case APPROVAL_STATUS.REJECTED:
-        return <HighlightOff color="error" />;
+        return <HighlightOff color="error" style={opacityStyle} />;
       default:
         return <></>;
     }
@@ -27,7 +32,8 @@ class ApprovalStatusIcon extends React.PureComponent {
 
 ApprovalStatusIcon.displayName = 'ApprovalStatusIcon';
 ApprovalStatusIcon.propTypes = {
-  status: PropTypes.oneOf([APPROVAL_STATUS.APPROVED, APPROVAL_STATUS.PENDING, APPROVAL_STATUS.REJECTED]).isRequired
+  status: PropTypes.oneOf([APPROVAL_STATUS.APPROVED, APPROVAL_STATUS.PENDING, APPROVAL_STATUS.REJECTED]).isRequired,
+  opacity: PropTypes.number
 };
 
 export default withStyles(approvedIconStyle)(ApprovalStatusIcon);

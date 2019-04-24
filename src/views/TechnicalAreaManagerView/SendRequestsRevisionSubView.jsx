@@ -1,4 +1,5 @@
 import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -25,41 +26,50 @@ class SendRequestsRevisionSubView extends React.Component {
   }
 
   render() {
-    const { sendRequestsData, retrieveSendRequestsListPage, performNewSearch, reviewItem, viewState } = this.props;
+    const {
+      classes,
+      sendRequestsData,
+      retrieveSendRequestsListPage,
+      performNewSearch,
+      reviewItem,
+      viewState
+    } = this.props;
 
     return (
-      <Grid container className={this.props.classes.grid}>
+      <Grid container className={classes.grid}>
         <Grid item xs={12}>
           <Grid container justify="center">
-            <RevisionTable
-              tableData={sendRequestsData.listPages}
-              elementType={LIST_ELEMENTS_TYPE.SEND_REQUESTS}
-              itemsCount={sendRequestsData.totalItemsCount}
-              isLoading={sendRequestsData.isLoadingList}
-              latestUpdateTimestamp={sendRequestsData.latestUpdateTimestamp}
-              displayError={sendRequestsData.errorWhileFetchingData}
-              loadPage={(pageNumber, sortingCriteria, filter) => {
-                retrieveSendRequestsListPage(
-                  USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER],
-                  pageNumber,
-                  sortingCriteria,
-                  filter
-                );
-              }}
-              onSearchQueryChange={searchQuery => {
-                performNewSearch(
-                  retrieveSendRequestsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]),
-                  searchQuery
-                );
-              }}
-              onItemReview={(elementId, approvalStatus) =>
-                reviewItem(LIST_ELEMENTS_TYPE.SEND_REQUESTS, elementId, approvalStatus)
-              }
-              onElementClick={elementId => console.log(`Elemento ${elementId} cliccato!`)}
-              reviewInProgressItems={viewState.reviewInProgress}
-              successfullyReviewedItems={viewState.successfullyReviewed}
-              failedReviewItems={viewState.reviewFailed}
-            />
+            <Paper className={classes.paper}>
+              <RevisionTable
+                tableData={sendRequestsData.listPages}
+                elementType={LIST_ELEMENTS_TYPE.SEND_REQUESTS}
+                itemsCount={sendRequestsData.totalItemsCount}
+                isLoading={sendRequestsData.isLoadingList}
+                latestUpdateTimestamp={sendRequestsData.latestUpdateTimestamp}
+                displayError={sendRequestsData.errorWhileFetchingData}
+                loadPage={(pageNumber, sortingCriteria, filter) => {
+                  retrieveSendRequestsListPage(
+                    USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER],
+                    pageNumber,
+                    sortingCriteria,
+                    filter
+                  );
+                }}
+                onSearchQueryChange={searchQuery => {
+                  performNewSearch(
+                    retrieveSendRequestsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]),
+                    searchQuery
+                  );
+                }}
+                onItemReview={(elementId, approvalStatus) =>
+                  reviewItem(LIST_ELEMENTS_TYPE.SEND_REQUESTS, elementId, approvalStatus)
+                }
+                onElementClick={elementId => console.log(`Elemento ${elementId} cliccato!`)}
+                reviewInProgressItems={viewState.reviewInProgress}
+                successfullyReviewedItems={viewState.successfullyReviewed}
+                failedReviewItems={viewState.reviewFailed}
+              />
+            </Paper>
           </Grid>
         </Grid>
       </Grid>
