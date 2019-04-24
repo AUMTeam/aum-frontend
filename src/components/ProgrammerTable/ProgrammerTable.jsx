@@ -2,7 +2,6 @@
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
-import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { LIST_ELEMENTS_PER_PAGE, LIST_ELEMENTS_TYPE } from '../../constants/api';
@@ -11,7 +10,6 @@ import { getSearchFilter } from '../../utils/apiUtils';
 import ApprovalStatusIcon from '../ApprovalStatusIcon';
 import TableDynamicBody from '../Table/TableDynamicBody';
 import TableSortableHeader from '../Table/TableSortableHeader';
-import TableBodySkeleton from '../Table/TableBodySkeleton';
 import TablePaginationFooter from '../Table/TablePaginationFooter';
 import TableToolbar from '../Table/TableToolbar';
 
@@ -75,7 +73,8 @@ class ProgrammerTable extends Component {
       tableData,
       latestUpdateTimestamp,
       itemsCount,
-      displayError
+      displayError,
+      onElementClick
     } = this.props;
 
     return (
@@ -98,22 +97,17 @@ class ProgrammerTable extends Component {
             onSortingUpdate={this.onSortingUpdate}
           />
 
-          {isLoading ? (
-            <TableBodySkeleton
-              columnsCount={this.currentlyShowingColumnsCount()}
-              itemsPerPage={LIST_ELEMENTS_PER_PAGE}
-            />
-          ) : (
-            <TableDynamicBody
-              tableColumns={tableColumns}
-              tableData={tableData}
-              totalItemsCount={itemsCount}
-              displayError={displayError}
-              pageNumber={this.state.currentPage}
-              renderCellContent={this.renderCellContent}
-              loadCurrentPage={this.loadCurrentPage}
-            />
-          )}
+          <TableDynamicBody
+            tableColumns={tableColumns}
+            tableData={tableData}
+            totalItemsCount={itemsCount}
+            displayError={displayError}
+            isLoading={isLoading}
+            pageNumber={this.state.currentPage}
+            renderCellContent={this.renderCellContent}
+            loadCurrentPage={this.loadCurrentPage}
+            onElementClick={onElementClick}
+          />
 
           <TablePaginationFooter
             itemsCount={itemsCount}
@@ -130,12 +124,13 @@ class ProgrammerTable extends Component {
    * Renders the content of a cell accordingly to its column
    * Needed for those columns which display icons or format values in some way
    */
+  // prettier-ignore
   renderCellContent(columnKey, value) {
     switch (columnKey) {
       case LIST_ELEMENT_ATTRIBUTE.AUTHOR:
         return value.name;
       case LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS:
-        return <ApprovalStatusIcon status={+value} />;
+        return <ApprovalStatusIcon status={+value} />; 
       case LIST_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP:
       case LIST_ELEMENT_ATTRIBUTE.TIMESTAMP:
         if (!value)
@@ -146,23 +141,6 @@ class ProgrammerTable extends Component {
         return value;
     }
   }
-
-  /**
-   * Returns the count of the effectively shown columns depending on screen size
-   */
-  // prettier-ignore
-  currentlyShowingColumnsCount = () => {
-    let columnCount = 0;
-    tableColumns.map(column => {
-      if (isWidthDown('sm', this.props.width)) {
-        if (column.displayOnMobile)
-          columnCount++;
-      }
-      else
-        columnCount++;
-    });
-    return columnCount;
-  };
 
   onPageChange = nextPage => {
     this.setState({ currentPage: nextPage });
@@ -189,13 +167,14 @@ ProgrammerTable.propTypes = {
   classes: PropTypes.object.isRequired,
   tableToolbarTitle: PropTypes.string.isRequired,
   tableData: PropTypes.array.isRequired,
-  elementType: PropTypes.oneOf([LIST_ELEMENTS_TYPE.COMMITS, LIST_ELEMENTS_TYPE.SEND_REQUESTS]), // may be needed in the future
+  elementType: PropTypes.oneOf([LIST_ELEMENTS_TYPE.COMMITS, LIST_ELEMENTS_TYPE.SEND_REQUESTS]), // currently unused, may be needed in the future
   itemsCount: PropTypes.number.isRequired,
   loadPage: PropTypes.func.isRequired,
   onSearchQueryChanged: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   latestUpdateTimestamp: PropTypes.number.isRequired,
-  displayError: PropTypes.bool.isRequired
+  displayError: PropTypes.bool.isRequired,
+  onElementClick: PropTypes.func.isRequired
 };
 
-export default withWidth({ noSSR: true })(withStyles(styles)(ProgrammerTable));
+export default withStyles(styles)(ProgrammerTable);

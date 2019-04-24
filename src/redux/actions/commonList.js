@@ -29,16 +29,8 @@ export const LIST_ACTION_TYPE = {
   // Dispatched when the search query is changed
   SEARCH_QUERY_CHANGED: 'SEARCH_QUERY_CHANGED',
 
-  // These two actions are ignored by reducers, since they're used only to trigger saga functions
-  // which perform item approval/rejection API requests
-  ELEMENT_REVIEW_REQUEST: 'ELEMENT_REVIEW_REQUEST',
-  ELEMENT_REVIEW_FAILED: 'ELEMENT_REVIEW_FAILED',
-
-  // TBD
+  // Dispatched when an element of the list is clicked
   SHOW_ELEMENT_DETAILS: 'SHOW_ELEMENT_DETAILS',
-
-  // TBD
-  ADD_ELEMENT: 'ADD_ELEMENT'
 };
 
 /**
@@ -56,15 +48,5 @@ export function performNewSearchAction(pageRequestAction, searchQuery) {
     limit: pageRequestAction.limit,
     sortingCriteria: pageRequestAction.sortingCriteria,
     filter: getSearchFilter(searchQuery)
-  };
-}
-
-export function reviewItemAction(elementType, elementId, approvalStatus, callback) {
-  return {
-    type: LIST_ACTION_TYPE.ELEMENT_REVIEW_REQUEST,
-    elementType,
-    elementId,
-    approvalStatus,
-    callback
   };
 }

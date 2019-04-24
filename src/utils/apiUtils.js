@@ -85,10 +85,11 @@ export function getListRequestPath(elementType, requestType)
 
 /**
  * Gets the filter object corresponding to the given search term.
- * The filter logic is common so we can change the behavior globally without any inconsistencies
+ * The filter logic is common so we can change the behavior globally without any inconsistencies.
+ * When called without parameters, a stub search filter is returned (used for comparisons).
  * @param {*} searchQuery the searched term
  */
-export function getSearchFilter(searchQuery) {
+export function getSearchFilter(searchQuery = 'TEST') {
   if (searchQuery != null && searchQuery !== '')
     return {
       attribute: LIST_ELEMENT_ATTRIBUTE.DESCRIPTION,

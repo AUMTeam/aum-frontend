@@ -16,8 +16,5 @@ export const viewStyles = theme => ({
       paddingLeft: 16,
       paddingRight: 16
     }
-  },
-  errorSnackbar: {
-    backgroundColor: theme.palette.error.main
   }
 });

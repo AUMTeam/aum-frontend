@@ -1,7 +1,8 @@
 import { all, put } from 'redux-saga/effects';
 import { GLOBAL_ERROR_ACTION_TYPE } from '../actions/globalError';
 import { authFlowSaga } from './auth';
-import { listSagas } from './lists';
+import { listSagas } from './commonList';
+import { technicalAreaManagerSagas } from './views/technicalAreaManager';
 
 /**
  * @file
@@ -14,7 +15,7 @@ import { listSagas } from './lists';
 
 export default function* rootSaga() {
   try {
-    yield all([authFlowSaga(), ...listSagas]);
+    yield all([authFlowSaga(), ...listSagas, ...technicalAreaManagerSagas]);
   } finally {
     // Since some of the functions passed to all() method never end (endless loop),
     // this finally block is reached only when there's an uncaught exception in a saga

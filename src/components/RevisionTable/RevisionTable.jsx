@@ -7,7 +7,6 @@ import Paper from '@material-ui/core/Paper';
 import Radio from '@material-ui/core/Radio';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
-import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import HighlightOff from '@material-ui/icons/HighlightOff';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -19,7 +18,6 @@ import { getHistoryFilter, getSearchFilter, getToBeReviewedFilter } from '../../
 import ApprovalStatusIcon from '../ApprovalStatusIcon';
 import TableDynamicBody from '../Table/TableDynamicBody';
 import TableSortableHeader from '../Table/TableSortableHeader';
-import TableBodySkeleton from '../Table/TableBodySkeleton';
 import TablePaginationFooter from '../Table/TablePaginationFooter';
 import TableToolbar from '../Table/TableToolbar';
 
@@ -87,13 +85,7 @@ class RevisionTable extends React.Component {
         columnKey: null,
         direction: 'desc'
       },
-      filter: getToBeReviewedFilter(),
-
-      reviewInProgressItems: [], // contains the ids of the items whose review is in progress
-      /* The following objects are used as a map: the key is the element id,
-         whereas the value is the approval flag chosen by user (approved (1) or rejected(-1)) */
-      successfullyReviewedItems: {},
-      failedReviewItems: {}
+      filter: getToBeReviewedFilter()
     };
   }
 
@@ -106,14 +98,23 @@ class RevisionTable extends React.Component {
     return (
       this.props.isLoading !== nextProps.isLoading ||
       this.props.latestUpdateTimestamp !== nextProps.latestUpdateTimestamp ||
-      this.state.reviewInProgressItems !== nextState.reviewInProgressItems ||
-      this.state.successfullyReviewedItems !== nextState.successfullyReviewedItems ||
-      this.state.failedReviewItems !== nextState.failedReviewItems
+      this.props.reviewInProgressItems !== nextProps.reviewInProgressItems ||
+      this.props.successfullyReviewedItems !== nextProps.successfullyReviewedItems ||
+      this.props.failedReviewItems !== nextProps.failedReviewItems
     );
   }
 
   render() {
-    const { classes, tableData, elementType, itemsCount, isLoading, latestUpdateTimestamp, displayError } = this.props;
+    const {
+      classes,
+      tableData,
+      elementType,
+      itemsCount,
+      isLoading,
+      latestUpdateTimestamp,
+      displayError,
+      onElementClick
+    } = this.props;
     const reviewMode = this.isReviewMode();
 
     return (
@@ -139,22 +140,17 @@ class RevisionTable extends React.Component {
             onSortingUpdate={this.onSortingUpdate}
           />
 
-          {isLoading ? (
-            <TableBodySkeleton
-              columnsCount={this.currentlyShowingColumnsCount(reviewMode)}
-              itemsPerPage={LIST_ELEMENTS_PER_PAGE}
-            />
-          ) : (
-            <TableDynamicBody
-              tableColumns={reviewMode ? reviewTableColumns : historyTableColumns}
-              tableData={tableData}
-              totalItemsCount={itemsCount}
-              displayError={displayError}
-              pageNumber={this.state.currentPage}
-              renderCellContent={this.renderCellContent}
-              loadCurrentPage={this.loadCurrentPage}
-            />
-          )}
+          <TableDynamicBody
+            tableColumns={reviewMode ? reviewTableColumns : historyTableColumns}
+            tableData={tableData}
+            totalItemsCount={itemsCount}
+            displayError={displayError}
+            isLoading={isLoading}
+            pageNumber={this.state.currentPage}
+            renderCellContent={this.renderCellContent}
+            loadCurrentPage={this.loadCurrentPage}
+            onElementClick={onElementClick}
+          />
 
           <TablePaginationFooter
             itemsCount={itemsCount}
@@ -191,7 +187,7 @@ class RevisionTable extends React.Component {
   };
 
   renderCellContent = (columnKey, value, elementId) => {
-    const { classes } = this.props;
+    const { classes, onItemReview } = this.props;
 
     switch (columnKey) {
       case LIST_ELEMENT_ATTRIBUTE.AUTHOR:
@@ -200,33 +196,45 @@ class RevisionTable extends React.Component {
         return <ApprovalStatusIcon status={+value} />;
       case LIST_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP:
       case LIST_ELEMENT_ATTRIBUTE.TIMESTAMP:
-        if (!value)
-          return '—';
-        else
-          return new Date(value * 1000).toLocaleString('it-it');
+        return value ? new Date(value * 1000).toLocaleString('it-it') : '—';
       case REVIEW_BUTTONS_COLUMN:
         return (
           <>
-            {this.state.successfullyReviewedItems[elementId] != null ? (
-              this.state.successfullyReviewedItems[elementId] === APPROVAL_STATUS.APPROVED ? (
+            {this.props.successfullyReviewedItems[elementId] != null ? (
+              this.props.successfullyReviewedItems[elementId] === APPROVAL_STATUS.APPROVED ? (
                 <CheckCircleOutline className={`${classes.approvedIcon} ${classes.inactiveIcon}`} />
               ) : (
                 <HighlightOff className={classes.inactiveIcon} color="error" />
               )
-            ) : this.state.failedReviewItems[elementId] != null ? (
-              <IconButton onClick={() => this.onItemReviewRequest(elementId, this.state.failedReviewItems[elementId])}>
+            ) : this.props.failedReviewItems[elementId] != null ? (
+              <IconButton
+                onClick={event => {
+                  onItemReview(elementId, this.props.failedReviewItems[elementId]);
+                  event.stopPropagation();
+                }}
+              >
                 <Badge classes={{ badge: classes.errorBadge }} badgeContent="!" color="error">
                   <RefreshIcon color="action" />
                 </Badge>
               </IconButton>
-            ) : this.state.reviewInProgressItems.includes(elementId) ? (
+            ) : this.props.reviewInProgressItems.includes(elementId) ? (
               <CircularProgress size={24} />
             ) : (
               <>
-                <IconButton onClick={() => this.onItemReviewRequest(elementId, APPROVAL_STATUS.REJECTED)}>
+                <IconButton
+                  onClick={event => {
+                    onItemReview(elementId, APPROVAL_STATUS.REJECTED);
+                    event.stopPropagation();
+                  }}
+                >
                   <HighlightOff color="error" />
                 </IconButton>
-                <IconButton onClick={() => this.onItemReviewRequest(elementId, APPROVAL_STATUS.APPROVED)}>
+                <IconButton
+                  onClick={event => {
+                    onItemReview(elementId, APPROVAL_STATUS.APPROVED);
+                    event.stopPropagation();
+                  }}
+                >
                   <CheckCircleOutline className={classes.approvedIcon} />
                 </IconButton>
               </>
@@ -248,24 +256,7 @@ class RevisionTable extends React.Component {
 
   // Used to determine if the search field is filled
   isSearchingTerm = () => {
-    return this.state.filter.attribute === getSearchFilter('test').attribute;
-  };
-
-  // Returns the count of the effectively shown columns depending on screen size
-  // prettier-ignore
-  currentlyShowingColumnsCount = (reviewMode) => {
-    const actualTableColumns = reviewMode ? reviewTableColumns : historyTableColumns;
-
-    let columnCount = 0;
-    actualTableColumns.map(column => {
-      if (isWidthDown('sm', this.props.width)) {
-        if (column.displayOnMobile)
-          columnCount++;
-      }
-      else
-        columnCount++;
-    });
-    return columnCount;    
+    return this.state.filter.attribute === getSearchFilter().attribute;
   };
 
   loadCurrentPage = () => {
@@ -289,54 +280,8 @@ class RevisionTable extends React.Component {
    * error icon will be displayed again on the items whose review request failed
    */
   onFilterChange = newFilter => {
-    this.setState({
-      filter: newFilter,
-      failedReviewItems: {},
-      successfullyReviewedItems: {}
-    });
+    this.setState({ filter: newFilter });
     this.props.loadPage(0, this.state.sorting, newFilter);
-  };
-
-  /**
-   * Called when review is requested for an item of the list
-   * Updates state to show a spinner instead of buttons while API request is in progress
-   */
-  onItemReviewRequest = (elementId, approvalStatus) => {
-    const failedReviewItemsUpdated = { ...this.state.failedReviewItems };
-    // prettier-ignore
-    if (this.state.failedReviewItems[elementId] != null)
-      delete failedReviewItemsUpdated[elementId];
-
-    const reviewInProgressItemsUpdated = [...this.state.reviewInProgressItems, elementId];
-    this.setState({
-      reviewInProgressItems: reviewInProgressItemsUpdated,
-      failedReviewItems: failedReviewItemsUpdated
-    });
-    this.props.onItemReview(elementId, approvalStatus, this.onItemReviewCompleted);
-  };
-
-  /**
-   * Callback passed to the function which performs the approval/rejection request
-   * Updates state to display error or done icon instead of buttons
-   */
-  onItemReviewCompleted = (elementId, approvalStatus, success) => {
-    const reviewInProgressItemsUpdated = [...this.state.reviewInProgressItems];
-    reviewInProgressItemsUpdated.splice(reviewInProgressItemsUpdated.indexOf(elementId), 1);
-    if (success) {
-      const successfullyReviewedItemsUpdated = { ...this.state.successfullyReviewedItems };
-      successfullyReviewedItemsUpdated[elementId] = approvalStatus;
-      this.setState({
-        reviewInProgressItems: reviewInProgressItemsUpdated,
-        successfullyReviewedItems: successfullyReviewedItemsUpdated
-      });
-    } else {
-      const failedReviewItemsUpdated = { ...this.state.failedReviewItems };
-      failedReviewItemsUpdated[elementId] = approvalStatus;
-      this.setState({
-        reviewInProgressItems: reviewInProgressItemsUpdated,
-        failedReviewItems: failedReviewItemsUpdated
-      });
-    }
   };
 
   onSearchQueryChange = newQuery => {
@@ -360,7 +305,12 @@ RevisionTable.propTypes = {
   onItemReview: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   latestUpdateTimestamp: PropTypes.number.isRequired,
-  displayError: PropTypes.bool.isRequired
+  displayError: PropTypes.bool.isRequired,
+  onElementClick: PropTypes.func.isRequired,
+
+  reviewInProgressItems: PropTypes.array.isRequired,
+  successfullyReviewedItems: PropTypes.object.isRequired,
+  failedReviewItems: PropTypes.object.isRequired
 };
 
-export default withWidth({ noSSR: true })(withStyles(tableStyles)(RevisionTable));
+export default withStyles(tableStyles)(RevisionTable);

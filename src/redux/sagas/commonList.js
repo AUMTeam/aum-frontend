@@ -2,19 +2,18 @@ import {
   actionChannel,
   cancel,
   cancelled,
-  debounce,
   delay,
   fork,
   put,
   select,
   take,
-  takeEvery,
   takeLatest
 } from 'redux-saga/effects';
 import { LIST_AUTO_UPDATE_INTERVAL_MS, LIST_ELEMENTS_PER_PAGE, SEARCH_DEBOUNCE_DELAY_MS } from '../../constants/api';
 import { getListRequestPath } from '../../utils/apiUtils';
-import { LIST_ACTION_TYPE } from '../actions/lists';
+import { LIST_ACTION_TYPE } from '../actions/commonList';
 import { makeRequestAndReportErrors } from './api';
+import { strictDebounce } from './utils';
 
 /**
  * Called every time the user changes the page of the commits table or the latter is recreated
@@ -25,15 +24,15 @@ import { makeRequestAndReportErrors } from './api';
  */
 function* retrieveListPage(action) {
   yield checkForListUpdates(
-    yield select(state => state[action.userRoleString][action.elementType].latestUpdateTimestamp),
+    yield select(state => state.lists[action.userRoleString][action.elementType].latestUpdateTimestamp),
     action
   );
 
-  const listPages = yield select(state => state[action.userRoleString][action.elementType].listPages);
+  const listPages = yield select(state => state.lists[action.userRoleString][action.elementType].listPages);
   const requestedPageAlreadyFetched = action.pageNumber in listPages;
   if (requestedPageAlreadyFetched) {
     const latestUpdateTimestamp = yield select(
-      state => state[action.userRoleString][action.elementType].latestUpdateTimestamp
+      state => state.lists[action.userRoleString][action.elementType].latestUpdateTimestamp
     );
     var requestedPageNotUpdated = listPages[action.pageNumber].updateTimestamp < latestUpdateTimestamp;
     var sortingCriteriaDifferent =
@@ -81,8 +80,7 @@ function* retrieveListPage(action) {
         filter: action.filter
       });
     }
-  }
-  else {
+  } else {
     yield put({
       type: LIST_ACTION_TYPE.NO_RETRIEVAL_NEEDED,
       elementType: action.elementType,
@@ -122,30 +120,6 @@ function* checkForListUpdates(latestUpdateTimestamp, action) {
     else
       console.log(`No ${action.elementType} list updates found`);
   }
-}
-
-/**
- * Performs approval of rejection of the commit/send request passed through the action.
- * The outcome of this operation isn't notified with the dispatch of an action, rather with
- * the execution of a callback whose signature is (elementId, success: bool)
- * @param {*} action action of type ELEMENT_REVIEW_REQUEST
- */
-function* reviewListElement(action) {
-  const reviewResponseData = yield makeRequestAndReportErrors(
-    getListRequestPath(action.elementType, 'approve'),
-    { ...action, type: LIST_ACTION_TYPE.ELEMENT_REVIEW_FAILED },
-    {
-      id: action.elementId,
-      approve_flag: action.approvalStatus
-    },
-    yield select(state => state.auth.accessToken)
-  );
-
-  if (reviewResponseData != null) {
-    console.log(`Element ${action.elementId} reviewed successfully`);
-    action.callback(action.elementId, action.approvalStatus, true);
-  }
-  // Error callback is called by the saga triggered by ELEMENT_REVIEW_FAILED action (see below)
 }
 
 // Contains the auto update checking tasks corresponding to the lists of the specified element type and view,
@@ -201,18 +175,17 @@ function* runListUpdateChecker(action) {
       // Avoid checking for updates when the state of the list is not yet initialized
       // or when retrieveListPage() is running
       if (
-        (yield select(state => state[action.userRoleString][action.elementType] != null)) &&
-        (yield select(state => !state[action.userRoleString][action.elementType].isLoadingList))
+        (yield select(state => state.lists[action.userRoleString][action.elementType] != null)) &&
+        (yield select(state => !state.lists[action.userRoleString][action.elementType].isLoadingList))
       ) {
         console.log(`Checking for ${action.userRoleString}.${action.elementType} updates...`);
         yield checkForListUpdates(
-          yield select(state => state[action.userRoleString][action.elementType].latestUpdateTimestamp),
+          yield select(state => state.lists[action.userRoleString][action.elementType].latestUpdateTimestamp),
           action
         );
       }
     }
-  }
-  finally {
+  } finally {
     if (yield cancelled())
       console.log(`Auto update checking stopped for ${action.userRoleString}.${action.elementType}`);
     // prettier-ignore
@@ -224,10 +197,5 @@ function* runListUpdateChecker(action) {
 export const listSagas = [
   updateCheckingTasksManager(),
   takeLatest(LIST_ACTION_TYPE.PAGE_REQUEST, retrieveListPage),
-  debounce(SEARCH_DEBOUNCE_DELAY_MS, LIST_ACTION_TYPE.SEARCH_QUERY_CHANGED, retrieveListPage),
-  takeEvery(LIST_ACTION_TYPE.ELEMENT_REVIEW_REQUEST, reviewListElement),
-  // reports errors in review requests
-  takeEvery(LIST_ACTION_TYPE.ELEMENT_REVIEW_FAILED, action =>
-    action.callback(action.elementId, action.approvalStatus, false)
-  )
+  strictDebounce(SEARCH_DEBOUNCE_DELAY_MS, LIST_ACTION_TYPE.SEARCH_QUERY_CHANGED, retrieveListPage),
 ];
