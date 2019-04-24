@@ -43,7 +43,7 @@ class SendRequestsSubView extends Component {
 
   render() {
     const { classes, sendRequestsData, retrieveSendRequestsListPage, performNewSearch } = this.props;
-    const { isAddingSendRequest, branch, client, clientContact, motivation, installationType } = this.props;
+    const { isAddingSendRequest, branch, client, clientContact, motivation, installationType } = this.state;
 
     return (
       <>
@@ -93,29 +93,25 @@ class SendRequestsSubView extends Component {
           <DialogTitle>Inserisci una nuova richiesta di invio</DialogTitle>
           <DialogContent>
             <Grid container spacing={16}>
-              <Grid item xs={12}>
-                <Grid container justify="flex-start" alignItems="flex-start" spacing={16}>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      label="Branch"
-                      margin="normal"
-                      variant="outlined"
-                      fullWidth={true}
-                      value={branch}
-                      onChange={event => this.onInputChanged('branch', event)}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      label="Cliente"
-                      margin="normal"
-                      variant="outlined"
-                      fullWidth={true}
-                      value={client}
-                      onChange={event => this.onInputChanged('client', event)}
-                    />
-                  </Grid>
-                </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Branch"
+                  margin="normal"
+                  variant="outlined"
+                  fullWidth={true}
+                  value={branch}
+                  onChange={event => this.onInputChanged('branch', event)}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Cliente"
+                  margin="normal"
+                  variant="outlined"
+                  fullWidth={true}
+                  value={client}
+                  onChange={event => this.onInputChanged('client', event)}
+                />
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -130,40 +126,29 @@ class SendRequestsSubView extends Component {
               <Grid item xs={12}>
                 <TextField id="content" label="Contenuto" margin="normal" variant="outlined" fullWidth={true} />
               </Grid>
-              <Grid item xs={12}>
-                <Grid container justify="flex-start" alignItems="flex-start" spacing={16}>
-                  <Grid item xs={12} md={9}>
-                    <TextField
-                      label="Motivazione"
-                      margin="normal"
-                      variant="outlined"
-                      fullWidth={true}
-                      value={motivation}
-                      onChange={event => this.onInputChanged('motivation', event)}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={3}>
-                    <FormControl variant="outlined" fullWidth={true}>
-                      <InputLabel
-                        ref={ref => {
-                          this.InputLabelRef = ref;
-                        }}
-                        htmlFor="installationType"
-                      >
-                        Tipo installazione
-                      </InputLabel>
-                      <Select
-                        value={installationType}
-                        onChange={event => this.onInputChanged('installationType', event)}
-                        input={<OutlinedInput id="installationType" />}
-                      >
-                        {/* Here we will make a server call to get all the installtion types */}
-                        <MenuItem value={0}>Fisica</MenuItem>
-                        <MenuItem value={1}>Virtuale</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                </Grid>
+              <Grid item xs={12} md={9}>
+                <TextField
+                  label="Motivazione"
+                  margin="normal"
+                  variant="outlined"
+                  fullWidth={true}
+                  value={motivation}
+                  onChange={event => this.onInputChanged('motivation', event)}
+                />
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <FormControl className={classes.FormControl} variant="outlined" fullWidth={true}>
+                  <InputLabel htmlFor="installationType">Tipo installazione</InputLabel>
+                  <Select
+                    value={installationType}
+                    onChange={event => this.onInputChanged('installationType', event)}
+                    input={<OutlinedInput id="installationType" labelWidth={128 /* Hardcoded value */} />}
+                  >
+                    {/* Here we will make a server call to get all the installtion types */}
+                    <MenuItem value={0}>Fisica</MenuItem>
+                    <MenuItem value={1}>Virtuale</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
             </Grid>
           </DialogContent>
