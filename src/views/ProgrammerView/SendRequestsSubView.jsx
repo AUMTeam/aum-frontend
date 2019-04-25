@@ -18,6 +18,46 @@ import {
 } from '../../redux/actions/sendRequests';
 import { viewStyles } from '../styles';
 
+const suggestions = [
+  { label: 'Afghanistan' },
+  { label: 'Aland Islands' },
+  { label: 'Albania' },
+  { label: 'Algeria' },
+  { label: 'American Samoa' },
+  { label: 'Andorra' },
+  { label: 'Angola' },
+  { label: 'Anguilla' },
+  { label: 'Antarctica' },
+  { label: 'Antigua and Barbuda' },
+  { label: 'Argentina' },
+  { label: 'Armenia' },
+  { label: 'Aruba' },
+  { label: 'Australia' },
+  { label: 'Austria' },
+  { label: 'Azerbaijan' },
+  { label: 'Bahamas' },
+  { label: 'Bahrain' },
+  { label: 'Bangladesh' },
+  { label: 'Barbados' },
+  { label: 'Belarus' },
+  { label: 'Belgium' },
+  { label: 'Belize' },
+  { label: 'Benin' },
+  { label: 'Bermuda' },
+  { label: 'Bhutan' },
+  { label: 'Bolivia, Plurinational State of' },
+  { label: 'Bonaire, Sint Eustatius and Saba' },
+  { label: 'Bosnia and Herzegovina' },
+  { label: 'Botswana' },
+  { label: 'Bouvet Island' },
+  { label: 'Brazil' },
+  { label: 'British Indian Ocean Territory' },
+  { label: 'Brunei Darussalam' }
+].map(suggestion => ({
+  value: suggestion.label,
+  label: suggestion.label,
+}));
+
 class SendRequestsSubView extends Component {
   constructor(props) {
     super(props);
@@ -85,6 +125,9 @@ class SendRequestsSubView extends Component {
         </Fab>
         <NewSendRequestDialog
           open={isAddingSendRequest}
+          allClients={suggestions}
+          allBranches={suggestions}
+          allCommits={suggestions}
           onDialogClose={() => this.setState({ isAddingSendRequest: false })}
           onDialogSend={this.onSendClicked}
           showLoading={this.state.isLoading}
@@ -100,18 +143,8 @@ class SendRequestsSubView extends Component {
     });
   };
 
-  onSendClicked = data => {
-    this.setState({
-      isLoading: true,
-      hasError: false
-    });
-    // TODO: implement real logic, this is a mock
-    // for test purpose ONLY
-    setTimeout(function() {
-      this.setState({ 
-        isLoading: false,
-        hasError: true });
-    }.bind(this), 1000);
+  onSendClicked = payload => {
+    console.log(payload)
   };
 }
 
