@@ -12,6 +12,8 @@ export const LIST_ELEMENTS_TYPE = {
   SEND_REQUESTS: 'sendRequests'
 }
 
+// TODO: temporary constants, waiting for the backend
+// devs to uniform all the namings of the endpoints.
 export const ADDITION_TYPE = {
   NEW_COMMIT: 'commit',
   NEW_SEND_REQUEST: 'request'
