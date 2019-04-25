@@ -1,23 +1,13 @@
-import { DialogTitle } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
 import Fab from '@material-ui/core/Fab';
-import FormControl from '@material-ui/core/FormControl';
 import Grid from '@material-ui/core/Grid';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Paper from '@material-ui/core/Paper';
-import Select from '@material-ui/core/Select';
 import { withStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import NewSendRequestDialog from '../../components/NewSendRequestDialog';
 import ProgrammerTable from '../../components/ProgrammerTable';
-import ResponsiveDialog from '../../components/ResponsiveDialog';
 import { LIST_ELEMENTS_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import { performNewSearchAction } from '../../redux/actions/commonList';
@@ -27,7 +17,6 @@ import {
   stopSendRequestsListUpdatesAutoCheckingAction
 } from '../../redux/actions/sendRequests';
 import { viewStyles } from '../styles';
-import NewSendRequestDialog from '../../components/NewSendRequestDialog';
 
 class SendRequestsSubView extends Component {
   constructor(props) {
@@ -48,7 +37,7 @@ class SendRequestsSubView extends Component {
 
   render() {
     const { classes, sendRequestsData, retrieveSendRequestsListPage, performNewSearch } = this.props;
-    const { isAddingSendRequest, branch, client, clientContact, motivation, installationType } = this.state;
+    const { isAddingSendRequest } = this.state;
 
     return (
       <>
@@ -96,8 +85,8 @@ class SendRequestsSubView extends Component {
         </Fab>
         <NewSendRequestDialog
           open={isAddingSendRequest}
-          onClose={() => this.setState({ isAddingSendRequest: false })}
-          onSend={this.onSendClicked}
+          onDialogClose={() => this.setState({ isAddingSendRequest: false })}
+          onDialogSend={this.onSendClicked}
         />
       </>
     );
