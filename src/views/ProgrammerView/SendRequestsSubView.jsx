@@ -21,8 +21,13 @@ import ResponsiveDialog from '../../components/ResponsiveDialog';
 import { LIST_ELEMENTS_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import { performNewSearchAction } from '../../redux/actions/commonList';
-import { retrieveSendRequestsListPageAction, startSendRequestsListUpdatesAutoCheckingAction, stopSendRequestsListUpdatesAutoCheckingAction } from '../../redux/actions/sendRequests';
+import {
+  retrieveSendRequestsListPageAction,
+  startSendRequestsListUpdatesAutoCheckingAction,
+  stopSendRequestsListUpdatesAutoCheckingAction
+} from '../../redux/actions/sendRequests';
 import { viewStyles } from '../styles';
+import NewSendRequestDialog from '../../components/NewSendRequestDialog';
 
 class SendRequestsSubView extends Component {
   constructor(props) {
@@ -89,76 +94,11 @@ class SendRequestsSubView extends Component {
           <AddIcon />
           Nuova richiesta di invio
         </Fab>
-        <ResponsiveDialog open={isAddingSendRequest}>
-          <DialogTitle>Inserisci una nuova richiesta di invio</DialogTitle>
-          <DialogContent>
-            <Grid container spacing={16}>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  label="Branch"
-                  margin="normal"
-                  variant="outlined"
-                  fullWidth={true}
-                  value={branch}
-                  onChange={event => this.onInputChanged('branch', event)}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  label="Cliente"
-                  margin="normal"
-                  variant="outlined"
-                  fullWidth={true}
-                  value={client}
-                  onChange={event => this.onInputChanged('client', event)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Referente cliente"
-                  margin="normal"
-                  variant="outlined"
-                  fullWidth={true}
-                  value={clientContact}
-                  onChange={event => this.onInputChanged('clientContact', event)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField id="content" label="Contenuto" margin="normal" variant="outlined" fullWidth={true} />
-              </Grid>
-              <Grid item xs={12} md={9}>
-                <TextField
-                  label="Motivazione"
-                  margin="normal"
-                  variant="outlined"
-                  fullWidth={true}
-                  value={motivation}
-                  onChange={event => this.onInputChanged('motivation', event)}
-                />
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <FormControl className={classes.FormControl} variant="outlined" fullWidth={true}>
-                  <InputLabel htmlFor="installationType">Tipo installazione</InputLabel>
-                  <Select
-                    value={installationType}
-                    onChange={event => this.onInputChanged('installationType', event)}
-                    input={<OutlinedInput id="installationType" labelWidth={128 /* Hardcoded value */} />}
-                  >
-                    {/* Here we will make a server call to get all the installtion types */}
-                    <MenuItem value={0}>Fisica</MenuItem>
-                    <MenuItem value={1}>Virtuale</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-            </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button color="primary" onClick={() => this.setState({ isAddingSendRequest: false })}>
-              Annulla
-            </Button>
-            <Button color="primary">Invia</Button>
-          </DialogActions>
-        </ResponsiveDialog>
+        <NewSendRequestDialog
+          open={isAddingSendRequest}
+          onClose={() => this.setState({ isAddingSendRequest: false })}
+          onSend={this.onSendClicked}
+        />
       </>
     );
   }
@@ -167,6 +107,10 @@ class SendRequestsSubView extends Component {
     this.setState({
       [name]: event.target.value
     });
+  };
+
+  onSendClicked = data => {
+    console.log(data);
   };
 }
 
