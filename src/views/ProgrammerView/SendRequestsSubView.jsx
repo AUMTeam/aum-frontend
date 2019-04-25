@@ -87,6 +87,8 @@ class SendRequestsSubView extends Component {
           open={isAddingSendRequest}
           onDialogClose={() => this.setState({ isAddingSendRequest: false })}
           onDialogSend={this.onSendClicked}
+          showLoading={this.state.isLoading}
+          showError={this.state.hasError}
         />
       </>
     );
@@ -99,7 +101,17 @@ class SendRequestsSubView extends Component {
   };
 
   onSendClicked = data => {
-    console.log(data);
+    this.setState({
+      isLoading: true,
+      hasError: false
+    });
+    // TODO: implement real logic, this is a mock
+    // for test purpose ONLY
+    setTimeout(function() {
+      this.setState({ 
+        isLoading: false,
+        hasError: true });
+    }.bind(this), 1000);
   };
 }
 
