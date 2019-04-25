@@ -12,6 +12,11 @@ export const LIST_ELEMENTS_TYPE = {
   SEND_REQUESTS: 'sendRequests'
 }
 
+export const ADDITION_TYPE = {
+  NEW_COMMIT: 'commit',
+  NEW_SEND_REQUEST: 'request'
+}
+
 export const REQUEST_ACTIONS_PATH = {
   LOGIN: 'auth/login',
   LOGOUT: 'auth/logout',

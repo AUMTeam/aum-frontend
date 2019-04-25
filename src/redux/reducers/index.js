@@ -6,6 +6,7 @@ import { user } from './user';
 import { USER_TYPE_ID } from '../../constants/user';
 import { technicalAreaManagerViewReducer } from './views/technicalAreaManager';
 import { revisionOfficeManagerViewReducer } from './views/revisionOfficeManager';
+import { programmerViewReducer } from './views/programmer';
 
 /**
  * @file
@@ -43,6 +44,7 @@ const reducers = combineReducers({
     ])
   ),
   views: combineReducers({
+    programmerView: programmerViewReducer,
     technicalAreaManager: technicalAreaManagerViewReducer,
     revisionOfficeManager: revisionOfficeManagerViewReducer
   }),

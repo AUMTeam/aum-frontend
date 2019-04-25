@@ -3,7 +3,7 @@
  * @file
  * This file contains helper functions used for API requests.
  */
-import { API_ENDPOINT_URL, REQUEST_TIMEOUT_MS, TOKEN_LOCALSTORAGE_KEY, LIST_ELEMENTS_TYPE } from '../constants/api';
+import { API_ENDPOINT_URL, REQUEST_TIMEOUT_MS, TOKEN_LOCALSTORAGE_KEY, LIST_ELEMENTS_TYPE, ADDITION_TYPE } from '../constants/api';
 
 /**
  * Returns a promise that is rejected after the specified timeout
@@ -67,17 +67,21 @@ export function makeAuthenticatedApiRequest(actionPath, accessToken, requestData
  * @param {*} elementType One of the elements contained in LIST_ELEMENTS_TYPE
  * @param {*} requestType One of the following: add, list, update, approve
  */
-export function getListRequestPath(elementType, requestType)
+export function getRequestPath(elementType, requestType)
 {
   let requestPath = '';
   switch (elementType)
   {
+    case ADDITION_TYPE.NEW_COMMIT:
     case LIST_ELEMENTS_TYPE.COMMITS:
       requestPath += 'commit';
       break;
     case LIST_ELEMENTS_TYPE.SEND_REQUESTS:
       requestPath += 'requests';
       break;
+    case ADDITION_TYPE.NEW_SEND_REQUEST:
+      requestPath += 'request'
+      break;  
   }
   return requestPath + `/${requestType}`;
 }

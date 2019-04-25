@@ -10,7 +10,7 @@ import {
   takeLatest
 } from 'redux-saga/effects';
 import { LIST_AUTO_UPDATE_INTERVAL_MS, LIST_ELEMENTS_PER_PAGE, SEARCH_DEBOUNCE_DELAY_MS } from '../../constants/api';
-import { getListRequestPath } from '../../utils/apiUtils';
+import { getRequestPath } from '../../utils/apiUtils';
 import { LIST_ACTION_TYPE } from '../actions/commonList';
 import { makeRequestAndReportErrors } from './api';
 import { strictDebounce } from './utils';
@@ -47,7 +47,7 @@ function* retrieveListPage(action) {
   // Fetch page only if needed
   if (!requestedPageAlreadyFetched || requestedPageNotUpdated || sortingCriteriaDifferent || filteringDifferent) {
     const pageResponseData = yield makeRequestAndReportErrors(
-      getListRequestPath(action.elementType, 'list'),
+      getRequestPath(action.elementType, 'list'),
       {
         type: LIST_ACTION_TYPE.PAGE_RETRIEVAL_ERROR,
         elementType: action.elementType,
@@ -98,7 +98,7 @@ function* retrieveListPage(action) {
  */
 function* checkForListUpdates(latestUpdateTimestamp, action) {
   const updateResponseData = yield makeRequestAndReportErrors(
-    getListRequestPath(action.elementType, 'update'),
+    getRequestPath(action.elementType, 'update'),
     {
       type: LIST_ACTION_TYPE.UPDATE_CHECKING_ERROR,
       elementType: action.elementType,

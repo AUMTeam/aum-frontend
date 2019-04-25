@@ -1,5 +1,5 @@
 import { put, select, takeEvery } from 'redux-saga/effects';
-import { getListRequestPath } from '../../../utils/apiUtils';
+import { getRequestPath } from '../../../utils/apiUtils';
 import { makeRequestAndReportErrors } from '../api';
 import { TECHNICAL_AREA_MANAGER_ACTION_TYPE } from '../../actions/views/technicalAreaManager';
 
@@ -11,7 +11,7 @@ import { TECHNICAL_AREA_MANAGER_ACTION_TYPE } from '../../actions/views/technica
  */
 function* reviewListElement(action) {
   const reviewResponseData = yield makeRequestAndReportErrors(
-    getListRequestPath(action.elementType, 'approve'),
+    getRequestPath(action.elementType, 'approve'),
     { ...action, type: TECHNICAL_AREA_MANAGER_ACTION_TYPE.REVIEW_ITEM_FAILED },
     {
       id: action.elementId,
