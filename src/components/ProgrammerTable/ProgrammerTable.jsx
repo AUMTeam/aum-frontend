@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
 import { COMMON_ELEMENT_ATTRIBUTE } from '../../constants/elements';
-import { getSearchFilterOrDefault, renderCellContentCommon } from '../../utils/tableUtils';
+import { getSearchFilterOrDefault } from '../../utils/tableUtils';
+import { renderElementFieldContent } from '../../utils/viewUtils';
 import TableDynamicBody from '../Table/TableDynamicBody';
 import TableSortableHeader from '../Table/TableSortableHeader';
 import TablePaginationFooter from '../Table/TablePaginationFooter';
@@ -76,7 +77,7 @@ class ProgrammerTable extends Component {
             displayError={displayError}
             isLoading={isLoading}
             pageNumber={pageNumber}
-            renderCellContent={renderCellContentCommon}
+            renderCellContent={renderElementFieldContent}
             loadCurrentPage={loadCurrentPage}
             onElementClick={onElementClick}
           />

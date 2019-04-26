@@ -12,9 +12,9 @@ import {
   getToBeDeliveredFilter,
   getSearchFilterOrDefault,
   getAlreadyDeliveredFilter,
-  isSearchFilter,
-  renderCellContentCommon
+  isSearchFilter
 } from '../../utils/tableUtils';
+import { renderElementFieldContent } from "../../utils/viewUtils";
 import ApprovalStatusIcon from '../ApprovalStatusIcon';
 import TableDynamicBody from '../Table/TableDynamicBody';
 import TableSortableHeader from '../Table/TableSortableHeader';
@@ -143,7 +143,7 @@ class DeliveryTable extends React.Component {
   };
 
   renderCellContent = (columnKey, value, elementId) => {
-    const { onElementDelivery, successfullyDeliveredElements } = this.props;
+    const { currentPage, onElementDelivery, successfullyDeliveredElements } = this.props;
 
     switch (columnKey) {
       case DELIVER_BUTTON_COLUMN:
@@ -155,7 +155,7 @@ class DeliveryTable extends React.Component {
               <>
                 <IconButton
                   onClick={event => {
-                    onElementDelivery(elementId);
+                    onElementDelivery(elementId, currentPage);
                     event.stopPropagation();
                   }}
                 >
@@ -166,11 +166,10 @@ class DeliveryTable extends React.Component {
           </>
         );
       default:
-        return renderCellContentCommon(columnKey, value, elementId);
+        return renderElementFieldContent(columnKey, value, elementId);
     }
   };
 
-  // Used to determine if review buttons should be displayed
   isDeliveryMode = () => {
     return (
       this.props.filter.attribute === getToBeDeliveredFilter().attribute &&

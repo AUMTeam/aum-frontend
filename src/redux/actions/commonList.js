@@ -28,9 +28,6 @@ export const LIST_ACTION_TYPE = {
 
   // Dispatched when the search query is changed
   SEARCH_QUERY_CHANGED: 'SEARCH_QUERY_CHANGED',
-
-  // Dispatched when an element of the list is clicked
-  SHOW_ELEMENT_DETAILS: 'SHOW_ELEMENT_DETAILS',
 };
 
 /**

@@ -15,9 +15,9 @@ import {
   getAlreadyReviewedFilter,
   getSearchFilterOrDefault,
   getToBeReviewedFilter,
-  isSearchFilter,
-  renderCellContentCommon
+  isSearchFilter
 } from '../../utils/tableUtils';
+import { renderElementFieldContent } from '../../utils/viewUtils';
 import ApprovalStatusIcon from '../ApprovalStatusIcon';
 import TableDynamicBody from '../Table/TableDynamicBody';
 import TableSortableHeader from '../Table/TableSortableHeader';
@@ -210,7 +210,7 @@ class RevisionTable extends React.Component {
           </>
         );
       default:
-        return renderCellContentCommon(columnKey, value, elementId);
+        return renderElementFieldContent(columnKey, value, elementId);
     }
   };
 

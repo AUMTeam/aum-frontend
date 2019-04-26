@@ -73,16 +73,16 @@ export default class TableDynamicBody extends React.Component {
             <TableCell colSpan={tableColumns.length}>Nessun dato presente.</TableCell>
           </TableRow>
         ) : (
-          tableData[pageNumber].data.map(rowValue => {
+          tableData[pageNumber].data.map((rowValue, rowIndex) => {
             return (
               <TableRow
                 style={onElementClick != null ? handCursorStyle : undefined}
                 hover={onElementClick != null}
-                onClick={onElementClick != null ? () => onElementClick(rowValue.id) : undefined}
+                onClick={onElementClick != null ? () => onElementClick(pageNumber, rowIndex, rowValue.id) : undefined}
                 key={rowValue.id}
               >
-                {tableColumns.map((column, index) => (
-                  <Hidden key={index} smDown={!column.displayOnMobile}>
+                {tableColumns.map((column, columnIndex) => (
+                  <Hidden key={columnIndex} smDown={!column.displayOnMobile}>
                     <TableCell align={column.alignOption != null ? column.alignOption : undefined} padding="dense">
                       {renderCellContent(column.key, rowValue[column.key], rowValue.id)}
                     </TableCell>

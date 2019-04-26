@@ -36,25 +36,29 @@ export default class ElementDetailsDialog extends React.Component {
 
     return (
       <ResponsiveDialog {...otherProps}>
-        <DialogTitle>{dialogTitle}</DialogTitle>
-        <DialogContent>
-          <Grid container spacing={16}>
-            {elementFields.map(field => (
-              <Grid item xs={12} md={6}>
-                <Typography variant="subtitle2" gutterBottom>
-                  {field.label}
-                </Typography>
-                <Typography variant="body1">{renderFieldContent(element[field.key], field.key)}</Typography>
+        {otherProps.open && (
+          <>
+            <DialogTitle>{dialogTitle}</DialogTitle>
+            <DialogContent>
+              <Grid container spacing={16}>
+                {elementFields.map(field => (
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="subtitle2" gutterBottom>
+                      {field.label}
+                    </Typography>
+                    <Typography variant="body1">{renderFieldContent(field.key, element[field.key])}</Typography>
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose} color="primary" style={backButtonToTheLeft ? buttonToTheLeftStyle : undefined}>
-            Indietro
-          </Button>
-          {renderExtraActions != null ? renderExtraActions() : null}
-        </DialogActions>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={onClose} color="primary" style={backButtonToTheLeft ? buttonToTheLeftStyle : undefined}>
+                Indietro
+              </Button>
+              {renderExtraActions != null ? renderExtraActions() : null}
+            </DialogActions>
+          </>
+        )}
       </ResponsiveDialog>
     );
   }

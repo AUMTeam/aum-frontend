@@ -14,7 +14,6 @@ const initialState = {
   listPages: [],
   latestUpdateTimestamp: 0, // timestamp of the most recent commit, used to check if there have been updates remotely
   totalItemsCount: 0,
-  currentlyShowingItem: null,
   isLoadingList: true,
   errorWhileFetchingData: false
 };

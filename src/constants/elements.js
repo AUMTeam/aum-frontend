@@ -19,6 +19,11 @@ export const SEND_REQUEST_ATTRIBUTE = {
   INSTALL_TYPE: 'install_type'
 }
 
+export const INSTALL_TYPE = {
+  DURING_EXECUTION: 0,
+  NEEDS_SHUTDOWN: 1
+}
+
 export const APPROVAL_STATUS = {
   DELIVERED: 2,
   APPROVED: 1,

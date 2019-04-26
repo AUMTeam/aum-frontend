@@ -15,8 +15,35 @@ import {
 } from '../../redux/actions/sendRequests';
 import { viewStyles } from '../styles';
 import { REVISION_OFFICE_MANAGER_ACTION_TYPE } from '../../redux/actions/views/revisionOfficeManager';
+import ElementDetailsDialog from '../../components/ElementDetailsDialog';
+import { retrieveElementFromListState } from '../../utils/viewUtils';
+import { COMMON_ELEMENT_ATTRIBUTE, SEND_REQUEST_ATTRIBUTE } from '../../constants/elements';
+import { renderElementFieldContent } from '../../utils/viewUtils';
+
+const detailsDialogFields = [
+  { key: COMMON_ELEMENT_ATTRIBUTE.TITLE, label: 'Titolo' },
+  { key: COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION, label: 'Descrizione' },
+  { key: COMMON_ELEMENT_ATTRIBUTE.BRANCH, label: 'Branch' },
+  { key: COMMON_ELEMENT_ATTRIBUTE.COMPONENTS, label: 'Componenti' },
+  { key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR, label: 'Richiedente' },
+  { key: COMMON_ELEMENT_ATTRIBUTE.APPROVER, label: 'Approvata da' },
+  { key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP, label: 'Data creazione' },
+  { key: COMMON_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP, label: 'Data approvazione' },
+  { key: SEND_REQUEST_ATTRIBUTE.INSTALL_TYPE, label: 'Tipo di installazione' },
+  { key: SEND_REQUEST_ATTRIBUTE.INSTALL_LINK, label: 'Link al file di installazione' }
+];
 
 class RevisionOfficeManagerView extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      detailsModalOpen: false,
+      deliverModalOpen: false,
+      currentlyShowingElement: {}
+    };
+  }
+
   componentDidMount() {
     this.props.startSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]);
   }
@@ -28,40 +55,62 @@ class RevisionOfficeManagerView extends React.Component {
 
   render() {
     const { classes, sendRequestsData, retrieveSendRequestsListPage, performNewSearch, viewState } = this.props;
+    const { detailsModalOpen, deliverModalOpen, currentlyShowingElement } = this.state;
 
     return (
-      <Grid container className={classes.root}>
-        <Grid item xs={12}>
-          <Grid container justify="center">
-            <Paper className={classes.paper}>
-              <DeliveryTable
-                tableData={sendRequestsData.listPages}
-                itemsCount={sendRequestsData.totalItemsCount}
-                isLoading={sendRequestsData.isLoadingList}
-                latestUpdateTimestamp={sendRequestsData.latestUpdateTimestamp}
-                displayError={sendRequestsData.errorWhileFetchingData}
-                loadPage={(pageNumber, sortingCriteria, filter) => {
-                  retrieveSendRequestsListPage(
-                    USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER],
-                    pageNumber,
-                    sortingCriteria,
-                    filter
-                  );
-                }}
-                onSearchQueryChange={searchQuery => {
-                  performNewSearch(
-                    retrieveSendRequestsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]),
-                    searchQuery
-                  );
-                }}
-                onElementDelivery={elementId => console.log(`To be implemented: Invio dell'elemento ${elementId}`)}
-                onElementClick={elementId => console.log(`Elemento ${elementId} cliccato!`)}
-                successfullyDeliveredElements={viewState.successfullyDeliveredElements}
-              />
-            </Paper>
+      <>
+        <Grid container className={classes.root}>
+          <Grid item xs={12}>
+            <Grid container justify="center">
+              <Paper className={classes.paper}>
+                <DeliveryTable
+                  tableData={sendRequestsData.listPages}
+                  itemsCount={sendRequestsData.totalItemsCount}
+                  isLoading={sendRequestsData.isLoadingList}
+                  latestUpdateTimestamp={sendRequestsData.latestUpdateTimestamp}
+                  displayError={sendRequestsData.errorWhileFetchingData}
+                  loadPage={(pageNumber, sortingCriteria, filter) => {
+                    retrieveSendRequestsListPage(
+                      USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER],
+                      pageNumber,
+                      sortingCriteria,
+                      filter
+                    );
+                  }}
+                  onSearchQueryChange={searchQuery => {
+                    performNewSearch(
+                      retrieveSendRequestsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]),
+                      searchQuery
+                    );
+                  }}
+                  onElementDelivery={elementId => console.log(`To be implemented: Invio dell'elemento ${elementId}`)}
+                  onElementClick={(pageNumber, rowIndex, elementId) => {
+                    this.setState({
+                      detailsModalOpen: true,
+                      currentlyShowingElement: retrieveElementFromListState(
+                        sendRequestsData,
+                        pageNumber,
+                        rowIndex,
+                        elementId
+                      )
+                    });
+                  }}
+                  successfullyDeliveredElements={viewState.successfullyDeliveredElements}
+                />
+              </Paper>
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
+
+        <ElementDetailsDialog
+          open={detailsModalOpen}
+          dialogTitle={`Richiesta di invio #${currentlyShowingElement.id}`}
+          element={currentlyShowingElement}
+          elementFields={detailsDialogFields}
+          renderFieldContent={renderElementFieldContent}
+          onClose={() => this.setState({ detailsModalOpen: false })}
+        />
+      </>
     );
   }
 }
@@ -82,7 +131,7 @@ const mapDispatchToProps = dispatch => {
       startSendRequestsListUpdatesAutoChecking: startSendRequestsListUpdatesAutoCheckingAction,
       stopSendRequestsListUpdatesAutoChecking: stopSendRequestsListUpdatesAutoCheckingAction,
       performNewSearch: performNewSearchAction,
-      resetUI: () => ({ type: REVISION_OFFICE_MANAGER_ACTION_TYPE.RESET_UI }),
+      resetUI: () => ({ type: REVISION_OFFICE_MANAGER_ACTION_TYPE.RESET_UI })
     },
     dispatch
   );
