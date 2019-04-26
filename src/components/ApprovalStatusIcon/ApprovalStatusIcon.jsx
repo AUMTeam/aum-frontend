@@ -18,6 +18,7 @@ class ApprovalStatusIcon extends React.PureComponent {
     } : undefined;
 
     switch (status) {
+      case APPROVAL_STATUS.DELIVERED:
       case APPROVAL_STATUS.APPROVED:
         return <CheckCircleOutline className={classes.icon} style={opacityStyle} />;
       case APPROVAL_STATUS.PENDING:
