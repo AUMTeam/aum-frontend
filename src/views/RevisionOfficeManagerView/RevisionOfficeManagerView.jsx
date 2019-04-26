@@ -30,7 +30,7 @@ class RevisionOfficeManagerView extends React.Component {
     const { classes, sendRequestsData, retrieveSendRequestsListPage, performNewSearch, viewState } = this.props;
 
     return (
-      <Grid container className={classes.grid}>
+      <Grid container className={classes.root}>
         <Grid item xs={12}>
           <Grid container justify="center">
             <Paper className={classes.paper}>

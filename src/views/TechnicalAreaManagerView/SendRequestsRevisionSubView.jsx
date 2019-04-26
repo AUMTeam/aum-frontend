@@ -36,7 +36,7 @@ class SendRequestsRevisionSubView extends React.Component {
     } = this.props;
 
     return (
-      <Grid container className={classes.grid}>
+      <Grid container className={classes.root}>
         <Grid item xs={12}>
           <Grid container justify="center">
             <Paper className={classes.paper}>
