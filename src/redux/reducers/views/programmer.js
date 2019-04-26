@@ -3,7 +3,8 @@ import { ALL_ELEMENT_TYPE } from '../../../constants/api';
 
 const initialState = {
   isAddingData: false,
-  additionError: false,
+  isAdditionSuccessful: false,
+  isAdditionFailed: false,
   isLoadingClients: false,
   allClients: [],
   isLoadingBranches: false,
@@ -18,19 +19,22 @@ export function programmerViewReducer(state = initialState, action) {
       return {
         ...state,
         isAddingData: true,
-        additionError: false
+        isAdditionSuccessful: false,
+        isAdditionFailed: false
       };
     case PROGRAMMER_ACTION_TYPE.ADD_ELEMENT_SUCCESSFUL:
       return {
         ...state,
         isAddingData: false,
-        additionError: false
+        isAdditionSuccessful: true,
+        isAdditionFailed: false
       };
     case PROGRAMMER_ACTION_TYPE.ADD_ELEMENT_FAILED:
       return {
         ...state,
         isAddingData: false,
-        additionError: true
+        isAdditionSuccessful: false,
+        isAdditionFailed: true
       };
     case PROGRAMMER_ACTION_TYPE.GET_ALL_REQUEST:
       return handleGetAll(state, action.elementType, true);

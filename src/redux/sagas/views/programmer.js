@@ -11,9 +11,6 @@ import { makeRequestAndReportErrors } from '../api';
  * @param {*} action
  */
 function* addElement(action) {
-  console.log("ADD PAYLOAD")
-  console.log(action.payload)
-
   const addElementResponseData = yield makeRequestAndReportErrors(
     getRequestPath(action.elementType, 'add'),
     { type: PROGRAMMER_ACTION_TYPE.ADD_ELEMENT_FAILED },

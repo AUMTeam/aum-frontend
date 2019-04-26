@@ -49,7 +49,8 @@ class SendRequestsSubView extends Component {
       isLoadingCommits,
       allCommits,
       isAddingData,
-      additionError
+      isAdditionSuccessful,
+      isAdditionFailed
     } = this.props;
     const { isAddingSendRequest } = this.state;
 
@@ -114,13 +115,18 @@ class SendRequestsSubView extends Component {
             value: commit,
             label: commit
           }))}
-          onDialogClose={() => this.setState({ isAddingSendRequest: false })}
+          isLoading={isAddingData}
+          isSuccessful={isAdditionSuccessful}
+          isFailed={isAdditionFailed}
+          onDialogClose={() => this.showDialog(false)}
           onDialogSend={this.onSendClicked}
-          showLoading={isAddingData}
-          showError={additionError}
         />
       </>
     );
+  }
+
+  showDialog = (show) => {
+    this.setState({ isAddingSendRequest: show })
   }
 
   onFabClick = () => {
@@ -156,7 +162,8 @@ const mapStateToProps = state => {
     isLoadingCommits: state.views.programmerView.isLoadingCommits,
     allCommits: state.views.programmerView.allCommits,
     isAddingData: state.views.programmerView.isAddingData,
-    additionError: state.views.programmerView.additionError
+    isAdditionSuccessful: state.views.programmerView.isAdditionSuccessful,
+    isAdditionFailed: state.views.programmerView.isAdditionFailed
   };
 };
 

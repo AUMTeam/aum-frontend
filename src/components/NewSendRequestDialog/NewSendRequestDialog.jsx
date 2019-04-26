@@ -120,6 +120,13 @@ class NewSendRequestDialog extends Component {
     this.state = initialDialogState;
   }
 
+  componentWillReceiveProps(nextProps) {
+    // TODO: fix maximum depth error
+    if (!nextProps.isLoading 
+      && !nextProps.isFailed 
+      && nextProps.isSuccessful) this.onDialogClose()
+}
+
   render() {
     const {
       classes,
@@ -130,13 +137,14 @@ class NewSendRequestDialog extends Component {
       isLoadingCommits,
       allCommits,
       onDialogSend,
-      showLoading,
-      showError
+      isLoading,
+      isSuccessful,
+      isFailed
     } = this.props;
     const { title, description, installationType, destClients, branch, commits, components } = this.state;
 
     return (
-      <ResponsiveDialog {...this.props} isLoading={showLoading && !showError}>
+      <ResponsiveDialog {...this.props} isLoading={isLoading && !isFailed}>
         <DialogTitle>Inserisci una nuova richiesta di invio</DialogTitle>
         <DialogContent>
           <Grid container spacing={16}>
@@ -238,7 +246,7 @@ class NewSendRequestDialog extends Component {
                 </SelectField>
               </FormControl>
             </Grid>
-            {showError && (
+            {isFailed && (
               <Grid item xs={12}>
                 <Typography variant="subtitle1" color="error" gutterBottom>
                   Errore durante l'aggiunta di una nuova richiesta di invio, riprova.
@@ -251,6 +259,7 @@ class NewSendRequestDialog extends Component {
           <Button color="primary" onClick={() => this.onDialogClose()}>
             Annulla
           </Button>
+          {/* TODO: implement auto clear on send success */}
           <Button
             color="primary"
             onClick={() =>
@@ -304,10 +313,11 @@ NewSendRequestDialog.propTypes = {
   allBranches: PropTypes.object.isRequired,
   isLoadingCommits: PropTypes.bool.isRequired,
   allCommits: PropTypes.object.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  isSuccessful: PropTypes.bool.isRequired,
+  isFailed: PropTypes.bool.isRequired,
   onDialogClose: PropTypes.func.isRequired,
-  onDialogSend: PropTypes.func.isRequired,
-  showLoading: PropTypes.bool.isRequired,
-  showError: PropTypes.bool.isRequired
+  onDialogSend: PropTypes.func.isRequired
 };
 
 export default withStyles(styles, { withTheme: true })(NewSendRequestDialog);
