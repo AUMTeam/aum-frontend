@@ -4,7 +4,6 @@
  * This file contains helper functions used for API requests.
  */
 import {
-  ADDITION_TYPE,
   API_ENDPOINT_URL,
   LIST_ELEMENTS_TYPE,
   REQUEST_TIMEOUT_MS,
@@ -75,16 +74,16 @@ export function makeAuthenticatedApiRequest(actionPath, accessToken, requestData
  */
 export function getRequestPath(elementType, requestType) {
   let requestPath = '';
+
   switch (elementType) {
     case LIST_ELEMENTS_TYPE.SEND_REQUESTS:
-    case ADDITION_TYPE.NEW_SEND_REQUEST:
       requestPath += 'sendRequest';
       break;
     case LIST_ELEMENTS_TYPE.COMMITS:
-    case ADDITION_TYPE.NEW_COMMIT:
       requestPath += 'commit';
       break;
   }
+
   return requestPath + `/${requestType}`;
 }
 
