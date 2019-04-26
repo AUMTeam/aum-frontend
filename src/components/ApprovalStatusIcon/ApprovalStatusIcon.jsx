@@ -4,7 +4,7 @@ import HighlightOff from '@material-ui/icons/HighlightOff';
 import Schedule from '@material-ui/icons/Schedule';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { APPROVAL_STATUS } from '../../constants/listElements';
+import { APPROVAL_STATUS } from '../../constants/elements';
 
 const approvedIconStyle = theme => ({
   icon: { color: theme.palette.approved }

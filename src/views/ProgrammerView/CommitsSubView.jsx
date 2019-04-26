@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ProgrammerTable from '../../components/ProgrammerTable';
 import ResponsiveDialog from '../../components/ResponsiveDialog';
-import { LIST_ELEMENTS_TYPE } from '../../constants/api';
+import { ELEMENT_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import { retrieveCommitsListPageAction, startCommitsListUpdatesAutoCheckingAction, stopCommitsListUpdatesAutoCheckingAction } from '../../redux/actions/commits';
 import { performNewSearchAction } from '../../redux/actions/commonList';
@@ -48,7 +48,7 @@ class CommitsSubView extends Component {
                 <ProgrammerTable
                   tableToolbarTitle="Lista richieste di commit"
                   tableData={commitsData.listPages}
-                  elementType={LIST_ELEMENTS_TYPE.COMMITS}
+                  elementType={ELEMENT_TYPE.COMMITS}
                   itemsCount={commitsData.totalItemsCount}
                   loadPage={(pageNumber, sortingCriteria, filter) => {
                     retrieveCommitsListPage(

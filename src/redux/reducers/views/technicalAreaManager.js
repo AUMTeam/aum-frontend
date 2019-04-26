@@ -1,5 +1,5 @@
 import { TECHNICAL_AREA_MANAGER_ACTION_TYPE } from '../../actions/views/technicalAreaManager';
-import { LIST_ELEMENTS_TYPE } from '../../../constants/api';
+import { ELEMENT_TYPE } from '../../../constants/api';
 
 const initialSubState = {
   reviewInProgress: [], // contains the IDs of the items whose review is in progress
@@ -10,8 +10,8 @@ const initialSubState = {
 };
 
 const initialViewState = {
-  [LIST_ELEMENTS_TYPE.COMMITS]: { ...initialSubState },
-  [LIST_ELEMENTS_TYPE.SEND_REQUESTS]: { ...initialSubState }
+  [ELEMENT_TYPE.COMMITS]: { ...initialSubState },
+  [ELEMENT_TYPE.SEND_REQUESTS]: { ...initialSubState }
 };
 
 // prettier-ignore

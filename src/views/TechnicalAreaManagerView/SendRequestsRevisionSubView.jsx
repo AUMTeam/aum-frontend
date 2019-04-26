@@ -5,7 +5,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import RevisionTable from '../../components/RevisionTable';
-import { LIST_ELEMENTS_TYPE } from '../../constants/api';
+import { ELEMENT_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import { performNewSearchAction } from '../../redux/actions/commonList';
 import { reviewItemAction } from '../../redux/actions/views/technicalAreaManager';
@@ -42,7 +42,7 @@ class SendRequestsRevisionSubView extends React.Component {
             <Paper className={classes.paper}>
               <RevisionTable
                 tableData={sendRequestsData.listPages}
-                elementType={LIST_ELEMENTS_TYPE.SEND_REQUESTS}
+                elementType={ELEMENT_TYPE.SEND_REQUESTS}
                 itemsCount={sendRequestsData.totalItemsCount}
                 isLoading={sendRequestsData.isLoadingList}
                 latestUpdateTimestamp={sendRequestsData.latestUpdateTimestamp}
@@ -62,7 +62,7 @@ class SendRequestsRevisionSubView extends React.Component {
                   );
                 }}
                 onItemReview={(elementId, approvalStatus) =>
-                  reviewItem(LIST_ELEMENTS_TYPE.SEND_REQUESTS, elementId, approvalStatus)
+                  reviewItem(ELEMENT_TYPE.SEND_REQUESTS, elementId, approvalStatus)
                 }
                 onElementClick={elementId => console.log(`Elemento ${elementId} cliccato!`)}
                 reviewInProgressItems={viewState.reviewInProgress}

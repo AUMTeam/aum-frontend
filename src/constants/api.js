@@ -7,12 +7,12 @@ export const LIST_ELEMENTS_PER_PAGE = 20;
 
 export const SEARCH_DEBOUNCE_DELAY_MS = 250;
 
-export const LIST_ELEMENTS_TYPE = {
+export const ELEMENT_TYPE = {
   COMMITS: 'commits',
   SEND_REQUESTS: 'sendRequests'
 }
 
-export const REQUEST_ACTIONS_PATH = {
+export const REQUEST_ENDPOINT_PATH = {
   LOGIN: 'auth/login',
   LOGOUT: 'auth/logout',
   VALIDATE_TOKEN: 'auth/validateToken',

@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import NewSendRequestDialog from '../../components/NewSendRequestDialog';
 import ProgrammerTable from '../../components/ProgrammerTable';
-import { LIST_ELEMENTS_TYPE } from '../../constants/api';
+import { ELEMENT_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import { performNewSearchAction } from '../../redux/actions/commonList';
 import {
@@ -88,7 +88,7 @@ class SendRequestsSubView extends Component {
                 <ProgrammerTable
                   tableToolbarTitle="Lista richieste di invio"
                   tableData={sendRequestsData.listPages}
-                  elementType={LIST_ELEMENTS_TYPE.SEND_REQUESTS}
+                  elementType={ELEMENT_TYPE.SEND_REQUESTS}
                   itemsCount={sendRequestsData.totalItemsCount}
                   loadPage={(pageNumber, sortingCriteria, filter) => {
                     retrieveSendRequestsListPage(

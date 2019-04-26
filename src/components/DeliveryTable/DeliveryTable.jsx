@@ -7,7 +7,7 @@ import Send from '@material-ui/icons/Send';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
-import { APPROVAL_STATUS, LIST_ELEMENT_ATTRIBUTE } from '../../constants/listElements';
+import { APPROVAL_STATUS, COMMON_ELEMENT_ATTRIBUTE } from '../../constants/elements';
 import {
   getToBeDeliveredFilter,
   getSearchFilterOrDefault,
@@ -25,20 +25,20 @@ import withTableFunctionality from '../Table/WithTableFunctionality';
 const DELIVER_BUTTON_COLUMN = 'DELIVER_BUTTON_COLUMN';
 
 const alreadyDeliveredTableColumns = [
-  { label: 'ID', key: LIST_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
-  { label: 'Descrizione', key: LIST_ELEMENT_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
-  { label: 'Data creazione', key: LIST_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
+  { label: 'ID', key: COMMON_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
+  { label: 'Descrizione', key: COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
+  { label: 'Data creazione', key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
   { label: 'Destinatario/i', key: '' /* TODO */, displayOnMobile: false },
-  { label: 'Richiedente', key: LIST_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
+  { label: 'Richiedente', key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
   { label: 'Inviato il', key: '' /* TODO */, displayOnMobile: true }
 ];
 
 const toBeDeliveredTableColumns = [
-  { label: 'ID', key: LIST_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
-  { label: 'Descrizione', key: LIST_ELEMENT_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
-  { label: 'Data creazione', key: LIST_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
+  { label: 'ID', key: COMMON_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
+  { label: 'Descrizione', key: COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
+  { label: 'Data creazione', key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
   { label: 'Destinatario/i', key: '' /* TODO */, displayOnMobile: false },
-  { label: 'Richiedente', key: LIST_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
+  { label: 'Richiedente', key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
   {
     label: 'Invia',
     key: DELIVER_BUTTON_COLUMN,

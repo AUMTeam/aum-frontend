@@ -3,7 +3,7 @@ import Table from '@material-ui/core/Table';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
-import { LIST_ELEMENT_ATTRIBUTE } from '../../constants/listElements';
+import { COMMON_ELEMENT_ATTRIBUTE } from '../../constants/elements';
 import { getSearchFilterOrDefault, renderCellContentCommon } from '../../utils/tableUtils';
 import TableDynamicBody from '../Table/TableDynamicBody';
 import TableSortableHeader from '../Table/TableSortableHeader';
@@ -12,12 +12,12 @@ import TableToolbar from '../Table/TableToolbar';
 import withTableFunctionality from '../Table/WithTableFunctionality';
 
 const tableColumns = [
-  { label: 'ID', key: LIST_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
-  { label: 'Descrizione', key: LIST_ELEMENT_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
-  { label: 'Data creazione', key: LIST_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
-  { label: 'Autore', key: LIST_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
-  { label: 'Data revisione', key: LIST_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP, displayOnMobile: false },
-  { label: 'Approvato', key: LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS, displayOnMobile: true }
+  { label: 'ID', key: COMMON_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
+  { label: 'Descrizione', key: COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
+  { label: 'Data creazione', key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
+  { label: 'Autore', key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
+  { label: 'Data revisione', key: COMMON_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP, displayOnMobile: false },
+  { label: 'Approvato', key: COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS, displayOnMobile: true }
 ];
 
 class ProgrammerTable extends Component {
