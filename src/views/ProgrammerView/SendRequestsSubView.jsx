@@ -16,48 +16,8 @@ import {
   startSendRequestsListUpdatesAutoCheckingAction,
   stopSendRequestsListUpdatesAutoCheckingAction
 } from '../../redux/actions/sendRequests';
-import { getAll } from '../../redux/actions/views/programmer';
+import { addElement, getAll } from '../../redux/actions/views/programmer';
 import { viewStyles } from '../styles';
-
-const suggestions = [
-  { label: 'Afghanistan' },
-  { label: 'Aland Islands' },
-  { label: 'Albania' },
-  { label: 'Algeria' },
-  { label: 'American Samoa' },
-  { label: 'Andorra' },
-  { label: 'Angola' },
-  { label: 'Anguilla' },
-  { label: 'Antarctica' },
-  { label: 'Antigua and Barbuda' },
-  { label: 'Argentina' },
-  { label: 'Armenia' },
-  { label: 'Aruba' },
-  { label: 'Australia' },
-  { label: 'Austria' },
-  { label: 'Azerbaijan' },
-  { label: 'Bahamas' },
-  { label: 'Bahrain' },
-  { label: 'Bangladesh' },
-  { label: 'Barbados' },
-  { label: 'Belarus' },
-  { label: 'Belgium' },
-  { label: 'Belize' },
-  { label: 'Benin' },
-  { label: 'Bermuda' },
-  { label: 'Bhutan' },
-  { label: 'Bolivia, Plurinational State of' },
-  { label: 'Bonaire, Sint Eustatius and Saba' },
-  { label: 'Bosnia and Herzegovina' },
-  { label: 'Botswana' },
-  { label: 'Bouvet Island' },
-  { label: 'Brazil' },
-  { label: 'British Indian Ocean Territory' },
-  { label: 'Brunei Darussalam' }
-].map(suggestion => ({
-  value: suggestion.label,
-  label: suggestion.label
-}));
 
 class SendRequestsSubView extends Component {
   constructor(props) {
@@ -87,11 +47,11 @@ class SendRequestsSubView extends Component {
       isLoadingBranches,
       allBranches,
       isLoadingCommits,
-      allCommits
+      allCommits,
+      isAddingData,
+      additionError
     } = this.props;
     const { isAddingSendRequest } = this.state;
-
-    console.log("ALL CLIENTS" + allClients.length)
 
     return (
       <>
@@ -156,17 +116,20 @@ class SendRequestsSubView extends Component {
           }))}
           onDialogClose={() => this.setState({ isAddingSendRequest: false })}
           onDialogSend={this.onSendClicked}
-          showLoading={this.state.isLoading}
-          showError={this.state.hasError}
+          showLoading={isAddingData}
+          showError={additionError}
         />
       </>
     );
   }
 
   onFabClick = () => {
-    this.props.getAll(ALL_ELEMENT_TYPE.CLIENTS);
-    this.props.getAll(ALL_ELEMENT_TYPE.BRANCHES);
-    this.props.getAll(ALL_ELEMENT_TYPE.COMMITS);
+    const { getAll } = this.props;
+
+    getAll(ALL_ELEMENT_TYPE.CLIENTS);
+    getAll(ALL_ELEMENT_TYPE.BRANCHES);
+    getAll(ALL_ELEMENT_TYPE.COMMITS);
+
     this.setState({ isAddingSendRequest: true });
   };
 
@@ -177,7 +140,7 @@ class SendRequestsSubView extends Component {
   };
 
   onSendClicked = payload => {
-    console.log(payload);
+    this.props.addElement(ELEMENT_TYPE.SEND_REQUESTS, payload);
   };
 }
 
@@ -191,7 +154,9 @@ const mapStateToProps = state => {
     isLoadingBranches: state.views.programmerView.isLoadingBranches,
     allBranches: state.views.programmerView.allBranches,
     isLoadingCommits: state.views.programmerView.isLoadingCommits,
-    allCommits: state.views.programmerView.allCommits
+    allCommits: state.views.programmerView.allCommits,
+    isAddingData: state.views.programmerView.isAddingData,
+    additionError: state.views.programmerView.additionError
   };
 };
 
@@ -202,7 +167,8 @@ const mapDispatchToProps = dispatch => {
       startSendRequestsListUpdatesAutoChecking: startSendRequestsListUpdatesAutoCheckingAction,
       stopSendRequestsListUpdatesAutoChecking: stopSendRequestsListUpdatesAutoCheckingAction,
       performNewSearch: performNewSearchAction,
-      getAll: getAll
+      getAll: getAll,
+      addElement: addElement
     },
     dispatch
   );

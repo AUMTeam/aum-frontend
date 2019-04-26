@@ -111,7 +111,7 @@ const initialDialogState = {
   branch: '',
   commits: [],
   components: ''
-}
+};
 
 class NewSendRequestDialog extends Component {
   constructor(props) {
@@ -123,14 +123,12 @@ class NewSendRequestDialog extends Component {
   render() {
     const {
       classes,
-      theme,
       isLoadingClients,
       allClients,
       isLoadingBranches,
       allBranches,
       isLoadingCommits,
       allCommits,
-      onDialogClose,
       onDialogSend,
       showLoading,
       showError
@@ -259,7 +257,7 @@ class NewSendRequestDialog extends Component {
               onDialogSend({
                 title,
                 description,
-                installation_type: installationType,
+                install_type: installationType,
                 dest_clients: destClients.map(element => element.value),
                 branch: branch.value,
                 commits: commits.map(element => element.value),
@@ -276,14 +274,14 @@ class NewSendRequestDialog extends Component {
 
   validateData = () => {
     // TODO: implement data validation
-  }
+  };
 
   onDialogClose = () => {
     const { onDialogClose } = this.props;
-    
-    this.setState(initialDialogState)
+
+    this.setState(initialDialogState);
     onDialogClose();
-  }
+  };
 
   onInputChanged = (name, event) => {
     this.setState({
@@ -300,8 +298,11 @@ class NewSendRequestDialog extends Component {
 
 NewSendRequestDialog.displayName = 'NewSendRequestDialog';
 NewSendRequestDialog.propTypes = {
+  isLoadingClients: PropTypes.bool.isRequired,
   allClients: PropTypes.object.isRequired,
+  isLoadingBranches: PropTypes.bool.isRequired,
   allBranches: PropTypes.object.isRequired,
+  isLoadingCommits: PropTypes.bool.isRequired,
   allCommits: PropTypes.object.isRequired,
   onDialogClose: PropTypes.func.isRequired,
   onDialogSend: PropTypes.func.isRequired,
