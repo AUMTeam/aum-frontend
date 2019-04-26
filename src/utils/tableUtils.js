@@ -67,6 +67,7 @@ export function getAlreadyDeliveredFilter() {
  */
 export function renderCellContentCommon(columnKey, value, elementId) {
   switch (columnKey) {
+    case COMMON_ELEMENT_ATTRIBUTE.APPROVER:
     case COMMON_ELEMENT_ATTRIBUTE.AUTHOR:
       return value.name;
     case COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS:

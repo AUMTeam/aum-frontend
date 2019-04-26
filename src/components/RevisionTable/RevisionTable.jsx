@@ -36,7 +36,7 @@ const REVIEW_BUTTONS_COLUMN = 'REVIEW_BUTTONS_COLUMN';
 
 const historyTableColumns = [
   { label: 'ID', key: COMMON_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
-  { label: 'Descrizione', key: COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
+  { label: 'Titolo', key: COMMON_ELEMENT_ATTRIBUTE.TITLE, displayOnMobile: true },
   { label: 'Data creazione', key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
   { label: 'Autore', key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
   { label: 'Data revisione', key: COMMON_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP, displayOnMobile: false },
@@ -45,7 +45,7 @@ const historyTableColumns = [
 
 const reviewTableColumns = [
   { label: 'ID', key: COMMON_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
-  { label: 'Descrizione', key: COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
+  { label: 'Titolo', key: COMMON_ELEMENT_ATTRIBUTE.TITLE, displayOnMobile: true },
   { label: 'Data creazione', key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
   { label: 'Autore', key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
   {

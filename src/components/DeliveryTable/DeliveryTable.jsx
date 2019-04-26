@@ -26,7 +26,7 @@ const DELIVER_BUTTON_COLUMN = 'DELIVER_BUTTON_COLUMN';
 
 const alreadyDeliveredTableColumns = [
   { label: 'ID', key: COMMON_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
-  { label: 'Descrizione', key: COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
+  { label: 'Titolo', key: COMMON_ELEMENT_ATTRIBUTE.TITLE, displayOnMobile: true },
   { label: 'Data creazione', key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
   { label: 'Destinatario/i', key: '' /* TODO */, displayOnMobile: false },
   { label: 'Richiedente', key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
@@ -35,7 +35,7 @@ const alreadyDeliveredTableColumns = [
 
 const toBeDeliveredTableColumns = [
   { label: 'ID', key: COMMON_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
-  { label: 'Descrizione', key: COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
+  { label: 'Titolo', key: COMMON_ELEMENT_ATTRIBUTE.TITLE, displayOnMobile: true },
   { label: 'Data creazione', key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
   { label: 'Destinatario/i', key: '' /* TODO */, displayOnMobile: false },
   { label: 'Richiedente', key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
