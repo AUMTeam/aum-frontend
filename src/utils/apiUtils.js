@@ -5,7 +5,7 @@
  */
 import {
   API_ENDPOINT_URL,
-  LIST_ELEMENTS_TYPE,
+  ELEMENT_TYPE,
   REQUEST_TIMEOUT_MS,
   TOKEN_LOCALSTORAGE_KEY
 } from '../constants/api';
@@ -26,7 +26,7 @@ function withTimeout(timeoutInMilliseconds, promise) {
  * Makes a request to the server without passing the access token in the headers
  * Intended for those actions that don't require authentication
  * Promise returns null if the request fails for whatever reason
- * @param {*} actionPath One of the paths defined in REQUEST_ACTIONS_PATH
+ * @param {*} actionPath One of the paths defined in REQUEST_ENDPOINT_PATH
  * @param {*} requestData The object containing the request data (optional for an empty object)
  */
 export function makeUnauthenticatedApiRequest(actionPath, requestData = {}) {
@@ -47,7 +47,7 @@ export function makeUnauthenticatedApiRequest(actionPath, requestData = {}) {
  * Makes a request to the server passing the access token in the headers
  * Used for those actions that need user authentication
  * Promise returns null if the request fails for whatever reason
- * @param {*} actionPath One of the paths defined in REQUEST_ACTIONS_PATH
+ * @param {*} actionPath One of the paths defined in REQUEST_ENDPOINT_PATH
  * @param {*} requestData The object containing the request data (optional for an empty object)
  */
 export function makeAuthenticatedApiRequest(actionPath, accessToken, requestData = {}) {
@@ -69,20 +69,20 @@ export function makeAuthenticatedApiRequest(actionPath, accessToken, requestData
 
 /**
  * Gets the API relative path to make a specified operation on the list of the given type
- * @param {*} elementType One of the elements contained in LIST_ELEMENTS_TYPE
- * @param {*} requestType One of the following: add, list, update, approve, clients, branches, commits
+ * @param {*} elementType One of the elements contained in ELEMENT_TYPE
+ * @param {*} requestType One of the following: add, list, update, approve
  */
 export function getRequestPath(elementType, requestType) {
   let requestPath = '';
 
   switch (elementType) {
-    case LIST_ELEMENTS_TYPE.SEND_REQUESTS:
+    case ELEMENT_TYPE.SEND_REQUESTS:
       requestPath += 'sendRequest';
       break;
-    case LIST_ELEMENTS_TYPE.COMMITS:
+    case ELEMENT_TYPE.COMMITS:
       requestPath += 'commit';
       break;
-    case LIST_ELEMENTS_TYPE.DATA:
+    case ELEMENT_TYPE.DATA:
       requestPath += 'data';
       break;  
   }

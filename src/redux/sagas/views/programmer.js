@@ -1,5 +1,5 @@
 import { put, select, takeEvery } from 'redux-saga/effects';
-import { LIST_ELEMENTS_TYPE } from '../../../constants/api';
+import { ELEMENT_TYPE } from '../../../constants/api';
 import { getRequestPath } from '../../../utils/apiUtils';
 import { PROGRAMMER_ACTION_TYPE } from '../../actions/views/programmer';
 import { makeRequestAndReportErrors } from '../api';
@@ -34,7 +34,7 @@ function* addElement(action) {
  */
 function* getAll(action) {
   const getAllResponseData = yield makeRequestAndReportErrors(
-    getRequestPath(LIST_ELEMENTS_TYPE.DATA, action.elementType),
+    getRequestPath(ELEMENT_TYPE.DATA, action.elementType),
     { type: PROGRAMMER_ACTION_TYPE.GET_ALL_FAILED },
     null,
     yield select(state => state.auth.accessToken)

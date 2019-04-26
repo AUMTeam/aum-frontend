@@ -9,8 +9,8 @@ import Table from '@material-ui/core/Table';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { LIST_ELEMENTS_PER_PAGE, LIST_ELEMENTS_TYPE } from '../../constants/api';
-import { APPROVAL_STATUS, LIST_ELEMENT_ATTRIBUTE } from '../../constants/listElements';
+import { LIST_ELEMENTS_PER_PAGE, ELEMENT_TYPE } from '../../constants/api';
+import { APPROVAL_STATUS, COMMON_ELEMENT_ATTRIBUTE } from '../../constants/elements';
 import {
   getAlreadyReviewedFilter,
   getSearchFilterOrDefault,
@@ -35,19 +35,19 @@ const tableStyles = {
 const REVIEW_BUTTONS_COLUMN = 'REVIEW_BUTTONS_COLUMN';
 
 const historyTableColumns = [
-  { label: 'ID', key: LIST_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
-  { label: 'Descrizione', key: LIST_ELEMENT_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
-  { label: 'Data creazione', key: LIST_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
-  { label: 'Autore', key: LIST_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
-  { label: 'Data revisione', key: LIST_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP, displayOnMobile: false },
-  { label: 'Approvato', key: LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS, displayOnMobile: true }
+  { label: 'ID', key: COMMON_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
+  { label: 'Titolo', key: COMMON_ELEMENT_ATTRIBUTE.TITLE, displayOnMobile: true },
+  { label: 'Data creazione', key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
+  { label: 'Autore', key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
+  { label: 'Data revisione', key: COMMON_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP, displayOnMobile: false },
+  { label: 'Approvato', key: COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS, displayOnMobile: true }
 ];
 
 const reviewTableColumns = [
-  { label: 'ID', key: LIST_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
-  { label: 'Descrizione', key: LIST_ELEMENT_ATTRIBUTE.DESCRIPTION, displayOnMobile: true },
-  { label: 'Data creazione', key: LIST_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
-  { label: 'Autore', key: LIST_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
+  { label: 'ID', key: COMMON_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
+  { label: 'Titolo', key: COMMON_ELEMENT_ATTRIBUTE.TITLE, displayOnMobile: true },
+  { label: 'Data creazione', key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
+  { label: 'Autore', key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
   {
     label: 'Azioni',
     key: REVIEW_BUTTONS_COLUMN,
@@ -98,7 +98,7 @@ class RevisionTable extends React.Component {
       <>
         <TableToolbar
           toolbarTitle={
-            elementType === LIST_ELEMENTS_TYPE.COMMITS ? 'Revisione commit' : 'Revisione richieste di invio'
+            elementType === ELEMENT_TYPE.COMMITS ? 'Revisione commit' : 'Revisione richieste di invio'
           }
           showAvailableUpdatesBadge={
             !isLoading &&
@@ -227,7 +227,7 @@ RevisionTable.displayName = 'RevisionTable';
 RevisionTable.propTypes = {
   classes: PropTypes.object.isRequired,
   tableData: PropTypes.array.isRequired,
-  elementType: PropTypes.oneOf([LIST_ELEMENTS_TYPE.COMMITS, LIST_ELEMENTS_TYPE.SEND_REQUESTS]).isRequired,
+  elementType: PropTypes.oneOf([ELEMENT_TYPE.COMMITS, ELEMENT_TYPE.SEND_REQUESTS]).isRequired,
   itemsCount: PropTypes.number.isRequired,
   loadPage: PropTypes.func.isRequired,
   onSearchQueryChange: PropTypes.func.isRequired,

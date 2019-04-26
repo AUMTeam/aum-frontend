@@ -1,18 +1,18 @@
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
-import { LIST_ELEMENTS_TYPE } from '../../constants/api';
+import { ELEMENT_TYPE } from '../../constants/api';
 import { commonListReducer } from './commonList';
 
 const stateShapes = {
   [USER_TYPE_ID.PROGRAMMER]: {
-    [LIST_ELEMENTS_TYPE.COMMITS]: undefined,
-    [LIST_ELEMENTS_TYPE.SEND_REQUESTS]: undefined
+    [ELEMENT_TYPE.COMMITS]: undefined,
+    [ELEMENT_TYPE.SEND_REQUESTS]: undefined
   },
   [USER_TYPE_ID.TECHNICAL_AREA_MANAGER]: {
-    [LIST_ELEMENTS_TYPE.COMMITS]: undefined,
-    [LIST_ELEMENTS_TYPE.SEND_REQUESTS]: undefined
+    [ELEMENT_TYPE.COMMITS]: undefined,
+    [ELEMENT_TYPE.SEND_REQUESTS]: undefined
   },
   [USER_TYPE_ID.REVISION_OFFICE_MANAGER]: {
-    [LIST_ELEMENTS_TYPE.SEND_REQUESTS]: undefined
+    [ELEMENT_TYPE.SEND_REQUESTS]: undefined
   }
 };
 
@@ -26,10 +26,10 @@ function generateViewListsReducer(userTypeId) {
     if ('userRoleString' in action) {
       if (action.userRoleString === USER_ROLE_STRING[userTypeId]) {
         const newState = { ...state };
-        if (action.elementType === LIST_ELEMENTS_TYPE.COMMITS && LIST_ELEMENTS_TYPE.COMMITS in state)
-          newState[LIST_ELEMENTS_TYPE.COMMITS] = commonListReducer(state[LIST_ELEMENTS_TYPE.COMMITS], action);
-        else if (action.elementType === LIST_ELEMENTS_TYPE.SEND_REQUESTS && LIST_ELEMENTS_TYPE.SEND_REQUESTS in state)
-          newState[LIST_ELEMENTS_TYPE.SEND_REQUESTS] = commonListReducer(state[LIST_ELEMENTS_TYPE.SEND_REQUESTS], action);
+        if (action.elementType === ELEMENT_TYPE.COMMITS && ELEMENT_TYPE.COMMITS in state)
+          newState[ELEMENT_TYPE.COMMITS] = commonListReducer(state[ELEMENT_TYPE.COMMITS], action);
+        else if (action.elementType === ELEMENT_TYPE.SEND_REQUESTS && ELEMENT_TYPE.SEND_REQUESTS in state)
+          newState[ELEMENT_TYPE.SEND_REQUESTS] = commonListReducer(state[ELEMENT_TYPE.SEND_REQUESTS], action);
         return newState;
       }
       return state;

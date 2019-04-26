@@ -1,4 +1,4 @@
-import { LIST_ELEMENT_ATTRIBUTE, APPROVAL_STATUS } from '../constants/listElements';
+import { COMMON_ELEMENT_ATTRIBUTE, APPROVAL_STATUS } from '../constants/elements';
 import React from 'react';
 import ApprovalStatusIcon from '../components/ApprovalStatusIcon';
 
@@ -10,7 +10,7 @@ import ApprovalStatusIcon from '../components/ApprovalStatusIcon';
 export function getSearchFilterOrDefault(searchQuery, defaultFilter = {}) {
   if (searchQuery != null && searchQuery !== '')
     return {
-      attribute: LIST_ELEMENT_ATTRIBUTE.DESCRIPTION,
+      attribute: COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION,
       valueMatches: searchQuery
     };
   else return defaultFilter;
@@ -32,14 +32,14 @@ export function getEmptySortingCriteria() {
  */
 export function getAlreadyReviewedFilter() {
   return {
-    attribute: LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS,
+    attribute: COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS,
     valueDifferentFrom: APPROVAL_STATUS.PENDING
   };
 }
 
 export function getToBeReviewedFilter() {
   return {
-    attribute: LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS,
+    attribute: COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS,
     valueMatches: APPROVAL_STATUS.PENDING
   };
 }
@@ -48,11 +48,17 @@ export function getToBeReviewedFilter() {
  * Used in DeliveryTable
  */
 export function getToBeDeliveredFilter() {
-  return {}; // TODO
+  return {
+    attribute: COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS,
+    valueDifferentFrom: APPROVAL_STATUS.DELIVERED
+  };
 }
 
 export function getAlreadyDeliveredFilter() {
-  return {}; // TODO
+  return {
+    attribute: COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS,
+    valueMatches: APPROVAL_STATUS.DELIVERED
+  };
 }
 
 /**
@@ -61,12 +67,13 @@ export function getAlreadyDeliveredFilter() {
  */
 export function renderCellContentCommon(columnKey, value, elementId) {
   switch (columnKey) {
-    case LIST_ELEMENT_ATTRIBUTE.AUTHOR:
+    case COMMON_ELEMENT_ATTRIBUTE.APPROVER:
+    case COMMON_ELEMENT_ATTRIBUTE.AUTHOR:
       return value.name;
-    case LIST_ELEMENT_ATTRIBUTE.APPROVAL_STATUS:
+    case COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS:
       return <ApprovalStatusIcon status={+value} />;
-    case LIST_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP:
-    case LIST_ELEMENT_ATTRIBUTE.TIMESTAMP:
+    case COMMON_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP:
+    case COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP:
       return value ? new Date(value * 1000).toLocaleString('it-it') : '—';
     default:
       return value;

@@ -103,25 +103,32 @@ const selectComponents = {
   Menu
 };
 
+const initialDialogState = {
+  title: '',
+  description: '',
+  installationType: '',
+  destClients: [],
+  branch: '',
+  commits: [],
+  components: ''
+}
+
 class NewSendRequestDialog extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      branch: '',
-      client: '',
-      clientContact: '',
-      motivation: '',
-      installationType: ''
-    };
+    this.state = initialDialogState;
   }
 
   render() {
     const {
       classes,
       theme,
+      isLoadingClients,
       allClients,
+      isLoadingBranches,
       allBranches,
+      isLoadingCommits,
       allCommits,
       onDialogClose,
       onDialogSend,
@@ -170,6 +177,7 @@ class NewSendRequestDialog extends Component {
                 value={destClients}
                 onChange={this.onSelectInputChanged('destClients')}
                 isMulti
+                isLoading={isLoadingClients}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -187,6 +195,7 @@ class NewSendRequestDialog extends Component {
                 onChange={this.onSelectInputChanged('branch')}
                 placeholder="Seleziona un branch"
                 isClearable
+                isLoading={isLoadingBranches}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -204,6 +213,7 @@ class NewSendRequestDialog extends Component {
                 value={commits}
                 onChange={this.onSelectInputChanged('commits')}
                 isMulti
+                isLoading={isLoadingCommits}
               />
             </Grid>
             <Grid item xs={12} md={9}>
@@ -240,7 +250,7 @@ class NewSendRequestDialog extends Component {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button color="primary" onClick={onDialogClose}>
+          <Button color="primary" onClick={() => this.onDialogClose()}>
             Annulla
           </Button>
           <Button
@@ -266,6 +276,13 @@ class NewSendRequestDialog extends Component {
 
   validateData = () => {
     // TODO: implement data validation
+  }
+
+  onDialogClose = () => {
+    const { onDialogClose } = this.props;
+    
+    this.setState(initialDialogState)
+    onDialogClose();
   }
 
   onInputChanged = (name, event) => {

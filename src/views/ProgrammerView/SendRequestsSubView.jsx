@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import NewSendRequestDialog from '../../components/NewSendRequestDialog';
 import ProgrammerTable from '../../components/ProgrammerTable';
-import { LIST_ELEMENTS_TYPE, ALL_ELEMENT_TYPE } from '../../constants/api';
+import { ALL_ELEMENT_TYPE, ELEMENT_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import { performNewSearchAction } from '../../redux/actions/commonList';
 import {
@@ -16,8 +16,8 @@ import {
   startSendRequestsListUpdatesAutoCheckingAction,
   stopSendRequestsListUpdatesAutoCheckingAction
 } from '../../redux/actions/sendRequests';
-import { viewStyles } from '../styles';
 import { getAll } from '../../redux/actions/views/programmer';
+import { viewStyles } from '../styles';
 
 const suggestions = [
   { label: 'Afghanistan' },
@@ -56,7 +56,7 @@ const suggestions = [
   { label: 'Brunei Darussalam' }
 ].map(suggestion => ({
   value: suggestion.label,
-  label: suggestion.label,
+  label: suggestion.label
 }));
 
 class SendRequestsSubView extends Component {
@@ -70,9 +70,6 @@ class SendRequestsSubView extends Component {
 
   componentDidMount() {
     this.props.startSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
-    this.props.getAll(ALL_ELEMENT_TYPE.CLIENTS)
-    this.props.getAll(ALL_ELEMENT_TYPE.BRANCHES)
-    this.props.getAll(ALL_ELEMENT_TYPE.COMMITS)
   }
 
   componentWillUnmount() {
@@ -80,8 +77,21 @@ class SendRequestsSubView extends Component {
   }
 
   render() {
-    const { classes, sendRequestsData, retrieveSendRequestsListPage, performNewSearch, allClients, allBranches, allCommits } = this.props;
+    const {
+      classes,
+      sendRequestsData,
+      retrieveSendRequestsListPage,
+      performNewSearch,
+      isLoadingClients,
+      allClients,
+      isLoadingBranches,
+      allBranches,
+      isLoadingCommits,
+      allCommits
+    } = this.props;
     const { isAddingSendRequest } = this.state;
+
+    console.log("ALL CLIENTS" + allClients.length)
 
     return (
       <>
@@ -92,7 +102,7 @@ class SendRequestsSubView extends Component {
                 <ProgrammerTable
                   tableToolbarTitle="Lista richieste di invio"
                   tableData={sendRequestsData.listPages}
-                  elementType={LIST_ELEMENTS_TYPE.SEND_REQUESTS}
+                  elementType={ELEMENT_TYPE.SEND_REQUESTS}
                   itemsCount={sendRequestsData.totalItemsCount}
                   loadPage={(pageNumber, sortingCriteria, filter) => {
                     retrieveSendRequestsListPage(
@@ -122,16 +132,28 @@ class SendRequestsSubView extends Component {
           variant="extended"
           aria-label="Aggiungi"
           className={classes.fab}
-          onClick={() => this.setState({ isAddingSendRequest: true })}
+          onClick={() => this.onFabClick()}
         >
           <AddIcon />
           Nuova richiesta di invio
         </Fab>
         <NewSendRequestDialog
           open={isAddingSendRequest}
-          allClients={allClients}
-          allBranches={allBranches}
-          allCommits={allCommits}
+          isLoadingClients={isLoadingClients}
+          allClients={allClients.map(client => ({
+            value: client.user_id,
+            label: client.name
+          }))}
+          isLoadingBranches={isLoadingBranches}
+          allBranches={allBranches.map(branch => ({
+            value: branch.id,
+            label: branch.name
+          }))}
+          isLoadingCommits={isLoadingCommits}
+          allCommits={allCommits.map(commit => ({
+            value: commit,
+            label: commit
+          }))}
           onDialogClose={() => this.setState({ isAddingSendRequest: false })}
           onDialogSend={this.onSendClicked}
           showLoading={this.state.isLoading}
@@ -141,6 +163,13 @@ class SendRequestsSubView extends Component {
     );
   }
 
+  onFabClick = () => {
+    this.props.getAll(ALL_ELEMENT_TYPE.CLIENTS);
+    this.props.getAll(ALL_ELEMENT_TYPE.BRANCHES);
+    this.props.getAll(ALL_ELEMENT_TYPE.COMMITS);
+    this.setState({ isAddingSendRequest: true });
+  };
+
   onInputChanged = (name, event) => {
     this.setState({
       [name]: event.target.value
@@ -148,7 +177,7 @@ class SendRequestsSubView extends Component {
   };
 
   onSendClicked = payload => {
-    console.log(payload)
+    console.log(payload);
   };
 }
 
@@ -157,8 +186,11 @@ SendRequestsSubView.displayName = 'SendRequestsSubView';
 const mapStateToProps = state => {
   return {
     sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].sendRequests,
+    isLoadingClients: state.views.programmerView.isLoadingClients,
     allClients: state.views.programmerView.allClients,
+    isLoadingBranches: state.views.programmerView.isLoadingBranches,
     allBranches: state.views.programmerView.allBranches,
+    isLoadingCommits: state.views.programmerView.isLoadingCommits,
     allCommits: state.views.programmerView.allCommits
   };
 };

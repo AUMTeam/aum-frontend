@@ -1,5 +1,5 @@
 import { call, fork, put, select, take } from 'redux-saga/effects';
-import { REQUEST_ACTIONS_PATH } from '../../constants/api';
+import { REQUEST_ENDPOINT_PATH } from '../../constants/api';
 import {
   makeAuthenticatedApiRequest,
   removeAccessTokenFromLocalStorage,
@@ -40,7 +40,7 @@ export function* authFlowSaga() {
     if (!userLoggedIn) {
       const loginRequestAction = yield take(AUTH_ACTION_TYPE.LOGIN_REQUESTED);
       const loginResponseData = yield makeRequestAndReportErrors(
-        REQUEST_ACTIONS_PATH.LOGIN,
+        REQUEST_ENDPOINT_PATH.LOGIN,
         { type: AUTH_ACTION_TYPE.LOGIN_FAILED },
         {
           username: loginRequestAction.username,
@@ -66,7 +66,7 @@ export function* authFlowSaga() {
       const action = yield take([USER_ACTION_TYPE.GET_CURRENT_USER_INFO_REQUEST, AUTH_ACTION_TYPE.LOGOUT]);
       if (action.type === USER_ACTION_TYPE.GET_CURRENT_USER_INFO_REQUEST) {
         const userInfoResponseData = yield makeRequestAndReportErrors(
-          REQUEST_ACTIONS_PATH.GET_USER_INFO,
+          REQUEST_ENDPOINT_PATH.GET_USER_INFO,
           { type: USER_ACTION_TYPE.GET_CURRENT_USER_INFO_FAILED },
           null,
           action.accessToken
@@ -101,7 +101,7 @@ export function* authFlowSaga() {
 function* notifyLogoutToServerAsync(accessToken) {
   const logoutNotificationTask = yield fork(
     makeAuthenticatedApiRequest,
-    REQUEST_ACTIONS_PATH.LOGOUT,
+    REQUEST_ENDPOINT_PATH.LOGOUT,
     accessToken
   );
 
@@ -121,7 +121,7 @@ function* notifyLogoutToServerAsync(accessToken) {
  */
 function* requestLocalAccessTokenValidation(action) {
   const validationResponseData = yield makeRequestAndReportErrors(
-    REQUEST_ACTIONS_PATH.VALIDATE_TOKEN,
+    REQUEST_ENDPOINT_PATH.VALIDATE_TOKEN,
     { type: AUTH_ACTION_TYPE.TOKEN_VALIDATION_FAILED },
     null,
     action.accessToken,

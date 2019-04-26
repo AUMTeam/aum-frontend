@@ -1,6 +1,6 @@
 /* eslint-disable default-case */
 import { LIST_ACTION_TYPE } from './actions/commonList';
-import { LIST_ELEMENTS_TYPE } from '../constants/api';
+import { ELEMENT_TYPE } from '../constants/api';
 import { AUTH_ACTION_TYPE } from './actions/auth';
 
 /**
@@ -21,7 +21,7 @@ export function createNotistackMiddleware(enqueueSnackbar) {
       case LIST_ACTION_TYPE.ELEMENT_REVIEW_FAILED:
         enqueueSnackbar(
           `Revisione del${
-            action.elementType === LIST_ELEMENTS_TYPE.COMMITS ? ' commit' : 'la richiesta di invio'
+            action.elementType === ELEMENT_TYPE.COMMITS ? ' commit' : 'la richiesta di invio'
           } #${action.elementId} fallita.`,
           { variant: 'error', autoHideDuration: 2500 }
         );
