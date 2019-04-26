@@ -45,9 +45,13 @@ class ResponsiveDialog extends React.Component {
   }
 }
 
+ResponsiveDialog.defaultProps = {
+  isLoading: false
+}
+
 ResponsiveDialog.displayName = 'ResponsiveDialog';
 ResponsiveDialog.propTypes = {
-  isLoading: PropTypes.bool.isRequired
+  isLoading: PropTypes.bool
 };
 
 export default withStyles(styles)(withMobileDialog({ breakpoint: 'xs' })(ResponsiveDialog));
