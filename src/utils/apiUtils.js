@@ -70,7 +70,7 @@ export function makeAuthenticatedApiRequest(actionPath, accessToken, requestData
 /**
  * Gets the API relative path to make a specified operation on the list of the given type
  * @param {*} elementType One of the elements contained in LIST_ELEMENTS_TYPE
- * @param {*} requestType One of the following: add, list, update, approve
+ * @param {*} requestType One of the following: add, list, update, approve, clients, branches, commits
  */
 export function getRequestPath(elementType, requestType) {
   let requestPath = '';
@@ -82,6 +82,9 @@ export function getRequestPath(elementType, requestType) {
     case LIST_ELEMENTS_TYPE.COMMITS:
       requestPath += 'commit';
       break;
+    case LIST_ELEMENTS_TYPE.DATA:
+      requestPath += 'data';
+      break;  
   }
 
   return requestPath + `/${requestType}`;

@@ -3,6 +3,7 @@ import { GLOBAL_ERROR_ACTION_TYPE } from '../actions/globalError';
 import { authFlowSaga } from './auth';
 import { listSagas } from './commonList';
 import { technicalAreaManagerSagas } from './views/technicalAreaManager';
+import { programmerSagas } from './views/programmer';
 
 /**
  * @file
@@ -15,7 +16,7 @@ import { technicalAreaManagerSagas } from './views/technicalAreaManager';
 
 export default function* rootSaga() {
   try {
-    yield all([authFlowSaga(), ...listSagas, ...technicalAreaManagerSagas]);
+    yield all([authFlowSaga(), ...listSagas, ...programmerSagas, ...technicalAreaManagerSagas]);
   } finally {
     // Since some of the functions passed to all() method never end (endless loop),
     // this finally block is reached only when there's an uncaught exception in a saga

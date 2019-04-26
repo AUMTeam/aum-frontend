@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import NewSendRequestDialog from '../../components/NewSendRequestDialog';
 import ProgrammerTable from '../../components/ProgrammerTable';
-import { LIST_ELEMENTS_TYPE } from '../../constants/api';
+import { LIST_ELEMENTS_TYPE, ALL_ELEMENT_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import { performNewSearchAction } from '../../redux/actions/commonList';
 import {
@@ -17,6 +17,7 @@ import {
   stopSendRequestsListUpdatesAutoCheckingAction
 } from '../../redux/actions/sendRequests';
 import { viewStyles } from '../styles';
+import { getAll } from '../../redux/actions/views/programmer';
 
 const suggestions = [
   { label: 'Afghanistan' },
@@ -69,6 +70,9 @@ class SendRequestsSubView extends Component {
 
   componentDidMount() {
     this.props.startSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
+    this.props.getAll(ALL_ELEMENT_TYPE.CLIENTS)
+    this.props.getAll(ALL_ELEMENT_TYPE.BRANCHES)
+    this.props.getAll(ALL_ELEMENT_TYPE.COMMITS)
   }
 
   componentWillUnmount() {
@@ -76,7 +80,7 @@ class SendRequestsSubView extends Component {
   }
 
   render() {
-    const { classes, sendRequestsData, retrieveSendRequestsListPage, performNewSearch } = this.props;
+    const { classes, sendRequestsData, retrieveSendRequestsListPage, performNewSearch, allClients, allBranches, allCommits } = this.props;
     const { isAddingSendRequest } = this.state;
 
     return (
@@ -125,9 +129,9 @@ class SendRequestsSubView extends Component {
         </Fab>
         <NewSendRequestDialog
           open={isAddingSendRequest}
-          allClients={suggestions}
-          allBranches={suggestions}
-          allCommits={suggestions}
+          allClients={allClients}
+          allBranches={allBranches}
+          allCommits={allCommits}
           onDialogClose={() => this.setState({ isAddingSendRequest: false })}
           onDialogSend={this.onSendClicked}
           showLoading={this.state.isLoading}
@@ -152,7 +156,10 @@ SendRequestsSubView.displayName = 'SendRequestsSubView';
 
 const mapStateToProps = state => {
   return {
-    sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].sendRequests
+    sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].sendRequests,
+    allClients: state.views.programmerView.allClients,
+    allBranches: state.views.programmerView.allBranches,
+    allCommits: state.views.programmerView.allCommits
   };
 };
 
@@ -162,7 +169,8 @@ const mapDispatchToProps = dispatch => {
       retrieveSendRequestsListPage: retrieveSendRequestsListPageAction,
       startSendRequestsListUpdatesAutoChecking: startSendRequestsListUpdatesAutoCheckingAction,
       stopSendRequestsListUpdatesAutoChecking: stopSendRequestsListUpdatesAutoCheckingAction,
-      performNewSearch: performNewSearchAction
+      performNewSearch: performNewSearchAction,
+      getAll: getAll
     },
     dispatch
   );

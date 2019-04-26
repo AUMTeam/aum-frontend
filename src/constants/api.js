@@ -7,9 +7,17 @@ export const LIST_ELEMENTS_PER_PAGE = 20;
 
 export const SEARCH_DEBOUNCE_DELAY_MS = 250;
 
+// Change constant name
 export const LIST_ELEMENTS_TYPE = {
   COMMITS: 'commits',
-  SEND_REQUESTS: 'sendRequests'
+  SEND_REQUESTS: 'sendRequests',
+  DATA: 'data'
+}
+
+export const ALL_ELEMENT_TYPE = {
+  CLIENTS: 'clients',
+  BRANCHES: 'branches',
+  COMMITS: 'commits'
 }
 
 export const REQUEST_ACTIONS_PATH = {
