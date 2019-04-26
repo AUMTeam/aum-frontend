@@ -42,6 +42,8 @@ export function programmerViewReducer(state = initialState, action) {
       return handleGetAllSuccessful(state, action.elementType, action.payload)
     case PROGRAMMER_ACTION_TYPE.GET_ALL_FAILED:
       return handleGetAll(state, action.elementType, false);
+    case PROGRAMMER_ACTION_TYPE.RESET_UI_STATE:
+      return initialState;  
     default:
       return state;
   }

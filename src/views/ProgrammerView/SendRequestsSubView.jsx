@@ -11,8 +11,12 @@ import ProgrammerTable from '../../components/ProgrammerTable';
 import { ALL_ELEMENT_TYPE, ELEMENT_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import { performNewSearchAction } from '../../redux/actions/commonList';
-import { retrieveSendRequestsListPageAction, startSendRequestsListUpdatesAutoCheckingAction, stopSendRequestsListUpdatesAutoCheckingAction } from '../../redux/actions/sendRequests';
-import { addElement, getAll } from '../../redux/actions/views/programmer';
+import {
+  retrieveSendRequestsListPageAction,
+  startSendRequestsListUpdatesAutoCheckingAction,
+  stopSendRequestsListUpdatesAutoCheckingAction
+} from '../../redux/actions/sendRequests';
+import { addElement, getAll, resetUiState } from '../../redux/actions/views/programmer';
 import { viewStyles } from '../styles';
 
 class SendRequestsSubView extends Component {
@@ -20,8 +24,7 @@ class SendRequestsSubView extends Component {
     super(props);
 
     this.state = {
-      isAddingSendRequest: false,
-      listenForSuccessful: true
+      isAddingSendRequest: false
     };
   }
 
@@ -49,7 +52,7 @@ class SendRequestsSubView extends Component {
       isAdditionSuccessful,
       isAdditionFailed
     } = this.props;
-    const { isAddingSendRequest, listenForSuccessful } = this.state;
+    const { isAddingSendRequest } = this.state;
 
     return (
       <>
@@ -115,18 +118,25 @@ class SendRequestsSubView extends Component {
           isLoading={isAddingData}
           isSuccessful={isAdditionSuccessful}
           isFailed={isAdditionFailed}
-          onDialogClose={() => this.showDialog(false, false)}
-          onDialogSend={(payload) => this.onSendClicked(payload, true)}
-          listenForSuccessful={listenForSuccessful}
+          onDialogClose={() => this.onCloseClicked()}
+          onDialogSend={this.onSendClicked}
         />
       </>
     );
   }
 
-  showDialog = (show, listenForSuccessful) => {
+  onCloseClicked = () => {
+    this.props.resetUiState();
+    this.showDialog(false);
+  };
+
+  onSendClicked = payload => {
+    this.props.addElement(ELEMENT_TYPE.SEND_REQUESTS, payload);
+  };
+
+  showDialog = show => {
     this.setState({
-      isAddingSendRequest: show,
-      listenForSuccessful
+      isAddingSendRequest: show
     });
   };
 
@@ -137,21 +147,13 @@ class SendRequestsSubView extends Component {
     getAll(ALL_ELEMENT_TYPE.BRANCHES);
     getAll(ALL_ELEMENT_TYPE.COMMITS);
 
-    this.showDialog(true, false);
+    this.showDialog(true);
   };
 
   onInputChanged = (name, event) => {
     this.setState({
       [name]: event.target.value
     });
-  };
-
-  onSendClicked = (payload, listenForSuccessful) => {
-    this.setState({
-      listenForSuccessful
-    });
-
-    this.props.addElement(ELEMENT_TYPE.SEND_REQUESTS, payload);
   };
 }
 
@@ -180,7 +182,8 @@ const mapDispatchToProps = dispatch => {
       stopSendRequestsListUpdatesAutoChecking: stopSendRequestsListUpdatesAutoCheckingAction,
       performNewSearch: performNewSearchAction,
       getAll: getAll,
-      addElement: addElement
+      addElement: addElement,
+      resetUiState: resetUiState
     },
     dispatch
   );

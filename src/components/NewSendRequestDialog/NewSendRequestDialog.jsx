@@ -121,7 +121,7 @@ class NewSendRequestDialog extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.listenForSuccessful && !nextProps.isLoading && !nextProps.isFailed && nextProps.isSuccessful) {
+    if (!nextProps.isLoading && !nextProps.isFailed && nextProps.isSuccessful) {
       this.onDialogClose();
     }
   }
@@ -312,8 +312,7 @@ NewSendRequestDialog.propTypes = {
   isSuccessful: PropTypes.bool.isRequired,
   isFailed: PropTypes.bool.isRequired,
   onDialogClose: PropTypes.func.isRequired,
-  onDialogSend: PropTypes.func.isRequired,
-  listenForSuccessful: PropTypes.bool.isRequired
+  onDialogSend: PropTypes.func.isRequired
 };
 
 export default withStyles(styles, { withTheme: true })(NewSendRequestDialog);
