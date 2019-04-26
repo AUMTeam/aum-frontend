@@ -121,11 +121,10 @@ class NewSendRequestDialog extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // TODO: fix maximum depth error
-    if (!nextProps.isLoading 
-      && !nextProps.isFailed 
-      && nextProps.isSuccessful) this.onDialogClose()
-}
+    if (nextProps.listenForSuccessful && !nextProps.isLoading && !nextProps.isFailed && nextProps.isSuccessful) {
+      this.onDialogClose();
+    }
+  }
 
   render() {
     const {
@@ -136,9 +135,7 @@ class NewSendRequestDialog extends Component {
       allBranches,
       isLoadingCommits,
       allCommits,
-      onDialogSend,
       isLoading,
-      isSuccessful,
       isFailed
     } = this.props;
     const { title, description, installationType, destClients, branch, commits, components } = this.state;
@@ -259,21 +256,7 @@ class NewSendRequestDialog extends Component {
           <Button color="primary" onClick={() => this.onDialogClose()}>
             Annulla
           </Button>
-          {/* TODO: implement auto clear on send success */}
-          <Button
-            color="primary"
-            onClick={() =>
-              onDialogSend({
-                title,
-                description,
-                install_type: installationType,
-                dest_clients: destClients.map(element => element.value),
-                branch: branch.value,
-                commits: commits.map(element => element.value),
-                components
-              })
-            }
-          >
+          <Button color="primary" onClick={() => this.onDialogSend()}>
             Invia
           </Button>
         </DialogActions>
@@ -281,15 +264,27 @@ class NewSendRequestDialog extends Component {
     );
   }
 
-  validateData = () => {
-    // TODO: implement data validation
-  };
-
   onDialogClose = () => {
     const { onDialogClose } = this.props;
 
     this.setState(initialDialogState);
+
     onDialogClose();
+  };
+
+  onDialogSend = () => {
+    const { onDialogSend } = this.props;
+    const { title, description, installationType, destClients, branch, commits, components } = this.state;
+
+    onDialogSend({
+      title,
+      description,
+      install_type: installationType,
+      dest_clients: destClients.map(element => element.value),
+      branch: branch.value,
+      commits: commits.map(element => element.value),
+      components
+    });
   };
 
   onInputChanged = (name, event) => {
@@ -317,7 +312,8 @@ NewSendRequestDialog.propTypes = {
   isSuccessful: PropTypes.bool.isRequired,
   isFailed: PropTypes.bool.isRequired,
   onDialogClose: PropTypes.func.isRequired,
-  onDialogSend: PropTypes.func.isRequired
+  onDialogSend: PropTypes.func.isRequired,
+  listenForSuccessful: PropTypes.bool.isRequired
 };
 
 export default withStyles(styles, { withTheme: true })(NewSendRequestDialog);
