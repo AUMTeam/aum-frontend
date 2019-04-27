@@ -4,9 +4,7 @@ import { makeRequestAndReportErrors } from '../api';
 import { TECHNICAL_AREA_MANAGER_ACTION_TYPE } from '../../actions/views/technicalAreaManager';
 
 /**
- * Performs approval of rejection of the commit/send request passed through the action.
- * The outcome of this operation isn't notified with the dispatch of an action, rather with
- * the execution of a callback whose signature is (elementId, success: bool)
+ * Performs approval of rejection of the commit/send request passed through the action
  * @param {*} action action of type ELEMENT_REVIEW_REQUEST
  */
 function* reviewListElement(action) {

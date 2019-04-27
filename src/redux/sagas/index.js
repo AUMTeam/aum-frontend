@@ -4,11 +4,12 @@ import { authFlowSaga } from './auth';
 import { listSagas } from './commonList';
 import { technicalAreaManagerSagas } from './views/technicalAreaManager';
 import { programmerSagas } from './views/programmer';
+import { revisionOfficeManagerSagas } from './views/revisionOfficeManager';
 
 /**
  * @file
  * This file is the root of the Saga implementation in the app.
- * Saga allows us to perform side-effects in a separate thread in response to
+ * Saga allows us to perform side-effects asynchronously in response to
  * the dispatch of a Redux action.
  * Here we combine all the sagas related to a specific app part,
  * following the same hierarchy as the actions and reducers.
@@ -16,7 +17,7 @@ import { programmerSagas } from './views/programmer';
 
 export default function* rootSaga() {
   try {
-    yield all([authFlowSaga(), ...listSagas, ...programmerSagas, ...technicalAreaManagerSagas]);
+    yield all([authFlowSaga(), ...listSagas, ...programmerSagas, ...technicalAreaManagerSagas, ...revisionOfficeManagerSagas]);
   } finally {
     // Since some of the functions passed to all() method never end (endless loop),
     // this finally block is reached only when there's an uncaught exception in a saga

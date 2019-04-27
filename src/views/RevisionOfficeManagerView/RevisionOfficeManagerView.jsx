@@ -43,6 +43,9 @@ class RevisionOfficeManagerView extends React.Component {
     this.state = {
       detailsModalOpen: false,
       deliveryModalOpen: false,
+
+      // must be set to an object when empty, otherwise render()
+      // would throw an error (the id field is accessed in any case, see below)
       currentlyShowingElement: {}
     };
   }

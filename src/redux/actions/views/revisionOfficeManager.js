@@ -6,10 +6,10 @@ export const REVISION_OFFICE_MANAGER_ACTION_TYPE = {
   RESET_UI: 'REV_OFFICE_RESET_UI'
 };
 
-export function deliverElementAction(elementId, deliveryUrl) {
+export function deliverElementAction(elementId, installLink) {
   return {
     type: REVISION_OFFICE_MANAGER_ACTION_TYPE.ELEMENT_DELIVERY_REQUEST,
     elementId,
-    deliveryUrl
+    installLink
   };
 }
