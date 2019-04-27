@@ -13,9 +13,10 @@ const approvedIconStyle = theme => ({
 class ApprovalStatusIcon extends React.PureComponent {
   render() {
     const { classes, status, opacity } = this.props;
-    const opacityStyle = opacity != null ? {
-      filter: `opacity(${opacity}%)`
-    } : undefined;
+    const opacityStyle =
+      opacity != null
+        ? { filter: `opacity(${opacity}%)` }
+        : undefined;
 
     switch (status) {
       case APPROVAL_STATUS.DELIVERED:
@@ -33,7 +34,12 @@ class ApprovalStatusIcon extends React.PureComponent {
 
 ApprovalStatusIcon.displayName = 'ApprovalStatusIcon';
 ApprovalStatusIcon.propTypes = {
-  status: PropTypes.oneOf([APPROVAL_STATUS.APPROVED, APPROVAL_STATUS.PENDING, APPROVAL_STATUS.REJECTED]).isRequired,
+  status: PropTypes.oneOf([
+    APPROVAL_STATUS.APPROVED,
+    APPROVAL_STATUS.PENDING,
+    APPROVAL_STATUS.REJECTED,
+    APPROVAL_STATUS.DELIVERED
+  ]).isRequired,
   opacity: PropTypes.number
 };
 

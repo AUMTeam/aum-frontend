@@ -22,21 +22,19 @@ const styles = {
  */
 class ResponsiveDialog extends React.Component {
   render() {
-    const { isLoading } = this.props;
+    const { isLoading, classes, children, ...otherProps } = this.props;
 
     return (
-      <Dialog fullWidth maxWidth={'md'} disableBackdropClick {...this.props}>
-        {isLoading && this.showLoader()}
-        {this.props.children}
+      <Dialog fullWidth maxWidth={'md'} disableBackdropClick {...otherProps}>
+        {isLoading && this.showLoader(classes)}
+        {children}
       </Dialog>
     );
   }
 
-  showLoader() {
-    const { classes } = this.props;
-
+  showLoader(jssClasses) {
     return (
-      <Grid className={classes.opaque} container alignItems="center" justify="center">
+      <Grid className={jssClasses.opaque} container alignItems="center" justify="center">
         <Grid item>
           <CircularProgress />
         </Grid>
