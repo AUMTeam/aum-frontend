@@ -1,50 +1,32 @@
-import { call, put } from 'redux-saga/effects';
+import { call, put, select } from 'redux-saga/effects';
 import { makeAuthenticatedApiRequest, makeUnauthenticatedApiRequest } from '../../utils/apiUtils';
 import { AUTH_ACTION_TYPE } from '../actions/auth';
 
 /**
- * Performs an API request to the specified path, dispatching the given Redux action (if given) in case of errors
+ * Performs an authenticated API request to the specified path, dispatching the given Redux action in case of errors
  * with an errorMessage attribute injected in it.
  * Also dispatches by default a SESSION_EXPIRED action when the server responds with code 401 (unauthorized),
  * which means that the token is expired.
  * Returns null if there were any errors, otherwise the parsed response data object.
- * @param {*} requestPath relative path to API endpoint
- * @param {*} errorAction action object to be dispatched in case of error (MUST have a type attribute - optional)
- * @param {*} requestData object with the body of the request (optional)
- * @param {*} accessToken if provided, an authenticated request will be made (optional)
- * @param {*} dispatchExpiredTokenAction default to true, enables the dispatching of a SESSION_EXPIRED action
- *                                       in case of 401 response code
  */
-export function* makeRequestAndReportErrors(
-  requestPath,
-  errorAction = null,
-  requestData = null,
-  accessToken = null,
-  dispatchExpiredTokenAction = true
-) {
-  let response;
+export function* makeAuthenticatedRequestAndReportErrors(requestPath, errorAction = null, requestData = null) {
+  const accessToken = yield select(state => state.auth.accessToken);
   if (accessToken == null)
-    response = yield call(makeUnauthenticatedApiRequest, requestPath, requestData);
-  else
-    response = yield call(makeAuthenticatedApiRequest, requestPath, accessToken, requestData);
+    throw new Error('User must be logged in to perform an authenticated request.');
+  
+  const response = yield call(makeAuthenticatedApiRequest, requestPath, accessToken, requestData);
 
   if (response == null) {
     yield put({ ...errorAction, errorMessage: 'Richiesta al server fallita, possibile problema di connessione' });
     return null;
   }
 
-  let responseJson;
-  try {
-    responseJson = yield call([response, response.json]);
-  }
-  catch (err) {
-    yield put({ ...errorAction, errorMessage: "È stata ricevuta una risposta contenente dati errati dal server. Contatta l'amministratore di sistema." });
-    console.error('Error when parsing JSON response from server: ', err);
+  const responseJson = yield parseResponseJsonAndReportError(response, errorAction);
+  if (responseJson == null)
     return null;
-  }
 
   if (!response.ok) {
-    if (accessToken != null && response.status === 401 && dispatchExpiredTokenAction)
+    if (response.status === 401)
       yield put({ type: AUTH_ACTION_TYPE.SESSION_EXPIRED });
     else if (errorAction != null)
       yield put({ ...errorAction, errorMessage: responseJson.message });
@@ -52,7 +34,47 @@ export function* makeRequestAndReportErrors(
     console.error(`Server responded with an error to ${requestPath} request: ${responseJson.message}`);
     return null;
   }
-  else {
-    return responseJson.response_data;
+
+  return responseJson.response_data;
+}
+
+/**
+ * Like the method above, but for unauthenticated API requests (without token)
+ */
+export function* makeUnauthenticatedRequestAndReportErrors(requestPath, requestData = null, errorAction = null) {
+  const response = yield call(makeUnauthenticatedApiRequest, requestPath, requestData);
+
+  if (response == null) {
+    yield put({ ...errorAction, errorMessage: 'Richiesta al server fallita, possibile problema di connessione' });
+    return null;
+  }
+
+  const responseJson = yield parseResponseJsonAndReportError(response, errorAction);
+  if (responseJson == null)
+    return null;
+
+  if (!response.ok) {
+    if (errorAction != null)
+      yield put({ ...errorAction, errorMessage: responseJson.message });
+
+    console.error(`Server responded with an error to unauthenticated ${requestPath} request: ${responseJson.message}`);
+    return null;
+  }
+
+  return responseJson.response_data;
+}
+
+function* parseResponseJsonAndReportError(response, errorAction) {
+  try {
+    const responseJson = yield call([response, response.json])
+    return responseJson;
+  }
+  catch (err) {
+    yield put({
+      ...errorAction,
+      errorMessage: "È stata ricevuta una risposta contenente dati errati dal server. Contatta l'amministratore di sistema."
+    });
+    console.error('Error when parsing JSON response from server: ', err);
+    return null;
   }
 }

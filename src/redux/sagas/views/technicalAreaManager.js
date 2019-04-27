@@ -1,6 +1,6 @@
 import { put, select, takeEvery } from 'redux-saga/effects';
 import { getRequestPath } from '../../../utils/apiUtils';
-import { makeRequestAndReportErrors } from '../api';
+import { makeAuthenticatedRequestAndReportErrors } from '../api';
 import { TECHNICAL_AREA_MANAGER_ACTION_TYPE } from '../../actions/views/technicalAreaManager';
 
 /**
@@ -8,14 +8,13 @@ import { TECHNICAL_AREA_MANAGER_ACTION_TYPE } from '../../actions/views/technica
  * @param {*} action action of type ELEMENT_REVIEW_REQUEST
  */
 function* reviewListElement(action) {
-  const reviewResponseData = yield makeRequestAndReportErrors(
+  const reviewResponseData = yield makeAuthenticatedRequestAndReportErrors(
     getRequestPath(action.elementType, 'approve'),
     { ...action, type: TECHNICAL_AREA_MANAGER_ACTION_TYPE.REVIEW_ITEM_FAILED },
     {
       id: action.elementId,
       approve_flag: action.approvalStatus
-    },
-    yield select(state => state.auth.accessToken)
+    }
   );
 
   if (reviewResponseData != null) {

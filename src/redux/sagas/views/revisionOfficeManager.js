@@ -1,6 +1,6 @@
 import { put, select, takeEvery } from 'redux-saga/effects';
 import { getRequestPath } from '../../../utils/apiUtils';
-import { makeRequestAndReportErrors } from '../api';
+import { makeAuthenticatedRequestAndReportErrors } from '../api';
 import { REVISION_OFFICE_MANAGER_ACTION_TYPE } from '../../actions/views/revisionOfficeManager';
 import { ELEMENT_TYPE } from '../../../constants/api';
 
@@ -9,7 +9,7 @@ import { ELEMENT_TYPE } from '../../../constants/api';
  * @param {*} action action of type REV_OFFICE_ELEMENT_DELIVERY_REQUEST
  */
 function* deliverSendRequest(action) {
-  const responseData = yield makeRequestAndReportErrors(
+  const responseData = yield makeAuthenticatedRequestAndReportErrors(
     getRequestPath(ELEMENT_TYPE.SEND_REQUESTS, 'send'),
     {
       type: REVISION_OFFICE_MANAGER_ACTION_TYPE.ELEMENT_DELIVERY_FAILED,
@@ -18,8 +18,7 @@ function* deliverSendRequest(action) {
     {
       id: action.elementId,
       install_link: action.installLink
-    },
-    yield select(state => state.auth.accessToken)
+    }
   );
 
   if (responseData != null) {

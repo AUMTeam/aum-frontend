@@ -34,7 +34,7 @@ export function performLogoutAction(accessToken = null) {
   };
 }
 
-export function requestLocalTokenValidationIfPresentAction(accessToken) {
+export function requestLocalTokenValidationAction(accessToken) {
   return {
     type: AUTH_ACTION_TYPE.TOKEN_VALIDATION_REQUESTED,
     accessToken

@@ -2,7 +2,7 @@ import { put, select, takeEvery } from 'redux-saga/effects';
 import { ELEMENT_TYPE } from '../../../constants/api';
 import { getRequestPath } from '../../../utils/apiUtils';
 import { PROGRAMMER_ACTION_TYPE } from '../../actions/views/programmer';
-import { makeRequestAndReportErrors } from '../api';
+import { makeAuthenticatedRequestAndReportErrors } from '../api';
 
 /**
  * Adds a new element that could be a send request or a commit. Dispatches the successful action to notify
@@ -11,11 +11,10 @@ import { makeRequestAndReportErrors } from '../api';
  * @param {*} action
  */
 function* addElement(action) {
-  const addElementResponseData = yield makeRequestAndReportErrors(
+  const addElementResponseData = yield makeAuthenticatedRequestAndReportErrors(
     getRequestPath(action.elementType, 'add'),
     { type: PROGRAMMER_ACTION_TYPE.ADD_ELEMENT_FAILED },
-    { ...action.payload },
-    yield select(state => state.auth.accessToken)
+    { ...action.payload }
   );
 
   if (addElementResponseData != null) {
@@ -33,11 +32,9 @@ function* addElement(action) {
  * @param {*} action
  */
 function* getAll(action) {
-  const getAllResponseData = yield makeRequestAndReportErrors(
+  const getAllResponseData = yield makeAuthenticatedRequestAndReportErrors(
     getRequestPath(ELEMENT_TYPE.DATA, action.elementType),
-    { type: PROGRAMMER_ACTION_TYPE.GET_ALL_FAILED },
-    null,
-    yield select(state => state.auth.accessToken)
+    { type: PROGRAMMER_ACTION_TYPE.GET_ALL_FAILED }
   );
 
   if (getAllResponseData != null) {

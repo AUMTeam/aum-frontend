@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import LogoLoader from '../components/LogoLoader';
 import { TOKEN_LOCALSTORAGE_KEY } from '../constants/api';
 import { ROUTE } from '../constants/routes';
-import { requestLocalTokenValidationIfPresentAction } from '../redux/actions/auth';
+import { AUTH_ACTION_TYPE, requestLocalTokenValidationAction } from '../redux/actions/auth';
 import Home from './Home';
 import Login from './Login';
 
@@ -38,10 +38,12 @@ const AuthRoute = ({ condition, component: Component, redirectPath, ...rest }) =
  * It never gets unmounted.
  */
 class Routes extends Component {
-  constructor(props) {
-    super(props);
-
-    this.props.requestLocalTokenValidationIfPresent(localStorage.getItem(TOKEN_LOCALSTORAGE_KEY));
+  componentDidMount() {
+    const localAccessToken = localStorage.getItem(TOKEN_LOCALSTORAGE_KEY);
+    if (localAccessToken != null)
+      this.props.requestLocalTokenValidation(localAccessToken);
+    else
+      this.props.notifyLocalTokenNotFound();
   }
 
   render() {
@@ -112,7 +114,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      requestLocalTokenValidationIfPresent: requestLocalTokenValidationIfPresentAction
+      requestLocalTokenValidation: requestLocalTokenValidationAction,
+      notifyLocalTokenNotFound: () => ({ type: AUTH_ACTION_TYPE.LOCAL_TOKEN_NOT_FOUND })
     },
     dispatch
   );

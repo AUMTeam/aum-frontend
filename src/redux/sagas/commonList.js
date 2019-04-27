@@ -1,52 +1,22 @@
-import {
-  actionChannel,
-  cancel,
-  cancelled,
-  delay,
-  fork,
-  put,
-  select,
-  take,
-  takeLatest
-} from 'redux-saga/effects';
+import { actionChannel, cancel, cancelled, delay, fork, put, select, take, takeLatest } from 'redux-saga/effects';
 import { LIST_AUTO_UPDATE_INTERVAL_MS, LIST_ELEMENTS_PER_PAGE, SEARCH_DEBOUNCE_DELAY_MS } from '../../constants/api';
 import { getRequestPath } from '../../utils/apiUtils';
 import { LIST_ACTION_TYPE } from '../actions/commonList';
-import { makeRequestAndReportErrors } from './api';
+import { makeAuthenticatedRequestAndReportErrors } from './api';
 import { strictDebounce } from './utils';
 
 /**
- * Called every time the user changes the page of the commits table or the latter is recreated
- * Retrieves the list of commits for the requested page
- * Commits are retrieved from server only when the requested page is not present locally or
- * local data is not up to date anymore
+ * Retrieves the list of elements for the requested page if needed
+ * Before fetching, it checks for updates in order to ensure that the most recent version
+ * of the page is fetched if we have an older version cached
  * @param {*} action Action of type PAGE_REQUEST
  */
 function* retrieveListPage(action) {
-  yield checkForListUpdates(
-    yield select(state => state.lists[action.userRoleString][action.elementType].latestUpdateTimestamp),
-    action
-  );
+  yield checkForListUpdates(action);
 
-  const listPages = yield select(state => state.lists[action.userRoleString][action.elementType].listPages);
-  const requestedPageAlreadyFetched = action.pageNumber in listPages;
-  if (requestedPageAlreadyFetched) {
-    const latestUpdateTimestamp = yield select(
-      state => state.lists[action.userRoleString][action.elementType].latestUpdateTimestamp
-    );
-    var requestedPageNotUpdated = listPages[action.pageNumber].updateTimestamp < latestUpdateTimestamp;
-    var sortingCriteriaDifferent =
-      action.sortingCriteria.columnKey !== listPages[action.pageNumber].sorting.columnKey ||
-      action.sortingCriteria.direction !== listPages[action.pageNumber].sorting.direction;
-    var filteringDifferent =
-      action.filter.attribute !== listPages[action.pageNumber].filter.attribute ||
-      action.filter.valueMatches !== listPages[action.pageNumber].filter.valueMatches ||
-      action.filter.valueDifferentFrom !== listPages[action.pageNumber].filter.valueDifferentFrom;
-  }
-
-  // Fetch page only if needed
-  if (!requestedPageAlreadyFetched || requestedPageNotUpdated || sortingCriteriaDifferent || filteringDifferent) {
-    const pageResponseData = yield makeRequestAndReportErrors(
+  const listState = yield select(state => state.lists[action.userRoleString][action.elementType]);
+  if (pageNeedsToBeFetched(listState, action)) {
+    const pageResponseData = yield makeAuthenticatedRequestAndReportErrors(
       getRequestPath(action.elementType, 'list'),
       {
         type: LIST_ACTION_TYPE.PAGE_RETRIEVAL_ERROR,
@@ -64,8 +34,7 @@ function* retrieveListPage(action) {
                 order: action.sortingCriteria.direction
               },
         filter: action.filter
-      },
-      yield select(state => state.auth.accessToken)
+      }
     );
 
     if (pageResponseData != null) {
@@ -89,6 +58,27 @@ function* retrieveListPage(action) {
   }
 }
 
+function pageNeedsToBeFetched(listState, action) {
+  const requestedPageAlreadyFetched = action.pageNumber in listState.listPages;
+  // prettier-ignore
+  if (!requestedPageAlreadyFetched)
+    return true;
+
+  const latestUpdateTimestamp = listState.latestUpdateTimestamp;
+  const currentPageState = listState.listPages[action.pageNumber];
+
+  const requestedPageNotUpdated = currentPageState.updateTimestamp < latestUpdateTimestamp;
+  const pageSortingCriteriaIsDifferent =
+    action.sortingCriteria.columnKey !== currentPageState.sorting.columnKey ||
+    action.sortingCriteria.direction !== currentPageState.sorting.direction;
+  const pageFilteringIsDifferent =
+    action.filter.attribute !== currentPageState.filter.attribute ||
+    action.filter.valueMatches !== currentPageState.filter.valueMatches ||
+    action.filter.valueDifferentFrom !== currentPageState.filter.valueDifferentFrom;
+
+  return requestedPageNotUpdated || pageSortingCriteriaIsDifferent || pageFilteringIsDifferent;
+}
+
 /**
  * Checks if there have been any server-side updates to the list by
  * sending the timestamp of the latest retrieved element.
@@ -96,16 +86,21 @@ function* retrieveListPage(action) {
  * @param {*} latestUpdateTimestamp timestamp of the latest retrieved element
  * @param {*} action Action of type START_AUTO_CHECKING or PAGE_REQUEST
  */
-function* checkForListUpdates(latestUpdateTimestamp, action) {
-  const updateResponseData = yield makeRequestAndReportErrors(
+function* checkForListUpdates(action) {
+  console.log(`Checking for ${action.userRoleString}.${action.elementType} updates...`);
+
+  const latestUpdateTimestamp = yield select(
+    state => state.lists[action.userRoleString][action.elementType].latestUpdateTimestamp
+  );
+
+  const updateResponseData = yield makeAuthenticatedRequestAndReportErrors(
     getRequestPath(action.elementType, 'update'),
     {
       type: LIST_ACTION_TYPE.UPDATE_CHECKING_ERROR,
       elementType: action.elementType,
       userRoleString: action.userRoleString
     },
-    { latest_update_timestamp: latestUpdateTimestamp },
-    yield select(state => state.auth.accessToken)
+    { latest_update_timestamp: latestUpdateTimestamp }
   );
 
   if (updateResponseData != null) {
@@ -122,23 +117,22 @@ function* checkForListUpdates(latestUpdateTimestamp, action) {
   }
 }
 
-// Contains the auto update checking tasks corresponding to the lists of the specified element type and view,
-// so that they can be started and stopped from different functions (see below).
-// Keys are in the form `${userRoleString}.${elementType}`.
-// This assumes that there can't be more than a update checking task for the same list in the same view
-const autoUpdateTasks = {};
-
 /**
  * Dispatches and stops update checking tasks according to the actions dispatched.
  * Uses a channel to watch for actions START_AUTO_CHECKING and STOP_AUTO_CHECKING: in this way
  * incoming actions can be enqueued in a buffer while the saga handles the current one (nullifies
  * the chance of losing an action, which is very unlikely without a buffer anyway).
  */
-function* updateCheckingTasksManager() {
+function* manageUpdateCheckingTasks() {
   const actionsChannel = yield actionChannel([
     LIST_ACTION_TYPE.START_AUTO_CHECKING,
     LIST_ACTION_TYPE.STOP_AUTO_CHECKING
   ]);
+
+  // Contains the update checking tasks. They are uniquely identified by the name of the view
+  // (which equals to the user role) and the type of the elements (commits or send requests).
+  // This assumes that there can't be more than an update checking task for the same list in the same view
+  const updateCheckingTasks = {};
 
   // prettier-ignore
   while (true) {
@@ -146,15 +140,15 @@ function* updateCheckingTasksManager() {
     const taskKey = `${action.userRoleString}.${action.elementType}`;
 
     if (action.type === LIST_ACTION_TYPE.START_AUTO_CHECKING) {
-      if (autoUpdateTasks[taskKey] == null)
-        autoUpdateTasks[taskKey] = yield fork(() => runListUpdateChecker(action));
+      if (updateCheckingTasks[taskKey] == null)
+        updateCheckingTasks[taskKey] = yield fork(() => runListUpdateChecker(action));
       else
         console.error(`There is another update checking task running for ${taskKey}`);
     }
     else if (action.type === LIST_ACTION_TYPE.STOP_AUTO_CHECKING) {
-      if (autoUpdateTasks[taskKey] != null) {
-        yield cancel(autoUpdateTasks[taskKey]);
-        autoUpdateTasks[taskKey] = null;
+      if (updateCheckingTasks[taskKey] != null) {
+        yield cancel(updateCheckingTasks[taskKey]);
+        updateCheckingTasks[taskKey] = null;
       }
       else
         console.error('Tried to stop an unexisting update checking task.');
@@ -170,20 +164,12 @@ function* updateCheckingTasksManager() {
 function* runListUpdateChecker(action) {
   try {
     console.log(`Auto update checking started for ${action.userRoleString}.${action.elementType}`);
+    // prettier-ignore
     while (true) {
       yield delay(LIST_AUTO_UPDATE_INTERVAL_MS);
-      // Avoid checking for updates when the state of the list is not yet initialized
-      // or when retrieveListPage() is running
-      if (
-        (yield select(state => state.lists[action.userRoleString][action.elementType] != null)) &&
-        (yield select(state => !state.lists[action.userRoleString][action.elementType].isLoadingList))
-      ) {
-        console.log(`Checking for ${action.userRoleString}.${action.elementType} updates...`);
-        yield checkForListUpdates(
-          yield select(state => state.lists[action.userRoleString][action.elementType].latestUpdateTimestamp),
-          action
-        );
-      }
+      const listState = yield select(state => state.lists[action.userRoleString][action.elementType]);
+      if (isListStateInitialized(listState) && !isPageLoading(listState))
+        yield checkForListUpdates(action);
     }
   } finally {
     if (yield cancelled())
@@ -194,8 +180,16 @@ function* runListUpdateChecker(action) {
   }
 }
 
+function isListStateInitialized(listState) {
+  return listState != null;
+}
+
+function isPageLoading(listState) {
+  return listState.isLoadingList;
+}
+
 export const listSagas = [
-  updateCheckingTasksManager(),
+  manageUpdateCheckingTasks(),
   takeLatest(LIST_ACTION_TYPE.PAGE_REQUEST, retrieveListPage),
-  strictDebounce(SEARCH_DEBOUNCE_DELAY_MS, LIST_ACTION_TYPE.SEARCH_QUERY_CHANGED, retrieveListPage),
+  strictDebounce(SEARCH_DEBOUNCE_DELAY_MS, LIST_ACTION_TYPE.SEARCH_QUERY_CHANGED, retrieveListPage)
 ];

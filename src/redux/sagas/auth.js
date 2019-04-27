@@ -1,4 +1,4 @@
-import { call, fork, put, select, take } from 'redux-saga/effects';
+import { fork, put, select, take } from 'redux-saga/effects';
 import { REQUEST_ENDPOINT_PATH } from '../../constants/api';
 import {
   makeAuthenticatedApiRequest,
@@ -7,7 +7,7 @@ import {
 } from '../../utils/apiUtils';
 import { AUTH_ACTION_TYPE } from '../actions/auth';
 import { USER_ACTION_TYPE } from '../actions/user';
-import { makeRequestAndReportErrors } from './api';
+import { makeAuthenticatedRequestAndReportErrors, makeUnauthenticatedRequestAndReportErrors } from './api';
 
 /**
  * This function describes the order in which Saga must listen the dispatch of authentication-related
@@ -24,28 +24,25 @@ import { makeRequestAndReportErrors } from './api';
  *   - and the loop continues...
  */
 export function* authFlowSaga() {
-  // Application startup: request local token validation to the server if it's found
-  const tokenValidationRequestAction = yield take(AUTH_ACTION_TYPE.TOKEN_VALIDATION_REQUESTED);
-  if (tokenValidationRequestAction.accessToken == null) {
-    yield put({ type: AUTH_ACTION_TYPE.LOCAL_TOKEN_NOT_FOUND });
-    console.log('Previous token not found in localStorage');
-  }
+  // Application startup: request local token validation to the server if it has been found
+  const tokenAction = yield take([AUTH_ACTION_TYPE.TOKEN_VALIDATION_REQUESTED, AUTH_ACTION_TYPE.LOCAL_TOKEN_NOT_FOUND]);
+  if (tokenAction.type === AUTH_ACTION_TYPE.TOKEN_VALIDATION_REQUESTED)
+    yield requestLocalAccessTokenValidation(tokenAction);
+  // prettier-ignore
   else
-    yield call(requestLocalAccessTokenValidation, tokenValidationRequestAction);
+    console.log('Previously saved access token not found');
 
   let userLoggedIn = (yield select(state => state.auth.accessToken)) != null;
   while (true) {
-    // If the user hasn't been logged in with the local token found in localStorage,
-    // watch for login request action
     if (!userLoggedIn) {
       const loginRequestAction = yield take(AUTH_ACTION_TYPE.LOGIN_REQUESTED);
-      const loginResponseData = yield makeRequestAndReportErrors(
+      const loginResponseData = yield makeUnauthenticatedRequestAndReportErrors(
         REQUEST_ENDPOINT_PATH.LOGIN,
-        { type: AUTH_ACTION_TYPE.LOGIN_FAILED },
         {
           username: loginRequestAction.username,
           password: loginRequestAction.password
-        }
+        },
+        { type: AUTH_ACTION_TYPE.LOGIN_FAILED }
       );
 
       if (loginResponseData != null) {
@@ -61,15 +58,13 @@ export function* authFlowSaga() {
 
     // Once the user has logged in, its information are requested to the server.
     // If this process fails, the user can choose to retry or log out.
-    // That's why we watch for logout and user info request actions as long as the user is logged in. 
+    // That's why we watch for logout and user info request actions as long as the user is logged in.
     while (userLoggedIn) {
       const action = yield take([USER_ACTION_TYPE.GET_CURRENT_USER_INFO_REQUEST, AUTH_ACTION_TYPE.LOGOUT]);
       if (action.type === USER_ACTION_TYPE.GET_CURRENT_USER_INFO_REQUEST) {
-        const userInfoResponseData = yield makeRequestAndReportErrors(
+        const userInfoResponseData = yield makeAuthenticatedRequestAndReportErrors(
           REQUEST_ENDPOINT_PATH.GET_USER_INFO,
-          { type: USER_ACTION_TYPE.GET_CURRENT_USER_INFO_FAILED },
-          null,
-          action.accessToken
+          { type: USER_ACTION_TYPE.GET_CURRENT_USER_INFO_FAILED }
         );
 
         if (userInfoResponseData != null) {
@@ -79,13 +74,12 @@ export function* authFlowSaga() {
           });
           console.log('User info retrieved successfully');
         }
-      }
-      else {
-        // accessToken is null in LOGOUT action when server logout notification
-        // is not needed (token already expired)
+      } else {
+        // accessToken is null in LOGOUT action when server logout notification is not needed (token already expired)
+        // prettier-ignore
         if (action.accessToken != null)
-          yield call(notifyLogoutToServerAsync, action.accessToken);
-  
+          yield notifyLogoutToServerAsync(action.accessToken);
+
         removeAccessTokenFromLocalStorage();
         userLoggedIn = false;
       }
@@ -99,12 +93,9 @@ export function* authFlowSaga() {
  * @param {*} action
  */
 function* notifyLogoutToServerAsync(accessToken) {
-  const logoutNotificationTask = yield fork(
-    makeAuthenticatedApiRequest,
-    REQUEST_ENDPOINT_PATH.LOGOUT,
-    accessToken
-  );
+  const logoutNotificationTask = yield fork(makeAuthenticatedApiRequest, REQUEST_ENDPOINT_PATH.LOGOUT, accessToken);
 
+  // prettier-ignore
   logoutNotificationTask.toPromise().then(response => {
     if (response == null)
       console.error('Error during logout notification request to server');
@@ -120,21 +111,19 @@ function* notifyLogoutToServerAsync(accessToken) {
  * Asks the server if the found token is still valid
  */
 function* requestLocalAccessTokenValidation(action) {
-  const validationResponseData = yield makeRequestAndReportErrors(
+  const validationResponse = yield makeAuthenticatedApiRequest(
     REQUEST_ENDPOINT_PATH.VALIDATE_TOKEN,
-    { type: AUTH_ACTION_TYPE.TOKEN_VALIDATION_FAILED },
-    null,
-    action.accessToken,
-    false
+    action.accessToken
   );
 
-  if (validationResponseData != null) {
+  if (validationResponse != null && validationResponse.ok) {
     yield put({
       type: AUTH_ACTION_TYPE.TOKEN_VALIDATION_SUCCESSFUL,
       accessToken: action.accessToken
     });
     console.log('Local access token is valid');
-  }
-  else
+  } else {
+    yield put({ type: AUTH_ACTION_TYPE.TOKEN_VALIDATION_FAILED });
     removeAccessTokenFromLocalStorage();
+  }
 }
