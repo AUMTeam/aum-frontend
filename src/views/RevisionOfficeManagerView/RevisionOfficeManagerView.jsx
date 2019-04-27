@@ -4,8 +4,11 @@ import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import DeliveryDialog from '../../components/DeliveryDialog';
 import DeliveryTable from '../../components/DeliveryTable/DeliveryTable';
+import ElementDetailsDialog from '../../components/ElementDetailsDialog';
 import withErrorBoundary from '../../components/WithErrorBoundary';
+import { COMMON_ELEMENT_ATTRIBUTE, SEND_REQUEST_ATTRIBUTE } from '../../constants/elements';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import { performNewSearchAction } from '../../redux/actions/commonList';
 import {
@@ -13,12 +16,9 @@ import {
   startSendRequestsListUpdatesAutoCheckingAction,
   stopSendRequestsListUpdatesAutoCheckingAction
 } from '../../redux/actions/sendRequests';
-import { viewStyles } from '../styles';
 import { REVISION_OFFICE_MANAGER_ACTION_TYPE } from '../../redux/actions/views/revisionOfficeManager';
-import ElementDetailsDialog from '../../components/ElementDetailsDialog';
-import { retrieveElementFromListState } from '../../utils/viewUtils';
-import { COMMON_ELEMENT_ATTRIBUTE, SEND_REQUEST_ATTRIBUTE } from '../../constants/elements';
-import { renderElementFieldContent } from '../../utils/viewUtils';
+import { renderElementFieldContent, retrieveElementFromListState } from '../../utils/viewUtils';
+import { viewStyles } from '../styles';
 
 const detailsDialogFields = [
   { key: COMMON_ELEMENT_ATTRIBUTE.TITLE, label: 'Titolo' },
@@ -39,7 +39,7 @@ class RevisionOfficeManagerView extends React.Component {
 
     this.state = {
       detailsModalOpen: false,
-      deliverModalOpen: false,
+      deliveryModalOpen: false,
       currentlyShowingElement: {}
     };
   }
@@ -55,7 +55,7 @@ class RevisionOfficeManagerView extends React.Component {
 
   render() {
     const { classes, sendRequestsData, retrieveSendRequestsListPage, performNewSearch, viewState } = this.props;
-    const { detailsModalOpen, deliverModalOpen, currentlyShowingElement } = this.state;
+    const { detailsModalOpen, deliveryModalOpen, currentlyShowingElement } = this.state;
 
     return (
       <>
@@ -83,15 +83,20 @@ class RevisionOfficeManagerView extends React.Component {
                       searchQuery
                     );
                   }}
-                  onElementDelivery={elementId => console.log(`To be implemented: Invio dell'elemento ${elementId}`)}
+                  onElementDelivery={(elementId, pageNumber) => {
+                    this.setState({
+                      deliveryModalOpen: true,
+                      currentlyShowingElement: retrieveElementFromListState(sendRequestsData, elementId, pageNumber)
+                    });
+                  }}
                   onElementClick={(pageNumber, rowIndex, elementId) => {
                     this.setState({
                       detailsModalOpen: true,
                       currentlyShowingElement: retrieveElementFromListState(
                         sendRequestsData,
+                        elementId,
                         pageNumber,
-                        rowIndex,
-                        elementId
+                        rowIndex
                       )
                     });
                   }}
@@ -108,11 +113,27 @@ class RevisionOfficeManagerView extends React.Component {
           element={currentlyShowingElement}
           elementFields={detailsDialogFields}
           renderFieldContent={renderElementFieldContent}
-          onClose={() => this.setState({ detailsModalOpen: false })}
+          onClose={this.hideDetailsModal}
+        />
+
+        <DeliveryDialog
+          open={deliveryModalOpen}
+          sendRequest={currentlyShowingElement}
+          onSend={() => console.log('Invio to be implemented')}
+          onClose={this.hideDeliveryModal}
+          onDetailsClick={() => this.setState({ detailsModalOpen: true })}
         />
       </>
     );
   }
+
+  hideDeliveryModal = () => {
+    this.setState({ deliveryModalOpen: false });
+  };
+
+  hideDetailsModal = () => {
+    this.setState({ detailsModalOpen: false });
+  };
 }
 
 RevisionOfficeManagerView.displayName = 'RevisionOfficeManagerView';

@@ -1,0 +1,131 @@
+import Button from '@material-ui/core/Button';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import PropTypes from 'prop-types';
+import React from 'react';
+import ResponsiveDialog from '../../components/ResponsiveDialog';
+import { COMMON_ELEMENT_ATTRIBUTE, SEND_REQUEST_ATTRIBUTE } from '../../constants/elements';
+import { renderElementFieldContent } from '../../utils/viewUtils';
+
+const buttonToTheLeftStyle = {
+  marginRight: 'auto'
+};
+
+export default class DeliveryDialog extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      installLink: '',
+      displayMissingLinkError: false
+    };
+  }
+
+  render() {
+    const { sendRequest, onSend, onClose, onDetailsClick, isSending, displayError, ...otherProps } = this.props;
+
+    return (
+      <ResponsiveDialog isLoading={isSending} {...otherProps}>
+        {otherProps.open && (
+          <>
+            <DialogTitle>
+              {`Invia patch #${sendRequest.id}: ${sendRequest[COMMON_ELEMENT_ATTRIBUTE.TITLE]}`}
+            </DialogTitle>
+            <DialogContent>
+              <Grid container spacing={16}>
+                <Grid item xs={12}>
+                  <Typography variant="subtitle2" gutterBottom>
+                    Descrizione
+                  </Typography>
+                  <Typography variant="body1">{sendRequest[COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION]}</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="subtitle2" gutterBottom>
+                    Clienti destinatari
+                  </Typography>
+                  {/* TODO */}
+                  <Typography variant="body1">{renderElementFieldContent('', sendRequest.clients)}</Typography>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Typography variant="subtitle2" gutterBottom>
+                    Branch
+                  </Typography>
+                  <Typography variant="body1">{sendRequest[COMMON_ELEMENT_ATTRIBUTE.BRANCH]}</Typography>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Typography variant="subtitle2" gutterBottom>
+                    Tipo di installazione
+                  </Typography>
+                  <Typography variant="body1">
+                    {renderElementFieldContent(
+                      SEND_REQUEST_ATTRIBUTE.INSTALL_TYPE,
+                      sendRequest[SEND_REQUEST_ATTRIBUTE.INSTALL_TYPE]
+                    )}
+                  </Typography>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    label="Link di installazione"
+                    placeholder="Specifica un indirizzo"
+                    value={this.state.installLink}
+                    onChange={this.handleLinkTextFieldChange}
+                    error={this.state.displayMissingLinkError}
+                    style={{ marginTop: '8px' }}
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </Grid>
+              </Grid>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={onDetailsClick} color="primary" style={buttonToTheLeftStyle}>
+                Più dettagli
+              </Button>
+              <Button onClick={onClose} color="primary">
+                Annulla
+              </Button>
+              <Button onClick={this.handleSendButtonClick} color="primary">
+                Invia
+              </Button>
+            </DialogActions>
+          </>
+        )}
+      </ResponsiveDialog>
+    );
+  }
+
+  handleLinkTextFieldChange = event => {
+    this.setState({
+      displayMissingLinkError: false,
+      installLink: event.target.value
+    });
+  };
+
+  // prettier-ignore
+  handleSendButtonClick = () => {
+    if (this.state.installLink.trim() === '')
+      this.setState({ displayMissingLinkError: true });
+    else
+      this.props.onSend(this.state.installLink);
+  };
+}
+
+DeliveryDialog.defaultProps = {
+  isSending: false,
+  displayError: false
+};
+
+DeliveryDialog.propTypes = {
+  sendRequest: PropTypes.object.isRequired,
+  onSend: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onDetailsClick: PropTypes.func.isRequired,
+  isSending: PropTypes.bool,
+  displayError: PropTypes.bool
+};

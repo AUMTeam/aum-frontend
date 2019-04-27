@@ -143,7 +143,7 @@ class DeliveryTable extends React.Component {
   };
 
   renderCellContent = (columnKey, value, elementId) => {
-    const { currentPage, onElementDelivery, successfullyDeliveredElements } = this.props;
+    const { pageNumber, onElementDelivery, successfullyDeliveredElements } = this.props;
 
     switch (columnKey) {
       case DELIVER_BUTTON_COLUMN:
@@ -155,7 +155,7 @@ class DeliveryTable extends React.Component {
               <>
                 <IconButton
                   onClick={event => {
-                    onElementDelivery(elementId, currentPage);
+                    onElementDelivery(elementId, pageNumber);
                     event.stopPropagation();
                   }}
                 >
