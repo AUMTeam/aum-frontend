@@ -103,35 +103,45 @@ const selectComponents = {
   Menu
 };
 
+const initialDialogState = {
+  title: '',
+  description: '',
+  installationType: '',
+  destClients: [],
+  branch: '',
+  commits: [],
+  components: ''
+};
+
 class NewSendRequestDialog extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      branch: '',
-      client: '',
-      clientContact: '',
-      motivation: '',
-      installationType: ''
-    };
+    this.state = initialDialogState;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.isLoading && !nextProps.isFailed && nextProps.isSuccessful) {
+      this.onDialogClose();
+    }
   }
 
   render() {
     const {
       classes,
-      theme,
+      isLoadingClients,
       allClients,
+      isLoadingBranches,
       allBranches,
+      isLoadingCommits,
       allCommits,
-      onDialogClose,
-      onDialogSend,
-      showLoading,
-      showError
+      isLoading,
+      isFailed
     } = this.props;
     const { title, description, installationType, destClients, branch, commits, components } = this.state;
 
     return (
-      <ResponsiveDialog {...this.props} isLoading={showLoading && !showError}>
+      <ResponsiveDialog {...this.props} isLoading={isLoading && !isFailed}>
         <DialogTitle>Inserisci una nuova richiesta di invio</DialogTitle>
         <DialogContent>
           <Grid container spacing={16}>
@@ -170,6 +180,7 @@ class NewSendRequestDialog extends Component {
                 value={destClients}
                 onChange={this.onSelectInputChanged('destClients')}
                 isMulti
+                isLoading={isLoadingClients}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -187,6 +198,7 @@ class NewSendRequestDialog extends Component {
                 onChange={this.onSelectInputChanged('branch')}
                 placeholder="Seleziona un branch"
                 isClearable
+                isLoading={isLoadingBranches}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -204,6 +216,7 @@ class NewSendRequestDialog extends Component {
                 value={commits}
                 onChange={this.onSelectInputChanged('commits')}
                 isMulti
+                isLoading={isLoadingCommits}
               />
             </Grid>
             <Grid item xs={12} md={9}>
@@ -230,7 +243,7 @@ class NewSendRequestDialog extends Component {
                 </SelectField>
               </FormControl>
             </Grid>
-            {showError && (
+            {isFailed && (
               <Grid item xs={12}>
                 <Typography variant="subtitle1" color="error" gutterBottom>
                   Errore durante l'aggiunta di una nuova richiesta di invio, riprova.
@@ -240,23 +253,10 @@ class NewSendRequestDialog extends Component {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button color="primary" onClick={onDialogClose}>
+          <Button color="primary" onClick={() => this.onDialogClose()}>
             Annulla
           </Button>
-          <Button
-            color="primary"
-            onClick={() =>
-              onDialogSend({
-                title,
-                description,
-                installation_type: installationType,
-                dest_clients: destClients.map(element => element.value),
-                branch: branch.value,
-                commits: commits.map(element => element.value),
-                components
-              })
-            }
-          >
+          <Button color="primary" onClick={() => this.onDialogSend()}>
             Invia
           </Button>
         </DialogActions>
@@ -264,9 +264,28 @@ class NewSendRequestDialog extends Component {
     );
   }
 
-  validateData = () => {
-    // TODO: implement data validation
-  }
+  onDialogClose = () => {
+    const { onDialogClose } = this.props;
+
+    this.setState(initialDialogState);
+
+    onDialogClose();
+  };
+
+  onDialogSend = () => {
+    const { onDialogSend } = this.props;
+    const { title, description, installationType, destClients, branch, commits, components } = this.state;
+
+    onDialogSend({
+      title,
+      description,
+      install_type: installationType,
+      dest_clients: destClients.map(element => element.value),
+      branch: branch.value,
+      commits: commits.map(element => element.value),
+      components
+    });
+  };
 
   onInputChanged = (name, event) => {
     this.setState({
@@ -283,13 +302,17 @@ class NewSendRequestDialog extends Component {
 
 NewSendRequestDialog.displayName = 'NewSendRequestDialog';
 NewSendRequestDialog.propTypes = {
+  isLoadingClients: PropTypes.bool.isRequired,
   allClients: PropTypes.object.isRequired,
+  isLoadingBranches: PropTypes.bool.isRequired,
   allBranches: PropTypes.object.isRequired,
+  isLoadingCommits: PropTypes.bool.isRequired,
   allCommits: PropTypes.object.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  isSuccessful: PropTypes.bool.isRequired,
+  isFailed: PropTypes.bool.isRequired,
   onDialogClose: PropTypes.func.isRequired,
-  onDialogSend: PropTypes.func.isRequired,
-  showLoading: PropTypes.bool.isRequired,
-  showError: PropTypes.bool.isRequired
+  onDialogSend: PropTypes.func.isRequired
 };
 
 export default withStyles(styles, { withTheme: true })(NewSendRequestDialog);

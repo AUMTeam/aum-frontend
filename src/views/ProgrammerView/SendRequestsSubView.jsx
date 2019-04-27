@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import NewSendRequestDialog from '../../components/NewSendRequestDialog';
 import ProgrammerTable from '../../components/ProgrammerTable';
-import { ELEMENT_TYPE } from '../../constants/api';
+import { ALL_ELEMENT_TYPE, ELEMENT_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import { performNewSearchAction } from '../../redux/actions/commonList';
 import {
@@ -16,47 +16,8 @@ import {
   startSendRequestsListUpdatesAutoCheckingAction,
   stopSendRequestsListUpdatesAutoCheckingAction
 } from '../../redux/actions/sendRequests';
+import { addElement, getAll, resetUiState } from '../../redux/actions/views/programmer';
 import { viewStyles } from '../styles';
-
-const suggestions = [
-  { label: 'Afghanistan' },
-  { label: 'Aland Islands' },
-  { label: 'Albania' },
-  { label: 'Algeria' },
-  { label: 'American Samoa' },
-  { label: 'Andorra' },
-  { label: 'Angola' },
-  { label: 'Anguilla' },
-  { label: 'Antarctica' },
-  { label: 'Antigua and Barbuda' },
-  { label: 'Argentina' },
-  { label: 'Armenia' },
-  { label: 'Aruba' },
-  { label: 'Australia' },
-  { label: 'Austria' },
-  { label: 'Azerbaijan' },
-  { label: 'Bahamas' },
-  { label: 'Bahrain' },
-  { label: 'Bangladesh' },
-  { label: 'Barbados' },
-  { label: 'Belarus' },
-  { label: 'Belgium' },
-  { label: 'Belize' },
-  { label: 'Benin' },
-  { label: 'Bermuda' },
-  { label: 'Bhutan' },
-  { label: 'Bolivia, Plurinational State of' },
-  { label: 'Bonaire, Sint Eustatius and Saba' },
-  { label: 'Bosnia and Herzegovina' },
-  { label: 'Botswana' },
-  { label: 'Bouvet Island' },
-  { label: 'Brazil' },
-  { label: 'British Indian Ocean Territory' },
-  { label: 'Brunei Darussalam' }
-].map(suggestion => ({
-  value: suggestion.label,
-  label: suggestion.label,
-}));
 
 class SendRequestsSubView extends Component {
   constructor(props) {
@@ -76,7 +37,21 @@ class SendRequestsSubView extends Component {
   }
 
   render() {
-    const { classes, sendRequestsData, retrieveSendRequestsListPage, performNewSearch } = this.props;
+    const {
+      classes,
+      sendRequestsData,
+      retrieveSendRequestsListPage,
+      performNewSearch,
+      isLoadingClients,
+      allClients,
+      isLoadingBranches,
+      allBranches,
+      isLoadingCommits,
+      allCommits,
+      isAddingData,
+      isAdditionSuccessful,
+      isAdditionFailed
+    } = this.props;
     const { isAddingSendRequest } = this.state;
 
     return (
@@ -118,33 +93,67 @@ class SendRequestsSubView extends Component {
           variant="extended"
           aria-label="Aggiungi"
           className={classes.fab}
-          onClick={() => this.setState({ isAddingSendRequest: true })}
+          onClick={() => this.onFabClick()}
         >
           <AddIcon />
           Nuova richiesta di invio
         </Fab>
         <NewSendRequestDialog
           open={isAddingSendRequest}
-          allClients={suggestions}
-          allBranches={suggestions}
-          allCommits={suggestions}
-          onDialogClose={() => this.setState({ isAddingSendRequest: false })}
+          isLoadingClients={isLoadingClients}
+          allClients={allClients.map(client => ({
+            value: client.user_id,
+            label: client.name
+          }))}
+          isLoadingBranches={isLoadingBranches}
+          allBranches={allBranches.map(branch => ({
+            value: branch.id,
+            label: branch.name
+          }))}
+          isLoadingCommits={isLoadingCommits}
+          allCommits={allCommits.map(commit => ({
+            value: commit,
+            label: commit
+          }))}
+          isLoading={isAddingData}
+          isSuccessful={isAdditionSuccessful}
+          isFailed={isAdditionFailed}
+          onDialogClose={() => this.onCloseClicked()}
           onDialogSend={this.onSendClicked}
-          showLoading={this.state.isLoading}
-          showError={this.state.hasError}
         />
       </>
     );
   }
 
+  onCloseClicked = () => {
+    this.props.resetUiState();
+    this.showDialog(false);
+  };
+
+  onSendClicked = payload => {
+    this.props.addElement(ELEMENT_TYPE.SEND_REQUESTS, payload);
+  };
+
+  showDialog = show => {
+    this.setState({
+      isAddingSendRequest: show
+    });
+  };
+
+  onFabClick = () => {
+    const { getAll } = this.props;
+
+    getAll(ALL_ELEMENT_TYPE.CLIENTS);
+    getAll(ALL_ELEMENT_TYPE.BRANCHES);
+    getAll(ALL_ELEMENT_TYPE.COMMITS);
+
+    this.showDialog(true);
+  };
+
   onInputChanged = (name, event) => {
     this.setState({
       [name]: event.target.value
     });
-  };
-
-  onSendClicked = payload => {
-    console.log(payload)
   };
 }
 
@@ -152,7 +161,16 @@ SendRequestsSubView.displayName = 'SendRequestsSubView';
 
 const mapStateToProps = state => {
   return {
-    sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].sendRequests
+    sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].sendRequests,
+    isLoadingClients: state.views.programmerView.isLoadingClients,
+    allClients: state.views.programmerView.allClients,
+    isLoadingBranches: state.views.programmerView.isLoadingBranches,
+    allBranches: state.views.programmerView.allBranches,
+    isLoadingCommits: state.views.programmerView.isLoadingCommits,
+    allCommits: state.views.programmerView.allCommits,
+    isAddingData: state.views.programmerView.isAddingData,
+    isAdditionSuccessful: state.views.programmerView.isAdditionSuccessful,
+    isAdditionFailed: state.views.programmerView.isAdditionFailed
   };
 };
 
@@ -162,7 +180,10 @@ const mapDispatchToProps = dispatch => {
       retrieveSendRequestsListPage: retrieveSendRequestsListPageAction,
       startSendRequestsListUpdatesAutoChecking: startSendRequestsListUpdatesAutoCheckingAction,
       stopSendRequestsListUpdatesAutoChecking: stopSendRequestsListUpdatesAutoCheckingAction,
-      performNewSearch: performNewSearchAction
+      performNewSearch: performNewSearchAction,
+      getAll: getAll,
+      addElement: addElement,
+      resetUiState: resetUiState
     },
     dispatch
   );

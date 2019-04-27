@@ -82,6 +82,9 @@ export function getRequestPath(elementType, requestType) {
     case ELEMENT_TYPE.COMMITS:
       requestPath += 'commit';
       break;
+    case ELEMENT_TYPE.DATA:
+      requestPath += 'data';
+      break;  
   }
 
   return requestPath + `/${requestType}`;

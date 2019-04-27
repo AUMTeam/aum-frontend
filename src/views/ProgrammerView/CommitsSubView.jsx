@@ -81,11 +81,11 @@ class CommitsSubView extends Component {
           onClick={() => this.setState({ isAddingCommit: true })}
         >
           <AddIcon />
-          Nuova richiesta di commit
+          Nuovo commit
         </Fab>
         {/* TODO: implement real commit structure */}
         <ResponsiveDialog open={this.state.isAddingCommit}>
-          <DialogTitle>Inserisci una nuova richiesta di commit</DialogTitle>
+          <DialogTitle>Inserisci un nuovo commit</DialogTitle>
           <DialogContent>Needs to be implemented</DialogContent>
           <DialogActions>
             <Button color="primary" onClick={() => this.setState({ isAddingCommit: false })}>

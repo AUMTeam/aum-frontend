@@ -9,7 +9,14 @@ export const SEARCH_DEBOUNCE_DELAY_MS = 250;
 
 export const ELEMENT_TYPE = {
   COMMITS: 'commits',
-  SEND_REQUESTS: 'sendRequests'
+  SEND_REQUESTS: 'sendRequests',
+  DATA: 'data'
+}
+
+export const ALL_ELEMENT_TYPE = {
+  CLIENTS: 'clients',
+  BRANCHES: 'branches',
+  COMMITS: 'commits'
 }
 
 export const REQUEST_ENDPOINT_PATH = {
