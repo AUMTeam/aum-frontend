@@ -81,6 +81,14 @@ export default class DeliveryDialog extends React.Component {
                     InputLabelProps={{ shrink: true }}
                   />
                 </Grid>
+
+                {displayError && (
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1" color="error">
+                      Si è verificato un errore durante l'invio. Riprova.
+                    </Typography>
+                  </Grid>
+                )}
               </Grid>
             </DialogContent>
             <DialogActions>
@@ -109,10 +117,12 @@ export default class DeliveryDialog extends React.Component {
 
   // prettier-ignore
   handleSendButtonClick = () => {
+    const { sendRequest, onSend } = this.props;
+
     if (this.state.installLink.trim() === '')
       this.setState({ displayMissingLinkError: true });
     else
-      this.props.onSend(this.state.installLink);
+      onSend(sendRequest.id, this.state.installLink);
   };
 }
 

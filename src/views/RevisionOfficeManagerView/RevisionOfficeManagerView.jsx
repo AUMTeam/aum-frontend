@@ -16,7 +16,10 @@ import {
   startSendRequestsListUpdatesAutoCheckingAction,
   stopSendRequestsListUpdatesAutoCheckingAction
 } from '../../redux/actions/sendRequests';
-import { REVISION_OFFICE_MANAGER_ACTION_TYPE } from '../../redux/actions/views/revisionOfficeManager';
+import {
+  REVISION_OFFICE_MANAGER_ACTION_TYPE,
+  deliverElementAction
+} from '../../redux/actions/views/revisionOfficeManager';
 import { renderElementFieldContent, retrieveElementFromListState } from '../../utils/viewUtils';
 import { viewStyles } from '../styles';
 
@@ -54,7 +57,15 @@ class RevisionOfficeManagerView extends React.Component {
   }
 
   render() {
-    const { classes, sendRequestsData, retrieveSendRequestsListPage, performNewSearch, viewState } = this.props;
+    const {
+      classes,
+      sendRequestsData,
+      retrieveSendRequestsListPage,
+      performNewSearch,
+      successfullyDeliveredElements,
+      isDeliveringElement,
+      latestDeliveryFailed
+    } = this.props;
     const { detailsModalOpen, deliveryModalOpen, currentlyShowingElement } = this.state;
 
     return (
@@ -100,7 +111,7 @@ class RevisionOfficeManagerView extends React.Component {
                       )
                     });
                   }}
-                  successfullyDeliveredElements={viewState.successfullyDeliveredElements}
+                  successfullyDeliveredElements={successfullyDeliveredElements}
                 />
               </Paper>
             </Grid>
@@ -117,9 +128,12 @@ class RevisionOfficeManagerView extends React.Component {
         />
 
         <DeliveryDialog
-          open={deliveryModalOpen}
+          key={currentlyShowingElement.id}
+          open={deliveryModalOpen && !successfullyDeliveredElements.includes(currentlyShowingElement.id)}
+          isLoading={isDeliveringElement}
+          displayError={latestDeliveryFailed}
           sendRequest={currentlyShowingElement}
-          onSend={() => console.log('Invio to be implemented')}
+          onSend={(elementId, installLink) => this.props.deliverElement(elementId, installLink)}
           onClose={this.hideDeliveryModal}
           onDetailsClick={() => this.setState({ detailsModalOpen: true })}
         />
@@ -128,6 +142,7 @@ class RevisionOfficeManagerView extends React.Component {
   }
 
   hideDeliveryModal = () => {
+    this.props.resetDeliveryFailedFlag();
     this.setState({ deliveryModalOpen: false });
   };
 
@@ -141,7 +156,10 @@ RevisionOfficeManagerView.displayName = 'RevisionOfficeManagerView';
 const mapStateToProps = state => {
   return {
     sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]].sendRequests,
-    viewState: state.views[USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]]
+    successfullyDeliveredElements:
+      state.views[USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]].successfullyDeliveredElements,
+    isDeliveringElement: state.views[USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]].isDeliveringElement,
+    latestDeliveryFailed: state.views[USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]].latestDeliveryFailed
   };
 };
 
@@ -152,6 +170,8 @@ const mapDispatchToProps = dispatch => {
       startSendRequestsListUpdatesAutoChecking: startSendRequestsListUpdatesAutoCheckingAction,
       stopSendRequestsListUpdatesAutoChecking: stopSendRequestsListUpdatesAutoCheckingAction,
       performNewSearch: performNewSearchAction,
+      deliverElement: deliverElementAction,
+      resetDeliveryFailedFlag: () => ({ type: REVISION_OFFICE_MANAGER_ACTION_TYPE.RESET_FAILED_DELIVERY_FLAG }),
       resetUI: () => ({ type: REVISION_OFFICE_MANAGER_ACTION_TYPE.RESET_UI })
     },
     dispatch

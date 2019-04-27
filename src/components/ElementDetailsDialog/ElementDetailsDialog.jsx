@@ -18,8 +18,8 @@ const buttonToTheLeftStyle = {
  * You must specify the fields of that element via the elementFields array.
  * Fields definitions are objects structured as follows:
  *   { key: '[the field accessor]', label: '[the printable name of the field]' }
- * The function renderFieldContent, given the value and the key of the field, must return a printable
- * representation of the field (which can be a string or a JSX snippet).
+ * The function renderFieldContent is responsible for providing a printable representation of the
+ * field content (which can be a string or a JSX snippet).
  */
 export default class ElementDetailsDialog extends React.Component {
   render() {
@@ -42,7 +42,7 @@ export default class ElementDetailsDialog extends React.Component {
             <DialogContent>
               <Grid container spacing={16}>
                 {elementFields.map(field => (
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} md={6} key={field.key}>
                     <Typography variant="subtitle2" gutterBottom>
                       {field.label}
                     </Typography>
