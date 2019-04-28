@@ -1,4 +1,4 @@
-import { put, select, takeEvery } from 'redux-saga/effects';
+import { put, takeEvery } from 'redux-saga/effects';
 import { getRequestPath } from '../../../utils/apiUtils';
 import { makeAuthenticatedRequestAndReportErrors } from '../api';
 import { REVISION_OFFICE_MANAGER_ACTION_TYPE } from '../../actions/views/revisionOfficeManager';

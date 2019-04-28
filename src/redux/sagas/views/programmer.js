@@ -1,4 +1,4 @@
-import { put, select, takeEvery } from 'redux-saga/effects';
+import { put, takeEvery } from 'redux-saga/effects';
 import { ELEMENT_TYPE } from '../../../constants/api';
 import { getRequestPath } from '../../../utils/apiUtils';
 import { PROGRAMMER_ACTION_TYPE } from '../../actions/views/programmer';

@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 import { PROGRAMMER_ACTION_TYPE } from '../../actions/views/programmer';
 import { ALL_ELEMENT_TYPE } from '../../../constants/api';
 

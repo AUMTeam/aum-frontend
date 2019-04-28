@@ -14,35 +14,22 @@ export function* makeAuthenticatedRequestAndReportErrors(requestPath, errorActio
   if (accessToken == null)
     throw new Error('User must be logged in to perform an authenticated request.');
   
-  const response = yield call(makeAuthenticatedApiRequest, requestPath, accessToken, requestData);
-
-  if (response == null) {
-    yield put({ ...errorAction, errorMessage: 'Richiesta al server fallita, possibile problema di connessione' });
-    return null;
-  }
-
-  const responseJson = yield parseResponseJsonAndReportError(response, errorAction);
-  if (responseJson == null)
-    return null;
-
-  if (!response.ok) {
-    if (response.status === 401)
-      yield put({ type: AUTH_ACTION_TYPE.SESSION_EXPIRED });
-    else if (errorAction != null)
-      yield put({ ...errorAction, errorMessage: responseJson.message });
-
-    console.error(`Server responded with an error to ${requestPath} request: ${responseJson.message}`);
-    return null;
-  }
-
-  return responseJson.response_data;
+  return yield makeRequestAndReportErrors(requestPath, errorAction, requestData, accessToken);
 }
 
 /**
  * Like the method above, but for unauthenticated API requests (without token)
  */
 export function* makeUnauthenticatedRequestAndReportErrors(requestPath, requestData = null, errorAction = null) {
-  const response = yield call(makeUnauthenticatedApiRequest, requestPath, requestData);
+  return yield makeRequestAndReportErrors(requestPath, errorAction, requestData);
+}
+
+function* makeRequestAndReportErrors(requestPath, errorAction = null, requestData = null, accessToken = null) {
+  let response;
+  if (accessToken == null)
+    response = yield call(makeUnauthenticatedApiRequest, requestPath, requestData);
+  else
+    response = yield call(makeAuthenticatedApiRequest, requestPath, accessToken, requestData);
 
   if (response == null) {
     yield put({ ...errorAction, errorMessage: 'Richiesta al server fallita, possibile problema di connessione' });
@@ -54,10 +41,12 @@ export function* makeUnauthenticatedRequestAndReportErrors(requestPath, requestD
     return null;
 
   if (!response.ok) {
-    if (errorAction != null)
+    if (accessToken != null && response.status === 401)
+      yield put({ type: AUTH_ACTION_TYPE.SESSION_EXPIRED });
+    else if (errorAction != null)
       yield put({ ...errorAction, errorMessage: responseJson.message });
 
-    console.error(`Server responded with an error to unauthenticated ${requestPath} request: ${responseJson.message}`);
+    console.error(`Server responded with an error to ${requestPath} request: ${responseJson.message}`);
     return null;
   }
 
