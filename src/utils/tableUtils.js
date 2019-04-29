@@ -13,7 +13,7 @@ import { COMMON_ELEMENT_ATTRIBUTE, APPROVAL_STATUS } from '../constants/elements
 export function getSearchFilterOrDefault(searchQuery, defaultFilter = {}) {
   if (searchQuery != null && searchQuery !== '')
     return {
-      attribute: COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION,
+      attribute: COMMON_ELEMENT_ATTRIBUTE.TITLE,
       valueMatches: searchQuery
     };
   else return defaultFilter;
