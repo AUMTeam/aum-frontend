@@ -162,15 +162,15 @@ SendRequestsSubView.displayName = 'SendRequestsSubView';
 const mapStateToProps = state => {
   return {
     sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].sendRequests,
-    isLoadingClients: state.views.programmerView.isLoadingClients,
-    allClients: state.views.programmerView.allClients,
-    isLoadingBranches: state.views.programmerView.isLoadingBranches,
-    allBranches: state.views.programmerView.allBranches,
-    isLoadingCommits: state.views.programmerView.isLoadingCommits,
-    allCommits: state.views.programmerView.allCommits,
-    isAddingData: state.views.programmerView.isAddingData,
-    isAdditionSuccessful: state.views.programmerView.isAdditionSuccessful,
-    isAdditionFailed: state.views.programmerView.isAdditionFailed
+    isLoadingClients: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isLoadingClients,
+    allClients: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].allClients,
+    isLoadingBranches: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isLoadingBranches,
+    allBranches: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].allBranches,
+    isLoadingCommits: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isLoadingCommits,
+    allCommits: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].allCommits,
+    isAddingData: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAddingData,
+    isAdditionSuccessful: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAdditionSuccessful,
+    isAdditionFailed: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAdditionFailed
   };
 };
 

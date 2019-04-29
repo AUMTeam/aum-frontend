@@ -3,7 +3,7 @@ import { auth } from './auth';
 import { globalError } from './globalError';
 import { generateViewListsReducers } from './viewLists';
 import { user } from './user';
-import { USER_TYPE_ID } from '../../constants/user';
+import { USER_TYPE_ID, USER_ROLE_STRING } from '../../constants/user';
 import { technicalAreaManagerViewReducer } from './views/technicalAreaManager';
 import { revisionOfficeManagerViewReducer } from './views/revisionOfficeManager';
 import { programmerViewReducer } from './views/programmer';
@@ -44,9 +44,9 @@ const reducers = combineReducers({
     ])
   ),
   views: combineReducers({
-    programmerView: programmerViewReducer,
-    technicalAreaManager: technicalAreaManagerViewReducer,
-    revisionOfficeManager: revisionOfficeManagerViewReducer
+    [USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]]: programmerViewReducer,
+    [USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]]: technicalAreaManagerViewReducer,
+    [USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]]: revisionOfficeManagerViewReducer
   }),
   globalError
 });
