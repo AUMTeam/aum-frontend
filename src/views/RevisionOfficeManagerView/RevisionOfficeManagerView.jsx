@@ -24,16 +24,18 @@ import { renderElementFieldContent, retrieveElementFromListState } from '../../u
 import { viewStyles } from '../styles';
 
 const detailsDialogFields = [
-  { key: COMMON_ELEMENT_ATTRIBUTE.TITLE, label: 'Titolo' },
-  { key: COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION, label: 'Descrizione' },
-  { key: COMMON_ELEMENT_ATTRIBUTE.BRANCH, label: 'Branch' },
-  { key: COMMON_ELEMENT_ATTRIBUTE.COMPONENTS, label: 'Componenti' },
-  { key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR, label: 'Richiedente' },
-  { key: COMMON_ELEMENT_ATTRIBUTE.APPROVER, label: 'Approvata da' },
-  { key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP, label: 'Data creazione' },
+  { key: COMMON_ELEMENT_ATTRIBUTE.TITLE },
+  { key: COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION },
+  { key: COMMON_ELEMENT_ATTRIBUTE.BRANCH },
+  { key: COMMON_ELEMENT_ATTRIBUTE.COMPONENTS },
+  { key: SEND_REQUEST_ATTRIBUTE.LINKED_COMMITS },
+  { key: SEND_REQUEST_ATTRIBUTE.RECIPIENT_CLIENTS },
+  { key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR },
+  { key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP },
+  { key: COMMON_ELEMENT_ATTRIBUTE.APPROVER },
   { key: COMMON_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP, label: 'Data approvazione' },
-  { key: SEND_REQUEST_ATTRIBUTE.INSTALL_TYPE, label: 'Tipo di installazione' },
-  { key: SEND_REQUEST_ATTRIBUTE.INSTALL_LINK, label: 'Link al file di installazione' }
+  { key: SEND_REQUEST_ATTRIBUTE.INSTALL_TYPE },
+  { key: SEND_REQUEST_ATTRIBUTE.INSTALL_LINK }
 ];
 
 class RevisionOfficeManagerView extends React.Component {

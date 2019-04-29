@@ -7,6 +7,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import Button from '@material-ui/core/Button';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { ATTRIBUTE_LABEL } from '../../constants/elements';
 
 const buttonToTheLeftStyle = {
   marginRight: 'auto'
@@ -44,7 +45,7 @@ export default class ElementDetailsDialog extends React.Component {
                 {elementFields.map(field => (
                   <Grid item xs={12} md={6} key={field.key}>
                     <Typography variant="subtitle2" gutterBottom>
-                      {field.label}
+                      {field.label || ATTRIBUTE_LABEL[field.key]}
                     </Typography>
                     <Typography variant="body1">{renderFieldContent(field.key, element[field.key])}</Typography>
                   </Grid>

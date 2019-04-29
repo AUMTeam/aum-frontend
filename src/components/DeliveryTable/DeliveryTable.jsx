@@ -7,14 +7,14 @@ import Send from '@material-ui/icons/Send';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
-import { APPROVAL_STATUS, COMMON_ELEMENT_ATTRIBUTE } from '../../constants/elements';
+import { APPROVAL_STATUS, COMMON_ELEMENT_ATTRIBUTE, SEND_REQUEST_ATTRIBUTE } from '../../constants/elements';
 import {
   getToBeDeliveredFilter,
   getSearchFilterOrDefault,
   getAlreadyDeliveredFilter,
   isSearchFilter
 } from '../../utils/tableUtils';
-import { renderElementFieldContent } from "../../utils/viewUtils";
+import { renderElementFieldContent } from '../../utils/viewUtils';
 import ApprovalStatusIcon from '../ApprovalStatusIcon';
 import TableDynamicBody from '../Table/TableDynamicBody';
 import TableSortableHeader from '../Table/TableSortableHeader';
@@ -25,20 +25,28 @@ import withTableFunctionality from '../Table/WithTableFunctionality';
 const DELIVER_BUTTON_COLUMN = 'DELIVER_BUTTON_COLUMN';
 
 const alreadyDeliveredTableColumns = [
-  { label: 'ID', key: COMMON_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
-  { label: 'Titolo', key: COMMON_ELEMENT_ATTRIBUTE.TITLE, displayOnMobile: true },
-  { label: 'Data creazione', key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
-  { label: 'Destinatario/i', key: '' /* TODO */, displayOnMobile: false },
-  { label: 'Richiedente', key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
-  { label: 'Inviato il', key: '' /* TODO */, displayOnMobile: true }
+  { key: COMMON_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
+  { key: COMMON_ELEMENT_ATTRIBUTE.TITLE, displayOnMobile: true },
+  { key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
+  {
+    key: SEND_REQUEST_ATTRIBUTE.RECIPIENT_CLIENTS,
+    displayOnMobile: false,
+    notSortable: true
+  },
+  { key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
+  { key: SEND_REQUEST_ATTRIBUTE.DELIVERY_TIMESTAMP, displayOnMobile: true }
 ];
 
 const toBeDeliveredTableColumns = [
-  { label: 'ID', key: COMMON_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
-  { label: 'Titolo', key: COMMON_ELEMENT_ATTRIBUTE.TITLE, displayOnMobile: true },
-  { label: 'Data creazione', key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
-  { label: 'Destinatario/i', key: '' /* TODO */, displayOnMobile: false },
-  { label: 'Richiedente', key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
+  { key: COMMON_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
+  { key: COMMON_ELEMENT_ATTRIBUTE.TITLE, displayOnMobile: true },
+  { key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
+  {
+    key: SEND_REQUEST_ATTRIBUTE.RECIPIENT_CLIENTS,
+    displayOnMobile: false,
+    notSortable: true
+  },
+  { key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
   {
     label: 'Invia',
     key: DELIVER_BUTTON_COLUMN,
@@ -128,7 +136,7 @@ class DeliveryTable extends React.Component {
           disabled={isSearching}
           checked={!deliveryMode && !isSearching}
           control={<Radio color="primary" />}
-          label="Già inviati"
+          label="Già inviate"
           onChange={() => this.props.onFilterChange(getAlreadyDeliveredFilter())}
         />
         <FormControlLabel

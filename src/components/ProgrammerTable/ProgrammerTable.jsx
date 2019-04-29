@@ -13,12 +13,12 @@ import TableToolbar from '../Table/TableToolbar';
 import withTableFunctionality from '../Table/WithTableFunctionality';
 
 const tableColumns = [
-  { label: 'ID', key: COMMON_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
-  { label: 'Titolo', key: COMMON_ELEMENT_ATTRIBUTE.TITLE, displayOnMobile: true },
-  { label: 'Data creazione', key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
-  { label: 'Autore', key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
-  { label: 'Data revisione', key: COMMON_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP, displayOnMobile: false },
-  { label: 'Approvato', key: COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS, displayOnMobile: true }
+  { key: COMMON_ELEMENT_ATTRIBUTE.ID, displayOnMobile: false },
+  { key: COMMON_ELEMENT_ATTRIBUTE.TITLE, displayOnMobile: true },
+  { key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP, displayOnMobile: true },
+  { key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR, displayOnMobile: false },
+  { key: COMMON_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP, displayOnMobile: false },
+  { key: COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS, displayOnMobile: true }
 ];
 
 class ProgrammerTable extends Component {

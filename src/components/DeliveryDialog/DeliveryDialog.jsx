@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ResponsiveDialog from '../../components/ResponsiveDialog';
-import { COMMON_ELEMENT_ATTRIBUTE, SEND_REQUEST_ATTRIBUTE } from '../../constants/elements';
+import { COMMON_ELEMENT_ATTRIBUTE, SEND_REQUEST_ATTRIBUTE, ATTRIBUTE_LABEL } from '../../constants/elements';
 import { renderElementFieldContent } from '../../utils/viewUtils';
 
 const buttonToTheLeftStyle = {
@@ -39,26 +39,30 @@ export default class DeliveryDialog extends React.Component {
               <Grid container spacing={16}>
                 <Grid item xs={12}>
                   <Typography variant="subtitle2" gutterBottom>
-                    Descrizione
+                    {ATTRIBUTE_LABEL[COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION]}
                   </Typography>
                   <Typography variant="body1">{sendRequest[COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION]}</Typography>
                 </Grid>
                 <Grid item xs={12}>
                   <Typography variant="subtitle2" gutterBottom>
-                    Clienti destinatari
+                    {ATTRIBUTE_LABEL[SEND_REQUEST_ATTRIBUTE.RECIPIENT_CLIENTS]}
                   </Typography>
-                  {/* TODO */}
-                  <Typography variant="body1">{renderElementFieldContent('', sendRequest.clients)}</Typography>
+                  <Typography variant="body1">
+                    {renderElementFieldContent(
+                      SEND_REQUEST_ATTRIBUTE.RECIPIENT_CLIENTS,
+                      sendRequest[SEND_REQUEST_ATTRIBUTE.RECIPIENT_CLIENTS]
+                    )}
+                  </Typography>
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <Typography variant="subtitle2" gutterBottom>
-                    Branch
+                    {ATTRIBUTE_LABEL[COMMON_ELEMENT_ATTRIBUTE.BRANCH]}
                   </Typography>
                   <Typography variant="body1">{sendRequest[COMMON_ELEMENT_ATTRIBUTE.BRANCH]}</Typography>
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <Typography variant="subtitle2" gutterBottom>
-                    Tipo di installazione
+                    {ATTRIBUTE_LABEL[SEND_REQUEST_ATTRIBUTE.INSTALL_TYPE]}
                   </Typography>
                   <Typography variant="body1">
                     {renderElementFieldContent(

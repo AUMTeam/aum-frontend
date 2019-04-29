@@ -5,13 +5,14 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { ATTRIBUTE_LABEL } from '../../../constants/elements';
 
 /**
  * @class
  * Displays the header for the specified table columns, which can be clicked to trigger sorting.
- * Table columns array contains objects with the following shape:
- * { label: string, key: string, displayOnMobile: bool, alignOption?: string, notSortable?: bool }.
- * This allows us to display only certain columns on mobile devices.
+ * A table column is described with an object that includes the key of the attribute, whether the
+ * column should be displayed on mobile devices and optionally: a custom label in case default one
+ * shouldn't be used, whether the column shouldn't be sortable and its alignment.
  */
 export default class TableSortableHeader extends React.PureComponent {
   render() {
@@ -27,7 +28,7 @@ export default class TableSortableHeader extends React.PureComponent {
                   direction={sortingCriteria.direction}
                   onClick={
                     column.notSortable
-                      ? null
+                      ? undefined
                       : () => {
                           const updatedSorting = {
                             columnKey: column.key,
@@ -37,7 +38,7 @@ export default class TableSortableHeader extends React.PureComponent {
                         }
                   }
                 >
-                  {column.label}
+                  {column.label || ATTRIBUTE_LABEL[column.key]}
                 </TableSortLabel>
               </TableCell>
             </Hidden>

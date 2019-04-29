@@ -33,7 +33,11 @@ function* retrieveListPage(action) {
                 parameter: action.sortingCriteria.columnKey,
                 order: action.sortingCriteria.direction
               },
-        filter: action.filter
+        filter: action.filter,
+
+        // this is used by server only for sendRequests list, in order to give us
+        // only the requests which must be shown in that particular view
+        role: action.userRoleString
       }
     );
 
