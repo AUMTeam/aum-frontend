@@ -6,7 +6,6 @@ import withErrorBoundary from './components/WithErrorBoundary';
 import { API_ENDPOINT_URL, changeEndpointUrl } from './constants/api';
 import EnhancedStoreProvider from './redux/configureStore';
 import Routes from './routes';
-import * as serviceWorker from './serviceWorker';
 import { configureTheme } from './theme/configureTheme';
 
 /**
@@ -40,11 +39,6 @@ const RootComponent = withErrorBoundary(function App() {
 });
 
 ReactDOM.render(<RootComponent />, document.getElementById('root'));
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.unregister();
 
 // If we are in development build, with Ctrl+E we can change the API endpoint URL for testing purposes
 if (process.env.NODE_ENV === 'development') {
