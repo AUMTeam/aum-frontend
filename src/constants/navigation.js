@@ -1,7 +1,7 @@
-import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import CodeIcon from '@material-ui/icons/Code';
 import FaceIcon from '@material-ui/icons/Face';
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
+import SendIcon from '@material-ui/icons/Send';
 import React from 'react';
 import ClientView from '../views/ClientView';
 import ProgrammerView from '../views/ProgrammerView';
@@ -52,7 +52,7 @@ export const NAVIGATION_HIERARCHY = [
     routePath: ROUTE.REVISION_OFFICE_MANAGER,
     label: 'Responsabile ufficio revisioni',
     component: RevisionOfficeManagerView,
-    drawerIcon: <AttachMoneyIcon />,
+    drawerIcon: <SendIcon />,
     tabs: []
   },
   {
