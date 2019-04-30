@@ -1,5 +1,5 @@
 import { fork, put, select, take } from 'redux-saga/effects';
-import { REQUEST_ENDPOINT_PATH } from '../../constants/api';
+import { REQUEST_ENDPOINT_PATH, REQUEST_TIMEOUT_MS } from '../../constants/api';
 import {
   makeAuthenticatedApiRequest,
   removeAccessTokenFromLocalStorage,
@@ -90,7 +90,6 @@ export function* authFlowSaga() {
 /**
  * Called when the user logs out
  * Notifies asynchronously the server that the user has logged out, so that it can invalidate the token
- * @param {*} action
  */
 function* notifyLogoutToServerAsync(accessToken) {
   const logoutNotificationTask = yield fork(makeAuthenticatedApiRequest, REQUEST_ENDPOINT_PATH.LOGOUT, accessToken);
@@ -113,7 +112,9 @@ function* notifyLogoutToServerAsync(accessToken) {
 function* requestLocalAccessTokenValidation(action) {
   const validationResponse = yield makeAuthenticatedApiRequest(
     REQUEST_ENDPOINT_PATH.VALIDATE_TOKEN,
-    action.accessToken
+    action.accessToken,
+    null,
+    REQUEST_TIMEOUT_MS
   );
 
   if (validationResponse != null && validationResponse.ok) {

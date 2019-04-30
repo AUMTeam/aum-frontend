@@ -3,8 +3,45 @@
  * @file
  * This file contains helper functions used for API requests.
  */
-import { API_ENDPOINT_URL, ELEMENT_TYPE, REQUEST_TIMEOUT_MS, TOKEN_LOCALSTORAGE_KEY } from '../constants/api';
+import { API_ENDPOINT_URL, ELEMENT_TYPE, TOKEN_LOCALSTORAGE_KEY } from '../constants/api';
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
+
+export function makeUnauthenticatedApiRequest(requestPath, requestData = {}, timeoutInMilliseconds = 0) {
+  return makeApiRequest(requestPath, requestData, timeoutInMilliseconds);
+}
+
+export function makeAuthenticatedApiRequest(requestPath, accessToken, requestData = {}, timeoutInMilliseconds = 0) {
+  return makeApiRequest(requestPath, requestData, timeoutInMilliseconds, accessToken);
+}
+
+function makeApiRequest(requestPath, requestData, timeoutInMilliseconds, accessToken = null) {
+  const requestUrl = `${API_ENDPOINT_URL}/${requestPath}`;
+  const init = buildFetchInitParameter(requestData, accessToken);
+
+  let fetchPromise;
+  // prettier-ignore
+  if (timeoutInMilliseconds > 0)
+    fetchPromise = fetchWithTimeout(requestUrl, init, timeoutInMilliseconds);
+  else
+    fetchPromise = fetch(requestUrl, init);
+
+  return fetchPromise.catch(error => {
+    printRequestErrorMessage(error, requestPath);
+    return null;
+  });
+}
+
+function buildFetchInitParameter(requestData, accessToken) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (accessToken != null)
+    headers['X-Auth-Header'] = accessToken;
+
+  return {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ request_data: requestData })
+  };
+}
 
 function fetchWithTimeout(requestUrl, init, timeoutInMilliseconds) {
   const abortController = new AbortController();
@@ -13,49 +50,6 @@ function fetchWithTimeout(requestUrl, init, timeoutInMilliseconds) {
   setTimeout(() => abortController.abort(), timeoutInMilliseconds);
 
   return fetch(requestUrl, { ...init, signal: abortSignal });
-}
-
-/**
- * Makes a request to the server without passing the access token in the headers
- * Intended for those actions that don't require authentication
- * Promise returns null if the request fails for whatever reason
- */
-export function makeUnauthenticatedApiRequest(relativeRequestPath, requestData = {}) {
-  return fetchWithTimeout(
-    `${API_ENDPOINT_URL}/${relativeRequestPath}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ request_data: requestData })
-    },
-    REQUEST_TIMEOUT_MS
-  ).catch(error => {
-    printRequestErrorMessage(error, relativeRequestPath);
-    return null;
-  });
-}
-
-/**
- * Makes a request to the server passing the access token in the headers
- * Used for those actions that need user authentication
- * Promise returns null if the request fails for whatever reason
- */
-export function makeAuthenticatedApiRequest(relativeRequestPath, accessToken, requestData = {}) {
-  return fetchWithTimeout(
-    `${API_ENDPOINT_URL}/${relativeRequestPath}`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Auth-Header': accessToken
-      },
-      body: JSON.stringify({ request_data: requestData })
-    },
-    REQUEST_TIMEOUT_MS
-  ).catch(error => {
-    printRequestErrorMessage(error, relativeRequestPath);
-    return null;
-  });
 }
 
 // prettier-ignore
