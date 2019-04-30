@@ -104,7 +104,7 @@ function* checkForListUpdates(action) {
       userRoleString: action.userRoleString
     });
 
-  const updateResponseData = updateRequest.makeWithTimeoutAndReportErrors();
+  const updateResponseData = yield updateRequest.makeWithTimeoutAndReportErrors();
   if (updateResponseData != null) {
     if (updateResponseData.updates_found)
       yield put({
