@@ -7,7 +7,7 @@ import {
 } from '../../utils/apiUtils';
 import { AUTH_ACTION_TYPE } from '../actions/auth';
 import { USER_ACTION_TYPE } from '../actions/user';
-import { makeAuthenticatedRequestAndReportErrors, makeUnauthenticatedRequestAndReportErrors } from './api';
+import { AuthenticatedApiRequest, UnauthenticatedApiRequest } from './api';
 
 /**
  * This function describes the order in which Saga must listen the dispatch of authentication-related
@@ -36,15 +36,14 @@ export function* authFlowSaga() {
   while (true) {
     if (!userLoggedIn) {
       const loginRequestAction = yield take(AUTH_ACTION_TYPE.LOGIN_REQUESTED);
-      const loginResponseData = yield makeUnauthenticatedRequestAndReportErrors(
-        REQUEST_ENDPOINT_PATH.LOGIN,
-        {
+      const loginRequest = new UnauthenticatedApiRequest(REQUEST_ENDPOINT_PATH.LOGIN)
+        .setRequestData({
           username: loginRequestAction.username,
           password: loginRequestAction.password
-        },
-        { type: AUTH_ACTION_TYPE.LOGIN_FAILED }
-      );
+        })
+        .setErrorAction({ type: AUTH_ACTION_TYPE.LOGIN_FAILED });
 
+      const loginResponseData = yield loginRequest.makeWithTimeoutAndReportErrors();
       if (loginResponseData != null) {
         yield put({
           type: AUTH_ACTION_TYPE.LOGIN_SUCCESSFUL,
@@ -62,11 +61,10 @@ export function* authFlowSaga() {
     while (userLoggedIn) {
       const action = yield take([USER_ACTION_TYPE.GET_CURRENT_USER_INFO_REQUEST, AUTH_ACTION_TYPE.LOGOUT]);
       if (action.type === USER_ACTION_TYPE.GET_CURRENT_USER_INFO_REQUEST) {
-        const userInfoResponseData = yield makeAuthenticatedRequestAndReportErrors(
-          REQUEST_ENDPOINT_PATH.GET_USER_INFO,
-          { type: USER_ACTION_TYPE.GET_CURRENT_USER_INFO_FAILED }
-        );
+        const userInfoRequest = new AuthenticatedApiRequest(REQUEST_ENDPOINT_PATH.GET_USER_INFO)
+          .setErrorAction({ type: USER_ACTION_TYPE.GET_CURRENT_USER_INFO_FAILED });
 
+        const userInfoResponseData = yield userInfoRequest.makeWithTimeoutAndReportErrors();
         if (userInfoResponseData != null) {
           yield put({
             type: USER_ACTION_TYPE.GET_CURRENT_USER_INFO_SUCCESSFUL,

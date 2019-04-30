@@ -2,7 +2,7 @@ import { put, takeEvery } from 'redux-saga/effects';
 import { ELEMENT_TYPE } from '../../../constants/api';
 import { getRequestPath } from '../../../utils/apiUtils';
 import { PROGRAMMER_ACTION_TYPE } from '../../actions/views/programmer';
-import { makeAuthenticatedRequestAndReportErrors } from '../api';
+import { AuthenticatedApiRequest } from '../api';
 
 /**
  * Adds a new element that could be a send request or a commit. Dispatches the successful action to notify
@@ -11,12 +11,11 @@ import { makeAuthenticatedRequestAndReportErrors } from '../api';
  * @param {*} action
  */
 function* addElement(action) {
-  const addElementResponseData = yield makeAuthenticatedRequestAndReportErrors(
-    getRequestPath(action.elementType, 'add'),
-    { type: PROGRAMMER_ACTION_TYPE.ADD_ELEMENT_FAILED },
-    { ...action.payload }
-  );
+  const request = new AuthenticatedApiRequest(getRequestPath(action.elementType, 'add'))
+    .setRequestData({ ...action.payload })
+    .setErrorAction({ type: PROGRAMMER_ACTION_TYPE.ADD_ELEMENT_FAILED });
 
+  const addElementResponseData = yield request.makeAndReportErrors();
   if (addElementResponseData != null) {
     console.log('New send request successfully added');
     yield put({
@@ -32,11 +31,10 @@ function* addElement(action) {
  * @param {*} action
  */
 function* getAll(action) {
-  const getAllResponseData = yield makeAuthenticatedRequestAndReportErrors(
-    getRequestPath(ELEMENT_TYPE.DATA, action.elementType),
-    { type: PROGRAMMER_ACTION_TYPE.GET_ALL_FAILED }
-  );
+  const request = new AuthenticatedApiRequest(getRequestPath(ELEMENT_TYPE.DATA, action.elementType))
+    .setErrorAction({ type: PROGRAMMER_ACTION_TYPE.GET_ALL_FAILED });
 
+  const getAllResponseData = yield request.makeAndReportErrors();
   if (getAllResponseData != null) {
     console.log('All list successfully loaded');
     yield put({

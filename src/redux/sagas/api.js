@@ -1,35 +1,95 @@
-import { call, put, select } from 'redux-saga/effects';
+import { put, select } from 'redux-saga/effects';
 import { makeAuthenticatedApiRequest, makeUnauthenticatedApiRequest } from '../../utils/apiUtils';
 import { AUTH_ACTION_TYPE } from '../actions/auth';
+import { REQUEST_TIMEOUT_MS } from '../../constants/api';
 
 /**
- * Performs an authenticated API request to the specified path, dispatching the given Redux action in case of errors
- * with an errorMessage attribute injected in it.
- * Also dispatches by default a SESSION_EXPIRED action when the server responds with code 401 (unauthorized),
- * which means that the token is expired.
- * Returns null if there were any errors, otherwise the parsed response data object.
+ * These classes allow us to perform API requests in Saga in a much cleaner and more elegant way,
+ * hiding the complexity of makeRequestAndReportErrors() (see below).
  */
-export function* makeAuthenticatedRequestAndReportErrors(requestPath, errorAction = null, requestData = null) {
+
+/* abstract */ class ApiRequest {
+  constructor(requestPath) {
+    this.requestPath = requestPath;
+  }
+
+  setRequestData(requestData) {
+    this.requestData = requestData;
+    return this;
+  }
+
+  setErrorAction(errorAction) {
+    this.errorAction = errorAction;
+    return this;
+  }
+
+  /* abstract *makeAndReportErrors(); */
+  /* abstract *makeWithTimeoutAndReportErrors(); */
+}
+
+export class AuthenticatedApiRequest extends ApiRequest {
+  *makeAndReportErrors() {
+    const accessToken = yield getAccessTokenFromState();
+    return yield makeRequestAndReportErrors(this.requestPath, this.requestData, this.errorAction, accessToken);
+  }
+
+  *makeWithTimeoutAndReportErrors() {
+    const accessToken = yield getAccessTokenFromState();
+    return yield makeRequestAndReportErrors(
+      this.requestPath,
+      this.requestData,
+      this.errorAction,
+      accessToken,
+      REQUEST_TIMEOUT_MS
+    );
+  }
+}
+
+export class UnauthenticatedApiRequest extends ApiRequest {
+  *makeAndReportErrors() {
+    return yield makeRequestAndReportErrors(this.requestPath, this.requestData, this.errorAction);
+  }
+
+  *makeWithTimeoutAndReportErrors() {
+    return yield makeRequestAndReportErrors(
+      this.requestPath,
+      this.requestData,
+      this.errorAction,
+      null,
+      REQUEST_TIMEOUT_MS
+    );
+  }
+}
+
+function* getAccessTokenFromState() {
   const accessToken = yield select(state => state.auth.accessToken);
+  // prettier-ignore
   if (accessToken == null)
     throw new Error('User must be logged in to perform an authenticated request.');
-  
-  return yield makeRequestAndReportErrors(requestPath, errorAction, requestData, accessToken);
+
+  return accessToken;
 }
 
 /**
- * Like the method above, but for unauthenticated API requests (without token)
+ * Performs an API request to the specified path, dispatching the given Redux action in case of errors
+ * with an errorMessage attribute injected in it.
+ * Dispatches a SESSION_EXPIRED action when the server responds with code 401 (unauthorized)
+ * to an authenticated request, which means that the token is expired.
+ * Returns null if there were any errors, otherwise the parsed response data object.
  */
-export function* makeUnauthenticatedRequestAndReportErrors(requestPath, requestData = null, errorAction = null) {
-  return yield makeRequestAndReportErrors(requestPath, errorAction, requestData);
-}
-
-function* makeRequestAndReportErrors(requestPath, errorAction = null, requestData = null, accessToken = null) {
+function* makeRequestAndReportErrors(
+  requestPath,
+  requestData = null,
+  errorAction = null,
+  accessToken = null,
+  timeoutInMilliseconds = 0
+) {
   let response;
+  // prettier-ignore
   if (accessToken == null)
-    response = yield call(makeUnauthenticatedApiRequest, requestPath, requestData);
+    response = yield makeUnauthenticatedApiRequest(requestPath, requestData, timeoutInMilliseconds);
   else
-    response = yield call(makeAuthenticatedApiRequest, requestPath, accessToken, requestData);
+    response = yield makeAuthenticatedApiRequest(requestPath, accessToken, requestData, timeoutInMilliseconds);
 
   if (response == null) {
     yield put({ ...errorAction, errorMessage: 'Richiesta al server fallita, possibile problema di connessione' });
@@ -37,9 +97,11 @@ function* makeRequestAndReportErrors(requestPath, errorAction = null, requestDat
   }
 
   const responseJson = yield parseResponseJsonAndReportError(response, errorAction);
+  // prettier-ignore
   if (responseJson == null)
     return null;
 
+  // prettier-ignore
   if (!response.ok) {
     if (accessToken != null && response.status === 401)
       yield put({ type: AUTH_ACTION_TYPE.SESSION_EXPIRED });
@@ -55,13 +117,13 @@ function* makeRequestAndReportErrors(requestPath, errorAction = null, requestDat
 
 function* parseResponseJsonAndReportError(response, errorAction) {
   try {
-    const responseJson = yield call([response, response.json])
+    const responseJson = yield response.json();
     return responseJson;
-  }
-  catch (err) {
+  } catch (err) {
     yield put({
       ...errorAction,
-      errorMessage: "È stata ricevuta una risposta contenente dati errati dal server. Contatta l'amministratore di sistema."
+      errorMessage:
+        "È stata ricevuta una risposta contenente dati errati dal server. Contatta l'amministratore di sistema."
     });
     console.error('Error when parsing JSON response from server: ', err);
     return null;

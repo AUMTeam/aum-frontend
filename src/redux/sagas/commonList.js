@@ -2,7 +2,7 @@ import { actionChannel, cancel, cancelled, delay, fork, put, select, take, takeL
 import { LIST_AUTO_UPDATE_INTERVAL_MS, LIST_ELEMENTS_PER_PAGE, SEARCH_DEBOUNCE_DELAY_MS } from '../../constants/api';
 import { getRequestPath } from '../../utils/apiUtils';
 import { LIST_ACTION_TYPE } from '../actions/commonList';
-import { makeAuthenticatedRequestAndReportErrors } from './api';
+import { AuthenticatedApiRequest } from './api';
 import { strictDebounce } from './utils';
 
 /**
@@ -16,14 +16,8 @@ function* retrieveListPage(action) {
 
   const listState = yield select(state => state.lists[action.userRoleString][action.elementType]);
   if (pageNeedsToBeFetched(listState, action)) {
-    const pageResponseData = yield makeAuthenticatedRequestAndReportErrors(
-      getRequestPath(action.elementType, 'list'),
-      {
-        type: LIST_ACTION_TYPE.PAGE_RETRIEVAL_ERROR,
-        elementType: action.elementType,
-        userRoleString: action.userRoleString
-      },
-      {
+    const pageRequest = new AuthenticatedApiRequest(getRequestPath(action.elementType, 'list'))
+      .setRequestData({
         page: action.pageNumber,
         limit: LIST_ELEMENTS_PER_PAGE,
         sort:
@@ -38,9 +32,14 @@ function* retrieveListPage(action) {
         // this is used by server only for sendRequests list, in order to give us
         // only the requests which must be shown in that particular view
         role: action.userRoleString
-      }
-    );
+      })
+      .setErrorAction({
+        type: LIST_ACTION_TYPE.PAGE_RETRIEVAL_ERROR,
+        elementType: action.elementType,
+        userRoleString: action.userRoleString
+      });
 
+    const pageResponseData = yield pageRequest.makeWithTimeoutAndReportErrors();
     if (pageResponseData != null) {
       yield put({
         type: LIST_ACTION_TYPE.PAGE_RETRIEVED_FROM_SERVER,
@@ -97,16 +96,15 @@ function* checkForListUpdates(action) {
     state => state.lists[action.userRoleString][action.elementType].latestUpdateTimestamp
   );
 
-  const updateResponseData = yield makeAuthenticatedRequestAndReportErrors(
-    getRequestPath(action.elementType, 'update'),
-    {
+  const updateRequest = new AuthenticatedApiRequest(getRequestPath(action.elementType, 'update'))
+    .setRequestData({ latest_update_timestamp: latestUpdateTimestamp })
+    .setErrorAction({
       type: LIST_ACTION_TYPE.UPDATE_CHECKING_ERROR,
       elementType: action.elementType,
       userRoleString: action.userRoleString
-    },
-    { latest_update_timestamp: latestUpdateTimestamp }
-  );
+    });
 
+  const updateResponseData = updateRequest.makeWithTimeoutAndReportErrors();
   if (updateResponseData != null) {
     if (updateResponseData.updates_found)
       yield put({
