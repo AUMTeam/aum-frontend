@@ -19,6 +19,7 @@ export const SEND_REQUEST_ATTRIBUTE = {
   RECIPIENT_CLIENTS: 'clients',
   INSTALL_LINK: 'install_link',
   INSTALL_TYPE: 'install_type',
+  INSTALL_TIMESTAMP: 'install_timestamp',
   DELIVERY_TIMESTAMP: 'send_timestamp'
 }
 

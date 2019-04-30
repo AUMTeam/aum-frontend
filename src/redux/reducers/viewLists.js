@@ -13,6 +13,9 @@ const stateShapes = {
   },
   [USER_TYPE_ID.REVISION_OFFICE_MANAGER]: {
     [ELEMENT_TYPE.SEND_REQUESTS]: undefined
+  },
+  [USER_TYPE_ID.CLIENT]: {
+    [ELEMENT_TYPE.SEND_REQUESTS]: undefined
   }
 };
 

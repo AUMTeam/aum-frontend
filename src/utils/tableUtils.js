@@ -3,7 +3,7 @@
  * Includes functions used by table components to perform their operations.
  */
 
-import { COMMON_ELEMENT_ATTRIBUTE, APPROVAL_STATUS } from '../constants/elements';
+import { COMMON_ELEMENT_ATTRIBUTE, APPROVAL_STATUS, SEND_REQUEST_ATTRIBUTE } from '../constants/elements';
 
 /**
  * Gets the filter object corresponding to the given search term.
@@ -61,5 +61,22 @@ export function getAlreadyDeliveredFilter() {
   return {
     attribute: COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS,
     valueMatches: APPROVAL_STATUS.DELIVERED
+  };
+}
+
+/**
+ * Used in ClientTable
+ */
+export function getToBeInstalledFilter() {
+  return {
+    attribute: SEND_REQUEST_ATTRIBUTE.INSTALL_TIMESTAMP,
+    valueMatches: null
+  };
+}
+
+export function getAlreadyInstalledFilter() {
+  return {
+    attribute: SEND_REQUEST_ATTRIBUTE.INSTALL_TIMESTAMP,
+    valueDifferentFrom: null
   };
 }

@@ -40,7 +40,8 @@ const reducers = combineReducers({
     generateViewListsReducers([
       USER_TYPE_ID.PROGRAMMER,
       USER_TYPE_ID.TECHNICAL_AREA_MANAGER,
-      USER_TYPE_ID.REVISION_OFFICE_MANAGER
+      USER_TYPE_ID.REVISION_OFFICE_MANAGER,
+      USER_TYPE_ID.CLIENT
     ])
   ),
   views: combineReducers({
