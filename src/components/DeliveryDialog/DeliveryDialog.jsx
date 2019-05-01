@@ -26,10 +26,10 @@ export default class DeliveryDialog extends React.Component {
   }
 
   render() {
-    const { sendRequest, onSend, onClose, onDetailsClick, isSending, displayError, ...otherProps } = this.props;
+    const { sendRequest, onSend, onClose, onDetailsClick, displayError, ...otherProps } = this.props;
 
     return (
-      <ResponsiveDialog isLoading={isSending} {...otherProps}>
+      <ResponsiveDialog {...otherProps}>
         {otherProps.open && (
           <>
             <DialogTitle>
@@ -131,7 +131,6 @@ export default class DeliveryDialog extends React.Component {
 }
 
 DeliveryDialog.defaultProps = {
-  isSending: false,
   displayError: false
 };
 
@@ -140,6 +139,5 @@ DeliveryDialog.propTypes = {
   onSend: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   onDetailsClick: PropTypes.func.isRequired,
-  isSending: PropTypes.bool,
   displayError: PropTypes.bool
 };

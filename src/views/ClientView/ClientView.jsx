@@ -17,6 +17,7 @@ import {
 import { renderElementFieldContent, retrieveElementFromListState } from '../../utils/viewUtils';
 import { viewStyles } from '../styles';
 import ClientTable from '../../components/ClientTable';
+import InstallFeedbackDialog from '../../components/InstallFeedbackDialog/InstallFeedbackDialog';
 
 const detailsDialogFields = [
   { key: COMMON_ELEMENT_ATTRIBUTE.TITLE },
@@ -102,13 +103,21 @@ class ClientView extends React.Component {
 
         <ElementDetailsDialog
           open={detailsModalOpen}
-          dialogTitle={`Aggiornamento del ${currentlyShowingElement[SEND_REQUEST_ATTRIBUTE.DELIVERY_TIMESTAMP]}: ${
-            currentlyShowingElement[COMMON_ELEMENT_ATTRIBUTE.TITLE]
-          }`}
+          dialogTitle={`Aggiornamento del ${new Date(
+            currentlyShowingElement[SEND_REQUEST_ATTRIBUTE.DELIVERY_TIMESTAMP] * 1000
+          ).toLocaleDateString('it-it')}: ${currentlyShowingElement[COMMON_ELEMENT_ATTRIBUTE.TITLE]}`}
           element={currentlyShowingElement}
           elementFields={detailsDialogFields}
           renderFieldContent={renderElementFieldContent}
           onClose={this.hideDetailsModal}
+        />
+
+        <InstallFeedbackDialog
+          key={currentlyShowingElement.id}
+          open={feedbackModalOpen}
+          sendRequest={currentlyShowingElement}
+          onSend={(elementId, installStatus, installFeedback) => console.log('Invio da implementare')}
+          onClose={this.hideFeedbackModal}
         />
       </>
     );
@@ -124,6 +133,11 @@ class ClientView extends React.Component {
 
   hideDetailsModal = () => {
     this.setState({ detailsModalOpen: false });
+  };
+
+  hideFeedbackModal = () => {
+    // TODO reset flag di errore invio
+    this.setState({ feedbackModalOpen: false });
   };
 }
 
