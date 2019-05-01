@@ -17,6 +17,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Select from 'react-select';
 import ResponsiveDialog from '../../components/ResponsiveDialog';
+import { INSTALL_TYPE, INSTALL_TYPE_LABEL } from '../../constants/elements';
 
 const styles = theme => ({
   input: {
@@ -238,8 +239,8 @@ class NewSendRequestDialog extends Component {
                   input={<OutlinedInput id="installationType" labelWidth={128 /* Hardcoded value */} />}
                 >
                   {/* Here we will make a server call to get all the installtion types */}
-                  <MenuItem value={0}>A caldo</MenuItem>
-                  <MenuItem value={1}>A freddo</MenuItem>
+                  <MenuItem value={INSTALL_TYPE.DURING_EXECUTION}>{INSTALL_TYPE_LABEL.DURING_EXECUTION}</MenuItem>
+                  <MenuItem value={INSTALL_TYPE.NEEDS_SHUTDOWN}>{INSTALL_TYPE_LABEL.NEEDS_SHUTDOWN}</MenuItem>
                 </SelectField>
               </FormControl>
             </Grid>

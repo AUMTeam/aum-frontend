@@ -20,7 +20,7 @@ export const SEND_REQUEST_ATTRIBUTE = {
   INSTALL_LINK: 'install_link',
   INSTALL_TYPE: 'install_type',
   DELIVERY_TIMESTAMP: 'send_timestamp'
-}
+};
 
 export const ATTRIBUTE_LABEL = {
   [COMMON_ELEMENT_ATTRIBUTE.ID]: 'ID',
@@ -38,16 +38,21 @@ export const ATTRIBUTE_LABEL = {
   [SEND_REQUEST_ATTRIBUTE.INSTALL_LINK]: 'Link di installazione',
   [SEND_REQUEST_ATTRIBUTE.INSTALL_TYPE]: 'Tipo di installazione',
   [SEND_REQUEST_ATTRIBUTE.DELIVERY_TIMESTAMP]: 'Inviato il'
-}
+};
 
 export const INSTALL_TYPE = {
   DURING_EXECUTION: 0,
   NEEDS_SHUTDOWN: 1
-}
+};
+
+export const INSTALL_TYPE_LABEL = {
+  DURING_EXECUTION: 'Installazione a caldo',
+  NEEDS_SHUTDOWN: 'Installazione a freddo'
+};
 
 export const APPROVAL_STATUS = {
   DELIVERED: 2,
   APPROVED: 1,
   PENDING: 0,
-  REJECTED: -1,
+  REJECTED: -1
 };
