@@ -20,6 +20,8 @@ export const SEND_REQUEST_ATTRIBUTE = {
   INSTALL_LINK: 'install_link',
   INSTALL_TYPE: 'install_type',
   INSTALL_TIMESTAMP: 'install_timestamp',
+  INSTALL_STATUS: 'install_status',
+  INSTALL_FEEDBACK: 'install_comment',
   DELIVERY_TIMESTAMP: 'send_timestamp'
 }
 
@@ -37,13 +39,22 @@ export const ATTRIBUTE_LABEL = {
   [SEND_REQUEST_ATTRIBUTE.LINKED_COMMITS]: 'Commit inclusi',
   [SEND_REQUEST_ATTRIBUTE.RECIPIENT_CLIENTS]: 'Clienti destinatari',
   [SEND_REQUEST_ATTRIBUTE.INSTALL_LINK]: 'Link di installazione',
+  [SEND_REQUEST_ATTRIBUTE.INSTALL_TIMESTAMP]: 'Data di installazione',
   [SEND_REQUEST_ATTRIBUTE.INSTALL_TYPE]: 'Tipo di installazione',
+  [SEND_REQUEST_ATTRIBUTE.INSTALL_STATUS]: 'Installazione effettuata',
+  [SEND_REQUEST_ATTRIBUTE.INSTALL_FEEDBACK]: 'Feedback post-installazione',
   [SEND_REQUEST_ATTRIBUTE.DELIVERY_TIMESTAMP]: 'Inviato il'
 }
 
 export const INSTALL_TYPE = {
   DURING_EXECUTION: 0,
   NEEDS_SHUTDOWN: 1
+}
+
+export const INSTALL_STATUS = {
+  INSTALL_FAILED: -1,
+  NOT_YET_INSTALLED: 0,
+  INSTALL_SUCCESS: 1
 }
 
 export const APPROVAL_STATUS = {

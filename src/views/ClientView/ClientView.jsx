@@ -18,7 +18,31 @@ import { renderElementFieldContent, retrieveElementFromListState } from '../../u
 import { viewStyles } from '../styles';
 import ClientTable from '../../components/ClientTable';
 
+const detailsDialogFields = [
+  { key: COMMON_ELEMENT_ATTRIBUTE.TITLE },
+  { key: SEND_REQUEST_ATTRIBUTE.DELIVERY_TIMESTAMP },
+  { key: COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION },
+  { key: COMMON_ELEMENT_ATTRIBUTE.COMPONENTS },
+  { key: COMMON_ELEMENT_ATTRIBUTE.APPROVER, label: 'Referente interno' },
+  { key: SEND_REQUEST_ATTRIBUTE.INSTALL_TYPE },
+  { key: SEND_REQUEST_ATTRIBUTE.INSTALL_LINK },
+  { key: SEND_REQUEST_ATTRIBUTE.INSTALL_FEEDBACK }
+];
+
 class ClientView extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      detailsModalOpen: false,
+      feedbackModalOpen: false,
+
+      // must be set to an object when empty, otherwise render()
+      // would throw an error (the id field is accessed in any case, see below)
+      currentlyShowingElement: {}
+    };
+  }
+
   componentDidMount() {
     this.props.startSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.CLIENT]);
   }
@@ -28,12 +52,8 @@ class ClientView extends React.Component {
   }
 
   render() {
-    const {
-      classes,
-      sendRequestsData,
-      retrieveSendRequestsListPage,
-      performNewSearch
-    } = this.props;
+    const { classes, sendRequestsData, retrieveSendRequestsListPage, performNewSearch } = this.props;
+    const { detailsModalOpen, feedbackModalOpen, currentlyShowingElement } = this.state;
 
     return (
       <>
@@ -63,12 +83,33 @@ class ClientView extends React.Component {
                   }}
                   onElementDownload={this.downloadPatchFileInNewTab}
                   onElementFeedback={() => console.log('Feedback to be implemented')}
-                  onElementClick={(pageNumber, rowIndex, elementId) => console.log(`Cliccato elemento ${elementId}`)}
+                  onElementClick={(pageNumber, rowIndex, elementId) => {
+                    this.setState({
+                      detailsModalOpen: true,
+                      currentlyShowingElement: retrieveElementFromListState(
+                        sendRequestsData,
+                        elementId,
+                        pageNumber,
+                        rowIndex
+                      )
+                    });
+                  }}
                 />
               </Paper>
             </Grid>
           </Grid>
         </Grid>
+
+        <ElementDetailsDialog
+          open={detailsModalOpen}
+          dialogTitle={`Aggiornamento del ${currentlyShowingElement[SEND_REQUEST_ATTRIBUTE.DELIVERY_TIMESTAMP]}: ${
+            currentlyShowingElement[COMMON_ELEMENT_ATTRIBUTE.TITLE]
+          }`}
+          element={currentlyShowingElement}
+          elementFields={detailsDialogFields}
+          renderFieldContent={renderElementFieldContent}
+          onClose={this.hideDetailsModal}
+        />
       </>
     );
   }
@@ -76,9 +117,14 @@ class ClientView extends React.Component {
   downloadPatchFileInNewTab = (elementId, pageNumber) => {
     const sendRequest = retrieveElementFromListState(this.props.sendRequestsData, elementId, pageNumber);
     const installLink = sendRequest[SEND_REQUEST_ATTRIBUTE.INSTALL_LINK];
+    // prettier-ignore
     if (installLink != null)
       window.open(installLink, '_blank');
-  }
+  };
+
+  hideDetailsModal = () => {
+    this.setState({ detailsModalOpen: false });
+  };
 }
 
 ClientView.displayName = 'ClientView';

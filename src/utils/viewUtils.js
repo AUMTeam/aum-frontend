@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import ApprovalStatusIcon from '../components/ApprovalStatusIcon';
+import StatusIcon from '../components/StatusIcon';
 import { COMMON_ELEMENT_ATTRIBUTE, SEND_REQUEST_ATTRIBUTE, INSTALL_TYPE } from '../constants/elements';
 
 export function retrieveElementFromListState(state, elementId, pageNumber, rowIndex = null) {
@@ -33,7 +33,8 @@ export function renderElementFieldContent(attributeKey, value) {
     case COMMON_ELEMENT_ATTRIBUTE.AUTHOR:
       return value.name;
     case COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS:
-      return <ApprovalStatusIcon status={+value} />;
+    case SEND_REQUEST_ATTRIBUTE.INSTALL_STATUS:
+      return <StatusIcon status={+value} />;
     case COMMON_ELEMENT_ATTRIBUTE.UPDATE_TIMESTAMP:
     case COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP:
     case SEND_REQUEST_ATTRIBUTE.DELIVERY_TIMESTAMP:

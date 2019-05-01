@@ -29,7 +29,7 @@ const alreadyInstalledTableColumns = [
   { key: SEND_REQUEST_ATTRIBUTE.DELIVERY_TIMESTAMP, displayOnMobile: true },
   { key: COMMON_ELEMENT_ATTRIBUTE.APPROVER, label: 'Referente interno', displayOnMobile: false },
   { key: SEND_REQUEST_ATTRIBUTE.INSTALL_TYPE, displayOnMobile: false },
-  { key: '' /* TODO */, label: 'Installazione riuscita', displayOnMobile: true }
+  { key: SEND_REQUEST_ATTRIBUTE.INSTALL_STATUS, displayOnMobile: true }
 ];
 
 const toBeInstalledTableColumns = [

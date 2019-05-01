@@ -3,7 +3,7 @@
  * Includes functions used by table components to perform their operations.
  */
 
-import { COMMON_ELEMENT_ATTRIBUTE, APPROVAL_STATUS, SEND_REQUEST_ATTRIBUTE } from '../constants/elements';
+import { COMMON_ELEMENT_ATTRIBUTE, APPROVAL_STATUS, SEND_REQUEST_ATTRIBUTE, INSTALL_STATUS } from '../constants/elements';
 
 /**
  * Gets the filter object corresponding to the given search term.
@@ -69,14 +69,14 @@ export function getAlreadyDeliveredFilter() {
  */
 export function getToBeInstalledFilter() {
   return {
-    attribute: SEND_REQUEST_ATTRIBUTE.INSTALL_TIMESTAMP,
-    valueMatches: null
+    attribute: SEND_REQUEST_ATTRIBUTE.INSTALL_STATUS,
+    valueMatches: INSTALL_STATUS.NOT_YET_INSTALLED
   };
 }
 
 export function getAlreadyInstalledFilter() {
   return {
-    attribute: SEND_REQUEST_ATTRIBUTE.INSTALL_TIMESTAMP,
-    valueDifferentFrom: null
+    attribute: SEND_REQUEST_ATTRIBUTE.INSTALL_STATUS,
+    valueDifferentFrom: INSTALL_STATUS.NOT_YET_INSTALLED
   };
 }

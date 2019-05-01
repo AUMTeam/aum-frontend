@@ -15,7 +15,7 @@ import {
   isSearchFilter
 } from '../../utils/tableUtils';
 import { renderElementFieldContent } from '../../utils/viewUtils';
-import ApprovalStatusIcon from '../ApprovalStatusIcon';
+import StatusIcon from '../StatusIcon';
 import TableDynamicBody from '../Table/TableDynamicBody';
 import TableSortableHeader from '../Table/TableSortableHeader';
 import TablePaginationFooter from '../Table/TablePaginationFooter';
@@ -158,7 +158,7 @@ class DeliveryTable extends React.Component {
         return (
           <>
             {successfullyDeliveredElements.includes(elementId) ? (
-              <ApprovalStatusIcon status={APPROVAL_STATUS.APPROVED} opacity={60} />
+              <StatusIcon status={APPROVAL_STATUS.APPROVED} opacity={60} />
             ) : (
               <>
                 <IconButton

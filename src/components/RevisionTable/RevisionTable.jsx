@@ -18,7 +18,7 @@ import {
   isSearchFilter
 } from '../../utils/tableUtils';
 import { renderElementFieldContent } from '../../utils/viewUtils';
-import ApprovalStatusIcon from '../ApprovalStatusIcon';
+import StatusIcon from '../StatusIcon';
 import TableDynamicBody from '../Table/TableDynamicBody';
 import TableSortableHeader from '../Table/TableSortableHeader';
 import TablePaginationFooter from '../Table/TablePaginationFooter';
@@ -173,7 +173,7 @@ class RevisionTable extends React.Component {
         return (
           <>
             {successfullyReviewedItems[elementId] != null ? (
-              <ApprovalStatusIcon status={successfullyReviewedItems[elementId]} opacity={60} />
+              <StatusIcon status={successfullyReviewedItems[elementId]} opacity={60} />
             ) : failedReviewItems[elementId] != null ? (
               <IconButton
                 onClick={event => {
@@ -195,7 +195,7 @@ class RevisionTable extends React.Component {
                     event.stopPropagation();
                   }}
                 >
-                  <ApprovalStatusIcon status={APPROVAL_STATUS.REJECTED} />
+                  <StatusIcon status={APPROVAL_STATUS.REJECTED} />
                 </IconButton>
                 <IconButton
                   onClick={event => {
@@ -203,7 +203,7 @@ class RevisionTable extends React.Component {
                     event.stopPropagation();
                   }}
                 >
-                  <ApprovalStatusIcon status={APPROVAL_STATUS.APPROVED} />
+                  <StatusIcon status={APPROVAL_STATUS.APPROVED} />
                 </IconButton>
               </>
             )}
