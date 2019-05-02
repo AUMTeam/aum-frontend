@@ -120,13 +120,7 @@ class NewSendRequestDialog extends Component {
 
     this.state = initialDialogState;
   }
-
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.isLoading && !nextProps.isFailed && nextProps.isSuccessful) {
-      this.onDialogClose();
-    }
-  }
-
+  
   render() {
     const {
       classes,
@@ -137,12 +131,16 @@ class NewSendRequestDialog extends Component {
       isLoadingCommits,
       allCommits,
       isLoading,
-      isFailed
+      isFailed,
+      isSuccessful,
+      ...otherProps
     } = this.props;
     const { title, description, installationType, destClients, branch, commits, components } = this.state;
 
+    if (!isLoading && !isFailed && isSuccessful) this.onDialogClose();
+
     return (
-      <ResponsiveDialog {...this.props} isLoading={isLoading && !isFailed}>
+      <ResponsiveDialog {...otherProps} isLoading={isLoading && !isFailed}>
         <DialogTitle>Inserisci una nuova richiesta di invio</DialogTitle>
         <DialogContent>
           <Grid container spacing={16}>
@@ -254,10 +252,10 @@ class NewSendRequestDialog extends Component {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button color="primary" onClick={() => this.onDialogClose()}>
+          <Button color="primary" onClick={this.onDialogClose}>
             Annulla
           </Button>
-          <Button color="primary" onClick={() => this.onDialogSend()}>
+          <Button color="primary" onClick={this.onDialogSend}>
             Invia
           </Button>
         </DialogActions>
@@ -304,11 +302,11 @@ class NewSendRequestDialog extends Component {
 NewSendRequestDialog.displayName = 'NewSendRequestDialog';
 NewSendRequestDialog.propTypes = {
   isLoadingClients: PropTypes.bool.isRequired,
-  allClients: PropTypes.object.isRequired,
+  allClients: PropTypes.array.isRequired,
   isLoadingBranches: PropTypes.bool.isRequired,
-  allBranches: PropTypes.object.isRequired,
+  allBranches: PropTypes.array.isRequired,
   isLoadingCommits: PropTypes.bool.isRequired,
-  allCommits: PropTypes.object.isRequired,
+  allCommits: PropTypes.array.isRequired,
   isLoading: PropTypes.bool.isRequired,
   isSuccessful: PropTypes.bool.isRequired,
   isFailed: PropTypes.bool.isRequired,

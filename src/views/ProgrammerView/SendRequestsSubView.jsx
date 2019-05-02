@@ -112,8 +112,8 @@ class SendRequestsSubView extends Component {
           }))}
           isLoadingCommits={isLoadingCommits}
           allCommits={allCommits.map(commit => ({
-            value: commit,
-            label: commit
+            value: commit.commit_id,
+            label: `[${commit.commit_id}] ${commit.title}`
           }))}
           isLoading={isAddingData}
           isSuccessful={isAdditionSuccessful}
