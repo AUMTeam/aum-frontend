@@ -118,7 +118,7 @@ class SendRequestsSubView extends Component {
           isLoading={isAddingData}
           isSuccessful={isAdditionSuccessful}
           isFailed={isAdditionFailed}
-          onDialogClose={() => this.onCloseClicked()}
+          onDialogClose={this.onCloseClicked}
           onDialogSend={this.onSendClicked}
         />
       </>

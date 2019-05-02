@@ -32,3 +32,22 @@ export const viewStyles = theme => ({
   },
   ...programmerViewStyles
 });
+
+export const selectDialogStyles = theme => ({
+  input: {
+    display: 'flex'
+  },
+  valueContainer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    flex: 1,
+    alignItems: 'center',
+    overflow: 'hidden'
+  },
+  chip: {
+    margin: `${theme.spacing.unit / 2}px ${theme.spacing.unit / 4}px`
+  },
+  noOptionsMessage: {
+    padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`
+  }
+});

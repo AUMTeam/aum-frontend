@@ -1,22 +1,22 @@
-import { DialogTitle } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
 import Fab from '@material-ui/core/Fab';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import NewCommitDialog from '../../components/NewCommitDialog/NewCommitDialog';
 import ProgrammerTable from '../../components/ProgrammerTable';
-import ResponsiveDialog from '../../components/ResponsiveDialog';
-import { ELEMENT_TYPE } from '../../constants/api';
+import { ALL_ELEMENT_TYPE, ELEMENT_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
-import { retrieveCommitsListPageAction, startCommitsListUpdatesAutoCheckingAction, stopCommitsListUpdatesAutoCheckingAction } from '../../redux/actions/commits';
+import {
+  retrieveCommitsListPageAction,
+  startCommitsListUpdatesAutoCheckingAction,
+  stopCommitsListUpdatesAutoCheckingAction
+} from '../../redux/actions/commits';
 import { performNewSearchAction } from '../../redux/actions/commonList';
+import { addElement, getAll, resetUiState } from '../../redux/actions/views/programmer';
 import { viewStyles } from '../styles';
 
 class CommitsSubView extends Component {
@@ -37,7 +37,18 @@ class CommitsSubView extends Component {
   }
 
   render() {
-    const { classes, commitsData, retrieveCommitsListPage, performNewSearch } = this.props;
+    const {
+      classes,
+      commitsData,
+      retrieveCommitsListPage,
+      performNewSearch,
+      isLoadingBranches,
+      allBranches,
+      isAddingData,
+      isAdditionSuccessful,
+      isAdditionFailed
+    } = this.props;
+    const { isAddingCommit } = this.state;
 
     return (
       <>
@@ -78,32 +89,62 @@ class CommitsSubView extends Component {
           variant="extended"
           aria-label="Aggiungi"
           className={classes.fab}
-          onClick={() => this.setState({ isAddingCommit: true })}
+          onClick={() => this.onFabClick()}
         >
           <AddIcon />
           Nuovo commit
         </Fab>
-        {/* TODO: implement real commit structure */}
-        <ResponsiveDialog open={this.state.isAddingCommit}>
-          <DialogTitle>Inserisci un nuovo commit</DialogTitle>
-          <DialogContent>Needs to be implemented</DialogContent>
-          <DialogActions>
-            <Button color="primary" onClick={() => this.setState({ isAddingCommit: false })}>
-              Annulla
-            </Button>
-            <Button color="primary">Invia</Button>
-          </DialogActions>
-        </ResponsiveDialog>
+        <NewCommitDialog
+          open={isAddingCommit}
+          isLoadingBranches={isLoadingBranches}
+          allBranches={allBranches.map(branch => ({
+            value: branch.id,
+            label: branch.name
+          }))}
+          isLoading={isAddingData}
+          isSuccessful={isAdditionSuccessful}
+          isFailed={isAdditionFailed}
+          onDialogClose={this.onCloseClicked}
+          onDialogSend={this.onSendClicked}
+        />
       </>
     );
   }
+
+  onCloseClicked = () => {
+    this.props.resetUiState();
+    this.showDialog(false);
+  };
+
+  onSendClicked = payload => {
+    this.props.addElement(ELEMENT_TYPE.COMMITS, payload);
+  };
+
+  showDialog = show => {
+    this.setState({
+      isAddingCommit: show
+    });
+  };
+
+  onFabClick = () => {
+    const { getAll } = this.props;
+
+    getAll(ALL_ELEMENT_TYPE.BRANCHES);
+
+    this.showDialog(true);
+  };
 }
 
 CommitsSubView.displayName = 'CommitsSubView';
 
 const mapStateToProps = state => {
   return {
-    commitsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].commits
+    commitsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].commits,
+    isLoadingBranches: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isLoadingBranches,
+    allBranches: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].allBranches,
+    isAddingData: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAddingData,
+    isAdditionSuccessful: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAdditionSuccessful,
+    isAdditionFailed: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAdditionFailed
   };
 };
 
@@ -113,7 +154,10 @@ const mapDispatchToProps = dispatch => {
       retrieveCommitsListPage: retrieveCommitsListPageAction,
       startCommitsListUpdatesAutoChecking: startCommitsListUpdatesAutoCheckingAction,
       stopCommitsListUpdatesAutoChecking: stopCommitsListUpdatesAutoCheckingAction,
-      performNewSearch: performNewSearchAction
+      performNewSearch: performNewSearchAction,
+      getAll: getAll,
+      addElement: addElement,
+      resetUiState: resetUiState
     },
     dispatch
   );
