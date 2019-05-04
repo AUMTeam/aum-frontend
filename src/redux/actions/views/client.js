@@ -1,0 +1,16 @@
+export const CLIENT_ACTION_TYPE = {
+  SEND_FEEDBACK_REQUEST: 'CLIENT_SEND_FEEDBACK_REQUEST',
+  SEND_FEEDBACK_SUCCESSFUL: 'CLIENT_SEND_FEEDBACK_SUCCESSFUL',
+  SEND_FEEDBACK_FAILED: 'CLIENT_SEND_FEEDBACK_FAILED',
+  RESET_FAILED_FEEDBACK_FLAG: 'CLIENT_RESET_FAILED_FEEDBACK_FLAG',
+  RESET_UI: 'CLIENT_RESET_UI'
+};
+
+export function sendFeedbackAction(elementId, installStatus, installFeedback) {
+  return {
+    type: CLIENT_ACTION_TYPE.SEND_FEEDBACK_REQUEST,
+    elementId,
+    installStatus,
+    installFeedback
+  }
+}

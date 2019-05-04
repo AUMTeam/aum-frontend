@@ -83,7 +83,16 @@ class ClientView extends React.Component {
                     );
                   }}
                   onElementDownload={this.downloadPatchFileInNewTab}
-                  onElementFeedback={() => console.log('Feedback to be implemented')}
+                  onElementFeedback={(elementId, pageNumber) => {
+                    this.setState({
+                      feedbackModalOpen: true,
+                      currentlyShowingElement: retrieveElementFromListState(
+                        sendRequestsData,
+                        elementId,
+                        pageNumber
+                      )
+                    });
+                  }}
                   onElementClick={(pageNumber, rowIndex, elementId) => {
                     this.setState({
                       detailsModalOpen: true,

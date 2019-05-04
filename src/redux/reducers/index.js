@@ -7,6 +7,7 @@ import { USER_TYPE_ID, USER_ROLE_STRING } from '../../constants/user';
 import { technicalAreaManagerViewReducer } from './views/technicalAreaManager';
 import { revisionOfficeManagerViewReducer } from './views/revisionOfficeManager';
 import { programmerViewReducer } from './views/programmer';
+import { clientViewReducer } from './views/client';
 
 /**
  * @file
@@ -47,7 +48,8 @@ const reducers = combineReducers({
   views: combineReducers({
     [USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]]: programmerViewReducer,
     [USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]]: technicalAreaManagerViewReducer,
-    [USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]]: revisionOfficeManagerViewReducer
+    [USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]]: revisionOfficeManagerViewReducer,
+    [USER_ROLE_STRING[USER_TYPE_ID.CLIENT]]: clientViewReducer
   }),
   globalError
 });
