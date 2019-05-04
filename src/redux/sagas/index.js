@@ -5,6 +5,7 @@ import { listSagas } from './commonList';
 import { technicalAreaManagerSagas } from './views/technicalAreaManager';
 import { programmerSagas } from './views/programmer';
 import { revisionOfficeManagerSagas } from './views/revisionOfficeManager';
+import { clientSagas } from './views/client';
 
 /**
  * @file
@@ -17,7 +18,14 @@ import { revisionOfficeManagerSagas } from './views/revisionOfficeManager';
 
 export default function* rootSaga() {
   try {
-    yield all([authFlowSaga(), ...listSagas, ...programmerSagas, ...technicalAreaManagerSagas, ...revisionOfficeManagerSagas]);
+    yield all([
+      authFlowSaga(),
+      ...listSagas,
+      ...programmerSagas,
+      ...technicalAreaManagerSagas,
+      ...revisionOfficeManagerSagas,
+      ...clientSagas
+    ]);
   } finally {
     // Since some of the functions passed to all() method never end (endless loop),
     // this finally block is reached only when there's an uncaught exception in a saga

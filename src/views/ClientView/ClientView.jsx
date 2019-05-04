@@ -86,11 +86,7 @@ class ClientView extends React.Component {
                   onElementFeedback={(elementId, pageNumber) => {
                     this.setState({
                       feedbackModalOpen: true,
-                      currentlyShowingElement: retrieveElementFromListState(
-                        sendRequestsData,
-                        elementId,
-                        pageNumber
-                      )
+                      currentlyShowingElement: retrieveElementFromListState(sendRequestsData, elementId, pageNumber)
                     });
                   }}
                   onElementClick={(pageNumber, rowIndex, elementId) => {
@@ -154,7 +150,11 @@ ClientView.displayName = 'ClientView';
 
 const mapStateToProps = state => {
   return {
-    sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.CLIENT]].sendRequests
+    sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.CLIENT]].sendRequests,
+    successfullySentFeedbackForElements:
+      state.views[USER_ROLE_STRING[USER_TYPE_ID.CLIENT]].successfullySentFeedbackForElements,
+    isSendingFeeback: state.views[USER_ROLE_STRING[USER_TYPE_ID.CLIENT]].isSendingFeeback,
+    latestFeedbackFailed: state.views[USER_ROLE_STRING[USER_TYPE_ID.CLIENT]].latestFeedbackFailed
   };
 };
 
