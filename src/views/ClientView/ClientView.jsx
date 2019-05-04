@@ -137,7 +137,7 @@ class ClientView extends React.Component {
     const installLink = sendRequest[SEND_REQUEST_ATTRIBUTE.INSTALL_LINK];
     // prettier-ignore
     if (installLink != null)
-      window.open(installLink, '_blank');
+      window.open(installLink, '_blank', 'noopener');
   };
 
   hideDetailsModal = () => {
