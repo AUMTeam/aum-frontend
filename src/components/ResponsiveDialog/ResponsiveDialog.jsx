@@ -25,7 +25,7 @@ class ResponsiveDialog extends React.Component {
     const { isLoading, classes, children, ...otherProps } = this.props;
 
     return (
-      <Dialog fullWidth maxWidth={'md'} disableBackdropClick {...otherProps}>
+      <Dialog fullWidth {...otherProps}>
         {isLoading && this.showLoader(classes)}
         {children}
       </Dialog>
@@ -44,7 +44,9 @@ class ResponsiveDialog extends React.Component {
 }
 
 ResponsiveDialog.defaultProps = {
-  isLoading: false
+  isLoading: false,
+  maxWidth: 'md',
+  disableBackdropClick: true
 }
 
 ResponsiveDialog.displayName = 'ResponsiveDialog';
