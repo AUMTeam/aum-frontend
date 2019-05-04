@@ -5,6 +5,7 @@ import Radio from '@material-ui/core/Radio';
 import Table from '@material-ui/core/Table';
 import FeedbackIcon from '@material-ui/icons/Feedback';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import DoneIcon from '@material-ui/icons/Done';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { LIST_ELEMENTS_PER_PAGE } from '../../constants/api';
@@ -141,11 +142,13 @@ class ClientTable extends React.Component {
   };
 
   renderCellContent = (columnKey, value, elementId) => {
-    const { onElementDownload, onElementFeedback, pageNumber } = this.props;
+    const { onElementDownload, onElementFeedback, pageNumber, feedbackSentForElements } = this.props;
 
     switch (columnKey) {
       case ACTIONS_COLUMN:
-        return (
+        return feedbackSentForElements.includes(elementId) ? (
+          <DoneIcon color="action" />
+        ) : (
           <>
             <IconButton
               onClick={event => {
@@ -190,6 +193,7 @@ ClientTable.propTypes = {
   onElementClick: PropTypes.func.isRequired,
   onElementDownload: PropTypes.func.isRequired,
   onElementFeedback: PropTypes.func.isRequired,
+  feedbackSentForElements: PropTypes.array.isRequired,
 
   // injected by withTableFunctionality
   pageNumber: PropTypes.number.isRequired,

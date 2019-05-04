@@ -118,6 +118,7 @@ class ClientView extends React.Component {
                       )
                     });
                   }}
+                  feedbackSentForElements={successfullySentFeedbackForElements}
                 />
               </Paper>
             </Grid>

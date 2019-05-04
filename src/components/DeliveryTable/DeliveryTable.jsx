@@ -155,22 +155,18 @@ class DeliveryTable extends React.Component {
 
     switch (columnKey) {
       case DELIVER_BUTTON_COLUMN:
-        return (
+        return successfullyDeliveredElements.includes(elementId) ? (
+          <StatusIcon status={APPROVAL_STATUS.APPROVED} opacity={60} />
+        ) : (
           <>
-            {successfullyDeliveredElements.includes(elementId) ? (
-              <StatusIcon status={APPROVAL_STATUS.APPROVED} opacity={60} />
-            ) : (
-              <>
-                <IconButton
-                  onClick={event => {
-                    onElementDelivery(elementId, pageNumber);
-                    event.stopPropagation();
-                  }}
-                >
-                  <Send color="action" />
-                </IconButton>
-              </>
-            )}
+            <IconButton
+              onClick={event => {
+                onElementDelivery(elementId, pageNumber);
+                event.stopPropagation();
+              }}
+            >
+              <Send color="action" />
+            </IconButton>
           </>
         );
       default:
