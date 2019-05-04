@@ -52,6 +52,13 @@ class RevisionOfficeManagerView extends React.Component {
     };
   }
 
+  // Close delivery modal when delivery has been completed
+  static getDerivedStateFromProps(props, state) {
+    if (props.successfullyDeliveredElements.includes(state.currentlyShowingElement.id))
+      return { deliveryModalOpen: false };
+    return null;
+  }
+
   componentDidMount() {
     this.props.startSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]);
   }
@@ -134,7 +141,7 @@ class RevisionOfficeManagerView extends React.Component {
 
         <DeliveryDialog
           key={currentlyShowingElement.id}
-          open={deliveryModalOpen && !successfullyDeliveredElements.includes(currentlyShowingElement.id)}
+          open={deliveryModalOpen}
           isLoading={isDeliveringElement}
           displayError={lastDeliveryFailed}
           sendRequest={currentlyShowingElement}

@@ -45,6 +45,13 @@ class ClientView extends React.Component {
     };
   }
 
+  // Close feedback modal when it has been sent successfully
+  static getDerivedStateFromProps(props, state) {
+    if (props.successfullySentFeedbackForElements.includes(state.currentlyShowingElement.id))
+      return { feedbackModalOpen: false };
+    return null;
+  }
+
   componentDidMount() {
     this.props.startSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.CLIENT]);
   }
@@ -130,7 +137,7 @@ class ClientView extends React.Component {
 
         <InstallFeedbackDialog
           key={currentlyShowingElement.id}
-          open={feedbackModalOpen && !successfullySentFeedbackForElements.includes(currentlyShowingElement.id)}
+          open={feedbackModalOpen}
           isLoading={isSendingFeedback}
           displaySendError={lastFeedbackFailed}
           sendRequest={currentlyShowingElement}
