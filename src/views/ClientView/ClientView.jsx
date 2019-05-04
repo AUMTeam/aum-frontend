@@ -18,6 +18,7 @@ import { renderElementFieldContent, retrieveElementFromListState } from '../../u
 import { viewStyles } from '../styles';
 import ClientTable from '../../components/ClientTable';
 import InstallFeedbackDialog from '../../components/InstallFeedbackDialog/InstallFeedbackDialog';
+import { CLIENT_ACTION_TYPE, sendFeedbackAction } from '../../redux/actions/views/client';
 
 const detailsDialogFields = [
   { key: COMMON_ELEMENT_ATTRIBUTE.TITLE },
@@ -50,10 +51,20 @@ class ClientView extends React.Component {
 
   componentWillUnmount() {
     this.props.stopSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.CLIENT]);
+    this.props.resetUI();
   }
 
   render() {
-    const { classes, sendRequestsData, retrieveSendRequestsListPage, performNewSearch } = this.props;
+    const {
+      classes,
+      sendRequestsData,
+      retrieveSendRequestsListPage,
+      performNewSearch,
+      sendFeedback,
+      successfullySentFeedbackForElements,
+      isSendingFeedback,
+      lastFeedbackFailed
+    } = this.props;
     const { detailsModalOpen, feedbackModalOpen, currentlyShowingElement } = this.state;
 
     return (
@@ -119,9 +130,13 @@ class ClientView extends React.Component {
 
         <InstallFeedbackDialog
           key={currentlyShowingElement.id}
-          open={feedbackModalOpen}
+          open={feedbackModalOpen && !successfullySentFeedbackForElements.includes(currentlyShowingElement.id)}
+          isLoading={isSendingFeedback}
+          displaySendError={lastFeedbackFailed}
           sendRequest={currentlyShowingElement}
-          onSend={(elementId, installStatus, installFeedback) => console.log('Invio da implementare')}
+          onSend={(elementId, installStatus, installFeedback) =>
+            sendFeedback(elementId, installStatus, installFeedback)
+          }
           onClose={this.hideFeedbackModal}
         />
       </>
@@ -141,7 +156,7 @@ class ClientView extends React.Component {
   };
 
   hideFeedbackModal = () => {
-    // TODO reset flag di errore invio
+    this.props.resetFailedFeedbackFlag();
     this.setState({ feedbackModalOpen: false });
   };
 }
@@ -153,8 +168,8 @@ const mapStateToProps = state => {
     sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.CLIENT]].sendRequests,
     successfullySentFeedbackForElements:
       state.views[USER_ROLE_STRING[USER_TYPE_ID.CLIENT]].successfullySentFeedbackForElements,
-    isSendingFeeback: state.views[USER_ROLE_STRING[USER_TYPE_ID.CLIENT]].isSendingFeeback,
-    latestFeedbackFailed: state.views[USER_ROLE_STRING[USER_TYPE_ID.CLIENT]].latestFeedbackFailed
+    isSendingFeedback: state.views[USER_ROLE_STRING[USER_TYPE_ID.CLIENT]].isSendingFeedback,
+    lastFeedbackFailed: state.views[USER_ROLE_STRING[USER_TYPE_ID.CLIENT]].lastFeedbackFailed
   };
 };
 
@@ -164,7 +179,10 @@ const mapDispatchToProps = dispatch => {
       retrieveSendRequestsListPage: retrieveSendRequestsListPageAction,
       startSendRequestsListUpdatesAutoChecking: startSendRequestsListUpdatesAutoCheckingAction,
       stopSendRequestsListUpdatesAutoChecking: stopSendRequestsListUpdatesAutoCheckingAction,
-      performNewSearch: performNewSearchAction
+      performNewSearch: performNewSearchAction,
+      sendFeedback: sendFeedbackAction,
+      resetFailedFeedbackFlag: () => ({ type: CLIENT_ACTION_TYPE.RESET_FAILED_FEEDBACK_FLAG }),
+      resetUI: () => ({ type: CLIENT_ACTION_TYPE.RESET_UI })
     },
     dispatch
   );

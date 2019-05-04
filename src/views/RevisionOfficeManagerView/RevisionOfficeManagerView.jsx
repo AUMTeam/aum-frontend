@@ -69,7 +69,7 @@ class RevisionOfficeManagerView extends React.Component {
       performNewSearch,
       successfullyDeliveredElements,
       isDeliveringElement,
-      latestDeliveryFailed
+      lastDeliveryFailed
     } = this.props;
     const { detailsModalOpen, deliveryModalOpen, currentlyShowingElement } = this.state;
 
@@ -136,7 +136,7 @@ class RevisionOfficeManagerView extends React.Component {
           key={currentlyShowingElement.id}
           open={deliveryModalOpen && !successfullyDeliveredElements.includes(currentlyShowingElement.id)}
           isLoading={isDeliveringElement}
-          displayError={latestDeliveryFailed}
+          displayError={lastDeliveryFailed}
           sendRequest={currentlyShowingElement}
           onSend={(elementId, installLink) => this.props.deliverElement(elementId, installLink)}
           onClose={this.hideDeliveryModal}
@@ -164,7 +164,7 @@ const mapStateToProps = state => {
     successfullyDeliveredElements:
       state.views[USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]].successfullyDeliveredElements,
     isDeliveringElement: state.views[USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]].isDeliveringElement,
-    latestDeliveryFailed: state.views[USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]].latestDeliveryFailed
+    lastDeliveryFailed: state.views[USER_ROLE_STRING[USER_TYPE_ID.REVISION_OFFICE_MANAGER]].lastDeliveryFailed
   };
 };
 

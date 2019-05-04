@@ -2,8 +2,8 @@ import { CLIENT_ACTION_TYPE } from '../../actions/views/client';
 
 const initialState = {
   successfullySentFeedbackForElements: [],
-  isSendingFeeback: false,
-  latestFeedbackFailed: false
+  isSendingFeedback: false,
+  lastFeedbackFailed: false
 };
 
 export function clientViewReducer(state = initialState, action) {
@@ -11,26 +11,26 @@ export function clientViewReducer(state = initialState, action) {
     case CLIENT_ACTION_TYPE.SEND_FEEDBACK_REQUEST:
       return {
         ...state,
-        isSendingFeeback: true,
-        latestFeedbackFailed: false
+        isSendingFeedback: true,
+        lastFeedbackFailed: false
       };
     case CLIENT_ACTION_TYPE.SEND_FEEDBACK_FAILED:
       return {
         ...state,
-        isSendingFeeback: false,
-        latestFeedbackFailed: true
+        isSendingFeedback: false,
+        lastFeedbackFailed: true
       };
     case CLIENT_ACTION_TYPE.SEND_FEEDBACK_SUCCESSFUL:
       return {
         ...state,
-        isSendingFeeback: false,
-        latestFeedbackFailed: false,
+        isSendingFeedback: false,
+        lastFeedbackFailed: false,
         successfullySentFeedbackForElements: [...state.successfullySentFeedbackForElements, action.elementId]
       };
     case CLIENT_ACTION_TYPE.RESET_FAILED_FEEDBACK_FLAG:
       return {
         ...state,
-        latestFeedbackFailed: initialState.latestFeedbackFailed
+        lastFeedbackFailed: initialState.lastFeedbackFailed
       };
     case CLIENT_ACTION_TYPE.RESET_UI:
       return initialState;

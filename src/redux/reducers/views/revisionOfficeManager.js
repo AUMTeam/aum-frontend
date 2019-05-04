@@ -3,7 +3,7 @@ import { REVISION_OFFICE_MANAGER_ACTION_TYPE } from '../../actions/views/revisio
 const initialState = {
   successfullyDeliveredElements: [],
   isDeliveringElement: false,
-  latestDeliveryFailed: false
+  lastDeliveryFailed: false
 };
 
 export function revisionOfficeManagerViewReducer(state = initialState, action) {
@@ -12,25 +12,25 @@ export function revisionOfficeManagerViewReducer(state = initialState, action) {
       return {
         ...state,
         isDeliveringElement: true,
-        latestDeliveryFailed: false
+        lastDeliveryFailed: false
       };
     case REVISION_OFFICE_MANAGER_ACTION_TYPE.ELEMENT_DELIVERY_FAILED:
       return {
         ...state,
         isDeliveringElement: false,
-        latestDeliveryFailed: true
+        lastDeliveryFailed: true
       };
     case REVISION_OFFICE_MANAGER_ACTION_TYPE.ELEMENT_DELIVERY_SUCCESSFUL:
       return {
         ...state,
         isDeliveringElement: false,
-        latestDeliveryFailed: false,
+        lastDeliveryFailed: false,
         successfullyDeliveredElements: [...state.successfullyDeliveredElements, action.elementId]
       };
     case REVISION_OFFICE_MANAGER_ACTION_TYPE.RESET_FAILED_DELIVERY_FLAG:
       return {
         ...state,
-        latestDeliveryFailed: initialState.latestDeliveryFailed
+        lastDeliveryFailed: initialState.lastDeliveryFailed
       };
     case REVISION_OFFICE_MANAGER_ACTION_TYPE.RESET_UI:
       return initialState;
