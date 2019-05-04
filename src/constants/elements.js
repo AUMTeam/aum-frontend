@@ -46,8 +46,8 @@ export const INSTALL_TYPE = {
 };
 
 export const INSTALL_TYPE_LABEL = {
-  DURING_EXECUTION: 'Installazione a caldo',
-  NEEDS_SHUTDOWN: 'Installazione a freddo'
+  DURING_EXECUTION: 'A caldo',
+  NEEDS_SHUTDOWN: 'A freddo'
 };
 
 export const APPROVAL_STATUS = {

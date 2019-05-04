@@ -15,7 +15,7 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import ResponsiveDialog from '../../components/ResponsiveDialog';
 import { INSTALL_TYPE, INSTALL_TYPE_LABEL } from '../../constants/elements';
-import { Control, Menu, MultiValue, NoOptionsMessage, ValueContainer } from '../../utils/selectUtils';
+import { Control, Menu, MultiValue, NoOptionsMessage, ValueContainer } from '../Select';
 import { selectDialogStyles } from '../../views/styles';
 
 const selectComponents = {

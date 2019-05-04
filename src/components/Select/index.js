@@ -5,6 +5,16 @@ import Typography from '@material-ui/core/Typography';
 import CancelIcon from '@material-ui/icons/Cancel';
 import React from 'react';
 
+/**
+ * @file
+ * These components are used in selects powered by react-select inside dialogs to customize their appearance.
+ */
+
+const fontStyle = {
+  fontFamily: 'Roboto',
+  color: 'hsl(0,0%,20%)'
+};
+
 export function NoOptionsMessage(props) {
   return (
     <Typography color="textSecondary" className={props.selectProps.classes.noOptionsMessage} {...props.innerProps}>
@@ -13,7 +23,7 @@ export function NoOptionsMessage(props) {
   );
 }
 
-export function inputComponent({ inputRef, ...props }) {
+function inputComponent({ inputRef, ...props }) {
   return <div ref={inputRef} {...props} />;
 }
 
@@ -57,7 +67,7 @@ export function MultiValue(props) {
 
 export function Menu(props) {
   return (
-    <Paper square {...props.innerProps}>
+    <Paper square style={fontStyle} {...props.innerProps}>
       {props.children}
     </Paper>
   );

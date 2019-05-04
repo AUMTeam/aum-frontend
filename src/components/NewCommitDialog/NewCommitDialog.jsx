@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Select from 'react-select';
 import ResponsiveDialog from '../../components/ResponsiveDialog';
-import { Control, Menu, MultiValue, NoOptionsMessage, ValueContainer } from '../../utils/selectUtils';
+import { Control, Menu, MultiValue, NoOptionsMessage, ValueContainer } from '../Select';
 import { selectDialogStyles } from '../../views/styles';
 
 const selectComponents = {

@@ -6,6 +6,7 @@
 import React from 'react';
 import ApprovalStatusIcon from '../components/ApprovalStatusIcon';
 import { COMMON_ELEMENT_ATTRIBUTE, SEND_REQUEST_ATTRIBUTE, INSTALL_TYPE } from '../constants/elements';
+import { INSTALL_TYPE_LABEL } from '../constants/elements';
 
 export function retrieveElementFromListState(state, elementId, pageNumber, rowIndex = null) {
   if (pageNumber != null && rowIndex != null) {
@@ -39,7 +40,7 @@ export function renderElementFieldContent(attributeKey, value) {
     case SEND_REQUEST_ATTRIBUTE.DELIVERY_TIMESTAMP:
       return new Date(value * 1000).toLocaleString('it-it');
     case SEND_REQUEST_ATTRIBUTE.INSTALL_TYPE:
-      return INSTALL_TYPE.DURING_EXECUTION ? 'A caldo' : 'A freddo';
+      return INSTALL_TYPE.DURING_EXECUTION ? INSTALL_TYPE_LABEL.DURING_EXECUTION : INSTALL_TYPE_LABEL.NEEDS_SHUTDOWN;
     // prettier-ignore
     case SEND_REQUEST_ATTRIBUTE.LINKED_COMMITS:
       if (value.length === 0)
