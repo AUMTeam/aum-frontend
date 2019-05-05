@@ -17,7 +17,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { DESKTOP_DRAWER_WIDTH, getRouteForUser, NAVIGATION_HIERARCHY } from '../../constants/navigation';
+import { DESKTOP_DRAWER_WIDTH, NAVIGATION_HIERARCHY } from '../../constants/navigation';
 import { ROUTE_PARAM } from '../../constants/routes';
 import { getRandomColor } from '../../utils/colorUtils';
 import InnerTabs from '../InnerTabs';
@@ -68,9 +68,6 @@ class Navigation extends Component {
       isDrawerOpen: false,
       selectedDrawerItem: NAVIGATION_HIERARCHY.findIndex(section => section.value === props.user.roles[0])
     };
-
-    // Redirect the user to the view of its first role
-    props.history.push(`${props.match.url}${getRouteForUser(props.user.roles[0])}`);
   }
 
   render() {
