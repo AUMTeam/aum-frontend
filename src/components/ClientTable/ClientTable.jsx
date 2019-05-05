@@ -51,7 +51,8 @@ class ClientTable extends React.Component {
   shouldComponentUpdate(nextProps) {
     return (
       this.props.isLoading !== nextProps.isLoading ||
-      this.props.latestUpdateTimestamp !== nextProps.latestUpdateTimestamp
+      this.props.latestUpdateTimestamp !== nextProps.latestUpdateTimestamp ||
+      this.props.feedbackSentForElements !== nextProps.feedbackSentForElements
     );
   }
 
