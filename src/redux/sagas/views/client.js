@@ -8,7 +8,7 @@ function* sendInstallFeedback(action) {
   const request = new AuthenticatedApiRequest(getRequestPath(ELEMENT_TYPE.SEND_REQUESTS, 'install'))
     .setRequestData({
       id: action.elementId,
-      status: action.installStatus,
+      install_status: action.installStatus,
       feedback: action.installFeedback
     })
     .setErrorAction({
