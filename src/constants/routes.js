@@ -9,5 +9,5 @@ export const ROUTE = {
 };
 
 export const ROUTE_PARAM = {
-  TAB_INDEX: '/:value'
+  TAB_VALUE: '/:tabValue'
 };

@@ -8,21 +8,22 @@ import RevisionTable from '../../components/RevisionTable';
 import { ELEMENT_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import { performNewSearchAction } from '../../redux/actions/commonList';
-import { reviewItemAction } from '../../redux/actions/views/technicalAreaManager';
 import {
   retrieveSendRequestsListPageAction,
   startSendRequestsListUpdatesAutoCheckingAction,
   stopSendRequestsListUpdatesAutoCheckingAction
 } from '../../redux/actions/sendRequests';
+import { reviewItemAction, TECHNICAL_AREA_MANAGER_ACTION_TYPE } from '../../redux/actions/views/technicalAreaManager';
 import { viewStyles } from '../styles';
 
-class SendRequestsRevisionSubView extends React.Component {
+class SendRequestsRevisionView extends React.Component {
   componentDidMount() {
     this.props.startSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]);
   }
 
   componentWillUnmount() {
     this.props.stopSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]);
+    this.props.resetUI();
   }
 
   render() {
@@ -77,7 +78,7 @@ class SendRequestsRevisionSubView extends React.Component {
   }
 }
 
-SendRequestsRevisionSubView.displayName = 'SendRequestsRevisionSubView';
+SendRequestsRevisionView.displayName = 'SendRequestsRevisionView';
 
 const mapStateToProps = state => {
   return {
@@ -93,7 +94,8 @@ const mapDispatchToProps = dispatch => {
       startSendRequestsListUpdatesAutoChecking: startSendRequestsListUpdatesAutoCheckingAction,
       stopSendRequestsListUpdatesAutoChecking: stopSendRequestsListUpdatesAutoCheckingAction,
       performNewSearch: performNewSearchAction,
-      reviewItem: reviewItemAction
+      reviewItem: reviewItemAction,
+      resetUI: () => ({ type: TECHNICAL_AREA_MANAGER_ACTION_TYPE.RESET_UI })
     },
     dispatch
   );
@@ -103,5 +105,5 @@ export default withStyles(viewStyles)(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(SendRequestsRevisionSubView)
+  )(SendRequestsRevisionView)
 );

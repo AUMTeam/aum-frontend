@@ -6,49 +6,53 @@ import AddIcon from '@material-ui/icons/Add';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import NewCommitDialog from '../../components/NewCommitDialog/NewCommitDialog';
+import NewSendRequestDialog from '../../components/NewSendRequestDialog';
 import ProgrammerTable from '../../components/ProgrammerTable';
 import { ALL_ELEMENT_TYPE, ELEMENT_TYPE } from '../../constants/api';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
-import {
-  retrieveCommitsListPageAction,
-  startCommitsListUpdatesAutoCheckingAction,
-  stopCommitsListUpdatesAutoCheckingAction
-} from '../../redux/actions/commits';
 import { performNewSearchAction } from '../../redux/actions/commonList';
+import {
+  retrieveSendRequestsListPageAction,
+  startSendRequestsListUpdatesAutoCheckingAction,
+  stopSendRequestsListUpdatesAutoCheckingAction
+} from '../../redux/actions/sendRequests';
 import { addElement, getAll, resetUiState } from '../../redux/actions/views/programmer';
 import { viewStyles } from '../styles';
 
-class CommitsSubView extends Component {
+class SendRequestsCreationView extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      isAddingCommit: false
+      isAddingSendRequest: false
     };
   }
 
   componentDidMount() {
-    this.props.startCommitsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
+    this.props.startSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
   }
 
   componentWillUnmount() {
-    this.props.stopCommitsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
+    this.props.stopSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
   }
 
   render() {
     const {
       classes,
-      commitsData,
-      retrieveCommitsListPage,
+      sendRequestsData,
+      retrieveSendRequestsListPage,
       performNewSearch,
+      isLoadingClients,
+      allClients,
       isLoadingBranches,
       allBranches,
+      isLoadingCommits,
+      allCommits,
       isAddingData,
       isAdditionSuccessful,
       isAdditionFailed
     } = this.props;
-    const { isAddingCommit } = this.state;
+    const { isAddingSendRequest } = this.state;
 
     return (
       <>
@@ -57,27 +61,27 @@ class CommitsSubView extends Component {
             <Grid container justify="center">
               <Paper className={classes.paper}>
                 <ProgrammerTable
-                  tableToolbarTitle="Lista richieste di commit"
-                  tableData={commitsData.listPages}
-                  elementType={ELEMENT_TYPE.COMMITS}
-                  itemsCount={commitsData.totalItemsCount}
+                  tableToolbarTitle="Lista richieste di invio"
+                  tableData={sendRequestsData.listPages}
+                  elementType={ELEMENT_TYPE.SEND_REQUESTS}
+                  itemsCount={sendRequestsData.totalItemsCount}
                   loadPage={(pageNumber, sortingCriteria, filter) => {
-                    retrieveCommitsListPage(
+                    retrieveSendRequestsListPage(
                       USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER],
                       pageNumber,
                       sortingCriteria,
                       filter
                     );
                   }}
+                  isLoading={sendRequestsData.isLoadingList}
                   onSearchQueryChange={searchQuery => {
                     performNewSearch(
-                      retrieveCommitsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]),
+                      retrieveSendRequestsListPageAction(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]),
                       searchQuery
                     );
                   }}
-                  isLoading={commitsData.isLoadingList}
-                  latestUpdateTimestamp={commitsData.latestUpdateTimestamp}
-                  displayError={commitsData.errorWhileFetchingData}
+                  latestUpdateTimestamp={sendRequestsData.latestUpdateTimestamp}
+                  displayError={sendRequestsData.errorWhileFetchingData}
                   onElementClick={elementId => console.log(`Elemento ${elementId} cliccato!`)}
                 />
               </Paper>
@@ -92,14 +96,24 @@ class CommitsSubView extends Component {
           onClick={() => this.onFabClick()}
         >
           <AddIcon />
-          Nuovo commit
+          Nuova richiesta di invio
         </Fab>
-        <NewCommitDialog
-          open={isAddingCommit}
+        <NewSendRequestDialog
+          open={isAddingSendRequest}
+          isLoadingClients={isLoadingClients}
+          allClients={allClients.map(client => ({
+            value: client.user_id,
+            label: client.name
+          }))}
           isLoadingBranches={isLoadingBranches}
           allBranches={allBranches.map(branch => ({
             value: branch.id,
             label: branch.name
+          }))}
+          isLoadingCommits={isLoadingCommits}
+          allCommits={allCommits.map(commit => ({
+            value: commit.commit_id,
+            label: `[${commit.commit_id}] ${commit.title}`
           }))}
           isLoading={isAddingData}
           isSuccessful={isAdditionSuccessful}
@@ -117,31 +131,43 @@ class CommitsSubView extends Component {
   };
 
   onSendClicked = payload => {
-    this.props.addElement(ELEMENT_TYPE.COMMITS, payload);
+    this.props.addElement(ELEMENT_TYPE.SEND_REQUESTS, payload);
   };
 
   showDialog = show => {
     this.setState({
-      isAddingCommit: show
+      isAddingSendRequest: show
     });
   };
 
   onFabClick = () => {
     const { getAll } = this.props;
 
+    getAll(ALL_ELEMENT_TYPE.CLIENTS);
     getAll(ALL_ELEMENT_TYPE.BRANCHES);
+    getAll(ALL_ELEMENT_TYPE.COMMITS);
 
     this.showDialog(true);
   };
+
+  onInputChanged = (name, event) => {
+    this.setState({
+      [name]: event.target.value
+    });
+  };
 }
 
-CommitsSubView.displayName = 'CommitsSubView';
+SendRequestsCreationView.displayName = 'SendRequestsCreationView';
 
 const mapStateToProps = state => {
   return {
-    commitsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].commits,
+    sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].sendRequests,
+    isLoadingClients: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isLoadingClients,
+    allClients: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].allClients,
     isLoadingBranches: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isLoadingBranches,
     allBranches: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].allBranches,
+    isLoadingCommits: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isLoadingCommits,
+    allCommits: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].allCommits,
     isAddingData: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAddingData,
     isAdditionSuccessful: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAdditionSuccessful,
     isAdditionFailed: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAdditionFailed
@@ -151,9 +177,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      retrieveCommitsListPage: retrieveCommitsListPageAction,
-      startCommitsListUpdatesAutoChecking: startCommitsListUpdatesAutoCheckingAction,
-      stopCommitsListUpdatesAutoChecking: stopCommitsListUpdatesAutoCheckingAction,
+      retrieveSendRequestsListPage: retrieveSendRequestsListPageAction,
+      startSendRequestsListUpdatesAutoChecking: startSendRequestsListUpdatesAutoCheckingAction,
+      stopSendRequestsListUpdatesAutoChecking: stopSendRequestsListUpdatesAutoCheckingAction,
       performNewSearch: performNewSearchAction,
       getAll: getAll,
       addElement: addElement,
@@ -167,5 +193,5 @@ export default withStyles(viewStyles)(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(CommitsSubView)
+  )(SendRequestsCreationView)
 );

@@ -4,9 +4,11 @@ import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 import SendIcon from '@material-ui/icons/Send';
 import React from 'react';
 import ClientView from '../views/ClientView';
-import ProgrammerView from '../views/ProgrammerView';
+import CommitsCreationView from '../views/CommitsCreationView';
+import SendRequestsCreationView from '../views/SendRequestsCreationView';
+import CommitsRevisionView from '../views/CommitsRevisionView';
+import SendRequestsRevisionView from '../views/SendRequestsRevisionView';
 import RevisionOfficeManagerView from '../views/RevisionOfficeManagerView';
-import TechnicalAreaManagerView from '../views/TechnicalAreaManagerView';
 import { ROUTE } from './routes';
 import { USER_TYPE_ID } from './user';
 
@@ -17,16 +19,17 @@ export const NAVIGATION_HIERARCHY = [
     value: USER_TYPE_ID.PROGRAMMER,
     routePath: ROUTE.PROGRAMMER,
     label: 'Programmatore',
-    component: ProgrammerView,
     drawerIcon: <CodeIcon />,
     tabs: [
       {
         value: '0',
-        label: 'Richieste di commit'
+        label: 'Richieste di commit',
+        component: CommitsCreationView
       },
       {
         value: '1',
-        label: 'Richieste di invio'
+        label: 'Richieste di invio',
+        component: SendRequestsCreationView
       }
     ]
   },
@@ -34,16 +37,17 @@ export const NAVIGATION_HIERARCHY = [
     value: USER_TYPE_ID.TECHNICAL_AREA_MANAGER,
     routePath: ROUTE.TECHNICAL_AREA_MANAGER,
     label: 'Referente area tecnica',
-    component: TechnicalAreaManagerView,
     drawerIcon: <RecordVoiceOverIcon />,
     tabs: [
       {
         value: '0',
-        label: 'Richieste di commit'
+        label: 'Richieste di commit',
+        component: CommitsRevisionView
       },
       {
         value: '1',
-        label: 'Richieste di invio'
+        label: 'Richieste di invio',
+        component: SendRequestsRevisionView
       }
     ]
   },

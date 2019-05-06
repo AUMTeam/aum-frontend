@@ -13,16 +13,17 @@ import {
   stopCommitsListUpdatesAutoCheckingAction
 } from '../../redux/actions/commits';
 import { performNewSearchAction } from '../../redux/actions/commonList';
-import { reviewItemAction } from '../../redux/actions/views/technicalAreaManager';
+import { reviewItemAction, TECHNICAL_AREA_MANAGER_ACTION_TYPE } from '../../redux/actions/views/technicalAreaManager';
 import { viewStyles } from '../styles';
 
-class CommitsRevisionSubView extends React.Component {
+class CommitsRevisionView extends React.Component {
   componentDidMount() {
     this.props.startCommitsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]);
   }
 
   componentWillUnmount() {
     this.props.stopCommitsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.TECHNICAL_AREA_MANAGER]);
+    this.props.resetUI();
   }
 
   render() {
@@ -70,7 +71,7 @@ class CommitsRevisionSubView extends React.Component {
   }
 }
 
-CommitsRevisionSubView.displayName = 'CommitsRevisionSubView';
+CommitsRevisionView.displayName = 'CommitsRevisionView';
 
 const mapStateToProps = state => {
   return {
@@ -86,7 +87,8 @@ const mapDispatchToProps = dispatch => {
       startCommitsListUpdatesAutoChecking: startCommitsListUpdatesAutoCheckingAction,
       stopCommitsListUpdatesAutoChecking: stopCommitsListUpdatesAutoCheckingAction,
       performNewSearch: performNewSearchAction,
-      reviewItem: reviewItemAction
+      reviewItem: reviewItemAction,
+      resetUI: () => ({ type: TECHNICAL_AREA_MANAGER_ACTION_TYPE.RESET_UI })
     },
     dispatch
   );
@@ -96,5 +98,5 @@ export default withStyles(viewStyles)(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(CommitsRevisionSubView)
+  )(CommitsRevisionView)
 );

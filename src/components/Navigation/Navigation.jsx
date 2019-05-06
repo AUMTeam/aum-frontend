@@ -95,12 +95,12 @@ class Navigation extends Component {
               return (
                 <Route
                   key={index}
-                  path={`${match.url}${section.routePath}${ROUTE_PARAM.TAB_INDEX}`}
+                  path={`${match.url}${section.routePath}${ROUTE_PARAM.TAB_VALUE}`}
                   render={routeProps => (
                     <InnerTabs
                       {...routeProps}
-                      prevUrl={`${match.url}${section.routePath}`}
-                      tabs={NAVIGATION_HIERARCHY.find(innerSection => innerSection.value === section.value).tabs}
+                      sectionUrl={`${match.url}${section.routePath}`}
+                      tabs={section.tabs}
                     />
                   )}
                 />
@@ -162,7 +162,7 @@ class Navigation extends Component {
                     onClick={() =>
                       this.onSectionClicked(
                         section.tabs.length > 0
-                          ? `${match.url}${section.routePath}/0`
+                          ? `${match.url}${section.routePath}/${section.tabs[0].value}`
                           : `${match.url}${section.routePath}`,
                         index
                       )

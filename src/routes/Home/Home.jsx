@@ -7,7 +7,6 @@ import { bindActionCreators } from 'redux';
 import LogoLoader from '../../components/LogoLoader';
 import Navigation from '../../components/Navigation';
 import { DESKTOP_DRAWER_WIDTH, NAVIGATION_HIERARCHY, getRelativePathForUserRole } from '../../constants/navigation';
-import { ROUTE_PARAM } from '../../constants/routes';
 import { performLogoutAction } from '../../redux/actions/auth';
 import { requestCurrentUserInfoAction } from '../../redux/actions/user';
 
@@ -115,16 +114,27 @@ class Home extends Component {
     const { user, match } = this.props;
     return (
       <Switch>
-        {/* Renders the specific routes for the different views */}
+        {/* Renders the specific routes for the different sections */}
         {NAVIGATION_HIERARCHY.map((section, index) => {
           if (user.roles.includes(section.value)) {
-            return (
-              <Route
-                key={index}
-                path={`${match.url}${section.routePath}${section.tabs.length > 0 ? ROUTE_PARAM.TAB_INDEX : ''}`}
-                component={section.component}
-              />
-            );
+            // prettier-ignore
+            if (section.tabs.length > 0) {
+              const tabRoutes = section.tabs.map(tab => (
+                <Route path={`${match.url}${section.routePath}/${tab.value}`} component={tab.component} />
+              ));
+
+              // For every group of tabs that belongs to a section, we use a Redirect to redirect the user
+              // to the first tab if the URL had an invalid tab value 
+              tabRoutes.push(
+                <Redirect
+                  from={`${match.url}${section.routePath}`}
+                  to={`${match.url}${section.routePath}/${section.tabs[0].value}`}
+                />
+              );
+              return tabRoutes;
+            }
+            else
+              return <Route key={index} path={`${match.url}${section.routePath}`} exact component={section.component} />;
           }
         })}
 

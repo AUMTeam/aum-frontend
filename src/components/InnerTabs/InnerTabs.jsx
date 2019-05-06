@@ -6,15 +6,14 @@ import React, { Component } from 'react';
 
 /**
  * @class
- * This class is responsible of displaying inner tabs for
- * each member.
+ * This class is responsible for displaying navigation tabs passed via props
  */
 class InnerTabs extends Component {
   render() {
     const { tabs, match, width } = this.props;
     return (
       <Tabs
-        value={match.params.value}
+        value={match.params.tabValue}
         variant={isWidthDown('xs', width) ? 'fullWidth' : 'scrollable'}
         scrollButtons="auto"
       >
@@ -25,15 +24,15 @@ class InnerTabs extends Component {
     );
   }
 
-  onTabClicked = value => {
-    const { history, prevUrl } = this.props;
-    history.push(`${prevUrl}/${value}`);
+  onTabClicked = tabValue => {
+    const { history, sectionUrl } = this.props;
+    history.push(`${sectionUrl}/${tabValue}`);
   };
 }
 
 InnerTabs.displayName = 'InnerTabs';
 InnerTabs.propTypes = {
-  prevUrl: PropTypes.string.isRequired,
+  sectionUrl: PropTypes.string.isRequired,
   tabs: PropTypes.array.isRequired
 };
 
