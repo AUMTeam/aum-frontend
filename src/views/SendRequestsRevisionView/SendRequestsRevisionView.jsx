@@ -15,6 +15,7 @@ import {
 } from '../../redux/actions/sendRequests';
 import { reviewItemAction, TECHNICAL_AREA_MANAGER_ACTION_TYPE } from '../../redux/actions/views/technicalAreaManager';
 import { viewStyles } from '../styles';
+import withErrorBoundary from '../../components/WithErrorBoundary';
 
 class SendRequestsRevisionView extends React.Component {
   componentDidMount() {
@@ -101,9 +102,11 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default withStyles(viewStyles)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(SendRequestsRevisionView)
+export default withErrorBoundary(
+  withStyles(viewStyles)(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(SendRequestsRevisionView)
+  )
 );

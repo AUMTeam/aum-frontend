@@ -18,6 +18,7 @@ import {
 import { performNewSearchAction } from '../../redux/actions/commonList';
 import { addElement, getAll, resetUiState } from '../../redux/actions/views/programmer';
 import { viewStyles } from '../styles';
+import withErrorBoundary from '../../components/WithErrorBoundary';
 
 class CommitsCreationView extends Component {
   constructor(props) {
@@ -163,9 +164,11 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default withStyles(viewStyles)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(CommitsCreationView)
+export default withErrorBoundary(
+  withStyles(viewStyles)(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(CommitsCreationView)
+  )
 );

@@ -15,6 +15,7 @@ import {
 import { performNewSearchAction } from '../../redux/actions/commonList';
 import { reviewItemAction, TECHNICAL_AREA_MANAGER_ACTION_TYPE } from '../../redux/actions/views/technicalAreaManager';
 import { viewStyles } from '../styles';
+import withErrorBoundary from '../../components/WithErrorBoundary';
 
 class CommitsRevisionView extends React.Component {
   componentDidMount() {
@@ -94,9 +95,11 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default withStyles(viewStyles)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(CommitsRevisionView)
+export default withErrorBoundary(
+  withStyles(viewStyles)(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(CommitsRevisionView)
+  )
 );

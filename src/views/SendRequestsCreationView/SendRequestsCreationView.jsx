@@ -18,6 +18,7 @@ import {
 } from '../../redux/actions/sendRequests';
 import { addElement, getAll, resetUiState } from '../../redux/actions/views/programmer';
 import { viewStyles } from '../styles';
+import withErrorBoundary from '../../components/WithErrorBoundary';
 
 class SendRequestsCreationView extends Component {
   constructor(props) {
@@ -189,9 +190,11 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default withStyles(viewStyles)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(SendRequestsCreationView)
+export default withErrorBoundary(
+  withStyles(viewStyles)(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(SendRequestsCreationView)
+  )
 );
