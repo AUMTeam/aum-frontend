@@ -65,8 +65,7 @@ class Navigation extends Component {
     super(props);
 
     this.state = {
-      isDrawerOpen: false,
-      selectedDrawerItem: NAVIGATION_HIERARCHY.findIndex(section => section.value === props.user.roles[0])
+      isDrawerOpen: false
     };
   }
 
@@ -138,33 +137,31 @@ class Navigation extends Component {
   };
 
   renderDrawerLayout = () => {
-    const { classes, match } = this.props;
-    const { selectedDrawerItem } = this.state;
+    const { classes, match, location, user, onLogout } = this.props;
     return (
       <>
         {/* Avatar item is outside the div to avoid drawer closing when clicking on it */}
         <ListItem>
           <ListItemIcon>
-            <Avatar className={classes.avatar}>{this.props.user.name.charAt(0)}</Avatar>
+            <Avatar className={classes.avatar}>{user.name.charAt(0)}</Avatar>
           </ListItemIcon>
-          <ListItemText primary={this.props.user.name} secondary={this.props.user.email} />
+          <ListItemText primary={user.name} secondary={user.email} />
         </ListItem>
 
         <div tabIndex={0} role="button" onClick={this.closeDrawer} onKeyDown={this.closeDrawer}>
           <List className={classes.drawerItems}>
             {NAVIGATION_HIERARCHY.map((section, index) => {
-              if (this.props.user.roles.includes(section.value))
+              if (user.roles.includes(section.value))
                 return (
                   <ListItem
                     key={index}
                     button
-                    selected={selectedDrawerItem === index}
+                    selected={location.pathname.startsWith(`${match.url}${section.routePath}`)}
                     onClick={() =>
                       this.onSectionClicked(
                         section.tabs.length > 0
                           ? `${match.url}${section.routePath}/${section.tabs[0].value}`
-                          : `${match.url}${section.routePath}`,
-                        index
+                          : `${match.url}${section.routePath}`
                       )
                     }
                   >
@@ -175,7 +172,7 @@ class Navigation extends Component {
             })}
             <Divider />
 
-            <ListItem onClick={this.onLogoutButtonClicked} button>
+            <ListItem onClick={onLogout} button>
               <ListItemIcon>
                 <ExitToAppIcon />
               </ListItemIcon>
@@ -195,14 +192,8 @@ class Navigation extends Component {
     this.setState({ isDrawerOpen: false });
   };
 
-  onSectionClicked = (url, index) => {
+  onSectionClicked = url => {
     this.props.history.push(url);
-    this.setState({ selectedDrawerItem: index });
-  };
-
-  onLogoutButtonClicked = () => {
-    this.setState({ anchorEl: null });
-    this.props.onLogout();
   };
 }
 

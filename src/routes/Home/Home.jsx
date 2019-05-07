@@ -45,12 +45,11 @@ class Home extends Component {
     const {
       classes,
       accessToken,
-      history,
-      match,
       user,
       performLogout,
       isSessionExpired,
-      requestCurrentUserInfo
+      requestCurrentUserInfo,
+      ...routeProps
     } = this.props;
 
     return (
@@ -83,7 +82,7 @@ class Home extends Component {
         ) : (
           // Displayed only when user data are obtained successfully
           <>
-            <Navigation match={match} history={history} user={user} onLogout={() => performLogout(accessToken)} />
+            <Navigation {...routeProps} user={user} onLogout={() => performLogout(accessToken)} />
             <main className={classes.content}>{this.renderContentSubRoutes()}</main>
           </>
         )}
@@ -120,7 +119,7 @@ class Home extends Component {
             // prettier-ignore
             if (section.tabs.length > 0) {
               const tabRoutes = section.tabs.map(tab => (
-                <Route path={`${match.url}${section.routePath}/${tab.value}`} component={tab.component} />
+                <Route path={`${match.url}${section.routePath}/${tab.value}`} exact component={tab.component} />
               ));
 
               // For every group of tabs that belongs to a section, we use a Redirect to redirect the user
