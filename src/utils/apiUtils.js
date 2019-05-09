@@ -3,7 +3,7 @@
  * @file
  * This file contains helper functions used for API requests.
  */
-import { API_ENDPOINT_URL, ELEMENT_TYPE, TOKEN_LOCALSTORAGE_KEY } from '../constants/api';
+import { API_ENDPOINT_URL, ELEMENT_TYPE, TOKEN_LOCALSTORAGE_KEY, AUTH_ERROR_STRING } from '../constants/api';
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
 
 export function makeUnauthenticatedApiRequest(requestPath, requestData = {}, timeoutInMilliseconds = 0) {
@@ -81,6 +81,15 @@ export function getRequestPath(elementType, requestType) {
   }
 
   return requestPath + `/${requestType}`;
+}
+
+export function getUIMessageForErrorString(errorString) {
+  switch (errorString) {
+    case AUTH_ERROR_STRING.INVALID_CREDENTIALS:
+      return 'Credenziali non valide';
+    default:
+      return errorString;
+  }
 }
 
 export function saveAccessTokenToLocalStorage(accessToken) {

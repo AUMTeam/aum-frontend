@@ -1,5 +1,9 @@
 import { put, select } from 'redux-saga/effects';
-import { makeAuthenticatedApiRequest, makeUnauthenticatedApiRequest } from '../../utils/apiUtils';
+import {
+  makeAuthenticatedApiRequest,
+  makeUnauthenticatedApiRequest,
+  getUIMessageForErrorString
+} from '../../utils/apiUtils';
 import { AUTH_ACTION_TYPE } from '../actions/auth';
 import { REQUEST_TIMEOUT_MS } from '../../constants/api';
 
@@ -106,7 +110,7 @@ function* makeRequestAndReportErrors(
     if (accessToken != null && response.status === 401)
       yield put({ type: AUTH_ACTION_TYPE.SESSION_EXPIRED });
     else if (errorAction != null)
-      yield put({ ...errorAction, errorMessage: responseJson.message });
+      yield put({ ...errorAction, errorMessage: getUIMessageForErrorString(responseJson.error) });
 
     console.error(`Server responded with an error to ${requestPath} request: ${responseJson.message}`);
     return null;
