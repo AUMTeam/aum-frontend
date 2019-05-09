@@ -24,8 +24,8 @@ import { renderElementFieldContent, retrieveElementFromListState } from '../../u
 import { viewStyles } from '../styles';
 
 const detailsDialogFields = [
-  { key: COMMON_ELEMENT_ATTRIBUTE.TITLE },
-  { key: COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION },
+  { key: COMMON_ELEMENT_ATTRIBUTE.TITLE, fullRow: true },
+  { key: COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION, fullRow: true },
   { key: COMMON_ELEMENT_ATTRIBUTE.BRANCH },
   { key: COMMON_ELEMENT_ATTRIBUTE.COMPONENTS },
   { key: SEND_REQUEST_ATTRIBUTE.LINKED_COMMITS },

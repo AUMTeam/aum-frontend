@@ -6,9 +6,12 @@ import AddIcon from '@material-ui/icons/Add';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import ElementDetailsDialog from '../../components/ElementDetailsDialog';
 import NewCommitDialog from '../../components/NewCommitDialog/NewCommitDialog';
 import ProgrammerTable from '../../components/ProgrammerTable';
+import withErrorBoundary from '../../components/WithErrorBoundary';
 import { ALL_ELEMENT_TYPE, ELEMENT_TYPE } from '../../constants/api';
+import { COMMON_ELEMENT_ATTRIBUTE } from '../../constants/elements';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import {
   retrieveCommitsListPageAction,
@@ -17,15 +20,28 @@ import {
 } from '../../redux/actions/commits';
 import { performNewSearchAction } from '../../redux/actions/commonList';
 import { addElement, getAll, resetUiState } from '../../redux/actions/views/programmer';
+import { renderElementFieldContentAsText, retrieveElementFromListState } from '../../utils/viewUtils';
 import { viewStyles } from '../styles';
-import withErrorBoundary from '../../components/WithErrorBoundary';
+
+const commitDetailsDialogFields = [
+  { key: COMMON_ELEMENT_ATTRIBUTE.TITLE, fullRow: true },
+  { key: COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION, fullRow: true },
+  { key: COMMON_ELEMENT_ATTRIBUTE.BRANCH },
+  { key: COMMON_ELEMENT_ATTRIBUTE.COMPONENTS },
+  { key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR },
+  { key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP },
+  { key: COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS, label: 'Stato revisione' },
+  { key: COMMON_ELEMENT_ATTRIBUTE.APPROVER, label: 'Revisionato da' }
+];
 
 class CommitsCreationView extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      isAddingCommit: false
+      isAddingCommit: false,
+      isShowingCommitDetails: false,
+      currentlyShowingCommit: {}
     };
   }
 
@@ -49,7 +65,7 @@ class CommitsCreationView extends Component {
       isAdditionSuccessful,
       isAdditionFailed
     } = this.props;
-    const { isAddingCommit } = this.state;
+    const { isAddingCommit, isShowingCommitDetails, currentlyShowingCommit } = this.state;
 
     return (
       <>
@@ -79,12 +95,23 @@ class CommitsCreationView extends Component {
                   isLoading={commitsData.isLoadingList}
                   latestUpdateTimestamp={commitsData.latestUpdateTimestamp}
                   displayError={commitsData.errorWhileFetchingData}
-                  onElementClick={elementId => console.log(`Elemento ${elementId} cliccato!`)}
+                  onElementClick={(pageNumber, rowIndex, elementId) => {
+                    this.setState({
+                      isShowingCommitDetails: true,
+                      currentlyShowingCommit: retrieveElementFromListState(
+                        commitsData,
+                        elementId,
+                        pageNumber,
+                        rowIndex
+                      )
+                    });
+                  }}
                 />
               </Paper>
             </Grid>
           </Grid>
         </Grid>
+
         <Fab
           color="secondary"
           variant="extended"
@@ -95,6 +122,7 @@ class CommitsCreationView extends Component {
           <AddIcon />
           Nuovo commit
         </Fab>
+
         <NewCommitDialog
           open={isAddingCommit}
           isLoadingBranches={isLoadingBranches}
@@ -108,20 +136,29 @@ class CommitsCreationView extends Component {
           onDialogClose={this.onCloseClicked}
           onDialogSend={this.onSendClicked}
         />
+
+        <ElementDetailsDialog
+          open={isShowingCommitDetails}
+          dialogTitle={`Richiesta di commit #${currentlyShowingCommit.id}`}
+          element={currentlyShowingCommit}
+          elementFields={commitDetailsDialogFields}
+          renderFieldContent={renderElementFieldContentAsText}
+          onClose={this.hideDetailsModal}
+        />
       </>
     );
   }
 
   onCloseClicked = () => {
     this.props.resetUiState();
-    this.showDialog(false);
+    this.showAddDialog(false);
   };
 
   onSendClicked = payload => {
     this.props.addElement(ELEMENT_TYPE.COMMITS, payload);
   };
 
-  showDialog = show => {
+  showAddDialog = show => {
     this.setState({
       isAddingCommit: show
     });
@@ -132,7 +169,11 @@ class CommitsCreationView extends Component {
 
     getAll(ALL_ELEMENT_TYPE.BRANCHES);
 
-    this.showDialog(true);
+    this.showAddDialog(true);
+  };
+
+  hideDetailsModal = () => {
+    this.setState({ isShowingCommitDetails: false });
   };
 }
 

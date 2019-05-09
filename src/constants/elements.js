@@ -68,3 +68,10 @@ export const APPROVAL_STATUS = {
   PENDING: 0,
   REJECTED: -1
 };
+
+export const APPROVAL_STATUS_LABEL = {
+  [APPROVAL_STATUS.DELIVERED]: 'Inviato',
+  [APPROVAL_STATUS.APPROVED]: 'Approvato',
+  [APPROVAL_STATUS.PENDING]: 'In attesa',
+  [APPROVAL_STATUS.REJECTED]: 'Rifiutato'
+}

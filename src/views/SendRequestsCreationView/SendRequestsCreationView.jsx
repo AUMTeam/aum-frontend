@@ -6,9 +6,12 @@ import AddIcon from '@material-ui/icons/Add';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import ElementDetailsDialog from '../../components/ElementDetailsDialog';
 import NewSendRequestDialog from '../../components/NewSendRequestDialog';
 import ProgrammerTable from '../../components/ProgrammerTable';
+import withErrorBoundary from '../../components/WithErrorBoundary';
 import { ALL_ELEMENT_TYPE, ELEMENT_TYPE } from '../../constants/api';
+import { COMMON_ELEMENT_ATTRIBUTE, SEND_REQUEST_ATTRIBUTE } from '../../constants/elements';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import { performNewSearchAction } from '../../redux/actions/commonList';
 import {
@@ -17,15 +20,31 @@ import {
   stopSendRequestsListUpdatesAutoCheckingAction
 } from '../../redux/actions/sendRequests';
 import { addElement, getAll, resetUiState } from '../../redux/actions/views/programmer';
+import { renderElementFieldContentAsText, retrieveElementFromListState } from '../../utils/viewUtils';
 import { viewStyles } from '../styles';
-import withErrorBoundary from '../../components/WithErrorBoundary';
+
+const sendRequestDetailsDialogFields = [
+  { key: COMMON_ELEMENT_ATTRIBUTE.TITLE, fullRow: true },
+  { key: COMMON_ELEMENT_ATTRIBUTE.DESCRIPTION, fullRow: true },
+  { key: COMMON_ELEMENT_ATTRIBUTE.COMPONENTS, fullRow: true },
+  { key: COMMON_ELEMENT_ATTRIBUTE.BRANCH },
+  { key: SEND_REQUEST_ATTRIBUTE.INSTALL_TYPE },
+  { key: SEND_REQUEST_ATTRIBUTE.LINKED_COMMITS },
+  { key: SEND_REQUEST_ATTRIBUTE.RECIPIENT_CLIENTS },
+  { key: COMMON_ELEMENT_ATTRIBUTE.AUTHOR },
+  { key: COMMON_ELEMENT_ATTRIBUTE.TIMESTAMP },
+  { key: COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS, label: 'Stato revisione' },
+  { key: COMMON_ELEMENT_ATTRIBUTE.APPROVER, label: 'Revisionato da' }
+];
 
 class SendRequestsCreationView extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      isAddingSendRequest: false
+      isAddingSendRequest: false,
+      isShowingSendRequestDetails: false,
+      currentlyShowingSendRequest: {}
     };
   }
 
@@ -53,7 +72,7 @@ class SendRequestsCreationView extends Component {
       isAdditionSuccessful,
       isAdditionFailed
     } = this.props;
-    const { isAddingSendRequest } = this.state;
+    const { isAddingSendRequest, currentlyShowingSendRequest, isShowingSendRequestDetails } = this.state;
 
     return (
       <>
@@ -83,12 +102,23 @@ class SendRequestsCreationView extends Component {
                   }}
                   latestUpdateTimestamp={sendRequestsData.latestUpdateTimestamp}
                   displayError={sendRequestsData.errorWhileFetchingData}
-                  onElementClick={elementId => console.log(`Elemento ${elementId} cliccato!`)}
+                  onElementClick={(pageNumber, rowIndex, elementId) => {
+                    this.setState({
+                      isShowingSendRequestDetails: true,
+                      currentlyShowingSendRequest: retrieveElementFromListState(
+                        sendRequestsData,
+                        elementId,
+                        pageNumber,
+                        rowIndex
+                      )
+                    });
+                  }}
                 />
               </Paper>
             </Grid>
           </Grid>
         </Grid>
+
         <Fab
           color="secondary"
           variant="extended"
@@ -99,6 +129,7 @@ class SendRequestsCreationView extends Component {
           <AddIcon />
           Nuova richiesta di invio
         </Fab>
+
         <NewSendRequestDialog
           open={isAddingSendRequest}
           isLoadingClients={isLoadingClients}
@@ -122,20 +153,29 @@ class SendRequestsCreationView extends Component {
           onDialogClose={this.onCloseClicked}
           onDialogSend={this.onSendClicked}
         />
+
+        <ElementDetailsDialog
+          open={isShowingSendRequestDetails}
+          dialogTitle={`Richiesta di invio #${currentlyShowingSendRequest.id}`}
+          element={currentlyShowingSendRequest}
+          elementFields={sendRequestDetailsDialogFields}
+          renderFieldContent={renderElementFieldContentAsText}
+          onClose={this.hideDetailsModal}
+        />
       </>
     );
   }
 
   onCloseClicked = () => {
     this.props.resetUiState();
-    this.showDialog(false);
+    this.showAddDialog(false);
   };
 
   onSendClicked = payload => {
     this.props.addElement(ELEMENT_TYPE.SEND_REQUESTS, payload);
   };
 
-  showDialog = show => {
+  showAddDialog = show => {
     this.setState({
       isAddingSendRequest: show
     });
@@ -148,13 +188,17 @@ class SendRequestsCreationView extends Component {
     getAll(ALL_ELEMENT_TYPE.BRANCHES);
     getAll(ALL_ELEMENT_TYPE.COMMITS);
 
-    this.showDialog(true);
+    this.showAddDialog(true);
   };
 
   onInputChanged = (name, event) => {
     this.setState({
       [name]: event.target.value
     });
+  };
+
+  hideDetailsModal = () => {
+    this.setState({ isShowingSendRequestDetails: false });
   };
 }
 

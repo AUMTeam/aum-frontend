@@ -18,7 +18,7 @@ const buttonToTheLeftStyle = {
  * Dialog component that is used to display the details about a particular element (an object passed via props).
  * You must specify the fields of that element via the elementFields array.
  * Fields definitions are objects structured as follows:
- *   { key: '[the field accessor]', label: '[the printable name of the field]' }
+ *   { key: '[the field accessor]', label: '[the printable name of the field]', fullRow: bool }
  * The function renderFieldContent is responsible for providing a printable representation of the
  * field content (which can be a string or a JSX snippet).
  */
@@ -43,7 +43,7 @@ export default class ElementDetailsDialog extends React.Component {
             <DialogContent>
               <Grid container spacing={16}>
                 {elementFields.map(field => (
-                  <Grid item xs={12} md={6} key={field.key}>
+                  <Grid item xs={12} md={field.fullRow ? 12 : 6} key={field.key}>
                     <Typography variant="subtitle2" gutterBottom>
                       {field.label || ATTRIBUTE_LABEL[field.key]}
                     </Typography>

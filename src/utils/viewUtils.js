@@ -7,7 +7,7 @@ import React from 'react';
 import StatusIcon from '../components/StatusIcon';
 import { COMMON_ELEMENT_ATTRIBUTE, SEND_REQUEST_ATTRIBUTE, INSTALL_TYPE } from '../constants/elements';
 import Link from '@material-ui/core/Link';
-import { INSTALL_TYPE_LABEL } from '../constants/elements';
+import { INSTALL_TYPE_LABEL, APPROVAL_STATUS_LABEL } from '../constants/elements';
 
 export function retrieveElementFromListState(state, elementId, pageNumber, rowIndex = null) {
   if (pageNumber != null && rowIndex != null) {
@@ -48,7 +48,7 @@ export function renderElementFieldContent(attributeKey, value) {
     // prettier-ignore
     case SEND_REQUEST_ATTRIBUTE.LINKED_COMMITS:
       if (value.length === 0)
-          return PLACEHOLDER_CHARACTER;
+        return PLACEHOLDER_CHARACTER;
       else {
         let commits = '';
         value.forEach((element, index) => {
@@ -73,5 +73,16 @@ export function renderElementFieldContent(attributeKey, value) {
       }
     default:
       return value;
+  }
+}
+
+// Variation of the method above that renders approval status as text instead of the icon
+// Used in element details dialogs
+export function renderElementFieldContentAsText(attributeKey, value) {
+  switch (attributeKey) {
+    case COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS:
+      return APPROVAL_STATUS_LABEL[value];
+    default:
+      return renderElementFieldContent(attributeKey, value);
   }
 }
