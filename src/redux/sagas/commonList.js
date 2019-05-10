@@ -89,7 +89,7 @@ function pageNeedsToBeFetched(listState, action) {
  * @param {*} latestUpdateTimestamp timestamp of the latest retrieved element
  * @param {*} action Action of type START_AUTO_CHECKING or PAGE_REQUEST
  */
-function* checkForListUpdates(action) {
+export function* checkForListUpdates(action) {
   console.log(`Checking for ${action.userRoleString}.${action.elementType} updates...`);
 
   const latestUpdateTimestamp = yield select(

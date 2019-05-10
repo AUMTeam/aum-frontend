@@ -3,6 +3,8 @@ import { ELEMENT_TYPE } from '../../../constants/api';
 import { getRequestPath } from '../../../utils/apiUtils';
 import { PROGRAMMER_ACTION_TYPE } from '../../actions/views/programmer';
 import { AuthenticatedApiRequest } from '../api';
+import { checkForListUpdates }  from '../commonList';
+import { USER_ROLE_STRING, USER_TYPE_ID } from '../../../constants/user'
 
 /**
  * Adds a new element that could be a send request or a commit. Dispatches the successful action to notify
@@ -17,9 +19,13 @@ function* addElement(action) {
 
   const addElementResponseData = yield request.makeAndReportErrors();
   if (addElementResponseData != null) {
-    console.log('New send request successfully added');
     yield put({
       type: PROGRAMMER_ACTION_TYPE.ADD_ELEMENT_SUCCESSFUL
+    });
+
+    yield checkForListUpdates({
+      elementType: action.elementType,
+      userRoleString: USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]
     });
   }
 }
