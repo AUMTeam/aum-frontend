@@ -97,7 +97,10 @@ export function* checkForListUpdates(action) {
   );
 
   const updateRequest = new AuthenticatedApiRequest(getRequestPath(action.elementType, 'update'))
-    .setRequestData({ latest_update_timestamp: latestUpdateTimestamp })
+    .setRequestData({
+      latest_update_timestamp: latestUpdateTimestamp,
+      section: action.userRoleString
+    })
     .setErrorAction({
       type: LIST_ACTION_TYPE.UPDATE_CHECKING_ERROR,
       elementType: action.elementType,
