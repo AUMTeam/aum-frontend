@@ -31,7 +31,7 @@ export function getEmptySortingCriteria() {
 }
 
 /**
- * Used in RevisionTable
+ * Used in RevisionTable and ProgrammerTable
  */
 export function getAlreadyReviewedFilter() {
   return {
