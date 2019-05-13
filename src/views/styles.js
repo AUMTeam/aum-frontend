@@ -30,6 +30,12 @@ export const viewStyles = theme => ({
     width: '100%',
     overflowX: 'auto'
   },
+  errorColor: {
+    color: theme.palette.error.main
+  },
+  approvedColor: {
+    color: theme.palette.approved
+  },
   ...programmerViewStyles
 });
 

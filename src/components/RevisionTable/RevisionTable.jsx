@@ -84,7 +84,6 @@ class RevisionTable extends React.Component {
       isLoading,
       latestUpdateTimestamp,
       displayError,
-      onElementClick,
       loadCurrentPage,
       onPageChange,
       onSortingChange,
@@ -128,7 +127,7 @@ class RevisionTable extends React.Component {
             pageNumber={pageNumber}
             renderCellContent={this.renderCellContent}
             loadCurrentPage={loadCurrentPage}
-            onElementClick={onElementClick}
+            onElementClick={this.onElementClick}
           />
 
           <TablePaginationFooter
@@ -212,6 +211,12 @@ class RevisionTable extends React.Component {
       default:
         return renderElementFieldContent(columnKey, value, elementId);
     }
+  };
+
+  // Commits- and SendRequestsRevisionView need to know whether an element is clicked
+  // while reviewing to display a slightly different modal
+  onElementClick = (pageNumber, rowIndex, elementId) => {
+    this.props.onElementClick(pageNumber, rowIndex, elementId, this.isReviewMode());
   };
 
   // Used to determine if review buttons should be displayed

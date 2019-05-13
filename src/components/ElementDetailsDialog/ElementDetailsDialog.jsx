@@ -13,6 +13,10 @@ const buttonToTheLeftStyle = {
   marginRight: 'auto'
 };
 
+const correctedActionsMargin = {
+  margin: '8px 16px'
+};
+
 /**
  * @class
  * Dialog component that is used to display the details about a particular element (an object passed via props).
@@ -52,7 +56,7 @@ export default class ElementDetailsDialog extends React.Component {
                 ))}
               </Grid>
             </DialogContent>
-            <DialogActions>
+            <DialogActions disableActionSpacing style={correctedActionsMargin}>
               <Button onClick={onClose} color="primary" style={backButtonToTheLeft ? buttonToTheLeftStyle : undefined}>
                 Indietro
               </Button>
