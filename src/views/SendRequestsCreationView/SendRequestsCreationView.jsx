@@ -10,7 +10,7 @@ import ElementDetailsDialog from '../../components/ElementDetailsDialog';
 import NewSendRequestDialog from '../../components/NewSendRequestDialog';
 import ProgrammerTable from '../../components/ProgrammerTable';
 import withErrorBoundary from '../../components/WithErrorBoundary';
-import { ALL_ELEMENT_TYPE, ELEMENT_TYPE } from '../../constants/api';
+import { ELEMENT_TYPE } from '../../constants/api';
 import { COMMON_ELEMENT_ATTRIBUTE, SEND_REQUEST_ATTRIBUTE } from '../../constants/elements';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import { performNewSearchAction } from '../../redux/actions/commonList';
@@ -19,7 +19,7 @@ import {
   startSendRequestsListUpdatesAutoCheckingAction,
   stopSendRequestsListUpdatesAutoCheckingAction
 } from '../../redux/actions/sendRequests';
-import { addElement, getAll, resetUiState } from '../../redux/actions/views/programmer';
+import { addElementAction, getShortListForElementAction, resetUiStateAction } from '../../redux/actions/views/programmer';
 import { renderElementFieldContentAsText, retrieveElementFromListState } from '../../utils/viewUtils';
 import { viewStyles } from '../styles';
 
@@ -182,11 +182,11 @@ class SendRequestsCreationView extends Component {
   };
 
   onFabClick = () => {
-    const { getAll } = this.props;
+    const { getShortListForElement } = this.props;
 
-    getAll(ALL_ELEMENT_TYPE.CLIENTS);
-    getAll(ALL_ELEMENT_TYPE.BRANCHES);
-    getAll(ALL_ELEMENT_TYPE.COMMITS);
+    getShortListForElement(ELEMENT_TYPE.CLIENTS);
+    getShortListForElement(ELEMENT_TYPE.BRANCHES);
+    getShortListForElement(ELEMENT_TYPE.COMMITS);
 
     this.showAddDialog(true);
   };
@@ -226,9 +226,9 @@ const mapDispatchToProps = dispatch => {
       startSendRequestsListUpdatesAutoChecking: startSendRequestsListUpdatesAutoCheckingAction,
       stopSendRequestsListUpdatesAutoChecking: stopSendRequestsListUpdatesAutoCheckingAction,
       performNewSearch: performNewSearchAction,
-      getAll: getAll,
-      addElement: addElement,
-      resetUiState: resetUiState
+      getShortListForElement: getShortListForElementAction,
+      addElement: addElementAction,
+      resetUiState: resetUiStateAction
     },
     dispatch
   );

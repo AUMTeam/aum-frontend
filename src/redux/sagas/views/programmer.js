@@ -1,5 +1,5 @@
 import { put, takeEvery } from 'redux-saga/effects';
-import { ELEMENT_TYPE } from '../../../constants/api';
+import { ELEMENT_ENDPOINT_TYPE } from '../../../constants/api';
 import { getRequestPath } from '../../../utils/apiUtils';
 import { PROGRAMMER_ACTION_TYPE } from '../../actions/views/programmer';
 import { AuthenticatedApiRequest } from '../api';
@@ -31,27 +31,28 @@ function* addElement(action) {
 }
 
 /**
- * Gets all the elements of a specific type (clients, branches, commits) that belongs to a specific user.
+ * Gets the short list of all the elements of a specific type (clients, branches, commits) that belongs to a specific user.
  * If the request is successful we will dispatch an action to notify and send the data received to the subscribed components.
  * In this case we are going to use this data to populate the react-select textfields.
  * @param {*} action
  */
-function* getAll(action) {
-  const request = new AuthenticatedApiRequest(getRequestPath(ELEMENT_TYPE.DATA, action.elementType))
-    .setErrorAction({ type: PROGRAMMER_ACTION_TYPE.GET_ALL_FAILED });
+function* getShortListForElement(action) {
+  console.log(action);
+  const request = new AuthenticatedApiRequest(getRequestPath(action.elementType, ELEMENT_ENDPOINT_TYPE.SHORT_LIST))
+    .setErrorAction({ type: PROGRAMMER_ACTION_TYPE.GET_SHORT_LIST_FAILED });
 
-  const getAllResponseData = yield request.makeAndReportErrors();
-  if (getAllResponseData != null) {
+  const shortListResponseData = yield request.makeAndReportErrors();
+  if (shortListResponseData != null) {
     console.log('All list successfully loaded');
     yield put({
-      type: PROGRAMMER_ACTION_TYPE.GET_ALL_SUCCESSFUL,
+      type: PROGRAMMER_ACTION_TYPE.GET_SHORT_LIST_SUCCESSFUL,
       elementType: action.elementType,
-      payload: getAllResponseData
+      payload: shortListResponseData
     });
   }
 }
 
 export const programmerSagas = [
   takeEvery(PROGRAMMER_ACTION_TYPE.ADD_ELEMENT_REQUEST, addElement),
-  takeEvery(PROGRAMMER_ACTION_TYPE.GET_ALL_REQUEST, getAll)
+  takeEvery(PROGRAMMER_ACTION_TYPE.GET_SHORT_LIST_REQUEST, getShortListForElement)
 ];

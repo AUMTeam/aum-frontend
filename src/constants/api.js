@@ -10,13 +10,15 @@ export const SEARCH_DEBOUNCE_DELAY_MS = 250;
 export const ELEMENT_TYPE = {
   COMMITS: 'commits',
   SEND_REQUESTS: 'sendRequests',
-  DATA: 'data'
+  CLIENTS: 'clients',
+  BRANCHES: 'branches'
 }
 
-export const ALL_ELEMENT_TYPE = {
-  CLIENTS: 'clients',
-  BRANCHES: 'branches',
-  COMMITS: 'commits'
+export const ELEMENT_ENDPOINT_TYPE = {
+  ADD: 'add',
+  LIST: 'list',
+  SHORT_LIST: 'shortList',
+  UPDATE: 'update'
 }
 
 export const REQUEST_ENDPOINT_PATH = {

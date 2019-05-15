@@ -1,6 +1,6 @@
 /* eslint-disable default-case */
 import { PROGRAMMER_ACTION_TYPE } from '../../actions/views/programmer';
-import { ALL_ELEMENT_TYPE } from '../../../constants/api';
+import { ELEMENT_TYPE } from '../../../constants/api';
 
 const initialState = {
   isAddingData: false,
@@ -37,12 +37,12 @@ export function programmerViewReducer(state = initialState, action) {
         isAdditionSuccessful: false,
         isAdditionFailed: true
       };
-    case PROGRAMMER_ACTION_TYPE.GET_ALL_REQUEST:
-      return handleGetAll(state, action.elementType, true);
-    case PROGRAMMER_ACTION_TYPE.GET_ALL_SUCCESSFUL:
-      return handleGetAllSuccessful(state, action.elementType, action.payload)
-    case PROGRAMMER_ACTION_TYPE.GET_ALL_FAILED:
-      return handleGetAll(state, action.elementType, false);
+    case PROGRAMMER_ACTION_TYPE.GET_SHORT_LIST_REQUEST:
+      return handleGetShortList(state, action.elementType, true);
+    case PROGRAMMER_ACTION_TYPE.GET_SHORT_LIST_SUCCESSFUL:
+      return handleGetShortListSuccessful(state, action.elementType, action.payload)
+    case PROGRAMMER_ACTION_TYPE.GET_SHORT_LIST_FAILED:
+      return handleGetShortList(state, action.elementType, false);
     case PROGRAMMER_ACTION_TYPE.RESET_UI_STATE:
       return initialState;  
     default:
@@ -50,21 +50,21 @@ export function programmerViewReducer(state = initialState, action) {
   }
 }
 
-function handleGetAll(state, elementType, isRequest) {
+function handleGetShortList(state, elementType, isRequest) {
   switch (elementType) {
-    case ALL_ELEMENT_TYPE.CLIENTS:
+    case ELEMENT_TYPE.CLIENTS:
       return {
         ...state,
         isLoadingClients: isRequest,
         allClients: []
       };
-    case ALL_ELEMENT_TYPE.BRANCHES:
+    case ELEMENT_TYPE.BRANCHES:
       return {
         ...state,
         isLoadingBranches: isRequest,
         allBranches: []
       };
-    case ALL_ELEMENT_TYPE.COMMITS:
+    case ELEMENT_TYPE.COMMITS:
       return {
         ...state,
         isLoadingCommits: isRequest,
@@ -73,21 +73,21 @@ function handleGetAll(state, elementType, isRequest) {
   }
 }
 
-function handleGetAllSuccessful(state, elementType, payload) {
+function handleGetShortListSuccessful(state, elementType, payload) {
     switch (elementType) {
-        case ALL_ELEMENT_TYPE.CLIENTS:
+        case ELEMENT_TYPE.CLIENTS:
           return {
             ...state,
             isLoadingClients: false,
             allClients: payload
           };
-        case ALL_ELEMENT_TYPE.BRANCHES:
+        case ELEMENT_TYPE.BRANCHES:
           return {
             ...state,
             isLoadingBranches: false,
             allBranches: payload
           };
-        case ALL_ELEMENT_TYPE.COMMITS:
+        case ELEMENT_TYPE.COMMITS:
           return {
             ...state,
             isLoadingCommits: false,

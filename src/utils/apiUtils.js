@@ -3,7 +3,7 @@
  * @file
  * This file contains helper functions used for API requests.
  */
-import { API_ENDPOINT_URL, ELEMENT_TYPE, TOKEN_LOCALSTORAGE_KEY, AUTH_ERROR_STRING } from '../constants/api';
+import { API_ENDPOINT_URL, TOKEN_LOCALSTORAGE_KEY, AUTH_ERROR_STRING } from '../constants/api';
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
 
 export function makeUnauthenticatedApiRequest(requestPath, requestData = {}, timeoutInMilliseconds = 0) {
@@ -66,21 +66,7 @@ function printRequestErrorMessage(error, requestPath) {
  * @param {*} requestType One of the following: add, list, update, approve
  */
 export function getRequestPath(elementType, requestType) {
-  let requestPath = '';
-
-  switch (elementType) {
-    case ELEMENT_TYPE.SEND_REQUESTS:
-      requestPath += 'sendRequest';
-      break;
-    case ELEMENT_TYPE.COMMITS:
-      requestPath += 'commit';
-      break;
-    case ELEMENT_TYPE.DATA:
-      requestPath += 'data';
-      break;
-  }
-
-  return requestPath + `/${requestType}`;
+  return elementType + `/${requestType}`;
 }
 
 export function getUIMessageForErrorString(errorString) {

@@ -10,7 +10,7 @@ import ElementDetailsDialog from '../../components/ElementDetailsDialog';
 import NewCommitDialog from '../../components/NewCommitDialog/NewCommitDialog';
 import ProgrammerTable from '../../components/ProgrammerTable';
 import withErrorBoundary from '../../components/WithErrorBoundary';
-import { ALL_ELEMENT_TYPE, ELEMENT_TYPE } from '../../constants/api';
+import { ELEMENT_TYPE } from '../../constants/api';
 import { COMMON_ELEMENT_ATTRIBUTE } from '../../constants/elements';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import {
@@ -19,7 +19,7 @@ import {
   stopCommitsListUpdatesAutoCheckingAction
 } from '../../redux/actions/commits';
 import { performNewSearchAction } from '../../redux/actions/commonList';
-import { addElement, getAll, resetUiState } from '../../redux/actions/views/programmer';
+import { addElementAction, getShortListForElementAction, resetUiStateAction } from '../../redux/actions/views/programmer';
 import { renderElementFieldContentAsText, retrieveElementFromListState } from '../../utils/viewUtils';
 import { viewStyles } from '../styles';
 
@@ -165,9 +165,9 @@ class CommitsCreationView extends Component {
   };
 
   onFabClick = () => {
-    const { getAll } = this.props;
+    const { getShortListForElement } = this.props;
 
-    getAll(ALL_ELEMENT_TYPE.BRANCHES);
+    getShortListForElement(ELEMENT_TYPE.BRANCHES);
 
     this.showAddDialog(true);
   };
@@ -197,9 +197,9 @@ const mapDispatchToProps = dispatch => {
       startCommitsListUpdatesAutoChecking: startCommitsListUpdatesAutoCheckingAction,
       stopCommitsListUpdatesAutoChecking: stopCommitsListUpdatesAutoCheckingAction,
       performNewSearch: performNewSearchAction,
-      getAll: getAll,
-      addElement: addElement,
-      resetUiState: resetUiState
+      getShortListForElement: getShortListForElementAction,
+      addElement: addElementAction,
+      resetUiState: resetUiStateAction
     },
     dispatch
   );

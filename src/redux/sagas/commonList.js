@@ -1,5 +1,10 @@
 import { actionChannel, cancel, cancelled, delay, fork, put, select, take, takeLatest } from 'redux-saga/effects';
-import { LIST_AUTO_UPDATE_INTERVAL_MS, LIST_ELEMENTS_PER_PAGE, SEARCH_DEBOUNCE_DELAY_MS } from '../../constants/api';
+import {
+  LIST_AUTO_UPDATE_INTERVAL_MS,
+  LIST_ELEMENTS_PER_PAGE,
+  SEARCH_DEBOUNCE_DELAY_MS,
+  ELEMENT_ENDPOINT_TYPE
+} from '../../constants/api';
 import { getRequestPath } from '../../utils/apiUtils';
 import { LIST_ACTION_TYPE } from '../actions/commonList';
 import { AuthenticatedApiRequest } from './api';
@@ -16,7 +21,7 @@ function* retrieveListPage(action) {
 
   const listState = yield select(state => state.lists[action.userRoleString][action.elementType]);
   if (pageNeedsToBeFetched(listState, action)) {
-    const pageRequest = new AuthenticatedApiRequest(getRequestPath(action.elementType, 'list'))
+    const pageRequest = new AuthenticatedApiRequest(getRequestPath(action.elementType, ELEMENT_ENDPOINT_TYPE.LIST))
       .setRequestData({
         page: action.pageNumber,
         limit: LIST_ELEMENTS_PER_PAGE,
@@ -96,7 +101,7 @@ export function* checkForListUpdates(action) {
     state => state.lists[action.userRoleString][action.elementType].latestUpdateTimestamp
   );
 
-  const updateRequest = new AuthenticatedApiRequest(getRequestPath(action.elementType, 'update'))
+  const updateRequest = new AuthenticatedApiRequest(getRequestPath(action.elementType, ELEMENT_ENDPOINT_TYPE.UPDATE))
     .setRequestData({
       latest_update_timestamp: latestUpdateTimestamp,
       section: action.userRoleString
