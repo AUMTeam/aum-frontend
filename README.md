@@ -1,5 +1,6 @@
 # Authorization Manager
-Repository ufficiale della web-app di Authorization Manager, realizzata con React e Redux.
+Repository ufficiale della web-app di Authorization Manager, realizzata con React e Redux.  
+Si raccomanda di leggere le [guidelines di contribuzione](https://github.com/AUMTeam/aum-frontend/blob/devel/CONTRIBUTING.md) prima di cominciare a lavorare al codice.
 
 ## Prerequisiti
 - **Node.js** (che include il package manager NPM)
