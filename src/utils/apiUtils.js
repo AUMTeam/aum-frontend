@@ -3,7 +3,7 @@
  * @file
  * This file contains helper functions used for API requests.
  */
-import { API_ENDPOINT_URL, TOKEN_LOCALSTORAGE_KEY, AUTH_ERROR_STRING } from '../constants/api';
+import { API_ENDPOINT_URL, TOKEN_LOCALSTORAGE_KEY, AUTH_ERROR_STRING, GLOBAL_ERROR_STRING } from '../constants/api';
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
 
 export function makeUnauthenticatedApiRequest(requestPath, requestData = {}, timeoutInMilliseconds = 0) {
@@ -71,6 +71,10 @@ export function getRequestPath(elementType, requestType) {
 
 export function getUIMessageForErrorString(errorString) {
   switch (errorString) {
+    case GLOBAL_ERROR_STRING.DB_ERROR:
+      return "Errore interno del server. Contatta l'amministratore di sistema.";
+    case GLOBAL_ERROR_STRING.INVALID_REQUEST:
+      return 'Richiesta non valida. Assicurati che tutti i campi siano presenti.';
     case AUTH_ERROR_STRING.INVALID_CREDENTIALS:
       return 'Credenziali non valide';
     default:

@@ -112,7 +112,7 @@ function* makeRequestAndReportErrors(
     else if (errorAction != null)
       yield put({ ...errorAction, errorMessage: getUIMessageForErrorString(responseJson.error) });
 
-    console.error(`Server responded with an error to ${requestPath} request: ${responseJson.message}`);
+    console.error(`Server responded with ${responseJson.error} to ${requestPath} request: ${responseJson.message}`);
     return null;
   }
 
