@@ -1,3 +1,4 @@
+import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -11,7 +12,7 @@ import NewSendRequestDialog from '../../components/NewSendRequestDialog';
 import ProgrammerTable from '../../components/ProgrammerTable';
 import withErrorBoundary from '../../components/WithErrorBoundary';
 import { ELEMENT_TYPE } from '../../constants/api';
-import { COMMON_ELEMENT_ATTRIBUTE, SEND_REQUEST_ATTRIBUTE } from '../../constants/elements';
+import { COMMON_ELEMENT_ATTRIBUTE, SEND_REQUEST_ATTRIBUTE, APPROVAL_STATUS } from '../../constants/elements';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import { performNewSearchAction } from '../../redux/actions/commonList';
 import {
@@ -19,7 +20,13 @@ import {
   startSendRequestsListUpdatesAutoCheckingAction,
   stopSendRequestsListUpdatesAutoCheckingAction
 } from '../../redux/actions/sendRequests';
-import { addElementAction, getShortListForElementAction, resetUiStateAction } from '../../redux/actions/views/programmer';
+import {
+  addElementAction,
+  getShortListForElementAction,
+  resetUiStateAction,
+  removeElementAction,
+  PROGRAMMER_ACTION_TYPE
+} from '../../redux/actions/views/programmer';
 import { renderElementFieldContentAsText, retrieveElementFromListState } from '../../utils/viewUtils';
 import { viewStyles } from '../styles';
 
@@ -37,13 +44,16 @@ const sendRequestDetailsDialogFields = [
   { key: COMMON_ELEMENT_ATTRIBUTE.APPROVER, label: 'Revisionato da' }
 ];
 
+/**
+ * @class
+ * This is the UI of programmer send requests section.
+ */
 class SendRequestsCreationView extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      isAddingSendRequest: false,
-      isShowingSendRequestDetails: false,
+      isShowingNewSendRequestDialog: false,
       currentlyShowingSendRequest: {}
     };
   }
@@ -68,11 +78,15 @@ class SendRequestsCreationView extends Component {
       allBranches,
       isLoadingCommits,
       allCommits,
-      isAddingData,
+      isAddingElement,
       isAdditionSuccessful,
-      isAdditionFailed
+      isAdditionFailed,
+      isRemovingElement,
+      isShowingElementDetails,
+      showElementDetailsDialog,
+      hideElementDetailsDialog
     } = this.props;
-    const { isAddingSendRequest, currentlyShowingSendRequest, isShowingSendRequestDetails } = this.state;
+    const { isShowingNewSendRequestDialog, currentlyShowingSendRequest } = this.state;
 
     return (
       <>
@@ -104,7 +118,6 @@ class SendRequestsCreationView extends Component {
                   displayError={sendRequestsData.errorWhileFetchingData}
                   onElementClick={(pageNumber, rowIndex, elementId) => {
                     this.setState({
-                      isShowingSendRequestDetails: true,
                       currentlyShowingSendRequest: retrieveElementFromListState(
                         sendRequestsData,
                         elementId,
@@ -112,6 +125,7 @@ class SendRequestsCreationView extends Component {
                         rowIndex
                       )
                     });
+                    showElementDetailsDialog();
                   }}
                 />
               </Paper>
@@ -124,14 +138,14 @@ class SendRequestsCreationView extends Component {
           variant="extended"
           aria-label="Aggiungi"
           className={classes.fab}
-          onClick={() => this.onFabClick()}
+          onClick={this.onFabClick}
         >
           <AddIcon />
           Nuova richiesta di invio
         </Fab>
 
         <NewSendRequestDialog
-          open={isAddingSendRequest}
+          open={isShowingNewSendRequestDialog}
           isLoadingClients={isLoadingClients}
           allClients={allClients.map(client => ({
             value: client.user_id,
@@ -147,7 +161,7 @@ class SendRequestsCreationView extends Component {
             value: commit.commit_id,
             label: `[${commit.commit_id}] ${commit.title}`
           }))}
-          isLoading={isAddingData}
+          isLoading={isAddingElement}
           isSuccessful={isAdditionSuccessful}
           isFailed={isAdditionFailed}
           onDialogClose={this.onCloseClicked}
@@ -155,16 +169,34 @@ class SendRequestsCreationView extends Component {
         />
 
         <ElementDetailsDialog
-          open={isShowingSendRequestDetails}
+          open={isShowingElementDetails}
+          isLoading={isRemovingElement}
           dialogTitle={`Richiesta di invio #${currentlyShowingSendRequest.id}`}
           element={currentlyShowingSendRequest}
           elementFields={sendRequestDetailsDialogFields}
           renderFieldContent={renderElementFieldContentAsText}
-          onClose={this.hideDetailsModal}
+          renderExtraActions={this.renderRemoveDialogButtonIfNotReviewed}
+          onClose={hideElementDetailsDialog}
         />
       </>
     );
   }
+
+  renderRemoveDialogButtonIfNotReviewed = () => {
+    const { currentlyShowingSendRequest } = this.state;
+    const { classes, removeElement } = this.props;
+
+    // eslint-disable-next-line eqeqeq
+    if (currentlyShowingSendRequest[COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS] == APPROVAL_STATUS.PENDING)
+      return (
+        <Button
+          classes={{ root: classes.errorColor }}
+          onClick={() => removeElement(ELEMENT_TYPE.SEND_REQUESTS, currentlyShowingSendRequest.id)}
+        >
+          Rimuovi
+        </Button>
+      );
+  };
 
   onCloseClicked = () => {
     this.props.resetUiState();
@@ -177,7 +209,7 @@ class SendRequestsCreationView extends Component {
 
   showAddDialog = show => {
     this.setState({
-      isAddingSendRequest: show
+      isShowingNewSendRequestDialog: show
     });
   };
 
@@ -196,10 +228,6 @@ class SendRequestsCreationView extends Component {
       [name]: event.target.value
     });
   };
-
-  hideDetailsModal = () => {
-    this.setState({ isShowingSendRequestDetails: false });
-  };
 }
 
 SendRequestsCreationView.displayName = 'SendRequestsCreationView';
@@ -207,15 +235,20 @@ SendRequestsCreationView.displayName = 'SendRequestsCreationView';
 const mapStateToProps = state => {
   return {
     sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].sendRequests,
+
     isLoadingClients: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isLoadingClients,
     allClients: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].allClients,
     isLoadingBranches: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isLoadingBranches,
     allBranches: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].allBranches,
     isLoadingCommits: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isLoadingCommits,
     allCommits: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].allCommits,
-    isAddingData: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAddingData,
+
+    isAddingElement: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAddingElement,
     isAdditionSuccessful: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAdditionSuccessful,
-    isAdditionFailed: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAdditionFailed
+    isAdditionFailed: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAdditionFailed,
+
+    isRemovingElement: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isRemovingElement,
+    isShowingElementDetails: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isShowingElementDetails
   };
 };
 
@@ -228,6 +261,9 @@ const mapDispatchToProps = dispatch => {
       performNewSearch: performNewSearchAction,
       getShortListForElement: getShortListForElementAction,
       addElement: addElementAction,
+      removeElement: removeElementAction,
+      showElementDetailsDialog: () => ({ type: PROGRAMMER_ACTION_TYPE.SHOW_DETAILS_DIALOG }),
+      hideElementDetailsDialog: () => ({ type: PROGRAMMER_ACTION_TYPE.HIDE_DETAILS_DIALOG }),
       resetUiState: resetUiStateAction
     },
     dispatch

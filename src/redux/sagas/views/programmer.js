@@ -3,8 +3,8 @@ import { ELEMENT_ENDPOINT_TYPE } from '../../../constants/api';
 import { getRequestPath } from '../../../utils/apiUtils';
 import { PROGRAMMER_ACTION_TYPE } from '../../actions/views/programmer';
 import { AuthenticatedApiRequest } from '../api';
-import { checkForListUpdates }  from '../commonList';
-import { USER_ROLE_STRING, USER_TYPE_ID } from '../../../constants/user'
+import { checkForListUpdates } from '../commonList';
+import { USER_ROLE_STRING, USER_TYPE_ID } from '../../../constants/user';
 
 /**
  * Adds a new element that could be a send request or a commit. Dispatches the successful action to notify
@@ -13,15 +13,29 @@ import { USER_ROLE_STRING, USER_TYPE_ID } from '../../../constants/user'
  * @param {*} action
  */
 function* addElement(action) {
-  const request = new AuthenticatedApiRequest(getRequestPath(action.elementType, 'add'))
+  const request = new AuthenticatedApiRequest(getRequestPath(action.elementType, ELEMENT_ENDPOINT_TYPE.ADD))
     .setRequestData({ ...action.payload })
     .setErrorAction({ type: PROGRAMMER_ACTION_TYPE.ADD_ELEMENT_FAILED });
 
   const addElementResponseData = yield request.makeAndReportErrors();
   if (addElementResponseData != null) {
-    yield put({
-      type: PROGRAMMER_ACTION_TYPE.ADD_ELEMENT_SUCCESSFUL
+    yield put({ type: PROGRAMMER_ACTION_TYPE.ADD_ELEMENT_SUCCESSFUL });
+
+    yield checkForListUpdates({
+      elementType: action.elementType,
+      userRoleString: USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]
     });
+  }
+}
+
+function* removeElement(action) {
+  const request = new AuthenticatedApiRequest(getRequestPath(action.elementType, ELEMENT_ENDPOINT_TYPE.REMOVE))
+    .setRequestData({ id: action.elementId })
+    .setErrorAction({ type: PROGRAMMER_ACTION_TYPE.REMOVE_ELEMENT_FAILED });
+
+  const addElementResponseData = yield request.makeAndReportErrors();
+  if (addElementResponseData != null) {
+    yield put({ type: PROGRAMMER_ACTION_TYPE.REMOVE_ELEMENT_SUCCESSFUL });
 
     yield checkForListUpdates({
       elementType: action.elementType,
@@ -37,9 +51,9 @@ function* addElement(action) {
  * @param {*} action
  */
 function* getShortListForElement(action) {
-  console.log(action);
-  const request = new AuthenticatedApiRequest(getRequestPath(action.elementType, ELEMENT_ENDPOINT_TYPE.SHORT_LIST))
-    .setErrorAction({ type: PROGRAMMER_ACTION_TYPE.GET_SHORT_LIST_FAILED });
+  const request = new AuthenticatedApiRequest(
+    getRequestPath(action.elementType, ELEMENT_ENDPOINT_TYPE.SHORT_LIST)
+  ).setErrorAction({ type: PROGRAMMER_ACTION_TYPE.GET_SHORT_LIST_FAILED });
 
   const shortListResponseData = yield request.makeAndReportErrors();
   if (shortListResponseData != null) {
@@ -54,5 +68,6 @@ function* getShortListForElement(action) {
 
 export const programmerSagas = [
   takeEvery(PROGRAMMER_ACTION_TYPE.ADD_ELEMENT_REQUEST, addElement),
+  takeEvery(PROGRAMMER_ACTION_TYPE.REMOVE_ELEMENT_REQUEST, removeElement),
   takeEvery(PROGRAMMER_ACTION_TYPE.GET_SHORT_LIST_REQUEST, getShortListForElement)
 ];

@@ -18,7 +18,8 @@ export const ELEMENT_ENDPOINT_TYPE = {
   ADD: 'add',
   LIST: 'list',
   SHORT_LIST: 'shortList',
-  UPDATE: 'update'
+  UPDATE: 'update',
+  REMOVE: 'remove'
 }
 
 export const REQUEST_ENDPOINT_PATH = {

@@ -1,3 +1,4 @@
+import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -11,7 +12,7 @@ import NewCommitDialog from '../../components/NewCommitDialog/NewCommitDialog';
 import ProgrammerTable from '../../components/ProgrammerTable';
 import withErrorBoundary from '../../components/WithErrorBoundary';
 import { ELEMENT_TYPE } from '../../constants/api';
-import { COMMON_ELEMENT_ATTRIBUTE } from '../../constants/elements';
+import { COMMON_ELEMENT_ATTRIBUTE, APPROVAL_STATUS } from '../../constants/elements';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import {
   retrieveCommitsListPageAction,
@@ -19,7 +20,13 @@ import {
   stopCommitsListUpdatesAutoCheckingAction
 } from '../../redux/actions/commits';
 import { performNewSearchAction } from '../../redux/actions/commonList';
-import { addElementAction, getShortListForElementAction, resetUiStateAction } from '../../redux/actions/views/programmer';
+import {
+  addElementAction,
+  getShortListForElementAction,
+  resetUiStateAction,
+  removeElementAction,
+  PROGRAMMER_ACTION_TYPE
+} from '../../redux/actions/views/programmer';
 import { renderElementFieldContentAsText, retrieveElementFromListState } from '../../utils/viewUtils';
 import { viewStyles } from '../styles';
 
@@ -34,13 +41,16 @@ const commitDetailsDialogFields = [
   { key: COMMON_ELEMENT_ATTRIBUTE.APPROVER, label: 'Revisionato da' }
 ];
 
+/**
+ * @class
+ * This is the UI of programmer commits section.
+ */
 class CommitsCreationView extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      isAddingCommit: false,
-      isShowingCommitDetails: false,
+      isShowingNewCommitDialog: false,
       currentlyShowingCommit: {}
     };
   }
@@ -61,11 +71,15 @@ class CommitsCreationView extends Component {
       performNewSearch,
       isLoadingBranches,
       allBranches,
-      isAddingData,
+      isAddingElement,
       isAdditionSuccessful,
-      isAdditionFailed
+      isAdditionFailed,
+      isRemovingElement,
+      isShowingElementDetails,
+      showElementDetailsDialog,
+      hideElementDetailsDialog
     } = this.props;
-    const { isAddingCommit, isShowingCommitDetails, currentlyShowingCommit } = this.state;
+    const { isShowingNewCommitDialog, currentlyShowingCommit } = this.state;
 
     return (
       <>
@@ -97,14 +111,9 @@ class CommitsCreationView extends Component {
                   displayError={commitsData.errorWhileFetchingData}
                   onElementClick={(pageNumber, rowIndex, elementId) => {
                     this.setState({
-                      isShowingCommitDetails: true,
-                      currentlyShowingCommit: retrieveElementFromListState(
-                        commitsData,
-                        elementId,
-                        pageNumber,
-                        rowIndex
-                      )
+                      currentlyShowingCommit: retrieveElementFromListState(commitsData, elementId, pageNumber, rowIndex)
                     });
+                    showElementDetailsDialog();
                   }}
                 />
               </Paper>
@@ -117,20 +126,20 @@ class CommitsCreationView extends Component {
           variant="extended"
           aria-label="Aggiungi"
           className={classes.fab}
-          onClick={() => this.onFabClick()}
+          onClick={this.onFabClick}
         >
           <AddIcon />
           Nuovo commit
         </Fab>
 
         <NewCommitDialog
-          open={isAddingCommit}
+          open={isShowingNewCommitDialog}
           isLoadingBranches={isLoadingBranches}
           allBranches={allBranches.map(branch => ({
             value: branch.id,
             label: branch.name
           }))}
-          isLoading={isAddingData}
+          isLoading={isAddingElement}
           isSuccessful={isAdditionSuccessful}
           isFailed={isAdditionFailed}
           onDialogClose={this.onCloseClicked}
@@ -138,16 +147,34 @@ class CommitsCreationView extends Component {
         />
 
         <ElementDetailsDialog
-          open={isShowingCommitDetails}
+          open={isShowingElementDetails}
+          isLoading={isRemovingElement}
           dialogTitle={`Richiesta di commit #${currentlyShowingCommit.id}`}
           element={currentlyShowingCommit}
           elementFields={commitDetailsDialogFields}
           renderFieldContent={renderElementFieldContentAsText}
-          onClose={this.hideDetailsModal}
+          renderExtraActions={this.renderRemoveDialogButtonIfNotReviewed}
+          onClose={hideElementDetailsDialog}
         />
       </>
     );
   }
+
+  renderRemoveDialogButtonIfNotReviewed = () => {
+    const { currentlyShowingCommit } = this.state;
+    const { classes, removeElement } = this.props;
+
+    // eslint-disable-next-line eqeqeq
+    if (currentlyShowingCommit[COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS] == APPROVAL_STATUS.PENDING)
+      return (
+        <Button
+          classes={{ root: classes.errorColor }}
+          onClick={() => removeElement(ELEMENT_TYPE.COMMITS, currentlyShowingCommit.id)}
+        >
+          Rimuovi
+        </Button>
+      );
+  };
 
   onCloseClicked = () => {
     this.props.resetUiState();
@@ -160,20 +187,13 @@ class CommitsCreationView extends Component {
 
   showAddDialog = show => {
     this.setState({
-      isAddingCommit: show
+      isShowingNewCommitDialog: show
     });
   };
 
   onFabClick = () => {
-    const { getShortListForElement } = this.props;
-
-    getShortListForElement(ELEMENT_TYPE.BRANCHES);
-
+    this.props.getShortListForElement(ELEMENT_TYPE.BRANCHES);
     this.showAddDialog(true);
-  };
-
-  hideDetailsModal = () => {
-    this.setState({ isShowingCommitDetails: false });
   };
 }
 
@@ -184,9 +204,13 @@ const mapStateToProps = state => {
     commitsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].commits,
     isLoadingBranches: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isLoadingBranches,
     allBranches: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].allBranches,
-    isAddingData: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAddingData,
+
+    isAddingElement: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAddingElement,
     isAdditionSuccessful: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAdditionSuccessful,
-    isAdditionFailed: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAdditionFailed
+    isAdditionFailed: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAdditionFailed,
+
+    isRemovingElement: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isRemovingElement,
+    isShowingElementDetails: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isShowingElementDetails
   };
 };
 
@@ -199,6 +223,9 @@ const mapDispatchToProps = dispatch => {
       performNewSearch: performNewSearchAction,
       getShortListForElement: getShortListForElementAction,
       addElement: addElementAction,
+      removeElement: removeElementAction,
+      showElementDetailsDialog: () => ({ type: PROGRAMMER_ACTION_TYPE.SHOW_DETAILS_DIALOG }),
+      hideElementDetailsDialog: () => ({ type: PROGRAMMER_ACTION_TYPE.HIDE_DETAILS_DIALOG }),
       resetUiState: resetUiStateAction
     },
     dispatch

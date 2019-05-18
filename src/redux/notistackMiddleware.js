@@ -40,7 +40,18 @@ export function createNotistackMiddleware(enqueueSnackbar) {
         });
         break;
       case PROGRAMMER_ACTION_TYPE.ADD_ELEMENT_SUCCESSFUL:
-        enqueueSnackbar(`La richiesta è stata aggiunta correttamente.`, {
+        enqueueSnackbar('La richiesta è stata aggiunta correttamente.', {
+          autoHideDuration: 5000
+        });
+        break;
+      case PROGRAMMER_ACTION_TYPE.REMOVE_ELEMENT_SUCCESSFUL:
+        enqueueSnackbar('La richiesta è stata rimossa con successo.', {
+          autoHideDuration: 5000
+        });
+        break;
+      case PROGRAMMER_ACTION_TYPE.REMOVE_ELEMENT_FAILED:
+        enqueueSnackbar('Errore nella rimozione della richiesta: ' + action.errorMessage, {
+          variant: 'error',
           autoHideDuration: 5000
         });
         break;
