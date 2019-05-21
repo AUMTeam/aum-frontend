@@ -11,9 +11,7 @@ export const PROGRAMMER_ACTION_TYPE = {
   GET_SHORT_LIST_SUCCESSFUL: 'PROGRAMMER_GET_SHORT_LIST_SUCCESSFUL',
   GET_SHORT_LIST_FAILED: 'PROGRAMMER_GET_SHORT_LIST_FAILED',
 
-  SHOW_DETAILS_DIALOG: 'PROGRAMMER_SHOW_DETAILS_DIALOG',
-  HIDE_DETAILS_DIALOG: 'PROGRAMMER_HIDE_DETAILS_DIALOG', 
-  RESET_UI_STATE: 'RESET_UI_STATE'
+  RESET_UI_STATE: 'PROGRAMMER_RESET_UI_STATE'
 };
 
 export function addElementAction(elementType, payload) {
@@ -39,7 +37,7 @@ export function getShortListForElementAction(elementType) {
   };
 }
 
-export function resetUiStateAction() {
+export function resetUIStateAction() {
   return {
     type: PROGRAMMER_ACTION_TYPE.RESET_UI_STATE
   };

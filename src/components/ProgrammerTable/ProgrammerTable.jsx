@@ -33,14 +33,12 @@ const alreadyReviewedTableColumns = [
 ];
 
 class ProgrammerTable extends Component {
-  /**
-   * Guarantees that the component is re-rendered only when its loading state changes
-   * or when there are new updates (displays the badge)
-   */
+  
   shouldComponentUpdate(nextProps) {
     return (
       this.props.isLoading !== nextProps.isLoading ||
-      this.props.latestUpdateTimestamp !== nextProps.latestUpdateTimestamp
+      this.props.latestUpdateTimestamp !== nextProps.latestUpdateTimestamp ||
+      this.props.disabledEntries !== nextProps.disabledEntries
     );
   }
 
@@ -58,7 +56,8 @@ class ProgrammerTable extends Component {
       onSortingChange,
       onFilterChange,
       pageNumber,
-      sorting
+      sorting,
+      disabledEntries
     } = this.props;
     const isDisplayingNotReviewedItems = this.isDisplayingToBeReviewedItems();
 
@@ -93,6 +92,7 @@ class ProgrammerTable extends Component {
             renderCellContent={renderElementFieldContent}
             loadCurrentPage={loadCurrentPage}
             onElementClick={onElementClick}
+            disabledEntries={disabledEntries}
           />
 
           <TablePaginationFooter
@@ -149,6 +149,7 @@ ProgrammerTable.propTypes = {
   latestUpdateTimestamp: PropTypes.number.isRequired,
   displayError: PropTypes.bool.isRequired,
   onElementClick: PropTypes.func.isRequired,
+  disabledEntries: PropTypes.array.isRequired,
 
   // injected by withTableFunctionality
   pageNumber: PropTypes.number.isRequired,

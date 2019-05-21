@@ -4,7 +4,7 @@ import { ELEMENT_TYPE } from '../../../constants/api';
 
 const initialState = {
   isRemovingElement: false,
-  isShowingElementDetails: false,
+  removedElementsIds: [],
 
   isAddingElement: false,
   isAdditionSuccessful: false,
@@ -50,7 +50,7 @@ export function programmerViewReducer(state = initialState, action) {
       return {
         ...state,
         isRemovingElement: false,
-        isShowingElementDetails: false
+        removedElementsIds: [...state.removedElementsIds, action.elementId]
       };
     case PROGRAMMER_ACTION_TYPE.REMOVE_ELEMENT_FAILED:
       return {
@@ -63,18 +63,13 @@ export function programmerViewReducer(state = initialState, action) {
       return handleGetShortListSuccessful(state, action.elementType, action.payload);
     case PROGRAMMER_ACTION_TYPE.GET_SHORT_LIST_FAILED:
       return handleGetShortList(state, action.elementType, false);
-    case PROGRAMMER_ACTION_TYPE.SHOW_DETAILS_DIALOG:
-      return {
-        ...state,
-        isShowingElementDetails: true
-      };
-    case PROGRAMMER_ACTION_TYPE.HIDE_DETAILS_DIALOG:
-      return {
-        ...state,
-        isShowingElementDetails: false
-      };
+    // Currently we keep removed elements ids after reset because at the moment
+    // server-side update checking mechanism isn't smart enough to detect removed elements
     case PROGRAMMER_ACTION_TYPE.RESET_UI_STATE:
-      return initialState;
+      return {
+        ...initialState,
+        removedElementsIds: state.removedElementsIds
+      };
     default:
       return state;
   }

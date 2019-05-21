@@ -89,7 +89,8 @@ class RevisionTable extends React.Component {
       onSortingChange,
       onFilterChange,
       pageNumber,
-      sorting
+      sorting,
+      successfullyReviewedItems
     } = this.props;
     const reviewMode = this.isReviewMode();
 
@@ -128,6 +129,7 @@ class RevisionTable extends React.Component {
             renderCellContent={this.renderCellContent}
             loadCurrentPage={loadCurrentPage}
             onElementClick={this.onElementClick}
+            disabledEntries={Object.keys(successfullyReviewedItems).map(key => parseInt(key))}
           />
 
           <TablePaginationFooter
@@ -172,7 +174,7 @@ class RevisionTable extends React.Component {
         return (
           <>
             {successfullyReviewedItems[elementId] != null ? (
-              <StatusIcon status={successfullyReviewedItems[elementId]} opacity={60} />
+              <StatusIcon status={successfullyReviewedItems[elementId]} />
             ) : failedReviewItems[elementId] != null ? (
               <IconButton
                 onClick={event => {

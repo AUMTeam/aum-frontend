@@ -35,7 +35,10 @@ function* removeElement(action) {
 
   const addElementResponseData = yield request.makeAndReportErrors();
   if (addElementResponseData != null) {
-    yield put({ type: PROGRAMMER_ACTION_TYPE.REMOVE_ELEMENT_SUCCESSFUL });
+    yield put({
+      type: PROGRAMMER_ACTION_TYPE.REMOVE_ELEMENT_SUCCESSFUL,
+      elementId: action.elementId
+    });
 
     yield checkForListUpdates({
       elementType: action.elementType,

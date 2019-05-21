@@ -23,9 +23,8 @@ import { performNewSearchAction } from '../../redux/actions/commonList';
 import {
   addElementAction,
   getShortListForElementAction,
-  resetUiStateAction,
-  removeElementAction,
-  PROGRAMMER_ACTION_TYPE
+  resetUIStateAction,
+  removeElementAction
 } from '../../redux/actions/views/programmer';
 import { renderElementFieldContentAsText, retrieveElementFromListState } from '../../utils/viewUtils';
 import { viewStyles } from '../styles';
@@ -50,6 +49,7 @@ class CommitsCreationView extends Component {
     super(props);
 
     this.state = {
+      isShowingCommitDetails: false,
       isShowingNewCommitDialog: false,
       currentlyShowingCommit: {}
     };
@@ -61,6 +61,14 @@ class CommitsCreationView extends Component {
 
   componentWillUnmount() {
     this.props.stopCommitsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
+    this.props.resetUIState();
+  }
+
+  // Close details modal when removal is successful
+  static getDerivedStateFromProps(props, state) {
+    if (state.isShowingCommitDetails && props.removedElementsIds.includes(state.currentlyShowingCommit.id))
+      return { isShowingCommitDetails: false };
+    return null;
   }
 
   render() {
@@ -75,11 +83,9 @@ class CommitsCreationView extends Component {
       isAdditionSuccessful,
       isAdditionFailed,
       isRemovingElement,
-      isShowingElementDetails,
-      showElementDetailsDialog,
-      hideElementDetailsDialog
+      removedElementsIds
     } = this.props;
-    const { isShowingNewCommitDialog, currentlyShowingCommit } = this.state;
+    const { isShowingCommitDetails, isShowingNewCommitDialog, currentlyShowingCommit } = this.state;
 
     return (
       <>
@@ -111,10 +117,11 @@ class CommitsCreationView extends Component {
                   displayError={commitsData.errorWhileFetchingData}
                   onElementClick={(pageNumber, rowIndex, elementId) => {
                     this.setState({
+                      isShowingCommitDetails: true,
                       currentlyShowingCommit: retrieveElementFromListState(commitsData, elementId, pageNumber, rowIndex)
                     });
-                    showElementDetailsDialog();
                   }}
+                  disabledEntries={removedElementsIds}
                 />
               </Paper>
             </Grid>
@@ -147,14 +154,14 @@ class CommitsCreationView extends Component {
         />
 
         <ElementDetailsDialog
-          open={isShowingElementDetails}
+          open={isShowingCommitDetails}
           isLoading={isRemovingElement}
           dialogTitle={`Richiesta di commit #${currentlyShowingCommit.id}`}
           element={currentlyShowingCommit}
           elementFields={commitDetailsDialogFields}
           renderFieldContent={renderElementFieldContentAsText}
           renderExtraActions={this.renderRemoveDialogButtonIfNotReviewed}
-          onClose={hideElementDetailsDialog}
+          onClose={() => this.setState({ isShowingCommitDetails: false })}
         />
       </>
     );
@@ -177,7 +184,7 @@ class CommitsCreationView extends Component {
   };
 
   onCloseClicked = () => {
-    this.props.resetUiState();
+    this.props.resetUIState();
     this.showAddDialog(false);
   };
 
@@ -210,7 +217,7 @@ const mapStateToProps = state => {
     isAdditionFailed: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAdditionFailed,
 
     isRemovingElement: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isRemovingElement,
-    isShowingElementDetails: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isShowingElementDetails
+    removedElementsIds: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].removedElementsIds
   };
 };
 
@@ -224,9 +231,7 @@ const mapDispatchToProps = dispatch => {
       getShortListForElement: getShortListForElementAction,
       addElement: addElementAction,
       removeElement: removeElementAction,
-      showElementDetailsDialog: () => ({ type: PROGRAMMER_ACTION_TYPE.SHOW_DETAILS_DIALOG }),
-      hideElementDetailsDialog: () => ({ type: PROGRAMMER_ACTION_TYPE.HIDE_DETAILS_DIALOG }),
-      resetUiState: resetUiStateAction
+      resetUIState: resetUIStateAction
     },
     dispatch
   );

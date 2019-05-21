@@ -6,15 +6,21 @@ import TableRow from '@material-ui/core/TableRow';
 import ErrorOutline from '@material-ui/icons/ErrorOutline';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import { LIST_ELEMENTS_PER_PAGE } from '../../../constants/api';
 
-const verticallyAlignedContentStyle = {
-  display: 'flex',
-  alignItems: 'center'
+const styles = {
+  handCursor: {
+    cursor: 'pointer'
+  },
+  verticallyAlignedContent: {
+    display: 'flex',
+    alignItems: 'center'
+  }
 };
 
-const handCursorStyle = {
-  cursor: 'pointer'
+const disabledEntryRowStyle = {
+  filter: 'opacity(0.65)'
 };
 
 const PLACEHOLDER_VALUE = '—';
@@ -27,77 +33,99 @@ const PLACEHOLDER_VALUE = '—';
  * This component accepts also a function (renderCellContent) which defines how the values of the specific columns
  * must be rendered. Typically is a switch-case which always return a JSX snippet (in other words a component).
  */
-export default class TableDynamicBody extends React.Component {
+class TableDynamicBody extends React.Component {
   render() {
-    const {
-      tableData,
-      tableColumns,
-      displayError,
-      totalItemsCount,
-      pageNumber,
-      renderCellContent,
-      loadCurrentPage,
-      isLoading,
-      onElementClick
-    } = this.props;
+    const { tableColumns, displayError, totalItemsCount, isLoading } = this.props;
 
     return (
       <TableBody>
         {isLoading ? (
-          React.Children.map(Array(LIST_ELEMENTS_PER_PAGE), () => {
-            return (
-              <TableRow>
-                {tableColumns.map((column, index) => (
-                  <Hidden key={index} smDown={!column.displayOnMobile}>
-                    <TableCell align={column.alignOption != null ? column.alignOption : undefined} padding="dense">
-                      {PLACEHOLDER_VALUE}
-                    </TableCell>
-                  </Hidden>
-                ))}
-              </TableRow>
-            );
-          })
+          this.renderSkeleton()
         ) : displayError ? (
-          <TableRow>
-            <TableCell colSpan={tableColumns.length}>
-              <div style={verticallyAlignedContentStyle}>
-                <ErrorOutline color="action" /> &ensp; Impossibile ottenere i dati.&ensp;
-                <Button size="small" onClick={loadCurrentPage} color="primary">
-                  Riprova
-                </Button>
-              </div>
-            </TableCell>
-          </TableRow>
+          this.renderErrorMessageWithRetryButton()
         ) : totalItemsCount === 0 ? (
           <TableRow>
             <TableCell colSpan={tableColumns.length}>Nessun dato presente.</TableCell>
           </TableRow>
         ) : (
-          tableData[pageNumber].data.map((rowValue, rowIndex) => {
-            return (
-              <TableRow
-                style={onElementClick != null ? handCursorStyle : undefined}
-                hover={onElementClick != null}
-                onClick={onElementClick != null ? () => onElementClick(pageNumber, rowIndex, rowValue.id) : undefined}
-                key={rowValue.id}
-              >
-                {tableColumns.map((column, columnIndex) => (
-                  <Hidden key={columnIndex} smDown={!column.displayOnMobile}>
-                    <TableCell align={column.alignOption != null ? column.alignOption : undefined} padding="dense">
-                      {renderCellContent(column.key, rowValue[column.key], rowValue.id)}
-                    </TableCell>
-                  </Hidden>
-                ))}
-              </TableRow>
-            );
-          })
+          this.renderContent()
         )}
       </TableBody>
     );
   }
+
+  renderSkeleton = () => {
+    return React.Children.map(Array(LIST_ELEMENTS_PER_PAGE), () => {
+      return (
+        <TableRow>
+          {this.props.tableColumns.map((column, index) => (
+            <Hidden key={index} smDown={!column.displayOnMobile}>
+              <TableCell align={column.alignOption != null ? column.alignOption : undefined} padding="dense">
+                {PLACEHOLDER_VALUE}
+              </TableCell>
+            </Hidden>
+          ))}
+        </TableRow>
+      );
+    });
+  };
+
+  renderErrorMessageWithRetryButton = () => {
+    const { tableColumns, loadCurrentPage, classes } = this.props;
+    return (
+      <TableRow>
+        <TableCell colSpan={tableColumns.length}>
+          <div className={classes.verticallyAlignedContent}>
+            <ErrorOutline color="action" /> &ensp; Impossibile ottenere i dati.&ensp;
+            <Button size="small" onClick={loadCurrentPage} color="primary">
+              Riprova
+            </Button>
+          </div>
+        </TableCell>
+      </TableRow>
+    );
+  };
+
+  renderContent = () => {
+    const {
+      tableData,
+      tableColumns,
+      pageNumber,
+      renderCellContent,
+      onElementClick,
+      disabledEntries,
+      classes
+    } = this.props;
+
+    return tableData[pageNumber].data.map((element, rowIndex) => {
+      const isEntryDisabled = disabledEntries.includes(element.id);
+      const hasRowOnClickHandler = !isEntryDisabled && onElementClick != null;
+
+      return (
+        <TableRow
+          className={hasRowOnClickHandler ? classes.handCursor : undefined}
+          hover={hasRowOnClickHandler}
+          onClick={hasRowOnClickHandler ? () => onElementClick(pageNumber, rowIndex, element.id) : undefined}
+          key={element.id}
+          style={isEntryDisabled ? disabledEntryRowStyle : undefined}
+        >
+          {tableColumns.map((column, columnIndex) => (
+            <Hidden key={columnIndex} smDown={!column.displayOnMobile}>
+              <TableCell align={column.alignOption || undefined} padding="dense">
+                {renderCellContent(column.key, element[column.key], element.id)}
+              </TableCell>
+            </Hidden>
+          ))}
+        </TableRow>
+      );
+    });
+  };
 }
 
 TableDynamicBody.displayName = 'TableDynamicBody';
+TableDynamicBody.defaultProps = {
+  disabledEntries: []
+};
 TableDynamicBody.propTypes = {
   tableColumns: PropTypes.array.isRequired,
   tableData: PropTypes.array.isRequired,
@@ -107,5 +135,8 @@ TableDynamicBody.propTypes = {
   pageNumber: PropTypes.number.isRequired,
   renderCellContent: PropTypes.func.isRequired,
   loadCurrentPage: PropTypes.func.isRequired,
+  disabledEntries: PropTypes.array,
   onElementClick: PropTypes.func
 };
+
+export default withStyles(styles)(TableDynamicBody);

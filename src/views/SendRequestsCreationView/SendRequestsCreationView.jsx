@@ -23,9 +23,8 @@ import {
 import {
   addElementAction,
   getShortListForElementAction,
-  resetUiStateAction,
-  removeElementAction,
-  PROGRAMMER_ACTION_TYPE
+  resetUIStateAction,
+  removeElementAction
 } from '../../redux/actions/views/programmer';
 import { renderElementFieldContentAsText, retrieveElementFromListState } from '../../utils/viewUtils';
 import { viewStyles } from '../styles';
@@ -53,6 +52,7 @@ class SendRequestsCreationView extends Component {
     super(props);
 
     this.state = {
+      isShowingSendRequestDetails: false,
       isShowingNewSendRequestDialog: false,
       currentlyShowingSendRequest: {}
     };
@@ -64,6 +64,14 @@ class SendRequestsCreationView extends Component {
 
   componentWillUnmount() {
     this.props.stopSendRequestsListUpdatesAutoChecking(USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]);
+    this.props.resetUIState();
+  }
+
+  // Close details modal when removal is successful
+  static getDerivedStateFromProps(props, state) {
+    if (state.isShowingSendRequestDetails && props.removedElementsIds.includes(state.currentlyShowingSendRequest.id))
+      return { isShowingSendRequestDetails: false };
+    return null;
   }
 
   render() {
@@ -82,11 +90,9 @@ class SendRequestsCreationView extends Component {
       isAdditionSuccessful,
       isAdditionFailed,
       isRemovingElement,
-      isShowingElementDetails,
-      showElementDetailsDialog,
-      hideElementDetailsDialog
+      removedElementsIds
     } = this.props;
-    const { isShowingNewSendRequestDialog, currentlyShowingSendRequest } = this.state;
+    const { isShowingSendRequestDetails, isShowingNewSendRequestDialog, currentlyShowingSendRequest } = this.state;
 
     return (
       <>
@@ -118,6 +124,7 @@ class SendRequestsCreationView extends Component {
                   displayError={sendRequestsData.errorWhileFetchingData}
                   onElementClick={(pageNumber, rowIndex, elementId) => {
                     this.setState({
+                      isShowingSendRequestDetails: true,
                       currentlyShowingSendRequest: retrieveElementFromListState(
                         sendRequestsData,
                         elementId,
@@ -125,8 +132,8 @@ class SendRequestsCreationView extends Component {
                         rowIndex
                       )
                     });
-                    showElementDetailsDialog();
                   }}
+                  disabledEntries={removedElementsIds}
                 />
               </Paper>
             </Grid>
@@ -169,14 +176,14 @@ class SendRequestsCreationView extends Component {
         />
 
         <ElementDetailsDialog
-          open={isShowingElementDetails}
+          open={isShowingSendRequestDetails}
           isLoading={isRemovingElement}
           dialogTitle={`Richiesta di invio #${currentlyShowingSendRequest.id}`}
           element={currentlyShowingSendRequest}
           elementFields={sendRequestDetailsDialogFields}
           renderFieldContent={renderElementFieldContentAsText}
           renderExtraActions={this.renderRemoveDialogButtonIfNotReviewed}
-          onClose={hideElementDetailsDialog}
+          onClose={() => this.setState({ isShowingSendRequestDetails: false })}
         />
       </>
     );
@@ -199,7 +206,7 @@ class SendRequestsCreationView extends Component {
   };
 
   onCloseClicked = () => {
-    this.props.resetUiState();
+    this.props.resetUIState();
     this.showAddDialog(false);
   };
 
@@ -248,7 +255,7 @@ const mapStateToProps = state => {
     isAdditionFailed: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isAdditionFailed,
 
     isRemovingElement: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isRemovingElement,
-    isShowingElementDetails: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isShowingElementDetails
+    removedElementsIds: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].removedElementsIds
   };
 };
 
@@ -262,9 +269,7 @@ const mapDispatchToProps = dispatch => {
       getShortListForElement: getShortListForElementAction,
       addElement: addElementAction,
       removeElement: removeElementAction,
-      showElementDetailsDialog: () => ({ type: PROGRAMMER_ACTION_TYPE.SHOW_DETAILS_DIALOG }),
-      hideElementDetailsDialog: () => ({ type: PROGRAMMER_ACTION_TYPE.HIDE_DETAILS_DIALOG }),
-      resetUiState: resetUiStateAction
+      resetUIState: resetUIStateAction
     },
     dispatch
   );
