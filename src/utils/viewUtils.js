@@ -71,6 +71,19 @@ export function renderElementFieldContent(attributeKey, value) {
         });
         return clients;
       }
+      // prettier-ignore
+    case SEND_REQUEST_ATTRIBUTE.CLIENT_REPRESENTATIVES:
+      if (value.length === 0)
+        return PLACEHOLDER_CHARACTER;
+      else {
+        let representatives = '';
+        value.forEach((element, index) => {
+          representatives += element;
+          if (index < value.length-1)
+            representatives += ', ';
+        });
+        return representatives;
+      }
     default:
       return value;
   }

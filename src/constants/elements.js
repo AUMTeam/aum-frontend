@@ -22,7 +22,8 @@ export const SEND_REQUEST_ATTRIBUTE = {
   INSTALL_TIMESTAMP: 'install_timestamp',
   INSTALL_STATUS: 'install_status',
   INSTALL_FEEDBACK: 'install_comment',
-  DELIVERY_TIMESTAMP: 'send_timestamp'
+  DELIVERY_TIMESTAMP: 'send_timestamp',
+  CLIENT_REPRESENTATIVES: 'resp'
 };
 
 export const ATTRIBUTE_LABEL = {
@@ -43,7 +44,8 @@ export const ATTRIBUTE_LABEL = {
   [SEND_REQUEST_ATTRIBUTE.INSTALL_TYPE]: 'Tipo di installazione',
   [SEND_REQUEST_ATTRIBUTE.INSTALL_STATUS]: 'Installazione effettuata',
   [SEND_REQUEST_ATTRIBUTE.INSTALL_FEEDBACK]: 'Feedback post-installazione',
-  [SEND_REQUEST_ATTRIBUTE.DELIVERY_TIMESTAMP]: 'Inviato il'
+  [SEND_REQUEST_ATTRIBUTE.DELIVERY_TIMESTAMP]: 'Inviato il',
+  [SEND_REQUEST_ATTRIBUTE.CLIENT_REPRESENTATIVES]: 'Referenti interni'
 };
 
 export const INSTALL_TYPE = {
