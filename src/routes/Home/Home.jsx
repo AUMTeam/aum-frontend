@@ -6,7 +6,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import LogoLoader from '../../components/LogoLoader';
 import Navigation from '../../components/Navigation';
-import { DESKTOP_DRAWER_WIDTH, NAVIGATION_HIERARCHY, getRelativePathForUserRole } from '../../constants/navigation';
+import { DESKTOP_DRAWER_WIDTH, getSectionsForUserRoles, getRelativePathForUserRole } from '../../constants/navigation';
 import { performLogoutAction } from '../../redux/actions/auth';
 import { requestCurrentUserInfoAction } from '../../redux/actions/user';
 
@@ -114,27 +114,25 @@ class Home extends Component {
     return (
       <Switch>
         {/* Renders the specific routes for the different sections */}
-        {NAVIGATION_HIERARCHY.map((section, index) => {
-          if (user.roles.includes(section.value)) {
-            // prettier-ignore
-            if (section.tabs.length > 0) {
-              const tabRoutes = section.tabs.map(tab => (
-                <Route path={`${match.url}${section.routePath}/${tab.value}`} exact component={tab.component} />
-              ));
+        {getSectionsForUserRoles(user.roles).map((section, index) => {
+          // prettier-ignore
+          if (section.tabs.length > 0) {
+            const tabRoutes = section.tabs.map(tab => (
+              <Route path={`${match.url}${section.routePath}/${tab.value}`} exact component={tab.component} />
+            ));
 
-              // For every group of tabs that belongs to a section, we use a Redirect to redirect the user
-              // to the first tab if the URL had an invalid tab value 
-              tabRoutes.push(
-                <Redirect
-                  from={`${match.url}${section.routePath}`}
-                  to={`${match.url}${section.routePath}/${section.tabs[0].value}`}
-                />
-              );
-              return tabRoutes;
-            }
-            else
-              return <Route key={index} path={`${match.url}${section.routePath}`} exact component={section.component} />;
+            // For every group of tabs that belongs to a section, we use a Redirect to redirect the user
+            // to the first tab if the URL had an invalid tab value 
+            tabRoutes.push(
+              <Redirect
+                from={`${match.url}${section.routePath}`}
+                to={`${match.url}${section.routePath}/${section.tabs[0].value}`}
+              />
+            );
+            return tabRoutes;
           }
+          else
+            return <Route key={index} path={`${match.url}${section.routePath}`} exact component={section.component} />;
         })}
 
         {/* Redirect the user to the view of its first role if the URL didn't match any view */}

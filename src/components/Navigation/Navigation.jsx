@@ -17,7 +17,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { DESKTOP_DRAWER_WIDTH, NAVIGATION_HIERARCHY } from '../../constants/navigation';
+import { DESKTOP_DRAWER_WIDTH, getSectionsForUserRoles } from '../../constants/navigation';
 import { ROUTE_PARAM } from '../../constants/routes';
 import { getRandomColor } from '../../utils/colorUtils';
 import InnerTabs from '../InnerTabs';
@@ -70,7 +70,7 @@ class Navigation extends Component {
   }
 
   render() {
-    const { classes, user, match } = this.props;
+    const { classes } = this.props;
     return (
       <div className={classes.root}>
         <AppBar className={classes.appBar} position="static">
@@ -88,24 +88,7 @@ class Navigation extends Component {
             </Typography>
           </Toolbar>
 
-          {/* Render tabs and their corresponding routes */}
-          {NAVIGATION_HIERARCHY.map((section, index) => {
-            if (user.roles.includes(section.value) && section.tabs.length > 0) {
-              return (
-                <Route
-                  key={index}
-                  path={`${match.url}${section.routePath}${ROUTE_PARAM.TAB_VALUE}`}
-                  render={routeProps => (
-                    <InnerTabs
-                      {...routeProps}
-                      sectionUrl={`${match.url}${section.routePath}`}
-                      tabs={section.tabs}
-                    />
-                  )}
-                />
-              );
-            }
-          })}
+          {this.renderTabsRoutes()}
         </AppBar>
 
         <aside>
@@ -119,6 +102,24 @@ class Navigation extends Component {
       </div>
     );
   }
+
+  renderTabsRoutes = () => {
+    const { user, match } = this.props;
+
+    return getSectionsForUserRoles(user.roles).map((section, index) => {
+      if (section.tabs.length > 0) {
+        return (
+          <Route
+            key={index}
+            path={`${match.url}${section.routePath}${ROUTE_PARAM.TAB_VALUE}`}
+            render={routeProps => (
+              <InnerTabs {...routeProps} sectionUrl={`${match.url}${section.routePath}`} tabs={section.tabs} />
+            )}
+          />
+        );
+      }
+    })
+  };
 
   renderMobileDrawer = () => {
     return (
@@ -150,25 +151,24 @@ class Navigation extends Component {
 
         <div tabIndex={0} role="button" onClick={this.closeDrawer} onKeyDown={this.closeDrawer}>
           <List className={classes.drawerItems}>
-            {NAVIGATION_HIERARCHY.map((section, index) => {
-              if (user.roles.includes(section.value))
-                return (
-                  <ListItem
-                    key={index}
-                    button
-                    selected={location.pathname.startsWith(`${match.url}${section.routePath}`)}
-                    onClick={() =>
-                      this.onSectionClicked(
-                        section.tabs.length > 0
-                          ? `${match.url}${section.routePath}/${section.tabs[0].value}`
-                          : `${match.url}${section.routePath}`
-                      )
-                    }
-                  >
-                    <ListItemIcon>{section.drawerIcon}</ListItemIcon>
-                    <ListItemText primary={section.label} />
-                  </ListItem>
-                );
+            {getSectionsForUserRoles(user.roles).map((section, index) => {
+              return (
+                <ListItem
+                  key={index}
+                  button
+                  selected={location.pathname.startsWith(`${match.url}${section.routePath}`)}
+                  onClick={() =>
+                    this.onSectionClicked(
+                      section.tabs.length > 0
+                        ? `${match.url}${section.routePath}/${section.tabs[0].value}`
+                        : `${match.url}${section.routePath}`
+                    )
+                  }
+                >
+                  <ListItemIcon>{section.drawerIcon}</ListItemIcon>
+                  <ListItemText primary={section.label} />
+                </ListItem>
+              );
             })}
             <Divider />
 
