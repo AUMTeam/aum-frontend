@@ -3,7 +3,7 @@
  * @file
  * This file contains helper functions used for API requests.
  */
-import { API_ENDPOINT_URL, TOKEN_LOCALSTORAGE_KEY, AUTH_ERROR_STRING, GLOBAL_ERROR_STRING } from '../constants/api';
+import { API_ENDPOINT_URL, TOKEN_LOCALSTORAGE_KEY, API_ERROR_STRING } from '../constants/api';
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
 
 export function makeUnauthenticatedApiRequest(requestPath, requestData = {}, timeoutInMilliseconds = 0) {
@@ -71,12 +71,22 @@ export function getRequestPath(elementType, requestType) {
 
 export function getUIMessageForErrorString(errorString) {
   switch (errorString) {
-    case GLOBAL_ERROR_STRING.DB_ERROR:
+    case API_ERROR_STRING.DB_ERROR:
       return "Errore interno del server. Contatta l'amministratore di sistema.";
-    case GLOBAL_ERROR_STRING.INVALID_REQUEST:
+    case API_ERROR_STRING.INVALID_REQUEST:
       return 'Richiesta non valida. Assicurati che tutti i campi siano presenti.';
-    case AUTH_ERROR_STRING.INVALID_CREDENTIALS:
-      return 'Credenziali non valide';
+    case API_ERROR_STRING.INVALID_CREDENTIALS:
+      return 'Credenziali non valide.';
+    case API_ERROR_STRING.UNAUTHORIZED:
+      return "Non sei autorizzato ad effettuare l'operazione.";
+    case API_ERROR_STRING.INVALID_ID:
+      return "L'operazione non può essere effettuata sull'elemento specificato.";
+    case API_ERROR_STRING.REMOVE_COMMIT_ALREADY_INCLUDED:
+      return 'Il commit è già referenziato in una richiesta di invio.';
+    case API_ERROR_STRING.LIST_INVALID_PARAMETER:
+      return 'Parametri di filtraggio della lista non validi.';
+    case API_ERROR_STRING.SERVER_IN_MAINTENANCE:
+      return 'Il server è in manutenzione. Riprova più tardi.';
     default:
       return errorString;
   }

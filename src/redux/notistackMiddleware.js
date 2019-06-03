@@ -3,6 +3,7 @@ import { LIST_ACTION_TYPE } from './actions/commonList';
 import { ELEMENT_TYPE } from '../constants/api';
 import { AUTH_ACTION_TYPE } from './actions/auth';
 import { PROGRAMMER_ACTION_TYPE } from './actions/views/programmer';
+import { TECHNICAL_AREA_MANAGER_ACTION_TYPE } from './actions/views/technicalAreaManager';
 
 /**
  * Returns the middleware function created using the given notistack's enqueueSnackbar function.
@@ -19,12 +20,12 @@ export function createNotistackMiddleware(enqueueSnackbar) {
           { variant: 'error', autoHideDuration: 4000, preventDuplicate: true }
         );
         break;
-      case LIST_ACTION_TYPE.ELEMENT_REVIEW_FAILED:
+      case TECHNICAL_AREA_MANAGER_ACTION_TYPE.REVIEW_ITEM_FAILED:
         enqueueSnackbar(
           `Revisione del${
             action.elementType === ELEMENT_TYPE.COMMITS ? ' commit' : 'la richiesta di invio'
-          } #${action.elementId} fallita.`,
-          { variant: 'error', autoHideDuration: 3000 }
+          } #${action.elementId} fallita: ${action.errorMessage}.`,
+          { variant: 'error', autoHideDuration: 4000 }
         );
         break;
       case AUTH_ACTION_TYPE.LOGIN_FAILED:
