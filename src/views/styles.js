@@ -40,6 +40,9 @@ export const viewStyles = theme => ({
 });
 
 export const selectDialogStyles = theme => ({
+  dialogContent: {
+    overflowY: 'visible'
+  },
   input: {
     display: 'flex'
   },

@@ -62,9 +62,9 @@ class NewSendRequestDialog extends Component {
     if (!isLoading && !isFailed && isSuccessful) this.onDialogClose();
 
     return (
-      <ResponsiveDialog {...otherProps} isLoading={isLoading && !isFailed}>
+      <ResponsiveDialog {...otherProps} isLoading={isLoading && !isFailed} scroll="body">
         <DialogTitle>Inserisci una nuova richiesta di invio</DialogTitle>
-        <DialogContent>
+        <DialogContent classes={{ root: classes.dialogContent }}>
           <Grid container spacing={16}>
             <Grid item xs={12}>
               <TextField
@@ -236,4 +236,4 @@ NewSendRequestDialog.propTypes = {
   onDialogSend: PropTypes.func.isRequired
 };
 
-export default withStyles(selectDialogStyles, { withTheme: true })(NewSendRequestDialog);
+export default withStyles(selectDialogStyles)(NewSendRequestDialog);
