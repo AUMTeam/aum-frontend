@@ -9,6 +9,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { attemptLoginAction } from '../../redux/actions/auth';
+import ibt_logo from '../../assets/ibt_logo.png';
 
 const styles = {
   root: {
@@ -26,6 +27,21 @@ const styles = {
   },
   loginButton: {
     width: 56
+  },
+  footer: {
+    color: 'grey',
+    textAlign: 'center',
+    alignSelf: 'flex-end',
+    padding: '0 16px 16px'
+  },
+  link: {
+    color: 'inherit'
+  },
+  logo: {
+    width: '130px'
+  },
+  welcomeText: {
+    textAlign: 'center'
   }
 };
 
@@ -51,17 +67,15 @@ class Login extends Component {
     const { classes, isAttemptingLogin } = this.props;
     const { username, password, usernameError, passwordError } = this.state;
     return (
-      <Grid className={classes.root} container direction="column" justify="center" alignItems="center">
+      <Grid className={classes.root} container justify="center" alignItems="center">
         <Card className={classes.card} onKeyDown={this.onEnterKeyClicked}>
           <Grid className={classes.cardRoot} container spacing={24}>
             <Grid item xs={12}>
-              <Grid container justify="flex-start" alignContent="center">
-                <Grid item xs={12}>
-                  <Typography variant="h4" component="h2">
-                    Gesbank Evolution
-                  </Typography>
+              <Grid container justify="center" alignContent="center" spacing={8}>
+                <Grid item>
+                  <img className={classes.logo} src={ibt_logo} alt="Logo IBT" />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} className={classes.welcomeText}>
                   <Typography variant="subtitle1" color="textSecondary">
                     Benvenuto in Authorization Manager
                   </Typography>
@@ -117,6 +131,26 @@ class Login extends Component {
             </Grid>
           </Grid>
         </Card>
+
+        <Grid item xs={12} className={classes.footer}>
+          <Typography variant="caption" color="inherit">
+            Realizzato da{' '}
+            <a className={classes.link} href="http://www.ibttn.it">
+              Informatica Bancaria Trentina
+            </a>{' '}
+            in collaborazione con alcuni studenti dell'
+            <a className={classes.link} href="http://www.buonarroti.tn.it">
+              I.T.T. Buonarroti-Pozzo
+            </a>
+            .
+            <br />
+            Questo software è{' '}
+            <a className={classes.link} href="https://github.com/AUMTeam/aum-frontend">
+              open-source
+            </a>{' '}
+            e rilasciato sotto licenza MIT.
+          </Typography>
+        </Grid>
       </Grid>
     );
   }
