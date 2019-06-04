@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.js": "/aum-frontend/static/js/main.5b6546e3.chunk.js",
+    "main.js.map": "/aum-frontend/static/js/main.5b6546e3.chunk.js.map",
+    "runtime~main.js": "/aum-frontend/static/js/runtime~main.a39234c4.js",
+    "runtime~main.js.map": "/aum-frontend/static/js/runtime~main.a39234c4.js.map",
+    "static/js/2.f57883ea.chunk.js": "/aum-frontend/static/js/2.f57883ea.chunk.js",
+    "static/js/2.f57883ea.chunk.js.map": "/aum-frontend/static/js/2.f57883ea.chunk.js.map",
+    "index.html": "/aum-frontend/index.html",
+    "precache-manifest.9125a4f1027d514c34a7c5bf85afa368.js": "/aum-frontend/precache-manifest.9125a4f1027d514c34a7c5bf85afa368.js",
+    "service-worker.js": "/aum-frontend/service-worker.js",
+    "static/media/gesbank_logo.png": "/aum-frontend/static/media/gesbank_logo.d8e4f43c.png",
+    "static/media/ibt_logo.png": "/aum-frontend/static/media/ibt_logo.c6af17ac.png",
+    "static/media/sad_face_grey.png": "/aum-frontend/static/media/sad_face_grey.391e5c2b.png"
+  }
+}
