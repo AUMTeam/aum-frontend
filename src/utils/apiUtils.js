@@ -83,6 +83,13 @@ export function getUIMessageForErrorString(errorString) {
       return "L'operazione non può essere effettuata sull'elemento specificato.";
     case API_ERROR_STRING.REMOVE_COMMIT_ALREADY_INCLUDED:
       return 'Il commit è già referenziato in una richiesta di invio.';
+    case API_ERROR_STRING.APPROVE_ALREADY_APPROVED:
+    case API_ERROR_STRING.REMOVE_ALREADY_APPROVED:
+      return "L'elemento è già stato revisionato.";
+    case API_ERROR_STRING.SEND_NOT_APPROVED:
+      return 'La richiesta non è ancora stata approvata.';
+    case API_ERROR_STRING.INSTALL_NOT_SENT:
+      return "L'aggiornamento non è ancora stato inviato.";
     case API_ERROR_STRING.LIST_INVALID_PARAMETER:
       return 'Parametri di filtraggio della lista non validi.';
     case API_ERROR_STRING.SERVER_IN_MAINTENANCE:
