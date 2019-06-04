@@ -5,7 +5,7 @@
 
 import React from 'react';
 import StatusIcon from '../components/StatusIcon';
-import { COMMON_ELEMENT_ATTRIBUTE, SEND_REQUEST_ATTRIBUTE, INSTALL_TYPE } from '../constants/elements';
+import { COMMON_ELEMENT_ATTRIBUTE, SEND_REQUEST_ATTRIBUTE, INSTALL_TYPE, APPROVAL_STATUS } from '../constants/elements';
 import Link from '@material-ui/core/Link';
 import { INSTALL_TYPE_LABEL, APPROVAL_STATUS_LABEL } from '../constants/elements';
 
@@ -98,4 +98,11 @@ export function renderElementFieldContentAsText(attributeKey, value) {
     default:
       return renderElementFieldContent(attributeKey, value);
   }
+}
+
+export function canElementBeRemoved(element, currentUser) {
+  // eslint-disable-next-line eqeqeq
+  const isNotReviewed = element[COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS] == APPROVAL_STATUS.PENDING;
+  const createdByCurrentUser = element[COMMON_ELEMENT_ATTRIBUTE.AUTHOR].id === currentUser.id;
+  return isNotReviewed && createdByCurrentUser;
 }

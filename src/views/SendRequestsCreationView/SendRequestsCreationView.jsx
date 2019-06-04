@@ -12,7 +12,7 @@ import NewSendRequestDialog from '../../components/NewSendRequestDialog';
 import ProgrammerTable from '../../components/ProgrammerTable';
 import withErrorBoundary from '../../components/WithErrorBoundary';
 import { ELEMENT_TYPE } from '../../constants/api';
-import { COMMON_ELEMENT_ATTRIBUTE, SEND_REQUEST_ATTRIBUTE, APPROVAL_STATUS } from '../../constants/elements';
+import { COMMON_ELEMENT_ATTRIBUTE, SEND_REQUEST_ATTRIBUTE } from '../../constants/elements';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import { performNewSearchAction } from '../../redux/actions/commonList';
 import {
@@ -26,7 +26,7 @@ import {
   resetUIStateAction,
   removeElementAction
 } from '../../redux/actions/views/programmer';
-import { renderElementFieldContentAsText, retrieveElementFromListState } from '../../utils/viewUtils';
+import { renderElementFieldContentAsText, retrieveElementFromListState, canElementBeRemoved } from '../../utils/viewUtils';
 import { viewStyles } from '../styles';
 
 const sendRequestDetailsDialogFields = [
@@ -182,19 +182,18 @@ class SendRequestsCreationView extends Component {
           element={currentlyShowingSendRequest}
           elementFields={sendRequestDetailsDialogFields}
           renderFieldContent={renderElementFieldContentAsText}
-          renderExtraActions={this.renderRemoveDialogButtonIfNotReviewed}
+          renderExtraActions={this.renderRemoveDialogButtonIfNeeded}
           onClose={() => this.setState({ isShowingSendRequestDetails: false })}
         />
       </>
     );
   }
 
-  renderRemoveDialogButtonIfNotReviewed = () => {
+  renderRemoveDialogButtonIfNeeded = () => {
     const { currentlyShowingSendRequest } = this.state;
-    const { classes, removeElement } = this.props;
+    const { classes, removeElement, currentUser } = this.props;
 
-    // eslint-disable-next-line eqeqeq
-    if (currentlyShowingSendRequest[COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS] == APPROVAL_STATUS.PENDING)
+    if (canElementBeRemoved(currentlyShowingSendRequest, currentUser))
       return (
         <Button
           classes={{ root: classes.errorColor }}
@@ -241,8 +240,9 @@ SendRequestsCreationView.displayName = 'SendRequestsCreationView';
 
 const mapStateToProps = state => {
   return {
-    sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].sendRequests,
+    currentUser: state.user,
 
+    sendRequestsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].sendRequests,
     isLoadingClients: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isLoadingClients,
     allClients: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].allClients,
     isLoadingBranches: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isLoadingBranches,

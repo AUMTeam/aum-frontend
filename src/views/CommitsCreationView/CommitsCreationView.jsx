@@ -12,7 +12,7 @@ import NewCommitDialog from '../../components/NewCommitDialog/NewCommitDialog';
 import ProgrammerTable from '../../components/ProgrammerTable';
 import withErrorBoundary from '../../components/WithErrorBoundary';
 import { ELEMENT_TYPE } from '../../constants/api';
-import { COMMON_ELEMENT_ATTRIBUTE, APPROVAL_STATUS } from '../../constants/elements';
+import { COMMON_ELEMENT_ATTRIBUTE } from '../../constants/elements';
 import { USER_ROLE_STRING, USER_TYPE_ID } from '../../constants/user';
 import {
   retrieveCommitsListPageAction,
@@ -26,7 +26,7 @@ import {
   resetUIStateAction,
   removeElementAction
 } from '../../redux/actions/views/programmer';
-import { renderElementFieldContentAsText, retrieveElementFromListState } from '../../utils/viewUtils';
+import { renderElementFieldContentAsText, retrieveElementFromListState, canElementBeRemoved } from '../../utils/viewUtils';
 import { viewStyles } from '../styles';
 
 const commitDetailsDialogFields = [
@@ -160,19 +160,18 @@ class CommitsCreationView extends Component {
           element={currentlyShowingCommit}
           elementFields={commitDetailsDialogFields}
           renderFieldContent={renderElementFieldContentAsText}
-          renderExtraActions={this.renderRemoveDialogButtonIfNotReviewed}
+          renderExtraActions={this.renderRemoveDialogButtonIfNeeded}
           onClose={() => this.setState({ isShowingCommitDetails: false })}
         />
       </>
     );
   }
 
-  renderRemoveDialogButtonIfNotReviewed = () => {
+  renderRemoveDialogButtonIfNeeded = () => {
     const { currentlyShowingCommit } = this.state;
-    const { classes, removeElement } = this.props;
+    const { classes, removeElement, currentUser } = this.props;
 
-    // eslint-disable-next-line eqeqeq
-    if (currentlyShowingCommit[COMMON_ELEMENT_ATTRIBUTE.APPROVAL_STATUS] == APPROVAL_STATUS.PENDING)
+    if (canElementBeRemoved(currentlyShowingCommit, currentUser))
       return (
         <Button
           classes={{ root: classes.errorColor }}
@@ -208,6 +207,8 @@ CommitsCreationView.displayName = 'CommitsCreationView';
 
 const mapStateToProps = state => {
   return {
+    currentUser: state.user,
+
     commitsData: state.lists[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].commits,
     isLoadingBranches: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].isLoadingBranches,
     allBranches: state.views[USER_ROLE_STRING[USER_TYPE_ID.PROGRAMMER]].allBranches,
