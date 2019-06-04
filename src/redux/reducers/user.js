@@ -38,7 +38,10 @@ export function user(state = initialState, action) {
         serverError: false,
         id: action.user_id,
         name: action.name,
-        area: action.area,
+        area: action.area_id != null ? {
+          id: action.area_id,
+          name: action.area_name
+        } : null,
         email: action.email,
         roles: action.role
       };

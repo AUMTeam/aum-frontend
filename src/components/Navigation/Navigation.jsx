@@ -47,7 +47,7 @@ const styles = theme => ({
     }
   },
   avatar: {
-    margin: -12,
+    margin: -8,
     backgroundColor: getRandomColor()
   },
   drawerItems: {
@@ -118,7 +118,7 @@ class Navigation extends Component {
           />
         );
       }
-    })
+    });
   };
 
   renderMobileDrawer = () => {
@@ -146,7 +146,20 @@ class Navigation extends Component {
           <ListItemIcon>
             <Avatar className={classes.avatar}>{user.name.charAt(0)}</Avatar>
           </ListItemIcon>
-          <ListItemText primary={user.name} secondary={user.email} />
+          <ListItemText
+            primary={user.name}
+            secondary={
+              <>
+                {user.email}
+                {user.area != null && (
+                  <>
+                    <br />
+                    Area tecnica {user.area.name}
+                  </>
+                )}
+              </>
+            }
+          />
         </ListItem>
 
         <div tabIndex={0} role="button" onClick={this.closeDrawer} onKeyDown={this.closeDrawer}>
